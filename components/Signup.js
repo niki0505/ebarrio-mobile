@@ -40,20 +40,20 @@ const Signup = () => {
       //   return;
       // }
 
-      // const resID = checkData.resID;
-
-      const response = await fetch(
-        "https://ebarrio-mobile-backend.onrender.com/api/auth/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password, resID }),
-        }
-      );
+      const response = await fetch("http://10.0.2.2:3000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstname, lastname, username, password }),
+      });
 
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+      console.log("🔍 Checking if resident exists...");
 
       if (!data.exists) {
+        console.log(`❌ Resident not found, returning exists:${data.exists}`);
         Alert.alert(
           "Error",
           "Only registered resident of the Barangay Aniban 2 can sign up."
@@ -65,6 +65,7 @@ const Signup = () => {
         return;
       }
 
+      console.log(`✅Resident found, returning exists:${data.exists}`);
       Alert.alert("Success", "User registered successfully. Please log in.");
       setUsername("");
       setPassword("");
