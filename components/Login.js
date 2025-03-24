@@ -9,6 +9,9 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwtDecode from "jwt-decode";
+import { useAuthStore } from "../store/authStore";
 
 const Login = () => {
   const uchange = useNavigation();
@@ -45,7 +48,10 @@ const Login = () => {
         setPassword("");
       } else {
         console.log(`✅ Correct Password`);
+        await AsyncStorage.setItem("accessToken", data.accessToken);
+        useAuthStore.getState().login(data.accessToken);
         Alert.alert("Success", "Login Successful!");
+        uchange.navigate("Home");
         setUsername("");
         setPassword("");
       }
