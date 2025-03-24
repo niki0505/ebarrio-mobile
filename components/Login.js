@@ -10,47 +10,45 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-const Signup = () => {
+const Login = () => {
   const uchange = useNavigation();
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignUp = async () => {
+  const handleLogin = async () => {
     try {
-      const response = await fetch("http://10.0.2.2:3000/api/auth/register", {
+      const response = await fetch("http://10.0.2.2:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstname, lastname, username, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Something went wrong");
       }
-      console.log("🔍 Checking if resident exists...");
 
       if (!data.exists) {
-        console.log(`❌ Resident not found, returning exists:${data.exists}`);
-        Alert.alert(
-          "Error",
-          "Only registered resident of the Barangay Aniban 2 can sign up."
-        );
+        console.log(`❌ Account not found, returning exists:${data.exists}`);
+        Alert.alert("Error", "Account not found. Please register.");
         setUsername("");
         setPassword("");
-        setFirstname("");
-        setLastname("");
         return;
       }
 
-      console.log(`✅Resident found, returning exists:${data.exists}`);
-      Alert.alert("Success", "User registered successfully. Please log in.");
-      setUsername("");
-      setPassword("");
-      setFirstname("");
-      setLastname("");
-      uchange.navigate("Login");
+      if (!data.correctPassword) {
+        console.log(`❌ Incorrect Password`);
+        Alert.alert(
+          "Error",
+          "Incorrect Password. Please input the correct password."
+        );
+        setPassword("");
+      } else {
+        console.log(`✅ Correct Password`);
+        Alert.alert("Success", "Login Successful!");
+        setUsername("");
+        setPassword("");
+      }
     } catch (error) {
       Alert.alert("Error", error.message);
     }
@@ -58,18 +56,6 @@ const Signup = () => {
   return (
     <View style={MyStyles.container}>
       <View style={{ flexDirection: "column", gap: 10 }}>
-        <TextInput
-          style={MyStyles.textfield}
-          placeholder="Enter first name here"
-          value={firstname}
-          onChangeText={setFirstname}
-        />
-        <TextInput
-          style={MyStyles.textfield}
-          placeholder="Enter last name here"
-          value={lastname}
-          onChangeText={setLastname}
-        />
         <TextInput
           style={MyStyles.textfield}
           placeholder="Enter username here"
@@ -83,14 +69,14 @@ const Signup = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity onPress={handleSignUp} style={MyStyles.btn}>
+        <TouchableOpacity onPress={handleLogin} style={MyStyles.btn}>
           <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
-            Sign Up
+            Log In
           </Text>
         </TouchableOpacity>
-        <Text onPress={() => uchange.navigate("Login")}>Go to Login</Text>
+        <Text onPress={() => uchange.navigate("Signup")}>Go to Sign up</Text>
       </View>
     </View>
   );
 };
-export default Signup;
+export default Login;
