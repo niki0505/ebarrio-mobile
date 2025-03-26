@@ -14,7 +14,7 @@ import jwtDecode from "jwt-decode";
 import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
 
-const Home = () => {
+const Announcements = () => {
   const accID = useAuthStore((state) => state.accID);
   const navigation = useNavigation();
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -33,12 +33,9 @@ const Home = () => {
 
   return (
     <View style={MyStyles.container}>
-      <Text>Welcome to Home {accID}</Text>
-      <Text onPress={() => logout(navigation)}>Logout</Text>
-      <Text onPress={() => navigation.navigate("Announcements")}>
-        Announcements
-      </Text>
+      <Text>Announcements {accID}</Text>
+      <Text onPress={() => navigation.navigate("Home")}>Home</Text>
     </View>
   );
 };
-export default Home;
+export default Announcements;

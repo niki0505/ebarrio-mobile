@@ -8,7 +8,7 @@ export const useAuthStore = create((set) => ({
   logoutTimer: null,
   accID: null,
 
-  login: async (accessToken) => {
+  login: async (accessToken, navigation) => {
     await AsyncStorage.setItem("accessToken", accessToken);
     try {
       const decoded = jwtDecode(accessToken);
@@ -18,15 +18,22 @@ export const useAuthStore = create((set) => ({
       return;
     }
 
+    if (navigation) {
+      navigation.navigate("Home");
+    }
+
     useAuthStore.getState().startAutoLogout(accessToken);
   },
 
-  logout: async () => {
+  logout: async (navigation) => {
     Alert.alert("Success", "Log out Successful!");
     console.log("Log out Successful");
     clearTimeout(useAuthStore.getState().logoutTimer);
     await AsyncStorage.removeItem("accessToken");
     set({ accessToken: null, logoutTimer: null, accID: null });
+    if (navigation) {
+      navigation.navigate("Login");
+    }
   },
 
   autologout: async () => {

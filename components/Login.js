@@ -14,11 +14,11 @@ import jwtDecode from "jwt-decode";
 import { useAuthStore } from "../store/authStore";
 
 const Login = () => {
-  const uchange = useNavigation();
+  const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (navigation) => {
     try {
       const response = await fetch("http://10.0.2.2:3000/api/auth/login", {
         method: "POST",
@@ -49,9 +49,8 @@ const Login = () => {
       } else {
         console.log(`✅ Correct Password`);
         await AsyncStorage.setItem("accessToken", data.accessToken);
-        useAuthStore.getState().login(data.accessToken);
+        useAuthStore.getState().login(data.accessToken, navigation);
         Alert.alert("Success", "Login Successful!");
-        uchange.navigate("Home");
         setUsername("");
         setPassword("");
       }
@@ -75,12 +74,15 @@ const Login = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity onPress={handleLogin} style={MyStyles.btn}>
+        <TouchableOpacity
+          onPress={() => handleLogin(navigation)}
+          style={MyStyles.btn}
+        >
           <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
             Log In
           </Text>
         </TouchableOpacity>
-        <Text onPress={() => uchange.navigate("Signup")}>Go to Sign up</Text>
+        <Text onPress={() => navigation.navigate("Signup")}>Go to Sign up</Text>
       </View>
     </View>
   );
