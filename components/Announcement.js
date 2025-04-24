@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
 import axios from "axios";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Announcement = () => {
   const { accessToken, refreshAccessToken, logout } = useContext(AuthContext);
@@ -62,11 +63,37 @@ const Announcement = () => {
 
   return (
     <View style={MyStyles.container}>
-      <Text>
-        Welcome to Announcement {userDetails ? userDetails.username : "User"}
-      </Text>
-      <Text onPress={() => navigation.navigate("Home")}>Home</Text>
-      <Text onPress={() => logout(navigation)}>Logout</Text>
+      <View
+        style={{
+          position: "absolute",
+          top: 30,
+          left: 15,
+          flex: 1.5,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <TouchableOpacity>
+          <Ionicons name="menu-outline" size={40} color="#04384E" />
+        </TouchableOpacity>
+
+        <Text style={{ fontSize: 24, color: "#04384E", fontWeight: "bold" }}>
+          Announcement
+        </Text>
+      </View>
+
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>
+          Welcome to Announcement {userDetails ? userDetails.username : "User"}
+        </Text>
+        <Text onPress={() => logout(navigation)}>Logout</Text>
+      </View>
     </View>
   );
 };

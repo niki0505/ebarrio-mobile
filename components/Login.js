@@ -11,7 +11,6 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
-import Home from "./Home";
 // import CheckBox from "react-native-check-box";
 
 const Login = () => {
@@ -51,7 +50,7 @@ const Login = () => {
         await saveRefreshToken(res.data.refreshToken);
         Alert.alert("Success", "Login Successful.");
         setIsUserLoggedIn(true);
-        navigation.navigate("Home");
+        navigation.navigate("Sidebar");
       }
     } catch (error) {
       Alert.alert("Errors", error.message);
@@ -74,16 +73,16 @@ const Login = () => {
           onChangeText={setPassword}
         />
         {/* <View>
-          <View style={{ flexDirection: "row" }}>
-            <CheckBox
-              isChecked={remember}
-              onClick={() => setRemember(!remember)}
-              checkedCheckBoxColor="#59D05E"
-              uncheckedCheckBoxColor="#ACACAC"
-            />
-            <Text>Remember Me</Text>
-          </View>
-        </View> */}
+            <View style={{ flexDirection: "row" }}>
+              <CheckBox
+                isChecked={remember}
+                onClick={() => setRemember(!remember)}
+                checkedCheckBoxColor="#59D05E"
+                uncheckedCheckBoxColor="#ACACAC"
+              />
+              <Text>Remember Me</Text>
+            </View>
+          </View> */}
         <TouchableOpacity
           onPress={() => handleLogin(navigation)}
           style={MyStyles.btn}

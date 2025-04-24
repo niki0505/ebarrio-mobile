@@ -12,7 +12,6 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { OtpContext } from "../context/OtpContext";
-import Home from "./Home";
 import { OtpInput } from "react-native-otp-entry";
 
 // import CheckBox from "react-native-check-box";
