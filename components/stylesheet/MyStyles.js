@@ -63,7 +63,7 @@ export const MyStyles = StyleSheet.create({
   profileName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#04384E",
+    color: "#fff",
   },
   divider: {
     height: 1,

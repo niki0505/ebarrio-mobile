@@ -73,11 +73,14 @@ const Announcement = () => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity>
-          <Ionicons name="menu-outline" size={40} color="#04384E" />
-        </TouchableOpacity>
-
-        <Text style={{ fontSize: 24, color: "#04384E", fontWeight: "bold" }}>
+        <Text
+          style={{
+            padding: 10,
+            fontSize: 24,
+            color: "#04384E",
+            fontWeight: "bold",
+          }}
+        >
           Announcement
         </Text>
       </View>

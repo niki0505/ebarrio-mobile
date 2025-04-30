@@ -11,8 +11,6 @@ const Home = () => {
   const [userDetails, setUserDetails] = useState(null);
   const navigation = useNavigation();
 
-  const [isSidebarVisible, setSidebarVisible] = useState(false);
-
   const fetchUserDetails = async () => {
     try {
       const response = await axios.get(
@@ -67,11 +65,14 @@ const Home = () => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Ionicons name="menu-outline" size={40} color="#04384E" />
-        </TouchableOpacity>
-
-        <Text style={{ fontSize: 24, color: "#04384E", fontWeight: "bold" }}>
+        <Text
+          style={{
+            padding: 10,
+            fontSize: 24,
+            color: "#04384E",
+            fontWeight: "bold",
+          }}
+        >
           Home
         </Text>
       </View>
@@ -88,13 +89,6 @@ const Home = () => {
         </Text>
         <Text onPress={() => logout(navigation)}>Logout</Text>
       </View>
-
-      {isSidebarVisible && (
-        <Sidebar
-          isVisible={isSidebarVisible}
-          toggleSidebar={() => setSidebarVisible(false)}
-        />
-      )}
     </View>
   );
 };

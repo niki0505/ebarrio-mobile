@@ -50,7 +50,7 @@ const Login = () => {
         await saveRefreshToken(res.data.refreshToken);
         Alert.alert("Success", "Login Successful.");
         setIsUserLoggedIn(true);
-        navigation.navigate("Sidebar");
+        navigation.navigate("BottomTabs");
       }
     } catch (error) {
       Alert.alert("Errors", error.message);

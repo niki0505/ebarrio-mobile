@@ -1,17 +1,12 @@
-// App.js
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { OtpProvider } from "./context/OtpContext";
 import { View, Text, Image } from "react-native";
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-} from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { MyStyles } from "./components/stylesheet/MyStyles";
 
 //Screens
 import Login from "./components/Login";
@@ -19,12 +14,7 @@ import Signup from "./components/Signup";
 import OTP from "./components/OTP";
 import Home from "./components/Home";
 import Announcement from "./components/Announcement";
-import RequestCertificate from "./components/RequestCertificate";
-import { MyStyles } from "./components/stylesheet/MyStyles";
 
-import profileimg from "./assets/changedp.png";
-
-const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
@@ -64,52 +54,6 @@ const BottomTabs = () => {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Announcement" component={Announcement} />
     </Tab.Navigator>
-  );
-};
-
-// Custom Drawer Content
-const CustomDrawerContent = (props) => {
-  return (
-    <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
-      <View style={MyStyles.profileContainer}>
-        <Image source={profileimg} style={MyStyles.profileImage} />
-        <Text style={MyStyles.profileName}>Kaysha Dela Pena</Text>
-      </View>
-
-      <View style={MyStyles.divider} />
-
-      <DrawerItemList {...props} />
-    </DrawerContentScrollView>
-  );
-};
-
-// Drawer Navigation
-const Sidebar = () => {
-  return (
-    <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={({ route }) => ({
-        drawerIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "RequestCertificate") {
-            iconName = focused ? "document" : "document-outline";
-          }
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        headerShown: false,
-        drawerActiveTintColor: "#0E94D3",
-        drawerInactiveTintColor: "gray",
-        drawerLabelStyle: [MyStyles.tabBarLabel, { textAlign: "left" }],
-        drawerStyle: {
-          backgroundColor: "#F5F5F5",
-        },
-      })}
-    >
-      <Drawer.Screen name="Home" component={BottomTabs} />
-      <Drawer.Screen name="RequestCertificate" component={RequestCertificate} />
-    </Drawer.Navigator>
   );
 };
 
@@ -165,12 +109,12 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={isUserLoggedIn ? "Sidebar" : "Login"}
+      initialRouteName={isUserLoggedIn ? "BottomTabs" : "Login"}
     >
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="OTP" component={OTP} />
       <Stack.Screen name="Signup" component={Signup} />
-      <Stack.Screen name="Sidebar" component={Sidebar} />
+      <Stack.Screen name="BottomTabs" component={BottomTabs} />
     </Stack.Navigator>
   );
 };
