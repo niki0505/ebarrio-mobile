@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AuthProvider, AuthContext } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { InfoProvider } from "./context/InfoContext";
 import { OtpProvider } from "./context/OtpContext";
 import { View, Text, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -15,21 +16,17 @@ import OTP from "./components/OTP";
 import Home from "./components/Home";
 import Announcement from "./components/Announcement";
 
+import Announcement from "./components/Announcement";
+import Certificates from "./components/Certificates";
+import OTP from "./components/OTP";
+import { Text, View } from "react-native";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
+import CourtReservations from "./components/CourtReservations";
+import EmergencyHotlines from "./components/EmergencyHotlines";
+
 const Tab = createBottomTabNavigator();
 
-export default function App() {
-  return (
-    <AuthProvider>
-      <OtpProvider>
-        <NavigationContainer>
-          <MainNavigator />
-        </NavigationContainer>
-      </OtpProvider>
-    </AuthProvider>
-  );
-}
-
-// Bottom Tab Navigation
 const BottomTabs = () => {
   return (
     <Tab.Navigator
@@ -57,64 +54,48 @@ const BottomTabs = () => {
   );
 };
 
-const MainNavigator = () => {
+
+export default function App() {
   const Stack = createNativeStackNavigator();
-  const { isUserLoggedIn, setIsUserLoggedIn, refreshAccessToken } =
-    useContext(AuthContext);
-
-  const [isLoggedIn, setIsLoggedIn] = useState(null); // `null` means still checking
-  const [isLoading, setIsLoading] = useState(true); // ✅ Loading state
-
-  useEffect(() => {
-    const refreshTokenAndCheckLogin = async () => {
-      const newToken = await refreshAccessToken();
-      console.log("New Access Token:", newToken);
-
-      if (newToken) {
-        setIsUserLoggedIn(true);
-        setIsLoggedIn(true);
-      } else {
-        setIsUserLoggedIn(false);
-        setIsLoggedIn(false);
-      }
-
-      setIsLoading(false); // ✅ Stop loading after checking
-    };
-
-    refreshTokenAndCheckLogin();
-  }, []);
-
-  useEffect(() => {
-    if (isUserLoggedIn !== null) {
-      setIsLoggedIn(isUserLoggedIn);
-    }
-  }, [isUserLoggedIn]);
-
-  // ✅ Show loading screen while checking session
-  if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <Text style={{ fontSize: 18 }}>Checking session...</Text>
-      </View>
-    );
-  }
-
   return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName={isUserLoggedIn ? "BottomTabs" : "Login"}
-    >
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="OTP" component={OTP} />
-      <Stack.Screen name="Signup" component={Signup} />
-      <Stack.Screen name="BottomTabs" component={BottomTabs} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <AuthProvider>
+        <OtpProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {/* Public Routes */}
+            <Stack.Screen name="Login" children={() => <PublicRoute element={<Login />} />} />
+            <Stack.Screen name="Signup" children={() => <PublicRoute element={<Signup />} />} />
+            <Stack.Screen name="OTP" component={OTP} />
+
+            {/* Private Routes */}
+            <Stack.Screen name="BottomTabs" children={() => <PrivateRoute element={<BottomTabs />} />} />
+
+
+            {/* <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Announcement" component={Announcement} /> */}
+            {/* <Stack.Screen
+              name="Certificates"
+              children={() => <PrivateRoute element={<Certificates />} />}
+            /> */}
+            {/* <Stack.Screen
+              name="CourtReservations"
+              children={() => <PrivateRoute element={<CourtReservations />} />}
+            />
+            <Stack.Screen
+              name="EmergencyHotlines"
+              children={() => (
+                <PrivateRoute
+                  element={
+                    <InfoProvider>
+                      <EmergencyHotlines />
+                    </InfoProvider>
+                  }
+                />
+              )}
+            /> */}
+          </Stack.Navigator>
+        </OtpProvider>
+      </AuthProvider>
+    </NavigationContainer>
   );
-};
+}

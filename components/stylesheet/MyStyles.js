@@ -71,4 +71,12 @@ export const MyStyles = StyleSheet.create({
     marginHorizontal: 15,
     marginVertical: 10,
   },
+  picker: {
+    height: 50,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#f9f9f9",
+    marginVertical: 10,
+  },
 });
