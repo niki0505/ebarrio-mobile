@@ -1,14 +1,21 @@
+import React, { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { OtpProvider } from "./context/OtpContext";
-import { useContext, useEffect, useState } from "react";
-import Home from "./components/Home";
+import { View, Text, Image } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { MyStyles } from "./components/stylesheet/MyStyles";
+
+//Screens
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-import Announcement from "./components/Announcement";
 import OTP from "./components/OTP";
-import { Text, View } from "react-native";
+import Home from "./components/Home";
+import Announcement from "./components/Announcement";
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
@@ -21,6 +28,34 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+// Bottom Tab Navigation
+const BottomTabs = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Announcement") {
+            iconName = focused ? "megaphone" : "megaphone-outline";
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        headerShown: false,
+        tabBarStyle: MyStyles.tabBar,
+        tabBarLabelStyle: MyStyles.tabBarLabel,
+        tabBarActiveTintColor: "#0E94D3",
+        tabBarInactiveTintColor: "grey",
+      })}
+    >
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Announcement" component={Announcement} />
+    </Tab.Navigator>
+  );
+};
 
 const MainNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -74,13 +109,12 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={isUserLoggedIn ? "Home" : "Login"}
+      initialRouteName={isUserLoggedIn ? "BottomTabs" : "Login"}
     >
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="OTP" component={OTP} />
-      <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Signup" component={Signup} />
-      <Stack.Screen name="Announcement" component={Announcement} />
+      <Stack.Screen name="BottomTabs" component={BottomTabs} />
     </Stack.Navigator>
   );
 };
