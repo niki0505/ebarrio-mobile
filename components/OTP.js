@@ -51,7 +51,7 @@ const OTP = ({ route }) => {
       console.log("OTP from context is removed");
       console.log("Resending OTP...");
       try {
-        const res = await axios.post("http://10.0.2.2:4000/api/auth/otp", {
+        const res = await axios.post("http://10.0.2.2:4000/api/otp", {
           mobilenumber,
         });
         startOtp(res.data.otp, 300);
@@ -80,7 +80,7 @@ const OTP = ({ route }) => {
     const cleanOtp = otp.toString().trim();
     const cleanEnteredOtp = enteredOTP.toString().trim();
     if (cleanOtp === cleanEnteredOtp) {
-      const res = await axios.post("http://10.0.2.2:4000/api/auth/register", {
+      const res = await axios.post("http://10.0.2.2:4000/api/register", {
         username: username,
         password: password,
         resID: resID,

@@ -115,14 +115,11 @@ const Signup = () => {
       }
 
       //CHECKS IF THE USER IS A REGISTERED RESIDENT OF THE BARANGAY
-      const res = await axios.post(
-        "http://10.0.2.2:4000/api/auth/checkresident",
-        {
-          firstname,
-          lastname,
-          mobilenumber,
-        }
-      );
+      const res = await axios.post("http://10.0.2.2:4000/api/checkresident", {
+        firstname,
+        lastname,
+        mobilenumber,
+      });
       console.log(res.data);
       if (!res.data.exists) {
         console.log(`❌ Resident not found`);
@@ -151,7 +148,7 @@ const Signup = () => {
 
         //CHECKS IF THE USERNAME IS ALREADY TAKEN
         const res2 = await axios.post(
-          "http://10.0.2.2:4000/api/auth/checkusername",
+          "http://10.0.2.2:4000/api/checkusername",
           {
             username,
           }
@@ -165,7 +162,7 @@ const Signup = () => {
 
         //SENDS OTP
         try {
-          const res3 = await axios.post("http://10.0.2.2:4000/api/auth/otp", {
+          const res3 = await axios.post("http://10.0.2.2:4000/api/otp", {
             mobilenumber,
           });
           setUsername("");

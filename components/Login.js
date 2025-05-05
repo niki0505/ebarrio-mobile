@@ -11,23 +11,25 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
+import * as SecureStore from "expo-secure-store";
 import Home from "./Home";
 // import CheckBox from "react-native-check-box";
 
 const Login = () => {
-  const { saveRefreshToken, saveAccessToken, saveUserID, setIsUserLoggedIn } =
-    useContext(AuthContext);
+  const { setIsAuthenticated, login } = useContext(AuthContext);
   const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  //   const [remember, setRemember] = useState(false);
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://10.0.2.2:4000/api/auth/login", {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        "https://ebarrio-mobile-backend.onrender.com/api/login",
+        {
+          username,
+          password,
+        }
+      );
       if (!res.data.exists) {
         console.log(`❌ Account not found`);
         Alert.alert("Error", "Account not found. Please register.");
@@ -44,14 +46,7 @@ const Login = () => {
         );
         setPassword("");
       } else {
-        console.log(`✅ Correct Password`);
-        console.log("Refresh Token", res.data.refreshToken);
-        console.log("Access Token", res.data.accessToken);
-        await saveAccessToken(res.data.accessToken);
-        await saveRefreshToken(res.data.refreshToken);
-        Alert.alert("Success", "Login Successful.");
-        setIsUserLoggedIn(true);
-        navigation.navigate("Home");
+        await login({ username, password });
       }
     } catch (error) {
       Alert.alert("Errors", error.message);
