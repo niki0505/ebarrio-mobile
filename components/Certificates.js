@@ -265,11 +265,6 @@ const Certificates = () => {
 export default Certificates;
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flexGrow: 1,
-    backgroundColor: "#fff",
-  },
   header: {
     fontSize: 20,
     fontWeight: "bold",

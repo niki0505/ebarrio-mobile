@@ -2,11 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 export const MyStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F7F7",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#FAFAFA",
     padding: 20,
   },
+  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#FAFAFA" },
   textfield: {
     width: 300,
     height: 40,

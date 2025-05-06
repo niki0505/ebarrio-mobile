@@ -5,6 +5,8 @@ export const InfoContext = createContext(undefined);
 export const InfoProvider = ({ children }) => {
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
+  const [residents, setResidents] = useState([]);
+  const [courtreservations, setCourtReservations] = useState([]);
 
   const fetchEmergencyHotlines = async () => {
     try {
@@ -25,13 +27,35 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchResidents = async () => {
+    try {
+      const response = await api.get("/getresidents");
+      setResidents(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch residents:", error);
+    }
+  };
+
+  const fetchReservations = async () => {
+    try {
+      const response = await api.get("/getreservations");
+      setCourtReservations(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch reservations:", error);
+    }
+  };
+
   return (
     <InfoContext.Provider
       value={{
         emergencyhotlines,
         weather,
+        residents,
+        courtreservations,
         fetchEmergencyHotlines,
         fetchWeather,
+        fetchResidents,
+        fetchReservations,
       }}
     >
       {children}

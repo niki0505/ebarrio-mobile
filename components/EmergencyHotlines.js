@@ -16,8 +16,11 @@ import { useNavigation } from "@react-navigation/native";
 import { InfoContext } from "../context/InfoContext";
 import { AuthContext } from "../context/AuthContext";
 import api from "../api";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MyStyles } from "./stylesheet/MyStyles";
 
 const EmergencyHotlines = () => {
+  const insets = useSafeAreaInsets();
   const { logout, user } = useContext(AuthContext);
   const { fetchEmergencyHotlines, emergencyhotlines } = useContext(InfoContext);
   const [filteredEmergencyHotlines, setFilteredEmergencyHotlines] = useState(
@@ -59,88 +62,53 @@ const EmergencyHotlines = () => {
   }, [search, emergencyhotlines]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <ScrollView
+        contentContainerStyle={[
+          MyStyles.scrollContainer,
+          { paddingTop: insets.top, paddingBottom: insets.bottom },
+        ]}
       >
-        <ScrollView contentContainerStyle={styles.container}>
-          <TouchableOpacity onPress={() => navigation.navigate("BottomTabs")}>
-            <Text>Back</Text>
-          </TouchableOpacity>
-          <TextInput
-            value={search}
-            onChangeText={handleSearch}
-            style={{
-              borderWidth: 1,
-              borderColor: "black",
-              width: 150,
-              height: 30,
-            }}
-            placeholder="Search..."
-          />
-          {filteredEmergencyHotlines.length === 0 ? (
-            <Text>No results found</Text>
-          ) : (
-            filteredEmergencyHotlines.map((element) => (
-              <View key={element._id} style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  onPress={() => handleCall(element.contactnumber)}
-                  style={{
-                    backgroundColor: "red",
-                  }}
-                >
-                  <Text>Call</Text>
-                </TouchableOpacity>
-                <View>
-                  <Text>{element.name}</Text>
-                  <Text>{element.contactnumber}</Text>
-                </View>
+        <TouchableOpacity onPress={() => navigation.navigate("BottomTabs")}>
+          <Text>Back</Text>
+        </TouchableOpacity>
+        <TextInput
+          value={search}
+          onChangeText={handleSearch}
+          style={{
+            borderWidth: 1,
+            borderColor: "black",
+            width: 150,
+            height: 30,
+          }}
+          placeholder="Search..."
+        />
+        {filteredEmergencyHotlines.length === 0 ? (
+          <Text>No results found</Text>
+        ) : (
+          filteredEmergencyHotlines.map((element) => (
+            <View key={element._id} style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => handleCall(element.contactnumber)}
+                style={{
+                  backgroundColor: "red",
+                }}
+              >
+                <Text>Call</Text>
+              </TouchableOpacity>
+              <View>
+                <Text>{element.name}</Text>
+                <Text>{element.contactnumber}</Text>
               </View>
-            ))
-          )}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+            </View>
+          ))
+        )}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default EmergencyHotlines;
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flexGrow: 1,
-    backgroundColor: "#fff",
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  picker: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    marginVertical: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-});

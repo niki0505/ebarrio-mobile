@@ -15,49 +15,55 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { InfoContext } from "../context/InfoContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Weather = () => {
+  const insets = useSafeAreaInsets();
   const { user } = useContext(AuthContext);
   const { fetchWeather, weather } = useContext(InfoContext);
   const navigation = useNavigation();
 
   useEffect(() => {
     fetchWeather();
+
+    const intervalId = setInterval(() => {
+      fetchWeather();
+    }, 300000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    console.log(weather);
+  }, [weather]);
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View
+        style={[
+          MyStyles.container,
+          { paddingTop: insets.top, paddingBottom: insets.bottom },
+        ]}
       >
         <TouchableOpacity onPress={() => navigation.navigate("BottomTabs")}>
           <Text>Back</Text>
         </TouchableOpacity>
-        <View
+        <Text
           style={{
-            position: "absolute",
-            top: 30,
-            left: 15,
-            flex: 1.5,
-            flexDirection: "row",
-            alignItems: "center",
+            padding: 10,
+            fontSize: 24,
+            color: "#04384E",
+            fontWeight: "bold",
           }}
         >
-          <Text
-            style={{
-              padding: 10,
-              fontSize: 24,
-              color: "#04384E",
-              fontWeight: "bold",
-            }}
-          >
-            Weather
-          </Text>
-          <Text>Current Weather: {weather.currenttemp}</Text>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          Weather
+        </Text>
+        <Text>Current Weather: {weather.currenttemp}</Text>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
