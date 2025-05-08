@@ -18,6 +18,7 @@ import { AuthContext } from "../context/AuthContext";
 import api from "../api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MyStyles } from "./stylesheet/MyStyles";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const EmergencyHotlines = () => {
   const insets = useSafeAreaInsets();
@@ -62,52 +63,84 @@ const EmergencyHotlines = () => {
   }, [search, emergencyhotlines]);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+    <SafeAreaView
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
     >
-      <ScrollView
-        contentContainerStyle={[
-          MyStyles.scrollContainer,
-          { paddingTop: insets.top, paddingBottom: insets.bottom },
-        ]}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("BottomTabs")}>
-          <Text>Back</Text>
-        </TouchableOpacity>
-        <TextInput
-          value={search}
-          onChangeText={handleSearch}
-          style={{
-            borderWidth: 1,
-            borderColor: "black",
-            width: 150,
-            height: 30,
-          }}
-          placeholder="Search..."
-        />
-        {filteredEmergencyHotlines.length === 0 ? (
-          <Text>No results found</Text>
-        ) : (
-          filteredEmergencyHotlines.map((element) => (
-            <View key={element._id} style={{ flexDirection: "row" }}>
-              <TouchableOpacity
-                onPress={() => handleCall(element.contactnumber)}
-                style={{
-                  backgroundColor: "red",
-                }}
-              >
-                <Text>Call</Text>
-              </TouchableOpacity>
-              <View>
-                <Text>{element.name}</Text>
-                <Text>{element.contactnumber}</Text>
-              </View>
+        <ScrollView
+          contentContainerStyle={[
+            MyStyles.scrollContainer,
+            {
+              paddingTop: insets.top,
+              paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
+              gap: 10,
+            },
+          ]}
+        >
+          <MaterialIcons
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrow-back-ios"
+            size={24}
+            color="#04384E"
+          />
+          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 30 }]}>
+            Emergency Hotlines
+          </Text>
+
+          <View style={{ gap: 15 }}>
+            <View style={{ position: "relative" }}>
+              <TextInput
+                value={search}
+                onChangeText={handleSearch}
+                style={[MyStyles.input]}
+                placeholder="Search..."
+              />
+              <MaterialIcons
+                name="search"
+                size={20}
+                color="#C1C0C0"
+                style={MyStyles.searchIcon}
+              />
             </View>
-          ))
-        )}
-      </ScrollView>
-    </KeyboardAvoidingView>
+
+            {filteredEmergencyHotlines.length === 0 ? (
+              <Text>No results found</Text>
+            ) : (
+              filteredEmergencyHotlines.map((element) => (
+                <View
+                  key={element._id}
+                  style={[
+                    MyStyles.input,
+                    {
+                      flexDirection: "row",
+                    },
+                  ]}
+                >
+                  <MaterialIcons
+                    onPress={() => handleCall(element.contactnumber)}
+                    name="call"
+                    size={20}
+                    color="#fff"
+                    style={MyStyles.phoneIcon}
+                  />
+                  <View style={{ marginLeft: 10 }}>
+                    <Text style={MyStyles.inputTitle}>
+                      {element.name.toUpperCase()}
+                    </Text>
+                    <Text style={{ color: "#04384E" }}>
+                      {element.contactnumber}
+                    </Text>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

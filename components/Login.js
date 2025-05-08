@@ -81,7 +81,7 @@ const Login = () => {
         </View> */}
         <TouchableOpacity
           onPress={() => handleLogin(navigation)}
-          style={MyStyles.btn}
+          style={MyStyles.button}
         >
           <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
             Log In

@@ -78,7 +78,15 @@ export default function App() {
               {/* Private Routes */}
               <Stack.Screen
                 name="BottomTabs"
-                children={() => <PrivateRoute element={<BottomTabs />} />}
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <BottomTabs />
+                      </InfoProvider>
+                    }
+                  />
+                )}
               />
 
               <Stack.Screen

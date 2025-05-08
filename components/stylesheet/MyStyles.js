@@ -2,22 +2,22 @@ import { StyleSheet, Text, View } from "react-native";
 export const MyStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "#F0F4F7",
     padding: 20,
   },
-  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#FAFAFA" },
+  header: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "start",
+    color: "#04384E",
+  },
+  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#F0F4F7" },
   textfield: {
     width: 300,
     height: 40,
     borderWidth: 1,
     borderColor: "black",
-  },
-  btn: {
-    width: 300,
-    height: 50,
-    backgroundColor: "blue",
-    alignItems: "center",
-    justifyContent: "center",
   },
   loadingContainer: {
     flex: 1,
@@ -25,7 +25,18 @@ export const MyStyles = StyleSheet.create({
     alignItems: "center",
   },
 
-  //BOTTOMNAV
+  //Alignment - row and column
+  rowAlignment: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  columnAlignment: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
+  //Bottom Nav
   tabBar: {
     paddingTop: 5,
     height: 70,
@@ -48,34 +59,195 @@ export const MyStyles = StyleSheet.create({
     marginBottom: 5,
   },
 
-  //SIDEBAR
-  profileContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-    marginBottom: 10,
-  },
-  profileName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#ccc",
-    marginHorizontal: 15,
-    marginVertical: 10,
-  },
+  //Picker, Input
   picker: {
-    height: 50,
-    width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
-    backgroundColor: "#f9f9f9",
     marginVertical: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#C1C0C0",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  inputTitle: {
+    color: "#04384E",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  inputWDateTime: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#C1C0C0",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+
+  //Button
+  button: {
+    backgroundColor: "#007AFF",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 30,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+
+  //Form message
+  formMessage: {
+    fontSize: 18,
+    color: "#ACACAC",
+    marginBottom: 30,
+  },
+
+  //Suggestion
+  suggestionContainer: {
+    backgroundColor: "white",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    maxHeight: 150,
+    marginTop: 4,
+  },
+  suggestionItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderBottomColor: "#eee",
+    borderBottomWidth: 1,
+  },
+
+  //Card
+  card: {
+    flex: 1,
+    height: 120,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    overflow: "hidden",
+
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+
+    // Android shadow
+    elevation: 10,
+  },
+
+  //Gradient Background
+  gradientBackground: {
+    flex: 1,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  //Weather
+  weatherHeaderText: {
+    fontSize: 30,
+    color: "#fff",
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+  weatherBodyText: {
+    color: "#fff",
+    fontWeight: "400",
+    fontSize: 14,
+    fontWeight: "normal",
+  },
+  weatherSubheaderText: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#fff",
+  },
+  hourlyforecastContainer: {
+    alignItems: "center",
+    width: 100,
+    height: 100,
+    justifyContent: "center",
+  },
+  forecastcontentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
+  },
+
+  //Home
+  profilePic: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    resizeMode: "cover",
+  },
+  servicesImgContainer: {
+    backgroundColor: "#DBDEE8",
+    padding: 15,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  servicesImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 60,
+    resizeMode: "cover",
+  },
+  servicesTitle: {
+    fontSize: 16,
+    color: "#04384E",
+    fontWeight: "600",
+    marginTop: 10,
+    textAlign: "center",
+  },
+  sosContainer: {
+    backgroundColor: "#BC0F0F",
+    padding: 20,
+    borderRadius: 10,
+    height: "auto",
+    padding: 20,
+  },
+  emergencyTitle: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  emergencyMessage: {
+    color: "#fff",
+    fontSize: 12,
+    textAlign: "center",
+  },
+
+  //Emergency Hotlines
+  searchIcon: {
+    position: "absolute",
+    right: 10,
+    top: "50%",
+    transform: [{ translateY: -12 }],
+  },
+  phoneIcon: {
+    backgroundColor: "#BC0F0F",
+    borderRadius: 20,
+    width: 35,
+    height: 35,
+    textAlign: "center",
+    textAlignVertical: "center",
   },
 });

@@ -15,8 +15,12 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { Dropdown } from "react-native-element-dropdown";
 import api from "../api";
+import { MyStyles } from "./stylesheet/MyStyles";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Certificates = () => {
+  const insets = useSafeAreaInsets();
   const { logout, user } = useContext(AuthContext);
   const navigation = useNavigation();
   const [certificateForm, setCertificateForm] = useState({
@@ -145,116 +149,175 @@ const Certificates = () => {
   console.log(certificateForm);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.header}>Request Certificate</Text>
-
-          <Text>Type of Certificate:</Text>
-          <Dropdown
-            labelField="label"
-            valueField="value"
-            value={certificateForm.typeofcertificate}
-            data={certificates.map((cert) => ({
-              label: cert.name,
-              value: cert.name,
-            }))}
-            placeholder="Select certificate"
-            onChange={(itemValue) =>
-              handleDropdownChange({
-                target: { name: "typeofcertificate", value: itemValue },
-              })
-            }
-          ></Dropdown>
-
-          {["Barangay Indigency", "Barangay Clearance"].includes(
-            certificateForm.typeofcertificate
-          ) && (
-            <>
-              <Text>Purpose:</Text>
-              <Dropdown
-                labelField="label"
-                valueField="value"
-                value={certificateForm.purpose}
-                data={purpose.map((purp) => ({
-                  label: purp,
-                  value: purp,
-                }))}
-                placeholder="Select purpose"
-                onChange={(itemValue) =>
-                  handleDropdownChange({
-                    target: { name: "purpose", value: itemValue },
-                  })
-                }
-              ></Dropdown>
-            </>
-          )}
-
-          {certificateForm.typeofcertificate ===
-            "Barangay Business Clearance" && (
-            <>
-              <Text>Street:</Text>
-              <Dropdown
-                labelField="label"
-                valueField="value"
-                value={certificateForm.street}
-                data={streetList.map((street) => ({
-                  label: street,
-                  value: street,
-                }))}
-                placeholder="Select street"
-                onChange={(itemValue) =>
-                  handleDropdownChange({
-                    target: { name: "street", value: itemValue },
-                  })
-                }
-              ></Dropdown>
-
-              {certificateForm.street &&
-                certificateForm.street !== "My Address" && (
-                  <>
-                    <Text>Address Number:</Text>
-                    <TextInput
-                      onChangeText={(text) =>
-                        handleInputChange("addressnumber", text)
-                      }
-                      style={styles.input}
-                    />
-                  </>
-                )}
-
-              <Text>Business Name:</Text>
-              <TextInput
-                onChangeText={(text) => handleInputChange("businessname", text)}
-                style={styles.input}
-              />
-
-              <Text>Line of Business:</Text>
-              <TextInput
-                onChangeText={(text) =>
-                  handleInputChange("lineofbusiness", text)
-                }
-                style={styles.input}
-              />
-            </>
-          )}
-
-          <Text>Amount:</Text>
-          <TextInput
-            value={certificateForm.amount}
-            editable={false}
-            style={[styles.input, { backgroundColor: "#f0f0f0" }]}
+        <ScrollView
+          contentContainerStyle={[
+            MyStyles.scrollContainer,
+            {
+              paddingTop: insets.top,
+              paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
+              gap: 10,
+            },
+          ]}
+        >
+          <MaterialIcons
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrow-back-ios"
+            size={24}
+            color="#04384E"
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
+          <Text style={[MyStyles.header, { marginTop: 20 }]}>
+            Request Certificate
+          </Text>
 
-          <TouchableOpacity onPress={logout}>
-            <Text style={{ marginTop: 20, color: "red" }}>Logout</Text>
+          <Text style={MyStyles.formMessage}>
+            Please select the required information for requesting a document
+          </Text>
+
+          <View style={{ gap: 15 }}>
+            <View>
+              <Text style={MyStyles.inputTitle}>
+                Type of Certificate<Text style={{ color: "red" }}>*</Text>
+              </Text>
+              <Dropdown
+                labelField="label"
+                valueField="value"
+                value={certificateForm.typeofcertificate}
+                data={certificates.map((cert) => ({
+                  label: cert.name,
+                  value: cert.name,
+                }))}
+                placeholder="Select certificate"
+                placeholderStyle={{ color: "gray" }}
+                onChange={(itemValue) =>
+                  handleDropdownChange({
+                    target: { name: "typeofcertificate", value: itemValue },
+                  })
+                }
+                style={MyStyles.input}
+              ></Dropdown>
+            </View>
+
+            {["Barangay Indigency", "Barangay Clearance"].includes(
+              certificateForm.typeofcertificate
+            ) && (
+              <>
+                <View>
+                  <Text style={MyStyles.inputTitle}>
+                    Purpose<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <Dropdown
+                    labelField="label"
+                    valueField="value"
+                    value={certificateForm.purpose}
+                    data={purpose.map((purp) => ({
+                      label: purp,
+                      value: purp,
+                    }))}
+                    placeholder="Select purpose"
+                    placeholderStyle={{ color: "gray" }}
+                    onChange={(itemValue) =>
+                      handleDropdownChange({
+                        target: { name: "purpose", value: itemValue },
+                      })
+                    }
+                    style={MyStyles.input}
+                  ></Dropdown>
+                </View>
+              </>
+            )}
+
+            {certificateForm.typeofcertificate ===
+              "Barangay Business Clearance" && (
+              <>
+                <View>
+                  <Text style={MyStyles.inputTitle}>
+                    Street<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <Dropdown
+                    labelField="label"
+                    valueField="value"
+                    value={certificateForm.street}
+                    data={streetList.map((street) => ({
+                      label: street,
+                      value: street,
+                    }))}
+                    placeholder="Select street"
+                    placeholderStyle={{ color: "gray" }}
+                    onChange={(itemValue) =>
+                      handleDropdownChange({
+                        target: { name: "street", value: itemValue },
+                      })
+                    }
+                    style={MyStyles.input}
+                  ></Dropdown>
+                </View>
+
+                {certificateForm.street &&
+                  certificateForm.street !== "My Address" && (
+                    <>
+                      <View>
+                        <Text style={MyStyles.inputTitle}>
+                          Address Number<Text style={{ color: "red" }}>*</Text>
+                        </Text>
+                        <TextInput
+                          placeholder="Enter address number"
+                          placeholderStyle={{ color: "gray" }}
+                          onChangeText={(text) =>
+                            handleInputChange("addressnumber", text)
+                          }
+                          style={MyStyles.input}
+                        />
+                      </View>
+                    </>
+                  )}
+
+                <View>
+                  <Text style={MyStyles.inputTitle}>
+                    Business Name<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <TextInput
+                    placeholder="Enter business name"
+                    onChangeText={(text) =>
+                      handleInputChange("businessname", text)
+                    }
+                    style={MyStyles.input}
+                  />
+                </View>
+                <View>
+                  <Text style={MyStyles.inputTitle}>
+                    Line of Business<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <TextInput
+                    placeholder="Enter line of business"
+                    onChangeText={(text) =>
+                      handleInputChange("lineofbusiness", text)
+                    }
+                    style={MyStyles.input}
+                  />
+                </View>
+              </>
+            )}
+
+            <View>
+              <Text style={MyStyles.inputTitle}>Amount</Text>
+              <TextInput
+                value={certificateForm.amount}
+                editable={false}
+                style={[MyStyles.input, { backgroundColor: "#f0f0f0" }]}
+              />
+            </View>
+          </View>
+
+          <TouchableOpacity style={MyStyles.button} onPress={handleSubmit}>
+            <Text style={MyStyles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -263,36 +326,3 @@ const Certificates = () => {
 };
 
 export default Certificates;
-
-const styles = StyleSheet.create({
-  header: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  picker: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    marginVertical: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-});
