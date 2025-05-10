@@ -7,6 +7,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState } from "react";
@@ -23,19 +25,27 @@ const Announcement = () => {
   const navigation = useNavigation();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+    <SafeAreaView
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
     >
-      <View
-        style={[
-          MyStyles.container,
-          { paddingTop: insets.top, paddingBottom: insets.bottom },
-        ]}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
       >
-        <Text>Welcome to Announcement</Text>
-      </View>
-    </KeyboardAvoidingView>
+        <ScrollView
+          contentContainerStyle={[
+            MyStyles.scrollContainer,
+            {
+              paddingTop: insets.top,
+              paddingBottom: insets.bottom + 70,
+              gap: 10,
+            },
+          ]}
+        >
+          <Text>Welcome to Announcement</Text>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 export default Announcement;
