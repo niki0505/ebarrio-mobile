@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     const checkRefreshToken = async () => {
       const refreshToken = await SecureStore.getItemAsync("refreshToken");
       console.log("Got Refresh Token", refreshToken);
+      console.log(isAuthenticated);
       if (!refreshToken) {
         console.log("No refresh token found. User needs to login.");
         setIsAuthenticated(false);
@@ -54,7 +55,14 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       setIsAuthenticated(true);
     } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        alert(response.data.message || "Something went wrong.");
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        alert("An unexpected error occurred.");
+      }
     }
   };
 

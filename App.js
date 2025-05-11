@@ -73,7 +73,10 @@ export default function App() {
                 name="Signup"
                 children={() => <PublicRoute element={<Signup />} />}
               />
-              <Stack.Screen name="OTP" component={OTP} />
+              <Stack.Screen
+                name="OTP"
+                children={() => <PublicRoute element={<OTP />} />}
+              />
 
               {/* Private Routes */}
               <Stack.Screen

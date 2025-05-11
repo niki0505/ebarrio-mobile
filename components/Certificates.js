@@ -150,7 +150,7 @@ const Certificates = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -160,7 +160,6 @@ const Certificates = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingTop: insets.top,
               paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
               gap: 10,
             },
@@ -194,7 +193,7 @@ const Certificates = () => {
                   label: cert.name,
                   value: cert.name,
                 }))}
-                placeholder="Select certificate"
+                placeholder="Select"
                 placeholderStyle={{ color: "gray" }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
@@ -221,7 +220,7 @@ const Certificates = () => {
                       label: purp,
                       value: purp,
                     }))}
-                    placeholder="Select purpose"
+                    placeholder="Select"
                     placeholderStyle={{ color: "gray" }}
                     onChange={(itemValue) =>
                       handleDropdownChange({
@@ -249,7 +248,7 @@ const Certificates = () => {
                       label: street,
                       value: street,
                     }))}
-                    placeholder="Select street"
+                    placeholder="Select"
                     placeholderStyle={{ color: "gray" }}
                     onChange={(itemValue) =>
                       handleDropdownChange({
@@ -268,7 +267,7 @@ const Certificates = () => {
                           Address Number<Text style={{ color: "red" }}>*</Text>
                         </Text>
                         <TextInput
-                          placeholder="Enter address number"
+                          placeholder="Enter here"
                           placeholderStyle={{ color: "gray" }}
                           onChangeText={(text) =>
                             handleInputChange("addressnumber", text)

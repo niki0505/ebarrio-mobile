@@ -6,25 +6,29 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import axios from "axios";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
 import { OtpContext } from "../context/OtpContext";
-import Home from "./Home";
 import { OtpInput } from "react-native-otp-entry";
-
-// import CheckBox from "react-native-check-box";
+import api from "../api";
+import { AuthContext } from "../context/AuthContext";
 
 const OTP = ({ route }) => {
-  const { resID, mobilenumber, username, password } = route.params;
+  const {
+    resID,
+    mobilenumber,
+    username,
+    password,
+    securityquestions,
+    navigatelink,
+  } = route.params;
   const navigation = useNavigation();
   const [resendTimer, setResendTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [resendCount, setResendCount] = useState(0);
-  const [OTP, setOTP] = useState("");
-  const { otp, timer, startOtp, clearOtp } = useContext(OtpContext);
+  const { sendOTP, verifyOTP } = useContext(OtpContext);
+  const { login } = useContext(AuthContext);
   const otpRef = useRef(null);
 
   useEffect(() => {
@@ -47,55 +51,55 @@ const OTP = ({ route }) => {
 
   const handleResend = async () => {
     if (resendCount < 3) {
-      clearOtp();
-      console.log("OTP from context is removed");
-      console.log("Resending OTP...");
       try {
-        const res = await axios.post("http://10.0.2.2:4000/api/otp", {
-          mobilenumber,
-        });
-        startOtp(res.data.otp, 300);
+        sendOTP(username, mobilenumber);
         setResendTimer(30);
         setIsResendDisabled(true);
         setResendCount((prevCount) => prevCount + 1);
         console.log("New OTP is generated");
       } catch (error) {
         console.error("Error sending OTP:", error);
-        Alert.alert("Error", "Something went wrong while sending OTP");
+        alert("Something went wrong while sending OTP");
       }
     } else {
       Alert.alert("Limit reached", "You can only resend OTP 3 times.");
     }
   };
 
-  useEffect(() => {
-    if (otp) {
-      console.log("OTP from context is active");
-    } else {
-      console.log("OTP from context is not active");
-    }
-  }, [otp]);
-
-  const handleOTP = async (enteredOTP) => {
-    const cleanOtp = otp.toString().trim();
-    const cleanEnteredOtp = enteredOTP.toString().trim();
-    if (cleanOtp === cleanEnteredOtp) {
-      const res = await axios.post("http://10.0.2.2:4000/api/register", {
-        username: username,
-        password: password,
-        resID: resID,
-      });
-      Alert.alert("Success", "User registered successfully. Please log in.");
-      navigation.navigate("Login");
-    } else {
-      Alert.alert("Incorrect OTP", "The OTP you entered is incorrect.");
-      otpRef.current.clear();
+  const handleVerify = async (OTP) => {
+    try {
+      const result = await verifyOTP(username, OTP);
+      alert(result.message);
+      if (navigatelink === "Login") {
+        try {
+          await api.post("/register", {
+            username,
+            password,
+            resID,
+            securityquestions,
+          });
+          navigation.navigate("Login");
+        } catch (error) {
+          console.log("Error logging in", error);
+        }
+      } else if (navigatelink === "BottomTabs") {
+        await login({ username, password });
+      }
+    } catch (error) {
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        alert(response.data.message || "Something went wrong.");
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        alert("An unexpected error occurred.");
+      }
     }
   };
 
   const handleOTPChange = (text) => {
     if (text.length === 6) {
-      handleOTP(text);
+      handleVerify(text);
     }
   };
 

@@ -17,34 +17,64 @@ import { AuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
 import axios from "axios";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { InfoContext } from "../context/InfoContext";
+import api from "../api";
 
 const Announcement = () => {
   const insets = useSafeAreaInsets();
-  const { accessToken, refreshAccessToken, logout } = useContext(AuthContext);
-  const [userDetails, setUserDetails] = useState(null);
+  const { fetchAnnouncements, announcements } = useContext(InfoContext);
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  const handleHeart = async (announcementID) => {
+    try {
+      await api.put(`/heartannouncement/${announcementID}`);
+    } catch (error) {
+      console.log("Error liking announcement", error);
+    }
+  };
+
+  const handleUnheart = async (announcementID) => {
+    try {
+      await api.put(`/unheartannouncement/${announcementID}`);
+    } catch (error) {
+      console.log("Error liking announcement", error);
+    }
+  };
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+      <ScrollView
+        contentContainerStyle={[
+          MyStyles.scrollContainer,
+          {
+            paddingBottom: insets.bottom + 70,
+            gap: 10,
+          },
+        ]}
       >
-        <ScrollView
-          contentContainerStyle={[
-            MyStyles.scrollContainer,
-            {
-              paddingTop: insets.top,
-              paddingBottom: insets.bottom + 70,
-              gap: 10,
-            },
-          ]}
-        >
-          <Text>Welcome to Announcement</Text>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        {announcements.map((element, index) => (
+          <View key={index} style={{ borderColor: "black", borderWidth: 1 }}>
+            <Text>{element.content}</Text>
+            {element.heartedby.includes(user.userID) ? (
+              <TouchableOpacity onPress={() => handleUnheart(element._id)}>
+                <Text>Filled Heart Icon</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => handleHeart(element._id)}>
+                <Text>Unfilled Heart Icon</Text>
+              </TouchableOpacity>
+            )}
+            <Text>{element.hearts}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -34,8 +34,8 @@ const CourtReservations = () => {
     resID: user.resID,
     purpose: "",
     date: new Date(),
-    starttime: new Date(new Date().setHours(0, 0, 0, 0)),
-    endtime: new Date(new Date().setHours(0, 0, 0, 0)),
+    starttime: null,
+    endtime: null,
     amount: "",
   });
 
@@ -112,21 +112,50 @@ const CourtReservations = () => {
   }, [reservationForm.starttime, reservationForm.endtime]);
 
   const handleStartTimeChange = (event, selectedTime) => {
-    const currentDate = selectedTime || reservationForm.date;
+    const newStartTime = new Date(reservationForm.date || new Date());
+    newStartTime.setHours(selectedTime.getHours());
+    newStartTime.setMinutes(selectedTime.getMinutes());
+    newStartTime.setSeconds(0);
+    newStartTime.setMilliseconds(0);
 
-    const updatedStarttime = new Date(currentDate);
-    updatedStarttime.setHours(0, 0, 0, 0);
+    const endtime = reservationForm.endtime
+      ? new Date(reservationForm.endtime)
+      : null;
 
-    const updatedEndtime = new Date(currentDate);
-    updatedEndtime.setHours(0, 0, 0, 0);
+    if (!checkIfTimeSlotIsAvailable(newStartTime, endtime)) {
+      const conflictingReservation = courtreservations.find((reservation) => {
+        const reservedStart = new Date(reservation.starttime);
+        const reservedEnd = new Date(reservation.endtime);
+
+        return (
+          (newStartTime >= reservedStart && newStartTime < reservedEnd) ||
+          (newStartTime < reservedStart && endtime > reservedStart)
+        );
+      });
+
+      if (conflictingReservation) {
+        const newStartTimeAfterConflict = new Date(
+          conflictingReservation.endtime
+        );
+        alert(
+          `The time slot overlaps with an existing reservation. Your start time has been updated to ${newStartTimeAfterConflict.toLocaleTimeString()} (the end time of the previous reservation).`
+        );
+
+        setReservationForm((prev) => ({
+          ...prev,
+          starttime: newStartTimeAfterConflict,
+          amount: "",
+        }));
+      }
+      return;
+    }
 
     setReservationForm((prev) => ({
       ...prev,
-      date: currentDate,
-      starttime: updatedStarttime,
-      endtime: updatedEndtime,
+      starttime: newStartTime,
+
+      amount: "",
     }));
-    setShowStartTimePicker(false);
   };
 
   const handleEndTimeChange = (event, selectedTime) => {
@@ -144,51 +173,53 @@ const CourtReservations = () => {
       starttime: updatedStarttime,
       endtime: updatedEndtime,
     }));
-    setShowEndTimePicker(false);
   };
 
   const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || reservationForm.date;
+    const newDate = selectedDate;
 
-    const updatedStarttime = new Date(currentDate);
-    updatedStarttime.setHours(0, 0, 0, 0);
+    const prevStartTime = new Date(reservationForm.starttime);
+    const prevEndTime = new Date(reservationForm.endtime);
 
-    const updatedEndtime = new Date(currentDate);
-    updatedEndtime.setHours(0, 0, 0, 0);
+    const updatedStarttime = new Date(newDate);
+    updatedStarttime.setHours(prevStartTime.getHours() || 0);
+    updatedStarttime.setMinutes(prevStartTime.getMinutes() || 0);
+
+    const updatedEndtime = new Date(newDate);
+    updatedEndtime.setHours(prevEndTime.getHours() || 0);
+    updatedEndtime.setMinutes(prevEndTime.getMinutes() || 0);
 
     setReservationForm((prev) => ({
       ...prev,
-      date: currentDate,
+      date: newDate,
       starttime: updatedStarttime,
       endtime: updatedEndtime,
+      amount: "",
     }));
-    setShowDatePicker(false);
   };
 
   const checkIfTimeSlotIsAvailable = (startTime, endTime) => {
     const selectedStartTime = new Date(startTime);
     const selectedEndTime = new Date(endTime);
 
-    return courtreservations
-      .filter((reservation) => reservation.status === "Approved")
-      .every((reservation) => {
-        const reservedStart = new Date(reservation.starttime);
-        const reservedEnd = new Date(reservation.endtime);
+    return courtreservations.every((reservation) => {
+      const reservedStart = new Date(reservation.starttime);
+      const reservedEnd = new Date(reservation.endtime);
 
-        if (
-          (selectedStartTime >= reservedStart &&
-            selectedStartTime < reservedEnd) ||
-          (selectedEndTime > reservedStart && selectedEndTime <= reservedEnd)
-        ) {
-          return false;
-        }
-        return (
-          selectedEndTime <= reservedStart || selectedStartTime >= reservedEnd
-        );
-      });
+      if (
+        (selectedStartTime >= reservedStart &&
+          selectedStartTime < reservedEnd) ||
+        (selectedEndTime > reservedStart && selectedEndTime <= reservedEnd)
+      ) {
+        return false;
+      }
+      return (
+        selectedEndTime <= reservedStart || selectedStartTime >= reservedEnd
+      );
+    });
   };
 
-  console.log(reservationForm);
+  // console.log(reservationForm);
 
   console.log("Date", reservationForm.date);
   console.log("Start time", reservationForm.starttime);
@@ -196,7 +227,7 @@ const CourtReservations = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -206,7 +237,6 @@ const CourtReservations = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingTop: insets.top,
               paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
               gap: 10,
             },
@@ -238,7 +268,8 @@ const CourtReservations = () => {
                   label: purp,
                   value: purp,
                 }))}
-                placeholder="Select purpose"
+                placeholder="Select"
+                placeholderStyle={{ color: "gray" }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "purpose", value: itemValue },
@@ -282,10 +313,12 @@ const CourtReservations = () => {
                   </Text>
                   <View style={MyStyles.inputWDateTime}>
                     <Text>
-                      {reservationForm.starttime.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {reservationForm.starttime
+                        ? reservationForm.starttime.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "Select start time"}
                     </Text>
 
                     <MaterialIcons
@@ -312,10 +345,12 @@ const CourtReservations = () => {
                   </Text>
                   <View style={MyStyles.inputWDateTime}>
                     <Text>
-                      {reservationForm.endtime.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {reservationForm.endtime
+                        ? reservationForm.endtime.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "Select end time"}
                     </Text>
 
                     <MaterialIcons
@@ -339,6 +374,101 @@ const CourtReservations = () => {
             )}
 
             {Platform.OS === "ios" && (
+              <>
+                <View>
+                  <Text style={MyStyles.inputTitle}>
+                    Date<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <View style={MyStyles.inputWDateTime}>
+                    <Text>
+                      {reservationForm.date?.toISOString().split("T")[0]}
+                    </Text>
+                    <MaterialIcons
+                      onPress={() => setShowDatePicker((prev) => !prev)}
+                      name="calendar-month"
+                      size={24}
+                      color="#C1C0C0"
+                    />
+                  </View>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      mode="date"
+                      value={reservationForm.date}
+                      display="spinner"
+                      onChange={handleDateChange}
+                      minimumDate={new Date()}
+                      maximumDate={new Date(new Date().getFullYear(), 11, 31)}
+                    />
+                  )}
+                </View>
+
+                <View>
+                  <Text style={MyStyles.inputTitle}>
+                    Start Time<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <View style={MyStyles.inputWDateTime}>
+                    <Text>
+                      {reservationForm.starttime
+                        ? reservationForm.starttime.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "Select start time"}
+                    </Text>
+
+                    <MaterialIcons
+                      onPress={() => setShowStartTimePicker((prev) => !prev)}
+                      name="access-time"
+                      size={24}
+                      color="#C1C0C0"
+                    />
+                  </View>
+
+                  {showStartTimePicker && (
+                    <DateTimePicker
+                      value={reservationForm.starttime || new Date()}
+                      mode="time"
+                      display="spinner"
+                      onChange={handleStartTimeChange}
+                    />
+                  )}
+                </View>
+
+                <View>
+                  <Text style={MyStyles.inputTitle}>
+                    End Time<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <View style={MyStyles.inputWDateTime}>
+                    <Text>
+                      {reservationForm.endtime
+                        ? reservationForm.endtime.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "Select end time"}
+                    </Text>
+
+                    <MaterialIcons
+                      onPress={() => setShowEndTimePicker((prev) => !prev)}
+                      name="access-time"
+                      size={24}
+                      color="#C1C0C0"
+                    />
+                  </View>
+
+                  {showEndTimePicker && (
+                    <DateTimePicker
+                      value={reservationForm.endtime || new Date()}
+                      mode="time"
+                      display="spinner"
+                      onChange={handleEndTimeChange}
+                    />
+                  )}
+                </View>
+              </>
+            )}
+
+            {/* {Platform.OS === "ios" && (
               <>
                 <Text style={MyStyles.inputTitle}>
                   Date<Text style={{ color: "red" }}>*</Text>
@@ -369,7 +499,7 @@ const CourtReservations = () => {
                   onChange={handleEndTimeChange}
                 />
               </>
-            )}
+            )} */}
             <View>
               <Text style={MyStyles.inputTitle}>
                 Amount<Text style={{ color: "red" }}>*</Text>

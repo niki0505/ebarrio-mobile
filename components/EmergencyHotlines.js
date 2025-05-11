@@ -64,7 +64,7 @@ const EmergencyHotlines = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -74,7 +74,6 @@ const EmergencyHotlines = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingTop: insets.top,
               paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
               gap: 10,
             },
@@ -87,7 +86,7 @@ const EmergencyHotlines = () => {
             color="#04384E"
           />
           <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 30 }]}>
-            Emergency Hotlines
+            Hotlines
           </Text>
 
           <View style={{ gap: 15 }}>

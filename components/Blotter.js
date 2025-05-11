@@ -111,7 +111,7 @@ const Blotter = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -121,7 +121,6 @@ const Blotter = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingTop: insets.top,
               paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
               gap: 10,
             },
@@ -153,7 +152,8 @@ const Blotter = () => {
                   label: type,
                   value: type,
                 }))}
-                placeholder="Select type of the incident"
+                placeholder="Select"
+                placeholderStyle={{ color: "gray" }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "type", value: itemValue },

@@ -51,10 +51,6 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  useEffect(() => {
-    console.log(weather);
-  }, [weather]);
-
   const getWeatherIcon = (condition, width = 40, height = 40) => {
     if (!condition) return null;
 
@@ -62,6 +58,8 @@ const Home = () => {
 
     switch (normalized) {
       case "clear":
+        return <ClearDay width={width} height={height} />;
+      case "sunny":
         return <ClearDay width={width} height={height} />;
       case "partly cloudy":
         return <PartlyCloudyDay width={width} height={height} />;
@@ -82,6 +80,8 @@ const Home = () => {
     switch (normalized) {
       case "clear":
         return ["#09A1CB", "#09A1CB", "#045065"];
+      case "sunny":
+        return ["#09A1CB", "#09A1CB", "#045065"];
       case "partly cloudy":
         return ["#81ADC7", "#81ADC7", "#30576C"];
       case "patchy light drizzle":
@@ -96,225 +96,215 @@ const Home = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+      <ScrollView
+        contentContainerStyle={[
+          MyStyles.scrollContainer,
+          {
+            paddingBottom: insets.bottom + 70,
+            gap: 10,
+          },
+        ]}
       >
-        <ScrollView
-          contentContainerStyle={[
-            MyStyles.scrollContainer,
+        <View style={MyStyles.rowAlignment}>
+          <View>
+            <Text style={[MyStyles.header, { marginBottom: 0 }]}>Home</Text>
+            <Text style={{ fontSize: 20, color: "gray" }}>Welcome, User</Text>
+          </View>
+
+          <View>
+            <Image source={profilePic} style={MyStyles.profilePic} />
+          </View>
+        </View>
+
+        <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
+          <TouchableOpacity style={[MyStyles.card, { padding: 10 }]}>
+            <Text
+              style={{
+                textAlign: "start",
+                color: "red",
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              May
+            </Text>
+            <Text
+              style={{ textAlign: "start", fontSize: 20, fontWeight: "bold" }}
+            >
+              01
+            </Text>
+            <Text style={{ textAlign: "start", fontSize: 16 }}>
+              Clean-Up Drive
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Weather")}
+            style={MyStyles.card}
+          >
+            <LinearGradient
+              colors={getGradientColors(weather.currentcondition)}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={[MyStyles.gradientBackground]}
+            >
+              <Text style={MyStyles.weatherBodyText}>Bacoor</Text>
+              <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
+                {getWeatherIcon(weather.currentcondition, 80, 80)}
+                <Text
+                  style={[MyStyles.weatherHeaderText, { marginVertical: 0 }]}
+                >
+                  {weather.currenttemp}
+                </Text>
+              </View>
+
+              <Text style={[MyStyles.weatherBodyText]}>
+                High:{Math.round(weather.currenthigh)}° Low:
+                {Math.round(weather.currentlow)}°
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
+          Services
+        </Text>
+        <View
+          style={[
+            MyStyles.card,
+            MyStyles.rowAlignment,
             {
-              paddingTop: insets.top,
-              paddingBottom: insets.bottom + 70,
+              flex: 0,
               gap: 10,
+              justifyContent: "center",
             },
           ]}
         >
-          <View style={MyStyles.rowAlignment}>
-            <View>
-              <Text style={[MyStyles.header, { marginBottom: 0 }]}>Home</Text>
-              <Text style={{ fontSize: 20, color: "gray" }}>Welcome, User</Text>
-            </View>
-
-            <View>
-              <Image source={profilePic} style={MyStyles.profilePic} />
-            </View>
-          </View>
-
-          <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
-            <TouchableOpacity style={[MyStyles.card, { padding: 10 }]}>
-              <Text
-                style={{
-                  textAlign: "start",
-                  color: "red",
-                  fontSize: 20,
-                  fontWeight: "bold",
-                }}
-              >
-                May
-              </Text>
-              <Text
-                style={{ textAlign: "start", fontSize: 20, fontWeight: "bold" }}
-              >
-                01
-              </Text>
-              <Text style={{ textAlign: "start", fontSize: 16 }}>
-                Clean-Up Drive
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Weather")}
-              style={MyStyles.card}
-            >
-              <LinearGradient
-                colors={getGradientColors(weather.currentcondition)}
-                start={{ x: 0.5, y: 0 }}
-                end={{ x: 0.5, y: 1 }}
-                style={[MyStyles.gradientBackground]}
-              >
-                <Text style={MyStyles.weatherBodyText}>Bacoor</Text>
-                <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
-                  {getWeatherIcon(weather.currentcondition, 80, 80)}
-                  <Text
-                    style={[MyStyles.weatherHeaderText, { marginVertical: 0 }]}
-                  >
-                    {weather.currenttemp}
-                  </Text>
-                </View>
-
-                <Text style={[MyStyles.weatherBodyText]}>
-                  High:{Math.round(weather.currenthigh)}° Low:
-                  {Math.round(weather.currentlow)}°
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-
-          <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
-            Services
-          </Text>
-          <View
-            style={[
-              MyStyles.card,
-              MyStyles.rowAlignment,
-              {
-                flex: 0,
-                gap: 10,
-                justifyContent: "center",
-              },
-            ]}
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Certificates")}
+            style={{ alignItems: "center" }}
           >
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Certificates")}
-              style={{ alignItems: "center" }}
-            >
-              <View style={MyStyles.servicesImgContainer}>
-                <Image source={Certificate} style={MyStyles.servicesImg} />
-              </View>
-              <Text style={MyStyles.servicesTitle}>Certificate</Text>
-            </TouchableOpacity>
+            <View style={MyStyles.servicesImgContainer}>
+              <Image source={Certificate} style={MyStyles.servicesImg} />
+            </View>
+            <Text style={MyStyles.servicesTitle}>Certificate</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Blotter")}
-              style={{ alignItems: "center" }}
-            >
-              <View style={MyStyles.servicesImgContainer}>
-                <Image source={Blotter} style={MyStyles.servicesImg} />
-              </View>
-              <Text style={MyStyles.servicesTitle}>Blotter</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Blotter")}
+            style={{ alignItems: "center" }}
+          >
+            <View style={MyStyles.servicesImgContainer}>
+              <Image source={Blotter} style={MyStyles.servicesImg} />
+            </View>
+            <Text style={MyStyles.servicesTitle}>Blotter</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("CourtReservations")}
-              style={{ alignItems: "center" }}
-            >
-              <View style={MyStyles.servicesImgContainer}>
-                <Image source={CourtReservation} style={MyStyles.servicesImg} />
-              </View>
-              <Text style={MyStyles.servicesTitle}>Reservation</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("CourtReservations")}
+            style={{ alignItems: "center" }}
+          >
+            <View style={MyStyles.servicesImgContainer}>
+              <Image source={CourtReservation} style={MyStyles.servicesImg} />
+            </View>
+            <Text style={MyStyles.servicesTitle}>Reservation</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Status")}
-              style={{ alignItems: "center" }}
-            >
-              <View style={MyStyles.servicesImgContainer}>
-                <Image source={Status} style={MyStyles.servicesImg} />
-              </View>
-              <Text style={MyStyles.servicesTitle}>Status</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Status")}
+            style={{ alignItems: "center" }}
+          >
+            <View style={MyStyles.servicesImgContainer}>
+              <Image source={Status} style={MyStyles.servicesImg} />
+            </View>
+            <Text style={MyStyles.servicesTitle}>Status</Text>
+          </TouchableOpacity>
+        </View>
 
-          <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
-            Emergency Tools
-          </Text>
+        <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
+          Emergency Tools
+        </Text>
+        <View
+          style={{
+            flexDirection: "column",
+            gap: 10,
+          }}
+        >
+          <TouchableOpacity style={MyStyles.sosContainer}>
+            <Text style={[MyStyles.emergencyTitle, { fontSize: 40 }]}>SOS</Text>
+          </TouchableOpacity>
+
           <View
             style={{
-              flexDirection: "column",
+              flexDirection: "row",
               gap: 10,
             }}
           >
-            <TouchableOpacity style={MyStyles.sosContainer}>
-              <Text style={[MyStyles.emergencyTitle, { fontSize: 40 }]}>
-                SOS
+            <TouchableOpacity
+              style={[
+                MyStyles.sosContainer,
+                {
+                  flex: 1,
+                  flexDirection: "column",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <MaterialCommunityIcons
+                name="lightbulb-on"
+                size={50}
+                color="#fff"
+              />
+              <Text style={MyStyles.emergencyTitle}>SAFETY TIPS</Text>
+              <Text style={MyStyles.emergencyMessage}>
+                Stay Smart, Stay Safe
               </Text>
             </TouchableOpacity>
 
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-              }}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("EmergencyHotlines")}
+              style={[
+                MyStyles.sosContainer,
+                {
+                  flex: 1,
+                  flexDirection: "column",
+                  alignItems: "center",
+                },
+              ]}
             >
-              <TouchableOpacity
-                style={[
-                  MyStyles.sosContainer,
-                  {
-                    flex: 1,
-                    flexDirection: "column",
-                    alignItems: "center",
-                  },
-                ]}
-              >
-                <MaterialCommunityIcons
-                  name="lightbulb-on"
-                  size={50}
-                  color="#fff"
-                />
-                <Text style={MyStyles.emergencyTitle}>SAFETY TIPS</Text>
-                <Text style={MyStyles.emergencyMessage}>
-                  Stay Smart, Stay Safe
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate("EmergencyHotlines")}
-                style={[
-                  MyStyles.sosContainer,
-                  {
-                    flex: 1,
-                    flexDirection: "column",
-                    alignItems: "center",
-                  },
-                ]}
-              >
-                <MaterialIcons name="call" size={50} color="#fff" />
-                <Text style={MyStyles.emergencyTitle}>EMERGENCY HOTLINES</Text>
-                <Text style={MyStyles.emergencyMessage}>
-                  Call for Assistance
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity style={MyStyles.sosContainer}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="cctv"
-                  size={50}
-                  color="#fff"
-                  style={{ transform: [{ rotateY: "180deg" }] }}
-                />
-                <View style={{ textAlign: "start" }}>
-                  <Text style={MyStyles.emergencyTitle}>MONITOR RIVER</Text>
-                  <Text style={MyStyles.emergencyMessage}>
-                    Observe Water-Level
-                  </Text>
-                </View>
-              </View>
+              <MaterialIcons name="call" size={50} color="#fff" />
+              <Text style={MyStyles.emergencyTitle}>HOTLINES</Text>
+              <Text style={MyStyles.emergencyMessage}>Call for Assistance</Text>
             </TouchableOpacity>
           </View>
 
-          <Text onPress={() => logout(navigation)}>Logout</Text>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          <TouchableOpacity style={MyStyles.sosContainer}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="cctv"
+                size={50}
+                color="#fff"
+                style={{ transform: [{ rotateY: "180deg" }] }}
+              />
+              <View style={{ textAlign: "start" }}>
+                <Text style={MyStyles.emergencyTitle}>MONITOR RIVER</Text>
+                <Text style={MyStyles.emergencyMessage}>
+                  Observe Water-Level
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <Text onPress={() => logout(navigation)}>Logout</Text>
+      </ScrollView>
     </SafeAreaView>
   );
 };
