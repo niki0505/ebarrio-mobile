@@ -37,7 +37,8 @@ import Rain from "../assets/weather-svg/rain";
 
 const Home = () => {
   const insets = useSafeAreaInsets();
-  const { user, logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
+  const { userDetails } = useContext(AuthContext);
   const navigation = useNavigation();
   const { fetchWeather, weather } = useContext(InfoContext);
 
@@ -96,7 +97,7 @@ const Home = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <ScrollView
         contentContainerStyle={[
@@ -110,11 +111,22 @@ const Home = () => {
         <View style={MyStyles.rowAlignment}>
           <View>
             <Text style={[MyStyles.header, { marginBottom: 0 }]}>Home</Text>
-            <Text style={{ fontSize: 20, color: "gray" }}>Welcome, User</Text>
+            <Text style={{ fontSize: 20, color: "gray" }}>
+              Welcome,{" "}
+              {userDetails.resID?.firstname ||
+                userDetails.empID?.resID.firstname}
+            </Text>
           </View>
 
           <View>
-            <Image source={profilePic} style={MyStyles.profilePic} />
+            <Image
+              source={{
+                uri:
+                  userDetails.resID?.picture ||
+                  userDetails.empID?.resID.picture,
+              }}
+              style={MyStyles.profilePic}
+            />
           </View>
         </View>
 
@@ -168,60 +180,67 @@ const Home = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
-          Services
-        </Text>
-        <View
-          style={[
-            MyStyles.card,
-            MyStyles.rowAlignment,
-            {
-              flex: 0,
-              gap: 10,
-              justifyContent: "center",
-            },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Certificates")}
-            style={{ alignItems: "center" }}
-          >
-            <View style={MyStyles.servicesImgContainer}>
-              <Image source={Certificate} style={MyStyles.servicesImg} />
-            </View>
-            <Text style={MyStyles.servicesTitle}>Certificate</Text>
-          </TouchableOpacity>
+        {userDetails.role === "Resident" && (
+          <>
+            <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
+              Services
+            </Text>
+            <View
+              style={[
+                MyStyles.card,
+                MyStyles.rowAlignment,
+                {
+                  flex: 0,
+                  gap: 10,
+                  justifyContent: "center",
+                },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Certificates")}
+                style={{ alignItems: "center" }}
+              >
+                <View style={MyStyles.servicesImgContainer}>
+                  <Image source={Certificate} style={MyStyles.servicesImg} />
+                </View>
+                <Text style={MyStyles.servicesTitle}>Certificate</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Blotter")}
-            style={{ alignItems: "center" }}
-          >
-            <View style={MyStyles.servicesImgContainer}>
-              <Image source={Blotter} style={MyStyles.servicesImg} />
-            </View>
-            <Text style={MyStyles.servicesTitle}>Blotter</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Blotter")}
+                style={{ alignItems: "center" }}
+              >
+                <View style={MyStyles.servicesImgContainer}>
+                  <Image source={Blotter} style={MyStyles.servicesImg} />
+                </View>
+                <Text style={MyStyles.servicesTitle}>Blotter</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("CourtReservations")}
-            style={{ alignItems: "center" }}
-          >
-            <View style={MyStyles.servicesImgContainer}>
-              <Image source={CourtReservation} style={MyStyles.servicesImg} />
-            </View>
-            <Text style={MyStyles.servicesTitle}>Reservation</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("CourtReservations")}
+                style={{ alignItems: "center" }}
+              >
+                <View style={MyStyles.servicesImgContainer}>
+                  <Image
+                    source={CourtReservation}
+                    style={MyStyles.servicesImg}
+                  />
+                </View>
+                <Text style={MyStyles.servicesTitle}>Reservation</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Status")}
-            style={{ alignItems: "center" }}
-          >
-            <View style={MyStyles.servicesImgContainer}>
-              <Image source={Status} style={MyStyles.servicesImg} />
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Status")}
+                style={{ alignItems: "center" }}
+              >
+                <View style={MyStyles.servicesImgContainer}>
+                  <Image source={Status} style={MyStyles.servicesImg} />
+                </View>
+                <Text style={MyStyles.servicesTitle}>Status</Text>
+              </TouchableOpacity>
             </View>
-            <Text style={MyStyles.servicesTitle}>Status</Text>
-          </TouchableOpacity>
-        </View>
+          </>
+        )}
 
         <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
           Emergency Tools
@@ -302,7 +321,10 @@ const Home = () => {
             </View>
           </TouchableOpacity>
         </View>
-
+        <Text onPress={() => navigation.navigate("AccountSettings")}>
+          Account Settings
+        </Text>
+        <Text onPress={() => navigation.navigate("Profile")}>Profile</Text>
         <Text onPress={() => logout(navigation)}>Logout</Text>
       </ScrollView>
     </SafeAreaView>

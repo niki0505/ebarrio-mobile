@@ -18,19 +18,41 @@ import api from "../api";
 const Login = () => {
   const insets = useSafeAreaInsets();
   const { sendOTP } = useContext(OtpContext);
+  const { login } = useContext(AuthContext);
   const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
-      const response = await api.get(`/getmobilenumber/${username}`);
-      sendOTP(username, response.data.mobilenumber);
-      navigation.navigate("OTP", {
-        navigatelink: "BottomTabs",
+      const res = await api.post("/checkcredentials", {
+        username,
+        password,
       });
+      if (res.status === 200) {
+        if (res.data.message === "Credentials verified") {
+          await login({ username, password });
+          // const response = await api.get(`/getmobilenumber/${username}`);
+          // sendOTP(username, response.data.mobilenumber);
+          // navigation.navigate("OTP", {
+          //   navigatelink: "BottomTabs",
+          //   username,
+          //   mobilenumber: response.data.mobilenumber,
+          //   password: password,
+          // });
+        } else if (res.data.message === "Token verified successfully!") {
+          console.log("Set Password");
+        }
+      }
     } catch (error) {
-      console.log("Error getting mobile number", error);
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        alert(response.data.message || "Something went wrong.");
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        alert("An unexpected error occurred.");
+      }
     }
   };
   return (

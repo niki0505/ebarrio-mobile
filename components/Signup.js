@@ -170,123 +170,125 @@ const Signup = () => {
   };
 
   const handleSignUp = async () => {
-    if (!firstname || !lastname || !username || !password || !repassword) {
-      firstnameValidation(firstname);
-      lastnameValidation(lastname);
-      usernameValidation(username);
-      passwordValidation(password);
-      repasswordValidation(repassword);
-      return;
-    }
-    try {
-      if (usernameErrors.length !== 0) {
-        return;
-      }
-      if (passwordErrors.length !== 0) {
-        return;
-      }
-      if (repasswordErrors.length !== 0) {
-        return;
-      }
+    setIsRegistered(true);
+    // if (!firstname || !lastname || !username || !password || !repassword) {
+    //   firstnameValidation(firstname);
+    //   lastnameValidation(lastname);
+    //   usernameValidation(username);
+    //   passwordValidation(password);
+    //   repasswordValidation(repassword);
+    //   return;
+    // }
+    // try {
+    //   if (usernameErrors.length !== 0) {
+    //     return;
+    //   }
+    //   if (passwordErrors.length !== 0) {
+    //     return;
+    //   }
+    //   if (repasswordErrors.length !== 0) {
+    //     return;
+    //   }
 
-      try {
-        const response = await api.post("/checkresident", {
-          username,
-          firstname,
-          lastname,
-          mobilenumber,
-        });
-        setIsRegistered(true);
-        setResID(response.data.resID);
-      } catch (error) {
-        const response = error.response;
-        if (response && response.data) {
-          console.log("❌ Error status:", response.status);
-          alert(response.data.message || "Something went wrong.");
-        } else {
-          console.log("❌ Network or unknown error:", error.message);
-          alert("An unexpected error occurred.");
-        }
-      }
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    }
+    //   try {
+    //     const response = await api.post("/checkresident", {
+    //       username,
+    //       firstname,
+    //       lastname,
+    //       mobilenumber,
+    //     });
+    //     setIsRegistered(true);
+    //     setResID(response.data.resID);
+    //   } catch (error) {
+    //     const response = error.response;
+    //     if (response && response.data) {
+    //       console.log("❌ Error status:", response.status);
+    //       alert(response.data.message || "Something went wrong.");
+    //     } else {
+    //       console.log("❌ Network or unknown error:", error.message);
+    //       alert("An unexpected error occurred.");
+    //     }
+    //   }
+    // } catch (error) {
+    //   Alert.alert("Error", error.message);
+    // }
   };
 
   const handleSignUp2 = async () => {
-    let errors1 = [];
-    let errors2 = [];
-    let errors3 = [];
-    let errors4 = [];
-    if (securityquestions[0].question === "") {
-      errors1.push("Security question must not be empty");
-    } else {
-      errors1 = errors1.filter(
-        (error) => error !== "Security question must not be empty"
-      );
-    }
+    navigation.navigate("OTP");
+    // let errors1 = [];
+    // let errors2 = [];
+    // let errors3 = [];
+    // let errors4 = [];
+    // if (securityquestions[0].question === "") {
+    //   errors1.push("Security question must not be empty");
+    // } else {
+    //   errors1 = errors1.filter(
+    //     (error) => error !== "Security question must not be empty"
+    //   );
+    // }
 
-    if (securityquestions[0].answer === "") {
-      errors3.push("Answer must not be empty");
-    } else {
-      errors3 = errors3.filter((error) => error !== "Answer must not be empty");
-    }
+    // if (securityquestions[0].answer === "") {
+    //   errors3.push("Answer must not be empty");
+    // } else {
+    //   errors3 = errors3.filter((error) => error !== "Answer must not be empty");
+    // }
 
-    if (securityquestions[1].question === "") {
-      errors2.push("Security question must not be empty");
-    } else {
-      errors2 = errors2.filter(
-        (error) => error !== "Security question must not be empty"
-      );
-    }
+    // if (securityquestions[1].question === "") {
+    //   errors2.push("Security question must not be empty");
+    // } else {
+    //   errors2 = errors2.filter(
+    //     (error) => error !== "Security question must not be empty"
+    //   );
+    // }
 
-    if (securityquestions[1].answer === "") {
-      errors4.push("Answer must not be empty");
-    } else {
-      errors4 = errors4.filter((error) => error !== "Answer must not be empty");
-    }
-    setQuestionErrors1(errors1);
-    setQuestionErrors2(errors2);
-    setAnswerErrors1(errors3);
-    setAnswerErrors2(errors4);
-    try {
-      if (questionErrors1.length !== 0) {
-        return;
-      }
+    // if (securityquestions[1].answer === "") {
+    //   errors4.push("Answer must not be empty");
+    // } else {
+    //   errors4 = errors4.filter((error) => error !== "Answer must not be empty");
+    // }
+    // setQuestionErrors1(errors1);
+    // setQuestionErrors2(errors2);
+    // setAnswerErrors1(errors3);
+    // setAnswerErrors2(errors4);
+    // try {
+    //   if (questionErrors1.length !== 0) {
+    //     return;
+    //   }
 
-      if (questionErrors2.length !== 0) {
-        return;
-      }
+    //   if (questionErrors2.length !== 0) {
+    //     return;
+    //   }
 
-      if (answerErrors1.length !== 0) {
-        return;
-      }
+    //   if (answerErrors1.length !== 0) {
+    //     return;
+    //   }
 
-      if (answerErrors2.length !== 0) {
-        return;
-      }
-      try {
-        sendOTP(username, mobilenumber);
-        navigation.navigate("OTP", {
-          username: username,
-          password: password,
-          resID: resID,
-          securityquestions: securityquestions,
-          navigatelink: "Login",
-        });
-      } catch (error) {
-        const response = error.response;
-        if (response && response.data) {
-          console.log("❌ Error status:", response.status);
-          alert(response.data.message || "Something went wrong.");
-        } else {
-          console.log("❌ Network or unknown error:", error.message);
-          alert("An unexpected error occurred.");
-        }
-      }
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    }
+    //   if (answerErrors2.length !== 0) {
+    //     return;
+    //   }
+    //   try {
+    //     sendOTP(username, mobilenumber);
+    //     navigation.navigate("OTP", {
+    //       username: username,
+    //       password: password,
+    //       resID: resID,
+    //       securityquestions: securityquestions,
+    //       navigatelink: "Login",
+    //     });
+    //   } catch (error) {
+    //     const response = error.response;
+    //     if (response && response.data) {
+    //       console.log("❌ Error status:", response.status);
+    //       alert(response.data.message || "Something went wrong.");
+    //     } else {
+    //       console.log("❌ Network or unknown error:", error.message);
+    //       alert("An unexpected error occurred.");
+    //     }
+    //   }
+    // } catch (error) {
+    //   Alert.alert("Error", error.message);
+    // }
   };
 
   return (
@@ -298,6 +300,10 @@ const Signup = () => {
           {isRegistered ? (
             <>
               <View>
+                <TouchableOpacity onPress={() => setIsRegistered(false)}>
+                  <Text>Back Icon</Text>
+                </TouchableOpacity>
+
                 <Text style={MyStyles.inputTitle}>
                   Security Question #1<Text style={{ color: "red" }}>*</Text>
                 </Text>
@@ -473,10 +479,11 @@ const Signup = () => {
                   Next
                 </Text>
               </TouchableOpacity>
+              <Text onPress={() => navigation.navigate("Login")}>
+                Go to Login
+              </Text>
             </>
           )}
-
-          <Text onPress={() => navigation.navigate("Login")}>Go to Login</Text>
         </View>
       </View>
     </SafeAreaView>

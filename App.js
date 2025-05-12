@@ -22,6 +22,8 @@ import EmergencyHotlines from "./components/EmergencyHotlines";
 import Status from "./components/Status";
 import Blotter from "./components/Blotter";
 import Weather from "./components/Weather";
+import AccountSettings from "./components/AccountSettings";
+import Profile from "./components/Profile";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -143,6 +145,30 @@ export default function App() {
                     element={
                       <InfoProvider>
                         <Weather />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="AccountSettings"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <AccountSettings />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="Profile"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <Profile />
                       </InfoProvider>
                     }
                   />

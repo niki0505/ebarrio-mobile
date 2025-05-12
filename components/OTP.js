@@ -8,21 +8,23 @@ import {
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect, useRef } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { OtpContext } from "../context/OtpContext";
 import { OtpInput } from "react-native-otp-entry";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 
-const OTP = ({ route }) => {
+const OTP = ({}) => {
+  const route = useRoute();
   const {
-    resID,
-    mobilenumber,
-    username,
-    password,
-    securityquestions,
-    navigatelink,
-  } = route.params;
+    resID = "",
+    mobilenumber = "",
+    username = "",
+    password = "",
+    securityquestions = "",
+    navigatelink = "",
+  } = route.params || {};
+
   const navigation = useNavigation();
   const [resendTimer, setResendTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
