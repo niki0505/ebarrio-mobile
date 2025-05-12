@@ -11,11 +11,29 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
+
+  const fetchUserDetails = async () => {
+    try {
+      const response = await api.get("/getuserdetails");
+      console.log(response.data);
+      setUserDetails(response.data);
+    } catch (error) {
+      console.error("Failed to fetch user details:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUserDetails();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const checkRefreshToken = async () => {
       const refreshToken = await SecureStore.getItemAsync("refreshToken");
       console.log("Got Refresh Token", refreshToken);
+      console.log(isAuthenticated);
       if (!refreshToken) {
         console.log("No refresh token found. User needs to login.");
         setIsAuthenticated(false);
@@ -38,7 +56,6 @@ export const AuthProvider = ({ children }) => {
     };
     checkRefreshToken();
   }, []);
-
   const login = async (credentials) => {
     try {
       const res = await axios.post(
@@ -54,7 +71,14 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       setIsAuthenticated(true);
     } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        alert(response.data.message || "Something went wrong.");
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        alert("An unexpected error occurred.");
+      }
     }
   };
 
@@ -82,6 +106,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         login,
+        userDetails,
         isAuthenticated,
         logout,
         setIsAuthenticated,
