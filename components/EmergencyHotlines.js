@@ -18,6 +18,8 @@ import { AuthContext } from "../context/AuthContext";
 import api from "../api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MyStyles } from "./stylesheet/MyStyles";
+
+//ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 
 const EmergencyHotlines = () => {
@@ -115,6 +117,7 @@ const EmergencyHotlines = () => {
                     MyStyles.input,
                     {
                       flexDirection: "row",
+                      backgroundColor: "#fff",
                     },
                   ]}
                 >

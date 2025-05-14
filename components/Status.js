@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
@@ -15,6 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Status = () => {
   const insets = useSafeAreaInsets();
@@ -22,31 +24,41 @@ const Status = () => {
   const navigation = useNavigation();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+    <SafeAreaView
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
-      <View
-        style={[
-          MyStyles.container,
-          { paddingTop: insets.top, paddingBottom: insets.bottom },
-        ]}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("BottomTabs")}>
-          <Text>Back</Text>
-        </TouchableOpacity>
-        <Text
-          style={{
-            padding: 10,
-            fontSize: 24,
-            color: "#04384E",
-            fontWeight: "bold",
-          }}
+        <ScrollView
+          contentContainerStyle={[
+            MyStyles.scrollContainer,
+            {
+              paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
+              gap: 10,
+            },
+          ]}
         >
-          Status
-        </Text>
-      </View>
-    </KeyboardAvoidingView>
+          <MaterialIcons
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrow-back-ios"
+            size={30}
+            color="#04384E"
+          />
+          <Text
+            style={{
+              padding: 10,
+              fontSize: 24,
+              color: "#04384E",
+              fontWeight: "bold",
+            }}
+          >
+            Status
+          </Text>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

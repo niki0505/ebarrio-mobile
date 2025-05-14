@@ -17,6 +17,8 @@ import { Dropdown } from "react-native-element-dropdown";
 import api from "../api";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+//ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 
 const Certificates = () => {
@@ -168,11 +170,11 @@ const Certificates = () => {
           <MaterialIcons
             onPress={() => navigation.navigate("BottomTabs")}
             name="arrow-back-ios"
-            size={24}
+            size={30}
             color="#04384E"
           />
 
-          <Text style={[MyStyles.header, { marginTop: 20 }]}>
+          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
             Request Certificate
           </Text>
 

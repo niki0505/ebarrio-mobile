@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { MyStyles } from "./components/stylesheet/MyStyles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Preview from "./components/Preview";
 
 //Screens
 import Login from "./components/Login";
@@ -24,6 +25,8 @@ import Blotter from "./components/Blotter";
 import Weather from "./components/Weather";
 import AccountSettings from "./components/AccountSettings";
 import Profile from "./components/Profile";
+import Notification from "./components/Notification";
+import StartScreen from "./components/StartScreen";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -42,6 +45,8 @@ const BottomTabs = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Announcement") {
             iconName = focused ? "megaphone" : "megaphone-outline";
+          } else if (route.name === "Notification") {
+            iconName = focused ? "notifications" : "notifications-outline";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -54,6 +59,7 @@ const BottomTabs = () => {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Announcement" component={Announcement} />
+      <Tab.Screen name="Notification" component={Notification} />
     </Tab.Navigator>
   );
 };
@@ -67,6 +73,14 @@ export default function App() {
           <OtpProvider>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               {/* Public Routes */}
+              <Stack.Screen
+                name="StartScreen"
+                children={() => <PublicRoute element={<StartScreen />} />}
+              />
+              <Stack.Screen
+                name="Preview"
+                children={() => <PublicRoute element={<Preview />} />}
+              />
               <Stack.Screen
                 name="Login"
                 children={() => <PublicRoute element={<Login />} />}

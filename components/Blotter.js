@@ -19,7 +19,8 @@ import api from "../api";
 import { InfoContext } from "../context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { Searchbar } from "react-native-paper";
+
+//ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 
 const Blotter = () => {
@@ -129,11 +130,11 @@ const Blotter = () => {
           <MaterialIcons
             onPress={() => navigation.navigate("BottomTabs")}
             name="arrow-back-ios"
-            size={24}
+            size={30}
             color="#04384E"
           />
 
-          <Text style={[MyStyles.header, { marginTop: 20 }]}>
+          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
             File a Blotter
           </Text>
           <Text style={MyStyles.formMessage}>
