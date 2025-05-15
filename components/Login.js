@@ -37,17 +37,19 @@ const Login = () => {
       });
       if (res.status === 200) {
         if (res.data.message === "Credentials verified") {
-          await login({ username, password });
-          // const response = await api.get(`/getmobilenumber/${username}`);
-          // sendOTP(username, response.data.mobilenumber);
-          // navigation.navigate("OTP", {
-          //   navigatelink: "BottomTabs",
-          //   username,
-          //   mobilenumber: response.data.mobilenumber,
-          //   password: password,
-          // });
+          // await login({ username, password });
+          const response = await api.get(`/getmobilenumber/${username}`);
+          sendOTP(username, response.data.mobilenumber);
+          navigation.navigate("OTP", {
+            navigatelink: "BottomTabs",
+            username,
+            mobilenumber: response.data.mobilenumber,
+            password: password,
+          });
         } else if (res.data.message === "Token verified successfully!") {
-          console.log("Set Password");
+          navigation.navigate("SetPassword", {
+            username,
+          });
         }
       }
     } catch (error) {
@@ -128,6 +130,7 @@ const Login = () => {
           </View>
 
           <Text
+            onPress={() => navigation.navigate("ForgotPassword")}
             style={{
               color: "#006EFF",
               fontWeight: "bold",
@@ -139,10 +142,7 @@ const Login = () => {
             Forgot Password?
           </Text>
 
-          <TouchableOpacity
-            onPress={() => handleLogin(navigation)}
-            style={MyStyles.button}
-          >
+          <TouchableOpacity onPress={handleLogin} style={MyStyles.button}>
             <Text
               style={{
                 color: "white",

@@ -32,6 +32,8 @@ import StartScreen from "./components/StartScreen";
 import ChangeUsername from "./components/ChangeUsername";
 import ChangePassword from "./components/ChangePassword";
 import EditSecurityQuestions from "./components/EditSecurityQuestions";
+import ForgotPassword from "./components/ForgotPassword";
+import SetPassword from "./components/SetPassword";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -134,6 +136,16 @@ export default function App() {
               <Stack.Screen
                 name="OTP"
                 children={() => <PublicRoute element={<OTP />} />}
+              />
+
+              <Stack.Screen
+                name="ForgotPassword"
+                children={() => <PublicRoute element={<ForgotPassword />} />}
+              />
+
+              <Stack.Screen
+                name="SetPassword"
+                children={() => <PublicRoute element={<SetPassword />} />}
               />
 
               {/* Private Routes */}

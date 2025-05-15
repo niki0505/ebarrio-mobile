@@ -155,7 +155,7 @@ const OTP = ({}) => {
               marginTop: "-20",
             }}
           >
-            +63 9 XXXXX 9688
+            {mobilenumber}
           </Text>
           <OtpInput
             ref={otpRef}
