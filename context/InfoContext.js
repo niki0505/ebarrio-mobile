@@ -10,6 +10,16 @@ export const InfoProvider = ({ children }) => {
   const [courtreservations, setCourtReservations] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
+
+  const fetchUserDetails = async () => {
+    try {
+      const response = await api.get("/getuserdetails");
+      setUserDetails(response.data);
+    } catch (error) {
+      console.error("Failed to fetch user details:", err);
+    }
+  };
 
   const fetchEmergencyHotlines = async () => {
     try {
@@ -75,6 +85,8 @@ export const InfoProvider = ({ children }) => {
         courtreservations,
         announcements,
         calendarEvents,
+        userDetails,
+        fetchUserDetails,
         fetchEmergencyHotlines,
         fetchWeather,
         fetchResidents,

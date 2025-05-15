@@ -21,14 +21,13 @@ import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
   const insets = useSafeAreaInsets();
-  const { userDetails } = useContext(AuthContext);
   const navigation = useNavigation();
 
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
-      <ScrollView
+      {/* <ScrollView
         contentContainerStyle={[
           MyStyles.scrollContainer,
           {
@@ -256,7 +255,7 @@ const Profile = () => {
             </Text>
           </View>
         </View>
-      </ScrollView>
+      </ScrollView> */}
     </SafeAreaView>
   );
 };

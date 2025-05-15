@@ -43,7 +43,6 @@ const Home = () => {
   const navigation = useNavigation();
   const { fetchWeather, weather } = useContext(InfoContext);
   const [showDropdown, setShowDropdown] = useState(false);
-  console.log(user);
 
   useEffect(() => {
     fetchWeather();

@@ -11,14 +11,56 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { MaterialIcons } from "@expo/vector-icons";
-import { AuthContext } from "../context/AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TextInput } from "react-native-paper";
+import { InfoContext } from "../context/InfoContext";
+import api from "../api";
+import { AuthContext } from "../context/AuthContext";
 
 const ChangeUsername = () => {
-  const { userDetails } = useContext(AuthContext);
+  const { fetchUserDetails, userDetails } = useContext(InfoContext);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  const handleUsernameChange = async () => {
+    if (username === userDetails.username) {
+      alert("The new username must be different from the current username.");
+      return;
+    }
+
+    try {
+      await api.get(`/checkusername/${username}`);
+      try {
+        await api.put("/changeusername", { username, password });
+        alert("Username changed successfully!");
+      } catch (error) {
+        const response = error.response;
+        if (response && response.data) {
+          console.log("❌ Error status:", response.status);
+          alert(response.data.message || "Something went wrong.");
+        } else {
+          console.log("❌ Network or unknown error:", error.message);
+          alert("An unexpected error occurred.");
+        }
+      }
+    } catch (error) {
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        alert(response.data.message || "Something went wrong.");
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        alert("An unexpected error occurred.");
+      }
+    }
+  };
+
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
@@ -47,13 +89,20 @@ const ChangeUsername = () => {
           </View>
           <View>
             <Text>New Username</Text>
-            <TextInput placeholder="Enter new username" />
+            <TextInput
+              onChangeText={(e) => setUsername(e)}
+              placeholder="Enter new username"
+            />
           </View>
           <View>
             <Text>Password</Text>
-            <TextInput secureTextEntry={true} placeholder="Enter password" />
+            <TextInput
+              onChangeText={(e) => setPassword(e)}
+              secureTextEntry={true}
+              placeholder="Enter password"
+            />
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleUsernameChange}>
             <Text>Save Changes</Text>
           </TouchableOpacity>
         </View>

@@ -102,7 +102,7 @@ export const MyStyles = StyleSheet.create({
   //Form message
   formMessage: {
     fontSize: 18,
-    color: "#000",
+    color: "gray",
     marginBottom: 20,
   },
 
