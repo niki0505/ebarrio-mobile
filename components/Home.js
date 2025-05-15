@@ -39,10 +39,11 @@ import Rain from "../assets/weather-svg/rain";
 const Home = () => {
   const insets = useSafeAreaInsets();
   const { logout } = useContext(AuthContext);
-  const { userDetails } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
   const { fetchWeather, weather } = useContext(InfoContext);
   const [showDropdown, setShowDropdown] = useState(false);
+  console.log(user);
 
   useEffect(() => {
     fetchWeather();
@@ -129,9 +130,7 @@ const Home = () => {
               <View>
                 <Text style={[MyStyles.header, { marginBottom: 0 }]}>Home</Text>
                 <Text style={{ fontSize: 20, color: "#585252" }}>
-                  Welcome,{" "}
-                  {userDetails.resID?.firstname ||
-                    userDetails.empID?.resID.firstname}
+                  Welcome, {user.name}
                 </Text>
               </View>
 
@@ -139,9 +138,7 @@ const Home = () => {
                 <TouchableOpacity onPress={toggleProfile}>
                   <Image
                     source={{
-                      uri:
-                        userDetails.resID?.picture ||
-                        userDetails.empID?.resID.picture,
+                      uri: user.picture,
                     }}
                     style={MyStyles.profilePic}
                   />
@@ -291,7 +288,7 @@ const Home = () => {
               </TouchableOpacity>
             </View>
 
-            {userDetails.role === "Resident" && (
+            {user.role === "Resident" && (
               <>
                 <Text
                   style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}

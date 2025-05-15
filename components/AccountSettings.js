@@ -81,6 +81,7 @@ const AccountSettings = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
+            onPress={() => navigation.navigate("ChangeUsername")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
@@ -90,6 +91,7 @@ const AccountSettings = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
+            onPress={() => navigation.navigate("ChangePassword")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
@@ -99,6 +101,7 @@ const AccountSettings = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
+            onPress={() => navigation.navigate("EditSecurityQuestions")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>

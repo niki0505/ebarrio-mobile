@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
   const fetchUserDetails = async () => {
     try {
       const response = await api.get("/getuserdetails");
-      console.log(response.data);
       setUserDetails(response.data);
     } catch (error) {
       console.error("Failed to fetch user details:", err);

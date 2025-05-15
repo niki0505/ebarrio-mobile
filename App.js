@@ -29,6 +29,9 @@ import AccountSettings from "./components/AccountSettings";
 import Profile from "./components/Profile";
 import Notification from "./components/Notification";
 import StartScreen from "./components/StartScreen";
+import ChangeUsername from "./components/ChangeUsername";
+import ChangePassword from "./components/ChangePassword";
+import EditSecurityQuestions from "./components/EditSecurityQuestions";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -215,6 +218,7 @@ export default function App() {
                   />
                 )}
               />
+
               <Stack.Screen
                 name="Profile"
                 children={() => (
@@ -222,6 +226,42 @@ export default function App() {
                     element={
                       <InfoProvider>
                         <Profile />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="ChangeUsername"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <ChangeUsername />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="ChangePassword"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <ChangePassword />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="EditSecurityQuestions"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <EditSecurityQuestions />
                       </InfoProvider>
                     }
                   />
