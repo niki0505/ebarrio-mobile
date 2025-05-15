@@ -1,5 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 export const MyStyles = StyleSheet.create({
+  title: {
+    fontFamily: "REM-Bold", // must match the internal font name
+    fontSize: 24,
+  },
+
   container: {
     flex: 1,
     backgroundColor: "#F0F4F7",
@@ -13,11 +18,15 @@ export const MyStyles = StyleSheet.create({
     color: "#04384E",
   },
   scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#F0F4F7" },
-  textfield: {
-    width: 300,
-    height: 40,
+  input: {
+    width: "100%",
+    height: 45,
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: "#ACACAC",
+    borderRadius: 15,
+    fontSize: 16,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
   },
   loadingContainer: {
     flex: 1,
@@ -65,49 +74,36 @@ export const MyStyles = StyleSheet.create({
     borderColor: "#ccc",
     marginVertical: 10,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#C1C0C0",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-  },
   inputTitle: {
     color: "#04384E",
     fontSize: 16,
-    fontWeight: "500",
   },
-  inputWDateTime: {
-    display: "flex",
+  datetimeRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#C1C0C0",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
   },
 
   //Button
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#0E94D3",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 30,
+    width: "100%",
+    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 24,
   },
 
   //Form message
   formMessage: {
     fontSize: 18,
-    color: "#ACACAC",
-    marginBottom: 30,
+    color: "#000",
+    marginBottom: 20,
   },
 
   //Suggestion
@@ -193,6 +189,9 @@ export const MyStyles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     resizeMode: "cover",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#04384E",
   },
   servicesImgContainer: {
     backgroundColor: "#DBDEE8",
@@ -222,6 +221,15 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 10,
     height: "auto",
     padding: 20,
+
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+
+    // Android shadow
+    elevation: 10,
   },
   emergencyTitle: {
     color: "#fff",
@@ -230,9 +238,10 @@ export const MyStyles = StyleSheet.create({
     textAlign: "center",
   },
   emergencyMessage: {
-    color: "#fff",
+    color: "#FAFAFA",
     fontSize: 12,
     textAlign: "center",
+    opacity: 0.7,
   },
 
   //Emergency Hotlines
@@ -249,5 +258,23 @@ export const MyStyles = StyleSheet.create({
     height: 35,
     textAlign: "center",
     textAlignVertical: "center",
+  },
+
+  loginInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#ACACAC",
+    borderWidth: 1,
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    width: "100%",
+    backgroundColor: "#fff",
+    height: 45,
+  },
+  loginInput: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+    color: "#000",
   },
 });

@@ -20,6 +20,8 @@ import api from "../api";
 import { InfoContext } from "../context/InfoContext";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+//ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 
 const CourtReservations = () => {
@@ -245,10 +247,10 @@ const CourtReservations = () => {
           <MaterialIcons
             onPress={() => navigation.navigate("BottomTabs")}
             name="arrow-back-ios"
-            size={24}
+            size={30}
             color="#04384E"
           />
-          <Text style={[MyStyles.header, { marginTop: 20 }]}>
+          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
             Court Reservation
           </Text>
           <Text style={MyStyles.formMessage}>
@@ -285,8 +287,8 @@ const CourtReservations = () => {
                   <Text style={MyStyles.inputTitle}>
                     Date<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                  <View style={MyStyles.inputWDateTime}>
-                    <Text>
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
+                    <Text style={{ fontSize: 16 }}>
                       {reservationForm.date?.toISOString().split("T")[0]}
                     </Text>
                     <MaterialIcons
@@ -311,8 +313,8 @@ const CourtReservations = () => {
                   <Text style={MyStyles.inputTitle}>
                     Start Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                  <View style={MyStyles.inputWDateTime}>
-                    <Text>
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
+                    <Text style={{ fontSize: 16 }}>
                       {reservationForm.starttime
                         ? reservationForm.starttime.toLocaleTimeString([], {
                             hour: "2-digit",
@@ -343,8 +345,8 @@ const CourtReservations = () => {
                   <Text style={MyStyles.inputTitle}>
                     End Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                  <View style={MyStyles.inputWDateTime}>
-                    <Text>
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
+                    <Text style={{ fontSize: 16 }}>
                       {reservationForm.endtime
                         ? reservationForm.endtime.toLocaleTimeString([], {
                             hour: "2-digit",
@@ -379,7 +381,7 @@ const CourtReservations = () => {
                   <Text style={MyStyles.inputTitle}>
                     Date<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                  <View style={MyStyles.inputWDateTime}>
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
                     <Text>
                       {reservationForm.date?.toISOString().split("T")[0]}
                     </Text>
@@ -406,7 +408,7 @@ const CourtReservations = () => {
                   <Text style={MyStyles.inputTitle}>
                     Start Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                  <View style={MyStyles.inputWDateTime}>
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
                     <Text>
                       {reservationForm.starttime
                         ? reservationForm.starttime.toLocaleTimeString([], {
@@ -438,7 +440,7 @@ const CourtReservations = () => {
                   <Text style={MyStyles.inputTitle}>
                     End Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                  <View style={MyStyles.inputWDateTime}>
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
                     <Text>
                       {reservationForm.endtime
                         ? reservationForm.endtime.toLocaleTimeString([], {

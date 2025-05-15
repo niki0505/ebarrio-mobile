@@ -26,6 +26,7 @@ import ClearDay from "../assets/weather-svg/clear-day";
 import Drizzle from "../assets/weather-svg/drizzle";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
 import Rain from "../assets/weather-svg/rain";
+import RainThunderstorms from "../assets/weather-svg/thunderstorms-rain";
 
 const Weather = () => {
   const insets = useSafeAreaInsets();
@@ -65,7 +66,6 @@ const Weather = () => {
     condition: "N/A",
   };
 
-  //Weather icon changes based on condition - pasabi kung ano mga ibang condiiton (e.g. thunderstorms), ito pa lang nakita ko sa api
   const getWeatherIcon = (condition, width = 40, height = 40) => {
     if (!condition) return null;
 
@@ -83,6 +83,8 @@ const Weather = () => {
       case "light rain shower":
       case "patchy rain nearby":
         return <Rain width={width} height={height} />;
+      case "patchy light rain with thunder":
+        return <RainThunderstorms width={width} height={height} />;
       default:
         return null;
     }
@@ -102,7 +104,9 @@ const Weather = () => {
         return ["#75ABCC", "#75ABCC", "#04384E"];
       case "light rain shower":
       case "patchy rain nearby":
-        return ["#888C9B", "#888C9B", "#081318"];
+        return ["#465385", "#465385", "#C1C0C0"];
+      case "patchy light rain with thunder":
+        return ["#C1C0C0", "#C1C0C0", "#4A4444"];
       default:
         return ["#09A1CB", "#09A1CB", "#045065"];
     }

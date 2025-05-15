@@ -5,6 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Image,
+  SafeAreaView,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect, useRef } from "react";
@@ -13,6 +15,8 @@ import { OtpContext } from "../context/OtpContext";
 import { OtpInput } from "react-native-otp-entry";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
+import AppLogo from "../assets/applogo-darkbg.png";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const OTP = ({}) => {
   const route = useRoute();
@@ -32,6 +36,7 @@ const OTP = ({}) => {
   const { sendOTP, verifyOTP } = useContext(OtpContext);
   const { login } = useContext(AuthContext);
   const otpRef = useRef(null);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     let interval = null;
@@ -106,25 +111,79 @@ const OTP = ({}) => {
   };
 
   return (
-    <View style={MyStyles.container}>
-      <View style={{ width: 330 }}>
-        <OtpInput
-          ref={otpRef}
-          type="numeric"
-          numberOfDigits={6}
-          onTextChange={handleOTPChange}
-        />
+    <SafeAreaView
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+    >
+      <View style={{ flex: 4, backgroundColor: "#04384E" }}>
+        <View style={{ flex: 1, alignSelf: "center" }}>
+          <Image source={AppLogo} style={{ width: "180", height: "180" }} />
+        </View>
+        <View
+          style={{
+            alignItems: "start",
+            backgroundColor: "#fff",
+            borderRadius: 15,
+            flex: 3,
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            gap: 20,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 24,
+              color: "#04384E",
+              fontWeight: "bold",
+              marginTop: 10,
+              alignSelf: "flex-start",
+            }}
+          >
+            Account Verification
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#ACACAC",
+            }}
+          >
+            Enter the 6-digit code sent to
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#04384E",
+              marginTop: "-20",
+            }}
+          >
+            +63 9 XXXXX 9688
+          </Text>
+          <OtpInput
+            ref={otpRef}
+            type="numeric"
+            numberOfDigits={6}
+            onTextChange={handleOTPChange}
+          />
+
+          {isResendDisabled ? (
+            <Text style={{ color: "gray" }}>
+              Resend OTP in {resendTimer} second{resendTimer !== 1 ? "s" : ""}
+            </Text>
+          ) : (
+            <View style={{ flexDirection: "row", gap: 4 }}>
+              <Text onPress={handleResend} style={{ color: "#ACACAC" }}>
+                Didn't get a code?
+              </Text>
+              <Text
+                onPress={handleResend}
+                style={{ color: "#006EFF", fontWeight: "bold" }}
+              >
+                Resend OTP
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
-      {isResendDisabled ? (
-        <Text style={{ color: "gray" }}>
-          Resend OTP in {resendTimer} second{resendTimer !== 1 ? "s" : ""}
-        </Text>
-      ) : (
-        <Text onPress={handleResend} style={{ color: "blue" }}>
-          Resend OTP
-        </Text>
-      )}
-    </View>
+    </SafeAreaView>
   );
 };
 export default OTP;
