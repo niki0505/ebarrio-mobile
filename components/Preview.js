@@ -11,6 +11,7 @@ import React, { useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MyStyles } from "./stylesheet/MyStyles";
+import * as SecureStore from "expo-secure-store";
 
 const Preview = () => {
   const navigation = useNavigation();
@@ -91,13 +92,22 @@ const Preview = () => {
     </View>
   );
 
+  const handleLogin = async () => {
+    await SecureStore.setItemAsync("hasLaunched", "true");
+    navigation.navigate("Login");
+  };
+
+  const handleSignUp = async () => {
+    await SecureStore.setItemAsync("hasLaunched", "true");
+    navigation.navigate("Signup");
+  };
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }}
     >
       {/* Skip Button */}
       <View style={{ alignItems: "flex-end", padding: 16 }}>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity onPress={handleLogin}>
           <Text style={{ color: "#0E94D3", fontWeight: "bold" }}>Skip</Text>
         </TouchableOpacity>
       </View>
@@ -151,7 +161,7 @@ const Preview = () => {
         }}
       >
         <TouchableOpacity
-          onPress={() => navigation.navigate("Signup")}
+          onPress={handleSignUp}
           style={MyStyles.button}
           accessibilityLabel="Join the community"
           activeOpacity={0.8}
@@ -168,7 +178,7 @@ const Preview = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("Login")}
+          onPress={handleLogin}
           accessibilityLabel="Go to Login"
         >
           <Text

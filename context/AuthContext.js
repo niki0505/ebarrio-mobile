@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [userDetails, setUserDetails] = useState([]);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
   const fetchUserDetails = async () => {
     try {
@@ -108,6 +109,7 @@ export const AuthProvider = ({ children }) => {
         login,
         userDetails,
         isAuthenticated,
+        isFirstLaunch,
         logout,
         setIsAuthenticated,
       }}

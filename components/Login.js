@@ -19,6 +19,7 @@ import AppLogo from "../assets/applogo-darkbg.png";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import * as SecureStore from "expo-secure-store";
 
 const Login = () => {
   const insets = useSafeAreaInsets();
@@ -62,9 +63,9 @@ const Login = () => {
   };
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
     >
-      <View style={{ flex: 4, backgroundColor: "#04384E" }}>
+      <View style={{ flex: 4 }}>
         <View style={{ flex: 1, alignSelf: "center" }}>
           <Image source={AppLogo} style={{ width: "180", height: "180" }} />
         </View>

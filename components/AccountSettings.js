@@ -195,7 +195,7 @@ const AccountSettings = () => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Abour eBarrio App
+              About eBarrio App
             </Text>
             <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
           </TouchableOpacity>

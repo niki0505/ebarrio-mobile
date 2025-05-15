@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { InfoProvider } from "./context/InfoContext";
 import { OtpProvider } from "./context/OtpContext";
 import { View, Text, Image } from "react-native";
@@ -10,6 +10,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { MyStyles } from "./components/stylesheet/MyStyles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Preview from "./components/Preview";
+import * as SecureStore from "expo-secure-store";
 
 //Screens
 import Login from "./components/Login";
@@ -66,17 +67,40 @@ const BottomTabs = () => {
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      const hasLaunched = await SecureStore.getItemAsync("hasLaunched");
+      if (hasLaunched === null) {
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    };
+    checkFirstLaunch();
+  }, []);
+
+  if (isFirstLaunch === null) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <AuthProvider>
           <OtpProvider>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator
+              screenOptions={{ headerShown: false }}
+              initialRouteName={isFirstLaunch ? "StartScreen" : "Login"}
+            >
               {/* Public Routes */}
+
               <Stack.Screen
                 name="StartScreen"
                 children={() => <PublicRoute element={<StartScreen />} />}
               />
+
               <Stack.Screen
                 name="Preview"
                 children={() => <PublicRoute element={<Preview />} />}
