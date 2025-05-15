@@ -11,23 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const [userDetails, setUserDetails] = useState([]);
-
-  const fetchUserDetails = async () => {
-    try {
-      const response = await api.get("/getuserdetails");
-      console.log(response.data);
-      setUserDetails(response.data);
-    } catch (error) {
-      console.error("Failed to fetch user details:", err);
-    }
-  };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchUserDetails();
-    }
-  }, [isAuthenticated]);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
   useEffect(() => {
     const checkRefreshToken = async () => {
@@ -106,8 +90,8 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         login,
-        userDetails,
         isAuthenticated,
+        isFirstLaunch,
         logout,
         setIsAuthenticated,
       }}

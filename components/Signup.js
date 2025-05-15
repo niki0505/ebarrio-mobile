@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   Alert,
   SafeAreaView,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useState } from "react";
@@ -16,6 +19,8 @@ import { OtpContext } from "../context/OtpContext";
 import api from "../api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
+import AppLogo from "../assets/applogo-darkbg.png";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Signup = () => {
   const insets = useSafeAreaInsets();
@@ -295,197 +300,254 @@ const Signup = () => {
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
-      <View style={MyStyles.container}>
-        <View style={{ flexDirection: "column", gap: 10 }}>
-          {isRegistered ? (
-            <>
-              <View>
-                <TouchableOpacity onPress={() => setIsRegistered(false)}>
-                  <Text>Back Icon</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <View style={{ flex: 4, backgroundColor: "#04384E" }}>
+          <View style={{ flex: 1, alignSelf: "center" }}>
+            <Image source={AppLogo} style={{ width: "180", height: "180" }} />
+          </View>
+
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 10,
+              backgroundColor: "#F0F4F7",
+              borderRadius: 15,
+              flex: 3,
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+              gap: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 24,
+                color: "#04384E",
+                fontWeight: "bold",
+                marginTop: 10,
+                alignSelf: "flex-start",
+              }}
+            >
+              Create your Account
+            </Text>
+            {isRegistered ? (
+              <>
+                <View style={{ width: "100%" }}>
+                  <MaterialIcons
+                    onPress={() => setIsRegistered(false)}
+                    name="arrow-back-ios"
+                    size={30}
+                    color="#04384E"
+                  />
+
+                  <View style={{ marginTop: 10 }}>
+                    <Text style={MyStyles.inputTitle}>
+                      Security Question #1
+                      <Text style={{ color: "red" }}>*</Text>
+                    </Text>
+                    <Dropdown
+                      labelField="label"
+                      valueField="value"
+                      value={securityquestions[0].question}
+                      data={securityQuestionsList
+                        .filter(
+                          (ques) => ques !== securityquestions[1].question
+                        )
+                        .map((ques) => ({
+                          label: ques,
+                          value: ques,
+                        }))}
+                      placeholder="Select"
+                      placeholderStyle={{ color: "gray" }}
+                      onChange={(item) =>
+                        handleSecurityChange(0, "question", item.value)
+                      }
+                      style={MyStyles.input}
+                    ></Dropdown>
+                    {questionErrors1 ? (
+                      <Text style={{ color: "red" }}>{questionErrors1}</Text>
+                    ) : null}
+                    <TextInput
+                      style={MyStyles.input}
+                      placeholder="Enter answer here"
+                      secureTextEntry={true}
+                      value={securityquestions[0].answer}
+                      onChangeText={(val) =>
+                        handleSecurityChange(0, "answer", val)
+                      }
+                    />
+                    {answerErrors1 ? (
+                      <Text style={{ color: "red" }}>{answerErrors1}</Text>
+                    ) : null}
+                  </View>
+                </View>
+
+                <View style={{ width: "100%" }}>
+                  <Text style={MyStyles.inputTitle}>
+                    Security Question #2<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <Dropdown
+                    labelField="label"
+                    valueField="value"
+                    value={securityquestions[1].question}
+                    data={securityQuestionsList
+                      .filter((ques) => ques !== securityquestions[0].question)
+                      .map((ques) => ({
+                        label: ques,
+                        value: ques,
+                      }))}
+                    placeholder="Select"
+                    placeholderStyle={{ color: "gray" }}
+                    onChange={(item) =>
+                      handleSecurityChange(1, "question", item.value)
+                    }
+                    style={MyStyles.input}
+                  ></Dropdown>
+                  {questionErrors2 ? (
+                    <Text style={{ color: "red" }}>{questionErrors2}</Text>
+                  ) : null}
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Enter answer here"
+                    secureTextEntry={true}
+                    value={securityquestions[1].answer}
+                    onChangeText={(val) =>
+                      handleSecurityChange(1, "answer", val)
+                    }
+                  />
+                  {answerErrors2 ? (
+                    <Text style={{ color: "red" }}>{answerErrors2}</Text>
+                  ) : null}
+                </View>
+                <TouchableOpacity
+                  onPress={handleSignUp2}
+                  style={MyStyles.button}
+                >
+                  <Text
+                    style={{ color: "white", fontWeight: "bold", fontSize: 20 }}
+                  >
+                    Sign Up
+                  </Text>
                 </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <View style={{ gap: 10, width: "100%" }}>
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Enter first name here"
+                    value={firstname}
+                    onChangeText={firstnameValidation}
+                  />
+                  {fnameError ? (
+                    <Text style={{ color: "red" }}>{fnameError}</Text>
+                  ) : null}
 
-                <Text style={MyStyles.inputTitle}>
-                  Security Question #1<Text style={{ color: "red" }}>*</Text>
-                </Text>
-                <Dropdown
-                  labelField="label"
-                  valueField="value"
-                  value={securityquestions[0].question}
-                  data={securityQuestionsList
-                    .filter((ques) => ques !== securityquestions[1].question)
-                    .map((ques) => ({
-                      label: ques,
-                      value: ques,
-                    }))}
-                  placeholder="Select"
-                  placeholderStyle={{ color: "gray" }}
-                  onChange={(item) =>
-                    handleSecurityChange(0, "question", item.value)
-                  }
-                  style={MyStyles.input}
-                ></Dropdown>
-                {questionErrors1 ? (
-                  <Text style={{ color: "red" }}>{questionErrors1}</Text>
-                ) : null}
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Enter answer here"
-                  secureTextEntry={true}
-                  value={securityquestions[0].answer}
-                  onChangeText={(val) => handleSecurityChange(0, "answer", val)}
-                />
-                {answerErrors1 ? (
-                  <Text style={{ color: "red" }}>{answerErrors1}</Text>
-                ) : null}
-              </View>
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Enter last name here"
+                    value={lastname}
+                    onChangeText={lastnameValidation}
+                  />
+                  {lnameError ? (
+                    <Text style={{ color: "red" }}>{lnameError}</Text>
+                  ) : null}
 
-              <View>
-                <Text style={MyStyles.inputTitle}>
-                  Security Question #2<Text style={{ color: "red" }}>*</Text>
-                </Text>
-                <Dropdown
-                  labelField="label"
-                  valueField="value"
-                  value={securityquestions[1].question}
-                  data={securityQuestionsList
-                    .filter((ques) => ques !== securityquestions[0].question)
-                    .map((ques) => ({
-                      label: ques,
-                      value: ques,
-                    }))}
-                  placeholder="Select"
-                  placeholderStyle={{ color: "gray" }}
-                  onChange={(item) =>
-                    handleSecurityChange(1, "question", item.value)
-                  }
-                  style={MyStyles.input}
-                ></Dropdown>
-                {questionErrors2 ? (
-                  <Text style={{ color: "red" }}>{questionErrors2}</Text>
-                ) : null}
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Enter answer here"
-                  secureTextEntry={true}
-                  value={securityquestions[1].answer}
-                  onChangeText={(val) => handleSecurityChange(1, "answer", val)}
-                />
-                {answerErrors2 ? (
-                  <Text style={{ color: "red" }}>{answerErrors2}</Text>
-                ) : null}
-              </View>
-              <TouchableOpacity onPress={handleSignUp2} style={MyStyles.button}>
-                <Text
-                  style={{ color: "white", fontWeight: "bold", fontSize: 20 }}
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Enter mobile number here"
+                    value={mobilenumber}
+                    onChangeText={setMobileNumber}
+                  />
+
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Enter username here"
+                    value={username}
+                    autoCapitalize="none"
+                    onChangeText={usernameValidation}
+                    onBlur={() => setUsername(username.toLowerCase())}
+                  />
+                  {usernameErrors.length > 0 && (
+                    <View style={{ marginTop: 5, width: 300 }}>
+                      {usernameErrors.map((error, index) => (
+                        <Text key={index} style={{ color: "red" }}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Enter password here"
+                    secureTextEntry={true}
+                    value={password}
+                    onChangeText={passwordValidation}
+                  />
+                  {passwordErrors.length > 0 && (
+                    <View style={{ marginTop: 5, width: 300 }}>
+                      {passwordErrors.map((error, index) => (
+                        <Text key={index} style={{ color: "red" }}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Confirm password here"
+                    secureTextEntry={true}
+                    value={repassword}
+                    onChangeText={repasswordValidation}
+                  />
+                  {repasswordErrors.length > 0 && (
+                    <View style={{ marginTop: 5, width: 300 }}>
+                      {repasswordErrors.map((error, index) => (
+                        <Text key={index} style={{ color: "red" }}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+                </View>
+
+                <TouchableOpacity
+                  onPress={handleSignUp}
+                  style={MyStyles.button}
                 >
-                  Sign Up
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <View style={{ width: 300 }}>
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Enter first name here"
-                  value={firstname}
-                  onChangeText={firstnameValidation}
-                />
-                {fnameError ? (
-                  <Text style={{ color: "red" }}>{fnameError}</Text>
-                ) : null}
-              </View>
-
-              <View>
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Enter last name here"
-                  value={lastname}
-                  onChangeText={lastnameValidation}
-                />
-                {lnameError ? (
-                  <Text style={{ color: "red" }}>{lnameError}</Text>
-                ) : null}
-              </View>
-
-              <View>
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Enter mobile number here"
-                  value={mobilenumber}
-                  onChangeText={setMobileNumber}
-                />
-              </View>
-              <View>
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Enter username here"
-                  value={username}
-                  autoCapitalize="none"
-                  onChangeText={usernameValidation}
-                  onBlur={() => setUsername(username.toLowerCase())}
-                />
-                {usernameErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
-                    {usernameErrors.map((error, index) => (
-                      <Text key={index} style={{ color: "red" }}>
-                        {error}
-                      </Text>
-                    ))}
-                  </View>
-                )}
-              </View>
-              <View>
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Enter password here"
-                  secureTextEntry={true}
-                  value={password}
-                  onChangeText={passwordValidation}
-                />
-                {passwordErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
-                    {passwordErrors.map((error, index) => (
-                      <Text key={index} style={{ color: "red" }}>
-                        {error}
-                      </Text>
-                    ))}
-                  </View>
-                )}
-              </View>
-              <View>
-                <TextInput
-                  style={MyStyles.textfield}
-                  placeholder="Confirm password here"
-                  secureTextEntry={true}
-                  value={repassword}
-                  onChangeText={repasswordValidation}
-                />
-                {repasswordErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
-                    {repasswordErrors.map((error, index) => (
-                      <Text key={index} style={{ color: "red" }}>
-                        {error}
-                      </Text>
-                    ))}
-                  </View>
-                )}
-              </View>
-
-              <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>
-                <Text
-                  style={{ color: "white", fontWeight: "bold", fontSize: 20 }}
+                  <Text
+                    style={{ color: "white", fontWeight: "bold", fontSize: 20 }}
+                  >
+                    Next
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={{ flexDirection: "row", gap: 4, marginTop: "-10" }}
                 >
-                  Next
-                </Text>
-              </TouchableOpacity>
-              <Text onPress={() => navigation.navigate("Login")}>
-                Go to Login
-              </Text>
-            </>
-          )}
+                  <Text style={{ color: "#ACACAC", fontSize: 16 }}>
+                    Already have an account?
+                  </Text>
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={{
+                      color: "#006EFF",
+                      fontWeight: "bold",
+                      fontSize: 16,
+                    }}
+                  >
+                    Login
+                  </Text>
+                </View>
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

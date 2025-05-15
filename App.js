@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { InfoProvider } from "./context/InfoContext";
 import { OtpProvider } from "./context/OtpContext";
 import { View, Text, Image } from "react-native";
@@ -9,6 +9,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { MyStyles } from "./components/stylesheet/MyStyles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Preview from "./components/Preview";
+import * as SecureStore from "expo-secure-store";
+import { useFonts } from "expo-font";
 
 //Screens
 import Login from "./components/Login";
@@ -24,6 +27,13 @@ import Blotter from "./components/Blotter";
 import Weather from "./components/Weather";
 import AccountSettings from "./components/AccountSettings";
 import Profile from "./components/Profile";
+import Notification from "./components/Notification";
+import StartScreen from "./components/StartScreen";
+import ChangeUsername from "./components/ChangeUsername";
+import ChangePassword from "./components/ChangePassword";
+import EditSecurityQuestions from "./components/EditSecurityQuestions";
+import ForgotPassword from "./components/ForgotPassword";
+import SetPassword from "./components/SetPassword";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -42,6 +52,8 @@ const BottomTabs = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Announcement") {
             iconName = focused ? "megaphone" : "megaphone-outline";
+          } else if (route.name === "Notification") {
+            iconName = focused ? "notifications" : "notifications-outline";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -54,19 +66,65 @@ const BottomTabs = () => {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Announcement" component={Announcement} />
+      <Tab.Screen name="Notification" component={Notification} />
     </Tab.Navigator>
   );
 };
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const [loadFonts] = useFonts({
+    QuicksandBold: require("./assets/fonts/quicksand/Quicksand-Bold.ttf"),
+    QuicksandLight: require("./assets/fonts/quicksand/Quicksand-Light.ttf"),
+    QuicksandMedium: require("./assets/fonts/quicksand/Quicksand-Medium.ttf"),
+    QuicksandRegular: require("./assets/fonts/quicksand/Quicksand-Regular.ttf"),
+    QuicksandSemiBold: require("./assets/fonts/quicksand/Quicksand-SemiBold.ttf"),
+    REMExtraBold: require("./assets/fonts/rem/REM-ExtraBold.ttf"),
+    REMLight: require("./assets/fonts/rem/REM-Light.ttf"),
+    REMMedium: require("./assets/fonts/rem/REM-Medium.ttf"),
+    REMRegular: require("./assets/fonts/rem/REM-Regular.ttf"),
+    REMSemiBold: require("./assets/fonts/rem/REM-SemiBold.ttf"),
+    REMBold: require("./assets/fonts/rem/REM-Bold.ttf"),
+    REMBlack: require("./assets/fonts/rem/REM-Black.ttf"),
+  });
+
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      const hasLaunched = await SecureStore.getItemAsync("hasLaunched");
+      if (hasLaunched === null) {
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    };
+    checkFirstLaunch();
+  }, []);
+
+  if (isFirstLaunch === null) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <AuthProvider>
           <OtpProvider>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator
+              screenOptions={{ headerShown: false }}
+              initialRouteName={isFirstLaunch ? "StartScreen" : "Login"}
+            >
               {/* Public Routes */}
+
+              <Stack.Screen
+                name="StartScreen"
+                children={() => <PublicRoute element={<StartScreen />} />}
+              />
+
+              <Stack.Screen
+                name="Preview"
+                children={() => <PublicRoute element={<Preview />} />}
+              />
               <Stack.Screen
                 name="Login"
                 children={() => <PublicRoute element={<Login />} />}
@@ -78,6 +136,16 @@ export default function App() {
               <Stack.Screen
                 name="OTP"
                 children={() => <PublicRoute element={<OTP />} />}
+              />
+
+              <Stack.Screen
+                name="ForgotPassword"
+                children={() => <PublicRoute element={<ForgotPassword />} />}
+              />
+
+              <Stack.Screen
+                name="SetPassword"
+                children={() => <PublicRoute element={<SetPassword />} />}
               />
 
               {/* Private Routes */}
@@ -162,6 +230,7 @@ export default function App() {
                   />
                 )}
               />
+
               <Stack.Screen
                 name="Profile"
                 children={() => (
@@ -169,6 +238,42 @@ export default function App() {
                     element={
                       <InfoProvider>
                         <Profile />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="ChangeUsername"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <ChangeUsername />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="ChangePassword"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <ChangePassword />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="EditSecurityQuestions"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <EditSecurityQuestions />
                       </InfoProvider>
                     }
                   />
