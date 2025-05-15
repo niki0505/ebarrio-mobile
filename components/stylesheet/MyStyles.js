@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 export const MyStyles = StyleSheet.create({
   title: {
-    fontFamily: "REM-Bold", // must match the internal font name
+    fontFamily: "REM-Bold",
     fontSize: 24,
   },
 
