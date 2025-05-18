@@ -16,9 +16,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OtpContext } from "../context/OtpContext";
 import api from "../api";
 import AppLogo from "../assets/applogo-darkbg.png";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import * as SecureStore from "expo-secure-store";
 
 const Login = () => {
@@ -28,6 +28,12 @@ const Login = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [secureLoginPass, setsecureLoginPass] = useState(true);
+
+  // Toggle Password Visibility
+  const togglesecureLoginPass = () => {
+    setsecureLoginPass(!secureLoginPass);
+  };
 
   const handleLogin = async () => {
     try {
@@ -67,7 +73,7 @@ const Login = () => {
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
     >
-      <View style={{ flex: 4 }}>
+      <View style={{ flex: 4, backgroundColor: "#04384E" }}>
         <View style={{ flex: 1, alignSelf: "center" }}>
           <Image source={AppLogo} style={{ width: "180", height: "180" }} />
         </View>
@@ -77,55 +83,93 @@ const Login = () => {
             flexDirection: "column",
             alignItems: "center",
             backgroundColor: "#F0F4F7",
-            borderRadius: 15,
+            borderRadius: 30,
             flex: 3,
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            gap: 20,
+            padding: 30,
+            bottom: "-10",
           }}
         >
-          <Text
-            style={{
-              fontSize: 24,
-              color: "#04384E",
-              fontWeight: "bold",
-              marginTop: 10,
-              alignSelf: "flex-start",
-            }}
-          >
+          <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
             Login to your Account
           </Text>
-          <View style={{ gap: 10, width: "100%" }}>
-            <View style={MyStyles.loginInputContainer}>
-              <FontAwesome5
-                name="user-alt"
-                size={20}
-                color="#04384E"
-                style={{ marginRight: 10 }}
-              />
+          <View style={{ marginTop: 30, gap: 15, width: "100%" }}>
+            <View
+              style={{
+                position: "relative",
+              }}
+            >
               <TextInput
-                style={MyStyles.loginInput}
+                style={[
+                  MyStyles.input,
+                  {
+                    paddingLeft: 40,
+                    paddingRight: 40,
+                  },
+                ]}
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
               />
-            </View>
 
-            <View style={MyStyles.loginInputContainer}>
-              <Fontisto
-                name="locked"
+              <FontAwesome5
+                name="user-alt"
                 size={20}
                 color="#04384E"
-                style={{ marginRight: 10 }}
+                style={{
+                  position: "absolute",
+                  left: 15,
+                  top: "50%",
+                  transform: [{ translateY: -10 }],
+                }}
               />
+            </View>
 
+            <View
+              style={{
+                position: "relative",
+              }}
+            >
               <TextInput
-                secureTextEntry={true}
-                style={MyStyles.loginInput}
+                secureTextEntry={secureLoginPass}
+                style={[
+                  MyStyles.input,
+                  MyStyles.inputLabel,
+                  {
+                    paddingLeft: 40,
+                    paddingRight: 40,
+                  },
+                ]}
                 placeholder="Password"
                 value={password}
                 onChangeText={setPassword}
               />
+
+              <Fontisto
+                name="locked"
+                size={20}
+                color="#04384E"
+                style={{
+                  position: "absolute",
+                  left: 15,
+                  top: "50%",
+                  transform: [{ translateY: -10 }],
+                }}
+              />
+              <TouchableOpacity
+                onPress={togglesecureLoginPass}
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: "50%",
+                  transform: [{ translateY: -12 }],
+                }}
+              >
+                <Ionicons
+                  name={secureLoginPass ? "eye-off" : "eye"}
+                  size={20}
+                  color="gray"
+                />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -133,33 +177,24 @@ const Login = () => {
             onPress={() => navigation.navigate("ForgotPassword")}
             style={{
               color: "#006EFF",
-              fontWeight: "bold",
               alignSelf: "flex-end",
               fontSize: 16,
-              marginTop: "-10",
+              marginTop: 10,
             }}
           >
             Forgot Password?
           </Text>
 
           <TouchableOpacity onPress={handleLogin} style={MyStyles.button}>
-            <Text
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                fontSize: 24,
-              }}
-            >
-              Log In
-            </Text>
+            <Text style={MyStyles.buttonText}>Log In</Text>
           </TouchableOpacity>
-          <View style={{ flexDirection: "row", gap: 4, marginTop: "-10" }}>
-            <Text style={{ color: "#ACACAC", fontSize: 16 }}>
+          <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
+            <Text style={{ color: "gray", fontSize: 16 }}>
               Don't have an account?
             </Text>
             <Text
               onPress={() => navigation.navigate("Signup")}
-              style={{ color: "#006EFF", fontWeight: "bold", fontSize: 16 }}
+              style={{ color: "#006EFF", fontSize: 16 }}
             >
               Sign up
             </Text>

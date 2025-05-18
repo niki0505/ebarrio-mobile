@@ -1,10 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
 export const MyStyles = StyleSheet.create({
-  title: {
-    fontFamily: "REM-Bold",
-    fontSize: 24,
-  },
-
   container: {
     flex: 1,
     backgroundColor: "#F0F4F7",
@@ -13,21 +8,11 @@ export const MyStyles = StyleSheet.create({
   header: {
     fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 10,
     textAlign: "start",
     color: "#04384E",
+    fontFamily: "REMBold",
   },
   scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#F0F4F7" },
-  input: {
-    width: "100%",
-    height: 45,
-    borderWidth: 1,
-    borderColor: "#ACACAC",
-    borderRadius: 15,
-    fontSize: 16,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -74,7 +59,17 @@ export const MyStyles = StyleSheet.create({
     borderColor: "#ccc",
     marginVertical: 10,
   },
-  inputTitle: {
+  input: {
+    width: "100%",
+    height: 55,
+    borderWidth: 1,
+    borderColor: "#ACACAC",
+    borderRadius: 15,
+    fontSize: 16,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+  },
+  inputLabel: {
     color: "#04384E",
     fontSize: 16,
   },
@@ -91,7 +86,7 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     width: "100%",
-    marginTop: 20,
+    marginTop: 30,
   },
   buttonText: {
     color: "#fff",
@@ -103,7 +98,6 @@ export const MyStyles = StyleSheet.create({
   formMessage: {
     fontSize: 18,
     color: "gray",
-    marginBottom: 20,
   },
 
   //Suggestion

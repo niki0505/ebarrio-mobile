@@ -57,14 +57,12 @@ const AccountSettings = () => {
           }}
         >
           <FontAwesome5 name="user-circle" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            Account
-          </Text>
+          <Text style={{ fontSize: 18, color: "#04384E" }}>Account</Text>
         </View>
         <View
           style={{
             height: 1,
-            backgroundColor: "#C1C0C0",
+            backgroundcolor: "gray",
             width: "100%",
             marginVertical: 10,
           }}
@@ -74,40 +72,34 @@ const AccountSettings = () => {
             onPress={() => navigation.navigate("Profile")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Profile
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <Text style={{ color: "gray", fontSize: 18 }}>Profile</Text>
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("ChangeUsername")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Change Username
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <Text style={{ color: "gray", fontSize: 18 }}>Change Username</Text>
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("ChangePassword")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Change Password
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <Text style={{ color: "gray", fontSize: 18 }}>Change Password</Text>
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("EditSecurityQuestions")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
+            <Text style={{ color: "gray", fontSize: 18 }}>
               Edit Security Questions
             </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
         </View>
 
@@ -120,15 +112,13 @@ const AccountSettings = () => {
           }}
         >
           <Ionicons name="notifications-outline" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            Notifications
-          </Text>
+          <Text style={{ fontSize: 18, color: "#04384E" }}>Notifications</Text>
         </View>
 
         <View
           style={{
             height: 1,
-            backgroundColor: "#C1C0C0",
+            backgroundcolor: "gray",
             width: "100%",
             marginVertical: 10,
           }}
@@ -142,7 +132,7 @@ const AccountSettings = () => {
             marginTop: "-10",
           }}
         >
-          <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
+          <Text style={{ color: "gray", fontSize: 18 }}>
             Push Notifications
           </Text>
           <Switch
@@ -161,9 +151,7 @@ const AccountSettings = () => {
             marginTop: "-15",
           }}
         >
-          <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-            App Notifications
-          </Text>
+          <Text style={{ color: "gray", fontSize: 18 }}>App Notifications</Text>
           <Switch
             value={appNotifEnabled}
             onValueChange={setAppNotifEnabled}
@@ -181,14 +169,12 @@ const AccountSettings = () => {
           }}
         >
           <MaterialIcons name="more-horiz" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            More
-          </Text>
+          <Text style={{ fontSize: 18, color: "#04384E" }}>More</Text>
         </View>
         <View
           style={{
             height: 1,
-            backgroundColor: "#C1C0C0",
+            backgroundcolor: "gray",
             width: "100%",
             marginVertical: 10,
           }}
@@ -197,19 +183,17 @@ const AccountSettings = () => {
           <TouchableOpacity
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
+            <Text style={{ color: "gray", fontSize: 18 }}>
               About eBarrio App
             </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Help
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <Text style={{ color: "gray", fontSize: 18 }}>Help</Text>
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
         </View>
 
@@ -222,9 +206,7 @@ const AccountSettings = () => {
           }}
         >
           <MaterialIcons name="logout" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            Logout
-          </Text>
+          <Text style={{ fontSize: 18, color: "#04384E" }}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

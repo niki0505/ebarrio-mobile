@@ -163,7 +163,6 @@ const Certificates = () => {
             MyStyles.scrollContainer,
             {
               paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
-              gap: 10,
             },
           ]}
         >
@@ -182,7 +181,7 @@ const Certificates = () => {
             Please select the required information for requesting a document
           </Text>
 
-          <View style={{ gap: 15 }}>
+          <View style={{ gap: 15, marginTop: 30 }}>
             <View>
               <Text style={MyStyles.inputTitle}>
                 Type of Certificate<Text style={{ color: "red" }}>*</Text>
