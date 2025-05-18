@@ -11,6 +11,39 @@ export const InfoProvider = ({ children }) => {
   const [announcements, setAnnouncements] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  useEffect(() => {
+    if (announcements) {
+      const announcementEvents = (announcements || [])
+        .filter((a) => a.eventStart && a.eventEnd)
+        .map((a) => ({
+          title: a.title,
+          start: new Date(a.eventStart),
+          end: new Date(a.eventEnd),
+          color:
+            a.category === "General"
+              ? "#E3DE48"
+              : a.category === "Public Safety & Emergency"
+              ? "#FA7020"
+              : a.category === "Health & Sanitation"
+              ? "#E3DE48"
+              : a.category === "Social Services"
+              ? "#50C700"
+              : a.category === "Infrastructure"
+              ? "#0E94D3"
+              : a.category === "Education & Youth"
+              ? "#1E0ED3"
+              : "#3174ad",
+        }));
+
+      setEvents(announcementEvents);
+    }
+  }, [announcements]);
 
   const fetchUserDetails = async () => {
     try {
@@ -67,15 +100,6 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
-  const fetchCalendarEvents = async () => {
-    try {
-      const response = await api.get("/getcalendarevents");
-      setCalendarEvents(response.data);
-    } catch (error) {
-      console.error("❌ Failed to fetch calendar events:", error);
-    }
-  };
-
   return (
     <InfoContext.Provider
       value={{
@@ -86,13 +110,13 @@ export const InfoProvider = ({ children }) => {
         announcements,
         calendarEvents,
         userDetails,
+        events,
         fetchUserDetails,
         fetchEmergencyHotlines,
         fetchWeather,
         fetchResidents,
         fetchReservations,
         fetchAnnouncements,
-        fetchCalendarEvents,
       }}
     >
       {children}

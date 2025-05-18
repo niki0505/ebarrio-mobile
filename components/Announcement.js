@@ -33,7 +33,7 @@ const Announcement = () => {
   const { fetchAnnouncements, announcements } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const [sortOption, setSortOption] = useState("Newest");
+  const [sortOption, setSortOption] = useState("newest");
   dayjs.extend(relativeTime);
   const [expandedAnnouncements, setExpandedAnnouncements] = useState([]);
 
@@ -65,6 +65,10 @@ const Announcement = () => {
   };
 
   const sortedAnnouncements = [...announcements].sort((a, b) => {
+    const aPinned = a.status === "Pinned";
+    const bPinned = b.status === "Pinned";
+    if (aPinned && !bPinned) return -1;
+    if (!aPinned && bPinned) return 1;
     if (sortOption === "newest") {
       return new Date(b.createdAt) - new Date(a.createdAt);
     } else {
@@ -128,7 +132,7 @@ const Announcement = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <ScrollView
         contentContainerStyle={[
@@ -145,7 +149,7 @@ const Announcement = () => {
         <Dropdown
           data={[
             { label: "Newest", value: "newest" },
-            { label: "Latest", value: "latest" },
+            { label: "Oldest", value: "oldest" },
           ]}
           labelField="label"
           valueField="value"
@@ -163,7 +167,7 @@ const Announcement = () => {
             padding: 4,
           }}
         />
-        {announcements.map((element, index) => (
+        {sortedAnnouncements.map((element, index) => (
           <View
             key={index}
             style={{

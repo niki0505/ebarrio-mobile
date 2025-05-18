@@ -34,6 +34,7 @@ import ChangePassword from "./components/ChangePassword";
 import EditSecurityQuestions from "./components/EditSecurityQuestions";
 import ForgotPassword from "./components/ForgotPassword";
 import SetPassword from "./components/SetPassword";
+import BrgyCalendar from "./components/BrgyCalendar";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -273,6 +274,18 @@ export default function App() {
                     element={
                       <InfoProvider>
                         <EditSecurityQuestions />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="BrgyCalendar"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <BrgyCalendar />
                       </InfoProvider>
                     }
                   />

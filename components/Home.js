@@ -41,9 +41,23 @@ const Home = () => {
   const { logout } = useContext(AuthContext);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { fetchWeather, weather } = useContext(InfoContext);
+  const { fetchWeather, weather, events } = useContext(InfoContext);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentEvents, setCurrentEvents] = useState([]);
 
+  useEffect(() => {
+    const currentevents = events.filter((event) => {
+      const eventDate = new Date(event.start);
+      return (
+        eventDate.getFullYear() === currentDate.getFullYear() &&
+        eventDate.getMonth() === currentDate.getMonth() &&
+        eventDate.getDate() === currentDate.getDate()
+      );
+    });
+
+    setCurrentEvents(currentevents);
+  }, [events, currentDate]);
   useEffect(() => {
     fetchWeather();
 
@@ -215,6 +229,7 @@ const Home = () => {
 
             <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
               <TouchableOpacity
+                onPress={() => navigation.navigate("BrgyCalendar")}
                 style={[
                   MyStyles.card,
                   {
@@ -232,7 +247,7 @@ const Home = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  May
+                  {currentDate.toLocaleString("en-US", { month: "long" })}
                 </Text>
                 <Text
                   style={{
@@ -242,18 +257,22 @@ const Home = () => {
                     color: "#04384E",
                   }}
                 >
-                  01
+                  {currentDate.getDate()}
                 </Text>
-                <Text
-                  style={{
-                    textAlign: "start",
-                    fontSize: 14,
-                    color: "#ACACAC",
-                    textAlign: "auto",
-                  }}
-                >
-                  Clean-Up Drive: Cleaner Streets, Stronger Community
-                </Text>
+
+                {currentEvents?.map((event, index) => (
+                  <Text
+                    key={index}
+                    style={{
+                      fontSize: 14,
+                      color: "#ACACAC",
+                      marginRight: 10, // space between items
+                    }}
+                  >
+                    {event.title}
+                    {index !== currentEvents.length - 1 ? "," : ""}{" "}
+                  </Text>
+                ))}
               </TouchableOpacity>
 
               <TouchableOpacity
