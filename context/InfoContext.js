@@ -1,17 +1,20 @@
 import api from "../api";
 import React, { createContext, useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
+import { io } from "socket.io-client";
+
+export const SocketContext = createContext();
 
 export const InfoContext = createContext(undefined);
 
+const socket = io("https://ebarrio-mobile-backend.onrender.com");
+
 export const InfoProvider = ({ children }) => {
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
-  const [emergencyhotlinesoff, setEmergencyHotlinesOff] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
   const [courtreservations, setCourtReservations] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
-  const [calendarEvents, setCalendarEvents] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
   const [events, setEvents] = useState([]);
 
@@ -109,27 +112,39 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    socket.on("dbChange", (updatedData) => {
+      if (updatedData.type === "announcements") {
+        setAnnouncements(updatedData.data);
+      }
+    });
+
+    return () => {
+      socket.off("dbChange");
+    };
+  }, []);
+
   return (
-    <InfoContext.Provider
-      value={{
-        emergencyhotlines,
-        weather,
-        residents,
-        courtreservations,
-        announcements,
-        calendarEvents,
-        userDetails,
-        events,
-        emergencyhotlinesoff,
-        fetchUserDetails,
-        fetchEmergencyHotlines,
-        fetchWeather,
-        fetchResidents,
-        fetchReservations,
-        fetchAnnouncements,
-      }}
-    >
-      {children}
-    </InfoContext.Provider>
+    <SocketContext.Provider value={{ socket }}>
+      <InfoContext.Provider
+        value={{
+          emergencyhotlines,
+          weather,
+          residents,
+          courtreservations,
+          announcements,
+          userDetails,
+          events,
+          fetchUserDetails,
+          fetchEmergencyHotlines,
+          fetchWeather,
+          fetchResidents,
+          fetchReservations,
+          fetchAnnouncements,
+        }}
+      >
+        {children}
+      </InfoContext.Provider>
+    </SocketContext.Provider>
   );
 };

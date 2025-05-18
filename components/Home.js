@@ -48,16 +48,6 @@ const Home = () => {
   const [currentEvents, setCurrentEvents] = useState([]);
 
   useEffect(() => {
-    const fetchEmergencyHotlines = async () => {
-      const storedHotlines = await SecureStore.getItemAsync(
-        "emergencyhotlines"
-      );
-      console.log("storedHotlines", storedHotlines);
-    };
-    fetchEmergencyHotlines();
-  }, []);
-
-  useEffect(() => {
     const currentevents = events.filter((event) => {
       const eventDate = new Date(event.start);
       return (
