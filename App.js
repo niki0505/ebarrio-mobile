@@ -75,18 +75,17 @@ export default function App() {
   const Stack = createNativeStackNavigator();
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [loadFonts] = useFonts({
-    QuicksandBold: require("./assets/fonts/quicksand/Quicksand-Bold.ttf"),
     QuicksandLight: require("./assets/fonts/quicksand/Quicksand-Light.ttf"),
     QuicksandMedium: require("./assets/fonts/quicksand/Quicksand-Medium.ttf"),
     QuicksandRegular: require("./assets/fonts/quicksand/Quicksand-Regular.ttf"),
     QuicksandSemiBold: require("./assets/fonts/quicksand/Quicksand-SemiBold.ttf"),
-    REMExtraBold: require("./assets/fonts/rem/REM-ExtraBold.ttf"),
+    QuicksandBold: require("./assets/fonts/quicksand/Quicksand-Bold.ttf"),
     REMLight: require("./assets/fonts/rem/REM-Light.ttf"),
     REMMedium: require("./assets/fonts/rem/REM-Medium.ttf"),
     REMRegular: require("./assets/fonts/rem/REM-Regular.ttf"),
     REMSemiBold: require("./assets/fonts/rem/REM-SemiBold.ttf"),
     REMBold: require("./assets/fonts/rem/REM-Bold.ttf"),
-    REMBlack: require("./assets/fonts/rem/REM-Black.ttf"),
+    REMExtraBold: require("./assets/fonts/rem/REM-ExtraBold.ttf"),
   });
 
   useEffect(() => {

@@ -17,12 +17,12 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
+import { InfoContext } from "../context/InfoContext";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { InfoContext } from "../context/InfoContext";
 
 //SERVICES ICONS
 import CourtReservation from "../assets/home/basketball.png";
@@ -127,7 +127,7 @@ const Home = () => {
           >
             <View style={MyStyles.rowAlignment}>
               <View>
-                <Text style={[MyStyles.header, { marginBottom: 0 }]}>Home</Text>
+                <Text style={MyStyles.header}>Home</Text>
                 <Text style={{ fontSize: 20, color: "#585252" }}>
                   Welcome, {user.name}
                 </Text>
@@ -289,9 +289,7 @@ const Home = () => {
 
             {user.role === "Resident" && (
               <>
-                <Text
-                  style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}
-                >
+                <Text style={[MyStyles.header, { fontSize: 20 }]}>
                   Services
                 </Text>
                 <View
@@ -360,7 +358,7 @@ const Home = () => {
               </>
             )}
 
-            <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
+            <Text style={[MyStyles.header, { fontSize: 20 }]}>
               Emergency Tools
             </Text>
             <View
