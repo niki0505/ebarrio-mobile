@@ -25,6 +25,7 @@ export const InfoProvider = ({ children }) => {
   useEffect(() => {
     if (announcements) {
       const announcementEvents = (announcements || [])
+        .filter((a) => a.status !== "Archived")
         .filter((a) => a.eventStart && a.eventEnd)
         .map((a) => ({
           title: a.title,
