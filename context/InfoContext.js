@@ -1,10 +1,12 @@
 import api from "../api";
 import React, { createContext, useState, useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
 
 export const InfoContext = createContext(undefined);
 
 export const InfoProvider = ({ children }) => {
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
+  const [emergencyhotlinesoff, setEmergencyHotlinesOff] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
   const [courtreservations, setCourtReservations] = useState([]);
@@ -45,6 +47,10 @@ export const InfoProvider = ({ children }) => {
     }
   }, [announcements]);
 
+  useEffect(() => {
+    fetchEmergencyHotlines();
+  }, []);
+
   const fetchUserDetails = async () => {
     try {
       const response = await api.get("/getuserdetails");
@@ -57,8 +63,11 @@ export const InfoProvider = ({ children }) => {
   const fetchEmergencyHotlines = async () => {
     try {
       const response = await api.get("/getemergencyhotlines");
-      console.log(response.data);
       setEmergencyHotlines(response.data);
+      await SecureStore.setItemAsync(
+        "emergencyhotlines",
+        JSON.stringify(response.data)
+      );
     } catch (error) {
       console.error("Failed to fetch emergency hotlines:", err);
     }
@@ -111,6 +120,7 @@ export const InfoProvider = ({ children }) => {
         calendarEvents,
         userDetails,
         events,
+        emergencyhotlinesoff,
         fetchUserDetails,
         fetchEmergencyHotlines,
         fetchWeather,

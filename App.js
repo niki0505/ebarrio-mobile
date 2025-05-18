@@ -12,6 +12,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Preview from "./components/Preview";
 import * as SecureStore from "expo-secure-store";
 import { useFonts } from "expo-font";
+import NetInfo from "@react-native-community/netinfo";
 
 //Screens
 import Login from "./components/Login";
@@ -35,6 +36,7 @@ import EditSecurityQuestions from "./components/EditSecurityQuestions";
 import ForgotPassword from "./components/ForgotPassword";
 import SetPassword from "./components/SetPassword";
 import BrgyCalendar from "./components/BrgyCalendar";
+import OfflineScreen from "./components/OfflineScreen";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -75,6 +77,7 @@ const BottomTabs = () => {
 export default function App() {
   const Stack = createNativeStackNavigator();
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const [isConnected, setIsConnected] = useState(true);
   const [loadFonts] = useFonts({
     QuicksandLight: require("./assets/fonts/quicksand/Quicksand-Light.ttf"),
     QuicksandMedium: require("./assets/fonts/quicksand/Quicksand-Medium.ttf"),
@@ -90,6 +93,14 @@ export default function App() {
   });
 
   useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsConnected(state.isConnected && state.isInternetReachable);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     const checkFirstLaunch = async () => {
       const hasLaunched = await SecureStore.getItemAsync("hasLaunched");
       if (hasLaunched === null) {
@@ -103,6 +114,16 @@ export default function App() {
 
   if (isFirstLaunch === null) {
     return null;
+  }
+
+  if (!isConnected) {
+    return (
+      <SafeAreaProvider>
+        <>
+          <OfflineScreen />
+        </>
+      </SafeAreaProvider>
+    );
   }
 
   return (

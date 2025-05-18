@@ -36,6 +36,7 @@ import Drizzle from "../assets/weather-svg/drizzle";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
 import Rain from "../assets/weather-svg/rain";
 
+import * as SecureStore from "expo-secure-store";
 const Home = () => {
   const insets = useSafeAreaInsets();
   const { logout } = useContext(AuthContext);
@@ -45,6 +46,16 @@ const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentEvents, setCurrentEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEmergencyHotlines = async () => {
+      const storedHotlines = await SecureStore.getItemAsync(
+        "emergencyhotlines"
+      );
+      console.log("storedHotlines", storedHotlines);
+    };
+    fetchEmergencyHotlines();
+  }, []);
 
   useEffect(() => {
     const currentevents = events.filter((event) => {
