@@ -96,7 +96,7 @@ const EmergencyHotlines = () => {
               <TextInput
                 value={search}
                 onChangeText={handleSearch}
-                style={[MyStyles.input]}
+                style={[MyStyles.input, { paddingLeft: 40, height: 45 }]}
                 placeholder="Search..."
               />
               <MaterialIcons
@@ -118,6 +118,8 @@ const EmergencyHotlines = () => {
                     {
                       flexDirection: "row",
                       backgroundColor: "#fff",
+
+                      alignItems: "center",
                     },
                   ]}
                 >
@@ -129,7 +131,7 @@ const EmergencyHotlines = () => {
                     style={MyStyles.phoneIcon}
                   />
                   <View style={{ marginLeft: 10 }}>
-                    <Text style={MyStyles.inputTitle}>
+                    <Text style={{ color: "#04384E" }}>
                       {element.name.toUpperCase()}
                     </Text>
                     <Text style={{ color: "#04384E" }}>

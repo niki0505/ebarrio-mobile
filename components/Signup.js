@@ -328,7 +328,7 @@ const Signup = () => {
               flexDirection: "column",
               alignItems: "center",
               backgroundColor: "#F0F4F7",
-              borderRadius: 15,
+              borderRadius: 30,
               flex: 3,
               padding: 30,
               bottom: "-10",

@@ -23,10 +23,11 @@ import api from "../api";
 import { Dropdown } from "react-native-element-dropdown";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import AppLogo from "../assets/applogo-lightbg.png";
+import Aniban2Logo from "../assets/aniban2logo.png";
 
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Announcement = () => {
   const insets = useSafeAreaInsets();
@@ -100,7 +101,7 @@ const Announcement = () => {
         hour12: true,
       });
 
-      eventInfo = `📅 ${formattedDate}\n🕒 ${formattedStartTime} - ${formattedEndTime}\n\n`;
+      eventInfo = `📅 ${formattedDate}\n🕒 ${formattedStartTime} - ${formattedEndTime}\n`;
     }
 
     const words = announcement.content.split(" ");
@@ -184,31 +185,53 @@ const Announcement = () => {
               elevation: 5,
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={AppLogo}
-                style={{ width: 60, height: 60, marginLeft: -8 }}
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Image source={Aniban2Logo} style={{ width: 50, height: 50 }} />
+                <View style={{ marginLeft: 5 }}>
+                  <Text style={{ color: "#04384E", fontSize: 16 }}>
+                    {element.uploadedby}
+                  </Text>
+                  <Text style={{ fontSize: 14, color: "000" }}>
+                    {dayjs(element.createdAt).fromNow()}
+                  </Text>
+                </View>
+              </View>
+
+              <MaterialIcons
+                name="push-pin"
+                size={24}
+                color="#04384E"
+                style={{
+                  transform: [{ rotate: "30deg" }],
+                  marginRight: 15,
+                  marginTop: 5,
+                }}
               />
-              <View style={{ marginLeft: 5 }}>
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <View style={{ flexDirection: "row" }}>
                 <Text style={{ color: "#04384E", fontSize: 16 }}>
-                  {element.uploadedby}
+                  Category:{" "}
                 </Text>
-                <Text style={{ fontSize: 14, color: "000" }}>
-                  {dayjs(element.createdAt).fromNow()}
+                <Text style={{ color: "#04384E", fontSize: 16 }}>
+                  {element.category}
                 </Text>
               </View>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>Category: </Text>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>
-                {element.category}
-              </Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>Title: </Text>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>
-                {element.title}
-              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ color: "#04384E", fontSize: 16 }}>Title: </Text>
+                <Text style={{ color: "#04384E", fontSize: 16 }}>
+                  {element.title}
+                </Text>
+              </View>
             </View>
 
             {element.picture && element.picture.trim() !== "" && (
