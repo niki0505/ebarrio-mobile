@@ -718,8 +718,8 @@ const ForgotPassword = () => {
                       marginTop: 10,
                     }}
                   >
-                    Please choose a method to verify {"\n"} your identity and
-                    continue resetting {"\n"} your password
+                    Please choose a method to verify{"\n"}your identity and
+                    continue resetting{"\n"}your password
                   </Text>
 
                   <View
@@ -732,68 +732,57 @@ const ForgotPassword = () => {
                   >
                     <View
                       style={{
-                        width: "100%",
                         height: "15%",
                         backgroundColor: "#F7F5F5",
                         borderColor: "#ACACAC",
                         borderWidth: 1,
                         borderRadius: 20,
-                        justifyContent: "center",
+                        paddingHorizontal: 20,
+                        flexDirection: "row",
                         alignItems: "center",
+                        gap: 15,
                       }}
                     >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 10,
-                        }}
+                      <MaterialIcons
+                        name="password"
+                        size={24}
+                        color="#04384E"
+                      />
+                      <Text
+                        onPress={handleOTP}
+                        style={{ color: "#04384E", fontSize: 20 }}
                       >
-                        <MaterialIcons
-                          name="password"
-                          size={24}
-                          color="#04384E"
-                        />
-                        <Text
-                          onPress={handleOTP}
-                          style={{ color: "#04384E", fontSize: 20 }}
-                        >
-                          One Time Password
-                        </Text>
-                      </View>
+                        One Time Password
+                      </Text>
                     </View>
 
                     <View
                       style={{
-                        width: "100%",
                         height: "15%",
                         backgroundColor: "#F7F5F5",
                         borderColor: "#ACACAC",
                         borderWidth: 1,
                         borderRadius: 20,
-                        justifyContent: "center",
+                        paddingHorizontal: 20,
+                        flexDirection: "row",
                         alignItems: "center",
+                        gap: 15,
                       }}
                     >
-                      <View
+                      <MaterialCommunityIcons
+                        name="comment-question"
+                        size={24}
+                        color="#04384E"
+                      />
+                      <Text
+                        onPress={() => setQuestionsClicked(true)}
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 10,
+                          color: "#04384E",
+                          fontSize: 20,
                         }}
                       >
-                        <MaterialCommunityIcons
-                          name="comment-question"
-                          size={24}
-                          color="#04384E"
-                        />
-                        <Text
-                          onPress={() => setQuestionsClicked(true)}
-                          style={{ color: "#04384E", fontSize: 20 }}
-                        >
-                          Security Question
-                        </Text>
-                      </View>
+                        Security Question
+                      </Text>
                     </View>
                   </View>
                 </View>

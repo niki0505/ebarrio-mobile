@@ -241,8 +241,8 @@ export const MyStyles = StyleSheet.create({
   //Emergency Hotlines
   searchIcon: {
     position: "absolute",
-    right: 10,
-    top: "50%",
+    left: 15,
+    top: "55%",
     transform: [{ translateY: -12 }],
   },
   phoneIcon: {
@@ -270,5 +270,15 @@ export const MyStyles = StyleSheet.create({
     height: 40,
     fontSize: 16,
     color: "#000",
+  },
+  shadow: {
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+
+    // Android shadow
+    elevation: 10,
   },
 });

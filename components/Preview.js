@@ -101,26 +101,34 @@ const Preview = () => {
     await SecureStore.setItemAsync("hasLaunched", "true");
     navigation.navigate("Signup");
   };
+
+  const goToNextSlide = () => {
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < slides.length) {
+      flatListRef.current.scrollToIndex({ index: nextIndex });
+      setCurrentIndex(nextIndex);
+    }
+  };
+
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }}
     >
-      {/* Skip Button */}
-      <View style={{ alignItems: "flex-end", padding: 16 }}>
-        <TouchableOpacity onPress={handleLogin}>
-          <Text style={{ color: "#0E94D3", fontWeight: "bold" }}>Skip</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Slides Section */}
       <View
-        style={{ height: 420, justifyContent: "center", alignItems: "center" }}
+        style={{
+          height: 420,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 50,
+        }}
       >
         <FlatList
           ref={flatListRef}
           data={slides}
           horizontal
           pagingEnabled
+          scrollEnabled={true}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
@@ -160,38 +168,62 @@ const Preview = () => {
           padding: 30,
         }}
       >
-        <TouchableOpacity
-          onPress={handleSignUp}
-          style={MyStyles.button}
-          accessibilityLabel="Join the community"
-          activeOpacity={0.8}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: 24,
-            }}
-          >
-            {isLastSlide ? "Get Started" : "Join Us"}
-          </Text>
-        </TouchableOpacity>
+        {isLastSlide ? (
+          <>
+            {/* Join Us Button */}
+            <TouchableOpacity
+              onPress={handleSignUp}
+              style={MyStyles.button}
+              accessibilityLabel="Join the community"
+              activeOpacity={0.8}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: 24,
+                }}
+              >
+                Join Us
+              </Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={handleLogin}
-          accessibilityLabel="Go to Login"
-        >
-          <Text
-            style={{
-              color: "#0E94D3",
-              fontWeight: "bold",
-              fontSize: 24,
-              marginTop: 15,
-            }}
+            {/* Login Button */}
+            <TouchableOpacity
+              onPress={handleLogin}
+              accessibilityLabel="Go to Login"
+            >
+              <Text
+                style={{
+                  color: "#0E94D3",
+                  fontWeight: "bold",
+                  fontSize: 24,
+                  marginTop: 15,
+                }}
+              >
+                Login
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          /* Next Button */
+          <TouchableOpacity
+            onPress={goToNextSlide}
+            style={MyStyles.button}
+            accessibilityLabel="Go to Next Slide"
+            activeOpacity={0.8}
           >
-            Login
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "bold",
+                fontSize: 24,
+              }}
+            >
+              Next
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
