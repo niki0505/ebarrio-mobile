@@ -140,9 +140,9 @@ const Blotter = () => {
           <Text style={MyStyles.formMessage}>
             Please select the required information for filing a blotter
           </Text>
-          <View style={{ gap: 15 }}>
+          <View style={{ gap: 15, marginVertical: 30 }}>
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Type of the Incident<Text style={{ color: "red" }}>*</Text>
               </Text>
               <Dropdown
@@ -154,7 +154,16 @@ const Blotter = () => {
                   value: type,
                 }))}
                 placeholder="Select"
-                placeholderStyle={{ color: "gray" }}
+                placeholderStyle={{
+                  color: "#808080",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
+                selectedTextStyle={{
+                  color: "#000",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "type", value: itemValue },
@@ -165,7 +174,7 @@ const Blotter = () => {
             </View>
 
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Subject Name<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
@@ -198,7 +207,7 @@ const Blotter = () => {
             </View>
 
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Subject Address<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
@@ -213,7 +222,7 @@ const Blotter = () => {
             </View>
 
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Details of the Incident<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
@@ -224,7 +233,13 @@ const Blotter = () => {
                 maxLength={3000}
                 onChangeText={(text) => handleInputChange("details", text)}
               />
-              <Text style={{ textAlign: "right" }}>
+              <Text
+                style={{
+                  textAlign: "right",
+                  color: "#808080",
+                  fontFamily: "QuicksandSemiBold",
+                }}
+              >
                 {blotterForm.details.length}/3000
               </Text>
             </View>

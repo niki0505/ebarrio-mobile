@@ -92,13 +92,21 @@ const ChangeUsername = () => {
           Change Username
         </Text>
 
-        <View style={{ gap: 10, marginTop: 20 }}>
+        <View style={{ gap: 10, marginVertical: 30 }}>
           <View>
-            <Text style={MyStyles.inputTitle}>Current Username</Text>
-            <Text style={MyStyles.inputTitle}>{userDetails.username}</Text>
+            <Text style={MyStyles.inputLabel}>Current Username</Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: "black",
+                fontFamily: "QuicksandSemiBold",
+              }}
+            >
+              {userDetails.username}
+            </Text>
           </View>
           <View>
-            <Text style={MyStyles.inputTitle}>New Username</Text>
+            <Text style={MyStyles.inputLabel}>New Username</Text>
             <TextInput
               onChangeText={(e) => setUsername(e)}
               placeholder="Enter new username"
@@ -107,7 +115,7 @@ const ChangeUsername = () => {
           </View>
 
           <View>
-            <Text style={MyStyles.inputTitle}>Password</Text>
+            <Text style={MyStyles.inputLabel}>Password</Text>
             <View style={{ position: "relative" }}>
               <TextInput
                 onChangeText={(e) => setPassword(e)}
@@ -132,14 +140,13 @@ const ChangeUsername = () => {
               </TouchableOpacity>
             </View>
           </View>
-
-          <TouchableOpacity
-            onPress={handleUsernameChange}
-            style={MyStyles.button}
-          >
-            <Text style={MyStyles.buttonText}>Save Changes</Text>
-          </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={handleUsernameChange}
+          style={MyStyles.button}
+        >
+          <Text style={MyStyles.buttonText}>Save Changes</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

@@ -130,20 +130,18 @@ const OTP = ({}) => {
           }}
         >
           <Text
-            style={{
-              fontSize: 24,
-              color: "#04384E",
-              fontWeight: "bold",
-              marginTop: 10,
-              alignSelf: "flex-start",
-            }}
+            style={[
+              MyStyles.header,
+              { marginTop: 10, alignSelf: "flex-start" },
+            ]}
           >
             Account Verification
           </Text>
           <Text
             style={{
               fontSize: 16,
-              color: "#ACACAC",
+              color: "#808080",
+              fontFamily: "QuicksandSemiBold",
             }}
           >
             Enter the 6-digit code sent to
@@ -152,6 +150,7 @@ const OTP = ({}) => {
             style={{
               fontSize: 16,
               color: "#04384E",
+              fontFamily: "QuicksandSemiBold",
               marginTop: "-20",
             }}
           >
@@ -165,17 +164,35 @@ const OTP = ({}) => {
           />
 
           {isResendDisabled ? (
-            <Text style={{ color: "gray" }}>
-              Resend OTP in {resendTimer} second{resendTimer !== 1 ? "s" : ""}
+            <Text
+              style={{
+                fontSize: 16,
+                color: "#808080",
+                fontFamily: "QuicksandSemiBold",
+              }}
+            >
+              Resend OTP in <Text style={{ color: "red" }}>{resendTimer} </Text>{" "}
+              second{resendTimer !== 1 ? "s" : ""}
             </Text>
           ) : (
             <View style={{ flexDirection: "row", gap: 4 }}>
-              <Text onPress={handleResend} style={{ color: "#ACACAC" }}>
+              <Text
+                onPress={handleResend}
+                style={{
+                  fontSize: 16,
+                  color: "#808080",
+                  fontFamily: "QuicksandSemiBold",
+                }}
+              >
                 Didn't get a code?
               </Text>
               <Text
                 onPress={handleResend}
-                style={{ color: "#006EFF", fontWeight: "bold" }}
+                style={{
+                  color: "#006EFF",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                }}
               >
                 Resend OTP
               </Text>

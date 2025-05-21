@@ -118,7 +118,6 @@ const EmergencyHotlines = () => {
                     {
                       flexDirection: "row",
                       backgroundColor: "#fff",
-
                       alignItems: "center",
                     },
                   ]}
@@ -131,10 +130,22 @@ const EmergencyHotlines = () => {
                     style={MyStyles.phoneIcon}
                   />
                   <View style={{ marginLeft: 10 }}>
-                    <Text style={{ color: "#04384E" }}>
+                    <Text
+                      style={{
+                        color: "#04384E",
+                        fontFamily: "REMSemiBold",
+                        fontSize: 16,
+                      }}
+                    >
                       {element.name.toUpperCase()}
                     </Text>
-                    <Text style={{ color: "#04384E" }}>
+                    <Text
+                      style={{
+                        color: "#04384E",
+                        fontFamily: "QuicksandSemiBold",
+                        fontSize: 16,
+                      }}
+                    >
                       {element.contactnumber}
                     </Text>
                   </View>

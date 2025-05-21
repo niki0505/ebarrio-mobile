@@ -43,7 +43,7 @@ const BrgyCalendar = () => {
           borderRadius: 5,
         }}
       />
-      <Text style={{ fontSize: 14 }}>{label}</Text>
+      <Text style={{ fontSize: 13, fontFamily: "REMRegular" }}>{label}</Text>
     </View>
   );
 
@@ -78,6 +78,7 @@ const BrgyCalendar = () => {
               textAlign: "center",
               marginBottom: 20,
               color: "#04384E",
+              fontFamily: "QuicksandBold",
             }}
           >
             {currentDate.toLocaleString("en-US", {
@@ -121,7 +122,14 @@ const BrgyCalendar = () => {
         </View>
 
         <View>
-          <Text style={{ color: "#04384E", fontSize: 20, marginTop: 30 }}>
+          <Text
+            style={{
+              color: "#04384E",
+              fontSize: 20,
+              fontFamily: "REMMedium",
+              marginTop: 30,
+            }}
+          >
             Important Events
           </Text>
 
@@ -139,7 +147,13 @@ const BrgyCalendar = () => {
                 },
               ]}
             >
-              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                }}
+              >
                 📅{" "}
                 {new Date(event.start).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -148,7 +162,13 @@ const BrgyCalendar = () => {
                 })}
               </Text>
 
-              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                }}
+              >
                 🕒{" "}
                 {new Date(event.start).toLocaleTimeString("en-US", {
                   hour: "2-digit",
@@ -166,6 +186,7 @@ const BrgyCalendar = () => {
                   color: "#fff",
                   fontSize: 16,
                   marginTop: 10,
+                  fontFamily: "QuicksandMedium",
                 }}
               >
                 {event.title}

@@ -287,29 +287,23 @@ const ForgotPassword = () => {
               padding: 30,
             }}
           >
-            <Text
-              style={{
-                fontSize: 24,
-                color: "#04384E",
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-              }}
-            >
+            <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Forgot Password
             </Text>
 
             <Text
               style={{
-                fontSize: 15,
-                color: "gray",
+                fontSize: 16,
+                color: "#808080",
                 alignSelf: "flex-start",
                 marginTop: 10,
+                fontFamily: "QuicksandSemiBold",
               }}
             >
               Enter your username to reset your password
             </Text>
 
-            <View style={{ marginTop: 30, gap: 10, width: "100%" }}>
+            <View style={{ marginVertical: 30, gap: 10, width: "100%" }}>
               <TextInput
                 onChangeText={setUsername}
                 placeholder="Enter username"
@@ -318,20 +312,17 @@ const ForgotPassword = () => {
             </View>
 
             <TouchableOpacity onPress={handleSubmit} style={MyStyles.button}>
-              <Text
-                style={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: 24,
-                }}
-              >
-                Submit
-              </Text>
+              <Text style={MyStyles.buttonText}>Submit</Text>
             </TouchableOpacity>
 
             <Text
               onPress={() => navigation.navigate("Login")}
-              style={{ color: "#006EFF", fontSize: 16, marginTop: 10 }}
+              style={{
+                color: "#006EFF",
+                fontSize: 16,
+                marginTop: 10,
+                fontFamily: "QuicksandBold",
+              }}
             >
               Remember your password?
             </Text>
@@ -359,110 +350,112 @@ const ForgotPassword = () => {
                 <View
                   style={{
                     width: "80%",
-                    height: "45%",
+                    height: "50%",
                     backgroundColor: "#fff",
                     borderRadius: 20,
-                    padding: 30,
-                    flexDirection: "column",
-                    alignItems: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  <MaterialIcons
-                    onPress={() => setOTPClicked(false)}
-                    name="arrow-back-ios"
-                    size={30}
-                    color="#04384E"
-                    style={{ alignSelf: "flex-start" }}
-                  />
-
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      color: "#04384E",
-                      fontWeight: "bold",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
+                  <ScrollView
+                    contentContainerStyle={{
+                      padding: 30,
+                      alignItems: "center",
                     }}
+                    showsVerticalScrollIndicator={true}
                   >
-                    Reset Password
-                  </Text>
+                    <MaterialIcons
+                      onPress={() => setOTPClicked(false)}
+                      name="arrow-back-ios"
+                      size={30}
+                      color="#04384E"
+                      style={{ alignSelf: "flex-start" }}
+                    />
 
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: "gray",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
-                    }}
-                  >
-                    To ensure the security of your account, {"\n"}please create
-                    a new password.
-                  </Text>
+                    <Text
+                      style={[
+                        MyStyles.header,
+                        {
+                          alignSelf: "flex-start",
+                          marginTop: 10,
+                          fontSize: 24,
+                        },
+                      ]}
+                    >
+                      Reset Password
+                    </Text>
 
-                  <View style={{ marginTop: 30, gap: 10, width: "100%" }}>
-                    <View style={{ position: "relative" }}>
-                      <TextInput
-                        onChangeText={setNewPassword}
-                        secureTextEntry={secureNewPass}
-                        placeholder="New Password"
-                        style={[MyStyles.input, { paddingRight: 40 }]}
-                      />
-                      <TouchableOpacity
-                        style={{
-                          position: "absolute",
-                          right: 10,
-                          top: "50%",
-                          transform: [{ translateY: -12 }],
-                        }}
-                        onPress={togglesecureNewPass}
-                      >
-                        <Ionicons
-                          name={secureNewPass ? "eye-off" : "eye"}
-                          size={24}
-                          color="gray"
-                        />
-                      </TouchableOpacity>
-                    </View>
-
-                    <View style={{ position: "relative" }}>
-                      <TextInput
-                        onChangeText={setReNewPassword}
-                        secureTextEntry={secureConfirmPass}
-                        placeholder="Confirm New Password"
-                        style={[MyStyles.input, { paddingRight: 40 }]}
-                      />
-                      <TouchableOpacity
-                        style={{
-                          position: "absolute",
-                          right: 10,
-                          top: "50%",
-                          transform: [{ translateY: -12 }],
-                        }}
-                        onPress={togglesecureConfirmPass}
-                      >
-                        <Ionicons
-                          name={secureConfirmPass ? "eye-off" : "eye"}
-                          size={24}
-                          color="gray"
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-
-                  <TouchableOpacity
-                    onPress={handleSuccessful}
-                    style={MyStyles.button}
-                  >
                     <Text
                       style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        fontSize: 24,
+                        fontSize: 16,
+                        color: "#808080",
+                        alignSelf: "flex-start",
+                        marginTop: 10,
+                        fontFamily: "QuicksandSemiBold",
                       }}
                     >
-                      Confirm
+                      To ensure the security of your account, please create a
+                      new password.
                     </Text>
-                  </TouchableOpacity>
+
+                    <View
+                      style={{ marginVertical: 30, gap: 10, width: "100%" }}
+                    >
+                      <View style={{ position: "relative" }}>
+                        <TextInput
+                          onChangeText={setNewPassword}
+                          secureTextEntry={secureNewPass}
+                          placeholder="New Password"
+                          style={[MyStyles.input, { paddingRight: 40 }]}
+                        />
+                        <TouchableOpacity
+                          style={{
+                            position: "absolute",
+                            right: 10,
+                            top: "50%",
+                            transform: [{ translateY: -12 }],
+                          }}
+                          onPress={togglesecureNewPass}
+                        >
+                          <Ionicons
+                            name={secureNewPass ? "eye-off" : "eye"}
+                            size={24}
+                            color="#808080"
+                          />
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={{ position: "relative" }}>
+                        <TextInput
+                          onChangeText={setReNewPassword}
+                          secureTextEntry={secureConfirmPass}
+                          placeholder="Confirm New Password"
+                          style={[MyStyles.input, { paddingRight: 40 }]}
+                        />
+                        <TouchableOpacity
+                          style={{
+                            position: "absolute",
+                            right: 10,
+                            top: "50%",
+                            transform: [{ translateY: -12 }],
+                          }}
+                          onPress={togglesecureConfirmPass}
+                        >
+                          <Ionicons
+                            name={secureConfirmPass ? "eye-off" : "eye"}
+                            size={24}
+                            color="#808080"
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={handleSuccessful}
+                      style={MyStyles.button}
+                    >
+                      <Text style={MyStyles.buttonText}>Confirm</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
                 </View>
               </View>
             </>
@@ -498,33 +491,32 @@ const ForgotPassword = () => {
                     style={{ alignSelf: "flex-start" }}
                   />
                   <Text
-                    style={{
-                      fontSize: 24,
-                      color: "#04384E",
-                      fontWeight: "bold",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
-                    }}
+                    style={[
+                      MyStyles.header,
+                      { alignSelf: "flex-start", marginTop: 10, fontSize: 24 },
+                    ]}
                   >
                     Account Verification
                   </Text>
 
                   <Text
                     style={{
-                      fontSize: 15,
-                      color: "gray",
+                      fontSize: 16,
+                      color: "#808080",
                       alignSelf: "flex-start",
                       marginTop: 10,
+                      fontFamily: "QuicksandSemiBold",
                     }}
                   >
                     Enter the 6-digit code sent to
                   </Text>
                   <Text
                     style={{
-                      fontSize: 15,
+                      fontSize: 16,
                       color: "#04384E",
                       alignSelf: "flex-start",
                       marginTop: 5,
+                      fontFamily: "QuicksandSemiBold",
                     }}
                   >
                     {user.resID?.mobilenumber || user.empID?.resID.mobilenumber}
@@ -542,12 +534,15 @@ const ForgotPassword = () => {
                   {isResendDisabled ? (
                     <Text
                       style={{
-                        color: "gray",
+                        fontSize: 16,
+                        color: "#808080",
                         alignSelf: "flex-start",
                         marginTop: 10,
+                        fontFamily: "QuicksandSemiBold",
                       }}
                     >
-                      Resend OTP in {resendTimer} second
+                      Resend OTP in{" "}
+                      <Text style={{ color: "red" }}>{resendTimer} </Text>second
                       {resendTimer !== 1 ? "s" : ""}
                     </Text>
                   ) : (
@@ -559,10 +554,24 @@ const ForgotPassword = () => {
                         marginTop: 10,
                       }}
                     >
-                      <Text onPress={handleResend} style={{ color: "gray" }}>
+                      <Text
+                        onPress={handleResend}
+                        style={{
+                          fontSize: 16,
+                          color: "#808080",
+                          fontFamily: "QuicksandSemiBold",
+                        }}
+                      >
                         Didn't get a code?
                       </Text>
-                      <Text onPress={handleResend} style={{ color: "#006EFF" }}>
+                      <Text
+                        onPress={handleResend}
+                        style={{
+                          color: "#006EFF",
+                          fontSize: 16,
+                          fontFamily: "QuicksandBold",
+                        }}
+                      >
                         Resend OTP
                       </Text>
                     </View>
@@ -587,82 +596,84 @@ const ForgotPassword = () => {
                 <View
                   style={{
                     width: "80%",
-                    height: "45%",
+                    height: "50%",
                     backgroundColor: "#fff",
                     borderRadius: 20,
-                    padding: 30,
-                    flexDirection: "column",
-                    alignItems: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  <MaterialIcons
-                    name="arrow-back-ios"
-                    size={30}
-                    color="#04384E"
-                    style={{ alignSelf: "flex-start" }}
-                  />
-
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      color: "#04384E",
-                      fontWeight: "bold",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
+                  <ScrollView
+                    contentContainerStyle={{
+                      padding: 30,
+                      alignItems: "center",
                     }}
+                    showsVerticalScrollIndicator={true}
                   >
-                    Security Question
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: "gray",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
-                    }}
-                  >
-                    To verify your identity, please answer {"\n"}
-                    your chosen security question below.
-                  </Text>
-
-                  <View style={{ marginTop: 30, gap: 10, width: "100%" }}>
-                    <Dropdown
-                      labelField="label"
-                      valueField="value"
-                      value={securityquestion.question}
-                      data={user.securityquestions?.map((q) => ({
-                        label: q.question,
-                        value: q.question,
-                      }))}
-                      placeholder="Select"
-                      placeholderStyle={{ color: "gray" }}
-                      onChange={(item) =>
-                        handleInputChange("question", item.value)
-                      }
-                      style={MyStyles.input}
-                    ></Dropdown>
-                    <TextInput
-                      onChangeText={(e) => handleInputChange("answer", e)}
-                      secureTextEntry={true}
-                      placeholder="Enter answer"
-                      style={MyStyles.input}
+                    <MaterialIcons
+                      name="arrow-back-ios"
+                      size={30}
+                      color="#04384E"
+                      style={{ alignSelf: "flex-start" }}
                     />
-                  </View>
 
-                  <TouchableOpacity
-                    onPress={handleQuestionVerify}
-                    style={MyStyles.button}
-                  >
+                    <Text
+                      style={[
+                        MyStyles.header,
+                        {
+                          alignSelf: "flex-start",
+                          marginTop: 10,
+                          fontSize: 24,
+                        },
+                      ]}
+                    >
+                      Security Question
+                    </Text>
                     <Text
                       style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        fontSize: 24,
+                        fontSize: 16,
+                        color: "#808080",
+                        alignSelf: "flex-start",
+                        marginTop: 10,
+                        fontFamily: "QuicksandSemiBold",
                       }}
                     >
-                      Continue
+                      To verify your identity, please answer your chosen
+                      security question below.
                     </Text>
-                  </TouchableOpacity>
+
+                    <View
+                      style={{ marginVertical: 30, gap: 10, width: "100%" }}
+                    >
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={securityquestion.question}
+                        data={user.securityquestions?.map((q) => ({
+                          label: q.question,
+                          value: q.question,
+                        }))}
+                        placeholder="Select"
+                        placeholderStyle={{ color: "#808080" }}
+                        onChange={(item) =>
+                          handleInputChange("question", item.value)
+                        }
+                        style={MyStyles.input}
+                      ></Dropdown>
+                      <TextInput
+                        onChangeText={(e) => handleInputChange("answer", e)}
+                        secureTextEntry={true}
+                        placeholder="Enter answer"
+                        style={MyStyles.input}
+                      />
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={handleQuestionVerify}
+                      style={MyStyles.button}
+                    >
+                      <Text style={[MyStyles.buttonText]}>Continue</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
                 </View>
               </View>
             </>
@@ -700,26 +711,24 @@ const ForgotPassword = () => {
                     style={{ alignSelf: "flex-start" }}
                   />
                   <Text
-                    style={{
-                      fontSize: 24,
-                      color: "#04384E",
-                      fontWeight: "bold",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
-                    }}
+                    style={[
+                      MyStyles.header,
+                      { alignSelf: "flex-start", marginTop: 10, fontSize: 24 },
+                    ]}
                   >
                     Verification Method
                   </Text>
                   <Text
                     style={{
-                      fontSize: 15,
-                      color: "gray",
+                      fontSize: 16,
+                      color: "#808080",
                       alignSelf: "flex-start",
                       marginTop: 10,
+                      fontFamily: "QuicksandSemiBold",
                     }}
                   >
-                    Please choose a method to verify{"\n"}your identity and
-                    continue resetting{"\n"}your password
+                    Please choose a method to verify your identity and continue
+                    resetting your password
                   </Text>
 
                   <View
@@ -750,7 +759,11 @@ const ForgotPassword = () => {
                       />
                       <Text
                         onPress={handleOTP}
-                        style={{ color: "#04384E", fontSize: 20 }}
+                        style={{
+                          color: "#04384E",
+                          fontSize: 18,
+                          fontFamily: "QuicksandSemiBold",
+                        }}
                       >
                         One Time Password
                       </Text>
@@ -778,7 +791,8 @@ const ForgotPassword = () => {
                         onPress={() => setQuestionsClicked(true)}
                         style={{
                           color: "#04384E",
-                          fontSize: 20,
+                          fontSize: 18,
+                          fontFamily: "QuicksandSemiBold",
                         }}
                       >
                         Security Question

@@ -46,16 +46,7 @@ const Status = () => {
             size={30}
             color="#04384E"
           />
-          <Text
-            style={{
-              padding: 10,
-              fontSize: 24,
-              color: "#04384E",
-              fontWeight: "bold",
-            }}
-          >
-            Status
-          </Text>
+          <Text style={MyStyles.header}>Status</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

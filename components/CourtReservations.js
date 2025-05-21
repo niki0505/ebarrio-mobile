@@ -257,9 +257,9 @@ const CourtReservations = () => {
             Please fill out the required information for reserving a court
           </Text>
 
-          <View style={{ gap: 15 }}>
+          <View style={{ gap: 15, marginVertical: 30 }}>
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Purpose<Text style={{ color: "red" }}>*</Text>
               </Text>
               <Dropdown
@@ -271,7 +271,16 @@ const CourtReservations = () => {
                   value: purp,
                 }))}
                 placeholder="Select"
-                placeholderStyle={{ color: "gray" }}
+                placeholderStyle={{
+                  color: "#808080",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
+                selectedTextStyle={{
+                  color: "#000",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "purpose", value: itemValue },
@@ -284,7 +293,7 @@ const CourtReservations = () => {
             {Platform.OS === "android" && (
               <>
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Date<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -310,7 +319,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Start Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -342,7 +351,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     End Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -378,7 +387,7 @@ const CourtReservations = () => {
             {Platform.OS === "ios" && (
               <>
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Date<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -405,7 +414,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Start Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -437,7 +446,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     End Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -472,7 +481,7 @@ const CourtReservations = () => {
 
             {/* {Platform.OS === "ios" && (
               <>
-                <Text style={MyStyles.inputTitle}>
+                <Text style={MyStyles.inputLabel}>
                   Date<Text style={{ color: "red" }}>*</Text>
                 </Text>
                 <DateTimePicker
@@ -482,7 +491,7 @@ const CourtReservations = () => {
                   onChange={handleDateChange}
                   minimumDate={new Date()}
                 />
-                <Text style={MyStyles.inputTitle}>
+                <Text style={MyStyles.inputLabel}>
                   Start Time<Text style={{ color: "red" }}>*</Text>
                 </Text>
                 <DateTimePicker
@@ -491,7 +500,7 @@ const CourtReservations = () => {
                   display="default"
                   onChange={handleStartTimeChange}
                 />
-                <Text style={MyStyles.inputTitle}>
+                <Text style={MyStyles.inputLabel}>
                   End Time<Text style={{ color: "red" }}>*</Text>
                 </Text>
                 <DateTimePicker
@@ -503,7 +512,7 @@ const CourtReservations = () => {
               </>
             )} */}
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Amount<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput

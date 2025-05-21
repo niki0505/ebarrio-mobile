@@ -4,14 +4,20 @@ export const MyStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F0F4F7",
     padding: 20,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   header: {
     fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "start",
     color: "#04384E",
     fontFamily: "REMBold",
   },
+  textMedium: {
+    fontSize: 16,
+    color: "#808080",
+    fontFamily: "QuicksandMedium",
+  },
+
   scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#F0F4F7" },
   loadingContainer: {
     flex: 1,
@@ -48,7 +54,8 @@ export const MyStyles = StyleSheet.create({
   },
   tabBarLabel: {
     paddingBottom: 5,
-    fontSize: 14,
+    fontSize: 16,
+    fontFamily: "QuicksandSemiBold",
     textAlign: "center",
     marginBottom: 5,
   },
@@ -68,10 +75,12 @@ export const MyStyles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+    fontFamily: "QuicksandMedium",
   },
   inputLabel: {
     color: "#04384E",
     fontSize: 16,
+    fontFamily: "QuicksandBold",
   },
   datetimeRow: {
     flexDirection: "row",
@@ -86,18 +95,18 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     width: "100%",
-    marginTop: 30,
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "REMBold",
     fontSize: 24,
   },
 
   //Form message
   formMessage: {
-    fontSize: 18,
-    color: "gray",
+    fontSize: 16,
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
   },
 
   //Suggestion
@@ -147,18 +156,18 @@ export const MyStyles = StyleSheet.create({
   weatherHeaderText: {
     fontSize: 30,
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "REMBold",
     marginVertical: 10,
   },
   weatherBodyText: {
     color: "#fff",
     fontWeight: "400",
-    fontSize: 14,
-    fontWeight: "normal",
+    fontSize: 16,
+    fontFamily: "QuicksandSemiBold",
   },
   weatherSubheaderText: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: "QuicksandBold",
     color: "#fff",
   },
   hourlyforecastContainer: {
@@ -205,7 +214,7 @@ export const MyStyles = StyleSheet.create({
   servicesTitle: {
     fontSize: 16,
     color: "#04384E",
-    fontWeight: "600",
+    fontFamily: "QuicksandBold",
     marginTop: 10,
     textAlign: "center",
   },
@@ -227,8 +236,8 @@ export const MyStyles = StyleSheet.create({
   },
   emergencyTitle: {
     color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontFamily: "REMSemiBold",
     textAlign: "center",
   },
   emergencyMessage: {
@@ -236,6 +245,7 @@ export const MyStyles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     opacity: 0.7,
+    fontFamily: "QuicksandBold",
   },
 
   //Emergency Hotlines
