@@ -18,14 +18,14 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Status = () => {
+const RespondedSOS = () => {
   const insets = useSafeAreaInsets();
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -46,11 +46,11 @@ const Status = () => {
             size={30}
             color="#04384E"
           />
-          <Text style={MyStyles.header}>Status</Text>
+          <Text style={MyStyles.header}>Responded SOS</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-export default Status;
+export default RespondedSOS;

@@ -37,6 +37,10 @@ import ForgotPassword from "./components/ForgotPassword";
 import SetPassword from "./components/SetPassword";
 import BrgyCalendar from "./components/BrgyCalendar";
 import OfflineScreen from "./components/OfflineScreen";
+import EditMobileNumber from "./components/EditMobileNumber";
+import SOS from "./components/SOS";
+import SOSRequests from "./components/SOSRequests";
+import RespondedSOS from "./components/RespondedSOS";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -298,12 +302,60 @@ export default function App() {
                 )}
               />
               <Stack.Screen
+                name="EditMobileNumber"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <EditMobileNumber />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
                 name="BrgyCalendar"
                 children={() => (
                   <PrivateRoute
                     element={
                       <InfoProvider>
                         <BrgyCalendar />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="SOS"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <SOS />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="SOSRequests"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <SOSRequests />
+                      </InfoProvider>
+                    }
+                  />
+                )}
+              />
+              <Stack.Screen
+                name="RespondedSOS"
+                children={() => (
+                  <PrivateRoute
+                    element={
+                      <InfoProvider>
+                        <RespondedSOS />
                       </InfoProvider>
                     }
                   />

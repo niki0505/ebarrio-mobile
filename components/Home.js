@@ -429,7 +429,10 @@ const Home = () => {
                 gap: 10,
               }}
             >
-              <TouchableOpacity style={MyStyles.sosContainer}>
+              <TouchableOpacity
+                style={MyStyles.sosContainer}
+                onPress={() => navigation.navigate("SOS")}
+              >
                 <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
                   SOS
                 </Text>

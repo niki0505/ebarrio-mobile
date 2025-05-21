@@ -227,7 +227,7 @@ const Announcement = () => {
                       fontFamily: "QuicksandBold",
                     }}
                   >
-                    {element.uploadedby}
+                    Barangay Aniban 2
                   </Text>
                   <Text
                     style={{
@@ -241,16 +241,18 @@ const Announcement = () => {
                 </View>
               </View>
 
-              <MaterialIcons
-                name="push-pin"
-                size={24}
-                color="#04384E"
-                style={{
-                  transform: [{ rotate: "30deg" }],
-                  marginRight: 15,
-                  marginTop: 5,
-                }}
-              />
+              {element.status === "Pinned" && (
+                <MaterialIcons
+                  name="push-pin"
+                  size={24}
+                  color="#04384E"
+                  style={{
+                    transform: [{ rotate: "30deg" }],
+                    marginRight: 15,
+                    marginTop: 5,
+                  }}
+                />
+              )}
             </View>
 
             <View style={{ marginVertical: 10 }}>

@@ -8,6 +8,7 @@ import {
   Platform,
   Image,
   TextInput,
+  Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -26,6 +27,10 @@ const OfflineScreen = () => {
   const insets = useSafeAreaInsets();
   const [storedEmergencyHotlines, setStoredEmergencyHotlines] = useState([]);
   const [isEmergencyClicked, setEmergencyClicked] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filteredEmergencyHotlines, setFilteredEmergencyHotlines] = useState(
+    []
+  );
 
   useEffect(() => {
     const fetchEmergencyHotlines = async () => {
@@ -39,9 +44,37 @@ const OfflineScreen = () => {
     fetchEmergencyHotlines();
   }, []);
 
+  useEffect(() => {
+    if (search) {
+      const filtered = storedEmergencyHotlines.filter((emergency) => {
+        return emergency.name.includes(search);
+      });
+      setFilteredEmergencyHotlines(filtered);
+    } else {
+      setFilteredEmergencyHotlines(storedEmergencyHotlines);
+    }
+  }, [search, storedEmergencyHotlines]);
+
+  const handleCall = (contactNumber) => {
+    const phoneNumber = `tel:${contactNumber}`;
+    Linking.openURL(phoneNumber).catch((err) =>
+      console.error("Error opening dialer: ", err)
+    );
+  };
+
+  const handleSearch = (text) => {
+    const sanitizedText = text.replace(/[^a-zA-Z\s.]/g, "");
+    const formattedText = sanitizedText
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+
+    setSearch(formattedText);
+  };
+
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -186,6 +219,8 @@ const OfflineScreen = () => {
               <View style={{ gap: 15 }}>
                 <View style={{ position: "relative" }}>
                   <TextInput
+                    value={search}
+                    onChangeText={handleSearch}
                     style={[MyStyles.input, { paddingLeft: 40, height: 45 }]}
                     placeholder="Search..."
                   />
@@ -197,47 +232,54 @@ const OfflineScreen = () => {
                   />
                 </View>
 
-                {storedEmergencyHotlines.map((hotline) => (
-                  <View
-                    key={hotline._id}
-                    style={[
-                      MyStyles.input,
-                      {
-                        flexDirection: "row",
-                        backgroundColor: "#fff",
-
-                        alignItems: "center",
-                      },
-                    ]}
-                  >
-                    <MaterialIcons
-                      name="call"
-                      size={20}
-                      color="#fff"
-                      style={MyStyles.phoneIcon}
-                    />
-                    <View style={{ marginLeft: 10 }}>
-                      <Text
-                        style={{
-                          color: "#04384E",
-                          fontFamily: "REMSemiBold",
-                          fontSize: 16,
-                        }}
-                      >
-                        {hotline.name.toUpperCase()}
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#04384E",
-                          fontFamily: "QuicksandSemiBold",
-                          fontSize: 16,
-                        }}
-                      >
-                        {hotline.contactnumber}
-                      </Text>
-                    </View>
-                  </View>
-                ))}
+                {filteredEmergencyHotlines.length === 0 ? (
+                  <Text style={{ color: "#fff", marginTop: 20 }}>
+                    No results found
+                  </Text>
+                ) : (
+                  filteredEmergencyHotlines.map((hotline) => (
+                    <TouchableOpacity
+                      key={hotline._id}
+                      onPress={() => handleCall(hotline.contactnumber)}
+                      style={[
+                        MyStyles.input,
+                        {
+                          flexDirection: "row",
+                          backgroundColor: "#fff",
+                          alignItems: "center",
+                          padding: 10,
+                        },
+                      ]}
+                    >
+                      <MaterialIcons
+                        name="call"
+                        size={20}
+                        color="#BC0F0F"
+                        style={{ marginRight: 10 }}
+                      />
+                      <View>
+                        <Text
+                          style={{
+                            color: "#04384E",
+                            fontFamily: "REMSemiBold",
+                            fontSize: 16,
+                          }}
+                        >
+                          {hotline.name.toUpperCase()}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#04384E",
+                            fontFamily: "QuicksandSemiBold",
+                            fontSize: 16,
+                          }}
+                        >
+                          {hotline.contactnumber}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                )}
               </View>
             </View>
           )}

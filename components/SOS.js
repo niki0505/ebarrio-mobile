@@ -18,7 +18,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Status = () => {
+const SOS = () => {
   const insets = useSafeAreaInsets();
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -46,11 +46,11 @@ const Status = () => {
             size={30}
             color="#04384E"
           />
-          <Text style={MyStyles.header}>Status</Text>
+          <Text style={MyStyles.header}>Emergency</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-export default Status;
+export default SOS;

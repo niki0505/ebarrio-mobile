@@ -111,8 +111,9 @@ const EmergencyHotlines = () => {
               <Text>No results found</Text>
             ) : (
               filteredEmergencyHotlines.map((element) => (
-                <View
+                <TouchableOpacity
                   key={element._id}
+                  onPress={() => handleCall(element.contactnumber)}
                   style={[
                     MyStyles.input,
                     {
@@ -123,7 +124,6 @@ const EmergencyHotlines = () => {
                   ]}
                 >
                   <MaterialIcons
-                    onPress={() => handleCall(element.contactnumber)}
                     name="call"
                     size={20}
                     color="#fff"
@@ -149,7 +149,7 @@ const EmergencyHotlines = () => {
                       {element.contactnumber}
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               ))
             )}
           </View>

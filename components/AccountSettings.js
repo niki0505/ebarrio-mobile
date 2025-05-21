@@ -16,9 +16,10 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { InfoContext } from "../context/InfoContext";
+import LoadingScreen from "./LoadingScreen";
 
 //ICONS
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -32,7 +33,25 @@ const AccountSettings = () => {
   const navigation = useNavigation();
   const [pushNotifEnabled, setPushNotifEnabled] = useState(false);
   const [appNotifEnabled, setAppNotifEnabled] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { userDetails, fetchUserDetails } = useContext(InfoContext);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  if (!userDetails) {
+    return <LoadingScreen />;
+  }
+
+  const pictureUri =
+    userDetails.resID?.picture || userDetails.empID?.resID?.picture;
+
+  const firstName =
+    userDetails.resID?.firstname || userDetails.empID?.resID?.firstname;
+
+  const lastName =
+    userDetails.resID?.lastname || userDetails.empID?.resID?.lastname;
 
   return (
     <SafeAreaView
@@ -61,8 +80,9 @@ const AccountSettings = () => {
         >
           <Image
             source={{
-              uri: user.picture,
+              uri: pictureUri,
             }}
+            onLoad={() => setImageLoaded(true)}
             style={[
               MyStyles.profilePic,
               { width: 60, height: 60, borderRadius: 40 },
@@ -75,7 +95,7 @@ const AccountSettings = () => {
               fontFamily: "REMSemiBold",
             }}
           >
-            Knicole N. Bataclan
+            {`${firstName} ${lastName}`}
           </Text>
           <Text
             style={{
@@ -84,7 +104,7 @@ const AccountSettings = () => {
               fontFamily: "QuicksandBold",
             }}
           >
-            Niki
+            {userDetails.username}
           </Text>
         </View>
 
@@ -100,6 +120,7 @@ const AccountSettings = () => {
           </Text>
 
           <TouchableOpacity
+            onPress={() => navigation.navigate("EditMobileNumber")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <View
