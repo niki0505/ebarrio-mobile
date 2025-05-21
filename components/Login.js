@@ -92,7 +92,7 @@ const Login = () => {
           <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
             Login to your Account
           </Text>
-          <View style={{ marginTop: 30, gap: 15, width: "100%" }}>
+          <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
             <View
               style={{
                 position: "relative",
@@ -167,34 +167,45 @@ const Login = () => {
                 <Ionicons
                   name={secureLoginPass ? "eye-off" : "eye"}
                   size={20}
-                  color="gray"
+                  color="#808080"
                 />
               </TouchableOpacity>
             </View>
-          </View>
 
-          <Text
-            onPress={() => navigation.navigate("ForgotPassword")}
-            style={{
-              color: "#006EFF",
-              alignSelf: "flex-end",
-              fontSize: 16,
-              marginTop: 10,
-            }}
-          >
-            Forgot Password?
-          </Text>
+            <Text
+              onPress={() => navigation.navigate("ForgotPassword")}
+              style={{
+                color: "#006EFF",
+                alignSelf: "flex-end",
+                fontSize: 16,
+                fontFamily: "QuicksandBold",
+                marginTop: "-10",
+              }}
+            >
+              Forgot Password?
+            </Text>
+          </View>
 
           <TouchableOpacity onPress={handleLogin} style={MyStyles.button}>
             <Text style={MyStyles.buttonText}>Log In</Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
-            <Text style={{ color: "gray", fontSize: 16 }}>
+            <Text
+              style={{
+                color: "#808080",
+                fontSize: 16,
+                fontFamily: "QuicksandSemiBold",
+              }}
+            >
               Don't have an account?
             </Text>
             <Text
               onPress={() => navigation.navigate("Signup")}
-              style={{ color: "#006EFF", fontSize: 16 }}
+              style={{
+                color: "#006EFF",
+                fontSize: 16,
+                fontFamily: "QuicksandBold",
+              }}
             >
               Sign up
             </Text>

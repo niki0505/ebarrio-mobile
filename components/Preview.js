@@ -57,7 +57,7 @@ const Preview = () => {
         width,
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 20,
+        paddingHorizontal: 50,
       }}
     >
       <Image
@@ -65,27 +65,15 @@ const Preview = () => {
         style={{
           width: 240,
           height: 240,
-          marginBottom: 20,
           resizeMode: "contain",
+          marginVertical: 70,
         }}
       />
-      <Text
-        style={{
-          fontSize: 25,
-          fontWeight: "bold",
-          color: "#04384E",
-          marginBottom: 10,
-          fontFamily: "REM-Bold",
-        }}
-      >
+      <Text style={[MyStyles.header, { textAlign: "center" }]}>
         {item.title}
       </Text>
       <Text
-        style={{
-          fontSize: 15,
-          color: "#ACACAC",
-          textAlign: "center",
-        }}
+        style={[MyStyles.textMedium, { marginTop: 10, textAlign: "center" }]}
       >
         {item.description}
       </Text>
@@ -117,10 +105,8 @@ const Preview = () => {
       {/* Slides Section */}
       <View
         style={{
-          height: 420,
           justifyContent: "center",
           alignItems: "center",
-          marginTop: 50,
         }}
       >
         <FlatList
@@ -140,7 +126,7 @@ const Preview = () => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            marginTop: 20,
+            marginTop: 70,
           }}
         >
           {slides.map((_, index) => (
@@ -161,8 +147,6 @@ const Preview = () => {
       {/* Bottom Buttons */}
       <View
         style={{
-          flex: 1,
-          backgroundColor: "#fff",
           justifyContent: "center",
           alignItems: "center",
           padding: 30,
@@ -213,15 +197,7 @@ const Preview = () => {
             accessibilityLabel="Go to Next Slide"
             activeOpacity={0.8}
           >
-            <Text
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                fontSize: 24,
-              }}
-            >
-              Next
-            </Text>
+            <Text style={MyStyles.buttonText}>Next</Text>
           </TouchableOpacity>
         )}
       </View>

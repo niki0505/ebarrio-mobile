@@ -143,7 +143,13 @@ const Home = () => {
             <View style={MyStyles.rowAlignment}>
               <View>
                 <Text style={MyStyles.header}>Home</Text>
-                <Text style={{ fontSize: 20, color: "#585252" }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: "#585252",
+                    fontFamily: "QuicksandSemiBold",
+                  }}
+                >
                   Welcome, {user.name}
                 </Text>
               </View>
@@ -161,18 +167,20 @@ const Home = () => {
                 {showDropdown && (
                   <View
                     style={{
+                      height: "auto",
+                      justifyContent: "center",
                       position: "absolute",
                       top: 45,
                       right: 0,
-                      backgroundColor: "white",
-                      padding: 10,
+                      backgroundColor: "#fff",
+                      padding: 5,
                       borderRadius: 6,
                       shadowColor: "#000",
                       shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.2,
                       shadowRadius: 4,
                       elevation: 5,
-                      zIndex: 999,
+                      zIndex: 1,
                       minWidth: 150,
                       alignSelf: "flex-end",
                     }}
@@ -198,6 +206,7 @@ const Home = () => {
                           fontSize: 16,
                           marginLeft: 3,
                           color: "#04384E",
+                          fontFamily: "QuicksandBold",
                         }}
                         onPress={() => navigation.navigate("AccountSettings")}
                       >
@@ -218,7 +227,12 @@ const Home = () => {
                     >
                       <MaterialIcons name="logout" size={24} color="red" />
                       <Text
-                        style={{ fontSize: 16, color: "red", marginLeft: 3 }}
+                        style={{
+                          fontSize: 16,
+                          color: "red",
+                          marginLeft: 3,
+                          fontFamily: "QuicksandBold",
+                        }}
                       >
                         Logout
                       </Text>
@@ -242,20 +256,19 @@ const Home = () => {
               >
                 <Text
                   style={{
-                    textAlign: "start",
                     color: "#BC0F0F",
                     fontSize: 20,
-                    fontWeight: "bold",
+                    fontFamily: "REMSemiBold",
                   }}
                 >
                   {currentDate.toLocaleString("en-US", { month: "long" })}
                 </Text>
                 <Text
                   style={{
-                    textAlign: "start",
                     fontSize: 35,
                     fontWeight: "bold",
                     color: "#04384E",
+                    fontFamily: "REMRegular",
                   }}
                 >
                   {currentDate.getDate()}
@@ -286,20 +299,35 @@ const Home = () => {
                   end={{ x: 0.5, y: 1 }}
                   style={[MyStyles.gradientBackground]}
                 >
-                  <Text style={MyStyles.weatherBodyText}>Bacoor</Text>
+                  <Text
+                    style={{
+                      fontFamily: "REMRegular",
+                      fontSize: 16,
+                      color: "#fff",
+                    }}
+                  >
+                    Bacoor
+                  </Text>
                   <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
                     {getWeatherIcon(weather.currentcondition, 70, 70)}
                     <Text
-                      style={[
-                        MyStyles.weatherHeaderText,
-                        { marginVertical: 0, fontSize: 28 },
-                      ]}
+                      style={{
+                        fontFamily: "REMRegular",
+                        fontSize: 35,
+                        color: "#fff",
+                      }}
                     >
-                      {weather.currenttemp}
+                      {weather.currenttemp}°
                     </Text>
                   </View>
 
-                  <Text style={[MyStyles.weatherBodyText]}>
+                  <Text
+                    style={{
+                      fontFamily: "QuicksandSemiBold",
+                      fontSize: 16,
+                      color: "#fff",
+                    }}
+                  >
                     High:{Math.round(weather.currenthigh)}° Low:
                     {Math.round(weather.currentlow)}°
                   </Text>
@@ -309,7 +337,14 @@ const Home = () => {
 
             {user.role === "Resident" && (
               <>
-                <Text style={[MyStyles.header, { fontSize: 20 }]}>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMMedium",
+                    marginTop: 15,
+                  }}
+                >
                   Services
                 </Text>
                 <View
@@ -378,7 +413,14 @@ const Home = () => {
               </>
             )}
 
-            <Text style={[MyStyles.header, { fontSize: 20 }]}>
+            <Text
+              style={{
+                color: "#04384E",
+                fontSize: 20,
+                fontFamily: "REMMedium",
+                marginTop: 15,
+              }}
+            >
               Emergency Tools
             </Text>
             <View

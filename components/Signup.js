@@ -330,16 +330,16 @@ const Signup = () => {
               backgroundColor: "#F0F4F7",
               borderRadius: 30,
               flex: 3,
-              padding: 30,
               bottom: "-10",
             }}
           >
             <ScrollView
               style={{ width: "100%" }}
               contentContainerStyle={{
+                padding: 30,
                 alignItems: "center",
               }}
-              showsVerticalScrollIndicator={false}
+              showsVerticalScrollIndicator={true}
               keyboardShouldPersistTaps="handled"
             >
               <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
@@ -356,89 +356,145 @@ const Signup = () => {
                       style={{ marginTop: 10 }}
                     />
 
-                    <View style={{ marginTop: 30 }}>
-                      <View></View>
-                      <Text style={MyStyles.inputLabel}>
-                        Security Question #1
-                        <Text style={{ color: "red" }}>*</Text>
-                      </Text>
-                      <Dropdown
-                        labelField="label"
-                        valueField="value"
-                        value={securityquestions[0].question}
-                        data={securityQuestionsList
-                          .filter(
-                            (ques) => ques !== securityquestions[1].question
-                          )
-                          .map((ques) => ({
-                            label: ques,
-                            value: ques,
-                          }))}
-                        placeholder="Select"
-                        placeholderStyle={{ color: "gray" }}
-                        onChange={(item) =>
-                          handleSecurityChange(0, "question", item.value)
-                        }
-                        style={MyStyles.input}
-                      ></Dropdown>
-                      {questionErrors1 ? (
-                        <Text style={{ color: "red" }}>{questionErrors1}</Text>
-                      ) : null}
-                      <TextInput
-                        style={MyStyles.input}
-                        placeholder="Enter answer"
-                        secureTextEntry={true}
-                        value={securityquestions[0].answer}
-                        onChangeText={(val) =>
-                          handleSecurityChange(0, "answer", val)
-                        }
-                      />
-                      {answerErrors1 ? (
-                        <Text style={{ color: "red" }}>{answerErrors1}</Text>
-                      ) : null}
+                    <View style={{ marginVertical: 30 }}>
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          Security Question #1
+                          <Text
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
+                            *
+                          </Text>
+                        </Text>
+                        <Dropdown
+                          labelField="label"
+                          valueField="value"
+                          value={securityquestions[0].question}
+                          data={securityQuestionsList
+                            .filter(
+                              (ques) => ques !== securityquestions[1].question
+                            )
+                            .map((ques) => ({
+                              label: ques,
+                              value: ques,
+                            }))}
+                          placeholder="Select"
+                          placeholderStyle={{ color: "gray" }}
+                          onChange={(item) =>
+                            handleSecurityChange(0, "question", item.value)
+                          }
+                          style={MyStyles.input}
+                        ></Dropdown>
+                        {questionErrors1 ? (
+                          <Text
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
+                            {questionErrors1}
+                          </Text>
+                        ) : null}
+                      </View>
+
+                      <View>
+                        <TextInput
+                          style={MyStyles.input}
+                          placeholder="Enter answer"
+                          secureTextEntry={true}
+                          value={securityquestions[0].answer}
+                          onChangeText={(val) =>
+                            handleSecurityChange(0, "answer", val)
+                          }
+                        />
+                        {answerErrors1 ? (
+                          <Text
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
+                            {answerErrors1}
+                          </Text>
+                        ) : null}
+                      </View>
+
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          Security Question #2
+                          <Text
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
+                            *
+                          </Text>
+                        </Text>
+                        <Dropdown
+                          labelField="label"
+                          valueField="value"
+                          value={securityquestions[1].question}
+                          data={securityQuestionsList
+                            .filter(
+                              (ques) => ques !== securityquestions[0].question
+                            )
+                            .map((ques) => ({
+                              label: ques,
+                              value: ques,
+                            }))}
+                          placeholder="Select"
+                          placeholderStyle={{ color: "gray" }}
+                          onChange={(item) =>
+                            handleSecurityChange(1, "question", item.value)
+                          }
+                          style={MyStyles.input}
+                        ></Dropdown>
+                        {questionErrors2 ? (
+                          <Text
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
+                            {questionErrors2}
+                          </Text>
+                        ) : null}
+                      </View>
+
+                      <View>
+                        <TextInput
+                          style={MyStyles.input}
+                          placeholder="Enter answer"
+                          secureTextEntry={true}
+                          value={securityquestions[1].answer}
+                          onChangeText={(val) =>
+                            handleSecurityChange(1, "answer", val)
+                          }
+                        />
+                        {answerErrors2 ? (
+                          <Text
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
+                            {answerErrors2}
+                          </Text>
+                        ) : null}
+                      </View>
                     </View>
                   </View>
 
-                  <View style={{ width: "100%" }}>
-                    <Text style={MyStyles.inputLabel}>
-                      Security Question #2
-                      <Text style={{ color: "red" }}>*</Text>
-                    </Text>
-                    <Dropdown
-                      labelField="label"
-                      valueField="value"
-                      value={securityquestions[1].question}
-                      data={securityQuestionsList
-                        .filter(
-                          (ques) => ques !== securityquestions[0].question
-                        )
-                        .map((ques) => ({
-                          label: ques,
-                          value: ques,
-                        }))}
-                      placeholder="Select"
-                      placeholderStyle={{ color: "gray" }}
-                      onChange={(item) =>
-                        handleSecurityChange(1, "question", item.value)
-                      }
-                      style={MyStyles.input}
-                    ></Dropdown>
-                    {questionErrors2 ? (
-                      <Text style={{ color: "red" }}>{questionErrors2}</Text>
-                    ) : null}
-                    <TextInput
-                      style={MyStyles.input}
-                      placeholder="Enter answer"
-                      secureTextEntry={true}
-                      value={securityquestions[1].answer}
-                      onChangeText={(val) =>
-                        handleSecurityChange(1, "answer", val)
-                      }
-                    />
-                    {answerErrors2 ? (
-                      <Text style={{ color: "red" }}>{answerErrors2}</Text>
-                    ) : null}
-                  </View>
                   <TouchableOpacity
                     onPress={handleSignUp2}
                     style={MyStyles.button}
@@ -448,7 +504,7 @@ const Signup = () => {
                 </>
               ) : (
                 <>
-                  <View style={{ marginTop: 30, gap: 15, width: "100%" }}>
+                  <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
                     <TextInput
                       style={MyStyles.input}
                       placeholder="Enter first name"
@@ -456,7 +512,15 @@ const Signup = () => {
                       onChangeText={firstnameValidation}
                     />
                     {fnameError ? (
-                      <Text style={{ color: "red" }}>{fnameError}</Text>
+                      <Text
+                        style={{
+                          color: "red",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                      >
+                        {fnameError}
+                      </Text>
                     ) : null}
 
                     <TextInput
@@ -466,7 +530,15 @@ const Signup = () => {
                       onChangeText={lastnameValidation}
                     />
                     {lnameError ? (
-                      <Text style={{ color: "red" }}>{lnameError}</Text>
+                      <Text
+                        style={{
+                          color: "red",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                      >
+                        {lnameError}
+                      </Text>
                     ) : null}
 
                     <TextInput
@@ -487,7 +559,14 @@ const Signup = () => {
                     {usernameErrors.length > 0 && (
                       <View style={{ marginTop: 5, width: 300 }}>
                         {usernameErrors.map((error, index) => (
-                          <Text key={index} style={{ color: "red" }}>
+                          <Text
+                            key={index}
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
                             {error}
                           </Text>
                         ))}
@@ -521,7 +600,14 @@ const Signup = () => {
                     {passwordErrors.length > 0 && (
                       <View style={{ marginTop: 5, width: 300 }}>
                         {passwordErrors.map((error, index) => (
-                          <Text key={index} style={{ color: "red" }}>
+                          <Text
+                            key={index}
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
                             {error}
                           </Text>
                         ))}
@@ -555,7 +641,14 @@ const Signup = () => {
                     {repasswordErrors.length > 0 && (
                       <View style={{ marginTop: 5, width: 300 }}>
                         {repasswordErrors.map((error, index) => (
-                          <Text key={index} style={{ color: "red" }}>
+                          <Text
+                            key={index}
+                            style={{
+                              color: "red",
+                              fontFamily: "QuicksandMedium",
+                              fontSize: 16,
+                            }}
+                          >
                             {error}
                           </Text>
                         ))}
@@ -570,7 +663,13 @@ const Signup = () => {
                     <Text style={MyStyles.buttonText}>Next</Text>
                   </TouchableOpacity>
                   <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
-                    <Text style={{ color: "gray", fontSize: 16 }}>
+                    <Text
+                      style={{
+                        color: "#808080",
+                        fontSize: 16,
+                        fontFamily: "QuicksandSemiBold",
+                      }}
+                    >
                       Already have an account?
                     </Text>
                     <Text
@@ -578,6 +677,7 @@ const Signup = () => {
                       style={{
                         color: "#006EFF",
                         fontSize: 16,
+                        fontFamily: "QuicksandBold",
                       }}
                     >
                       Login

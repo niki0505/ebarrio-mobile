@@ -30,7 +30,6 @@ const ChangePassword = () => {
   const [secureNewPass, setSecureNewPass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
 
-  
   const togglesecureCurrPass = () => {
     setSecureCurrPass(!secureCurrPass);
   };
@@ -89,9 +88,9 @@ const ChangePassword = () => {
           Change Password
         </Text>
 
-        <View style={{ gap: 15, marginTop: 30 }}>
+        <View style={{ gap: 15, marginVertical: 30 }}>
           <View>
-            <Text style={MyStyles.inputTitle}>Current Password</Text>
+            <Text style={MyStyles.inputLabel}>Current Password</Text>
             <View style={{ position: "relative" }}>
               <TextInput
                 onChangeText={(e) => setPassword(e)}
@@ -118,7 +117,7 @@ const ChangePassword = () => {
           </View>
 
           <View>
-            <Text style={MyStyles.inputTitle}>New Password</Text>
+            <Text style={MyStyles.inputLabel}>New Password</Text>
             <View style={{ position: "relative" }}>
               <TextInput
                 onChangeText={(e) => setNewPassword(e)}
@@ -145,7 +144,7 @@ const ChangePassword = () => {
           </View>
 
           <View>
-            <Text style={MyStyles.inputTitle}>Confirm New Password</Text>
+            <Text style={MyStyles.inputLabel}>Confirm New Password</Text>
             <View style={{ position: "relative" }}>
               <TextInput
                 onChangeText={(e) => setRenewPassword(e)}
@@ -170,14 +169,13 @@ const ChangePassword = () => {
               </TouchableOpacity>
             </View>
           </View>
-
-          <TouchableOpacity
-            onPress={handlePasswordChange}
-            style={MyStyles.button}
-          >
-            <Text style={MyStyles.buttonText}>Save Changes</Text>
-          </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={handlePasswordChange}
+          style={MyStyles.button}
+        >
+          <Text style={MyStyles.buttonText}>Save Changes</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

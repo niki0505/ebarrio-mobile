@@ -79,17 +79,14 @@ export default function App() {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [isConnected, setIsConnected] = useState(true);
   const [loadFonts] = useFonts({
-    QuicksandLight: require("./assets/fonts/quicksand/Quicksand-Light.ttf"),
-    QuicksandMedium: require("./assets/fonts/quicksand/Quicksand-Medium.ttf"),
     QuicksandRegular: require("./assets/fonts/quicksand/Quicksand-Regular.ttf"),
+    QuicksandMedium: require("./assets/fonts/quicksand/Quicksand-Medium.ttf"),
     QuicksandSemiBold: require("./assets/fonts/quicksand/Quicksand-SemiBold.ttf"),
     QuicksandBold: require("./assets/fonts/quicksand/Quicksand-Bold.ttf"),
-    REMLight: require("./assets/fonts/rem/REM-Light.ttf"),
-    REMMedium: require("./assets/fonts/rem/REM-Medium.ttf"),
     REMRegular: require("./assets/fonts/rem/REM-Regular.ttf"),
+    REMMedium: require("./assets/fonts/rem/REM-Medium.ttf"),
     REMSemiBold: require("./assets/fonts/rem/REM-SemiBold.ttf"),
     REMBold: require("./assets/fonts/rem/REM-Bold.ttf"),
-    REMExtraBold: require("./assets/fonts/rem/REM-ExtraBold.ttf"),
   });
 
   useEffect(() => {
@@ -112,7 +109,7 @@ export default function App() {
     checkFirstLaunch();
   }, []);
 
-  if (isFirstLaunch === null) {
+  if (!loadFonts || isFirstLaunch === null) {
     return null;
   }
 

@@ -181,9 +181,9 @@ const Certificates = () => {
             Please select the required information for requesting a document
           </Text>
 
-          <View style={{ gap: 15, marginTop: 30 }}>
+          <View style={{ gap: 15, marginVertical: 30 }}>
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Type of Certificate<Text style={{ color: "red" }}>*</Text>
               </Text>
               <Dropdown
@@ -195,7 +195,16 @@ const Certificates = () => {
                   value: cert.name,
                 }))}
                 placeholder="Select"
-                placeholderStyle={{ color: "gray" }}
+                placeholderStyle={{
+                  color: "#808080",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
+                selectedTextStyle={{
+                  color: "#000",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "typeofcertificate", value: itemValue },
@@ -210,7 +219,7 @@ const Certificates = () => {
             ) && (
               <>
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Purpose<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <Dropdown
@@ -222,7 +231,16 @@ const Certificates = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{ color: "gray" }}
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
+                    selectedTextStyle={{
+                      color: "#000",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     onChange={(itemValue) =>
                       handleDropdownChange({
                         target: { name: "purpose", value: itemValue },
@@ -238,7 +256,7 @@ const Certificates = () => {
               "Barangay Business Clearance" && (
               <>
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Street<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <Dropdown
@@ -250,7 +268,16 @@ const Certificates = () => {
                       value: street,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{ color: "gray" }}
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
+                    selectedTextStyle={{
+                      color: "#000",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     onChange={(itemValue) =>
                       handleDropdownChange({
                         target: { name: "street", value: itemValue },
@@ -264,12 +291,12 @@ const Certificates = () => {
                   certificateForm.street !== "My Address" && (
                     <>
                       <View>
-                        <Text style={MyStyles.inputTitle}>
+                        <Text style={MyStyles.inputLabel}>
                           Address Number<Text style={{ color: "red" }}>*</Text>
                         </Text>
                         <TextInput
-                          placeholder="Enter here"
-                          placeholderStyle={{ color: "gray" }}
+                          placeholder="Enter address number"
+                          placeholderStyle={{ color: "#808080" }}
                           onChangeText={(text) =>
                             handleInputChange("addressnumber", text)
                           }
@@ -280,7 +307,7 @@ const Certificates = () => {
                   )}
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Business Name<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
@@ -292,7 +319,7 @@ const Certificates = () => {
                   />
                 </View>
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Line of Business<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
@@ -307,7 +334,7 @@ const Certificates = () => {
             )}
 
             <View>
-              <Text style={MyStyles.inputTitle}>Amount</Text>
+              <Text style={MyStyles.inputLabel}>Amount</Text>
               <TextInput
                 value={certificateForm.amount}
                 editable={false}

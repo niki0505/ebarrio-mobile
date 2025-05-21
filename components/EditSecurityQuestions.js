@@ -131,9 +131,9 @@ const EditSecurityQuestions = () => {
         <Text style={[MyStyles.header, { marginTop: 20 }]}>
           Edit Security Questions
         </Text>
-        <View style={{ gap: 15, marginTop: 30 }}>
+        <View style={{ gap: 15, marginVertical: 30 }}>
           <View>
-            <Text>Security Question #1</Text>
+            <Text style={MyStyles.inputLabel}>Security Question #1</Text>
             <Dropdown
               labelField="label"
               valueField="value"
@@ -145,7 +145,16 @@ const EditSecurityQuestions = () => {
                   value: ques,
                 }))}
               placeholder="Select"
-              placeholderStyle={{ color: "gray" }}
+              placeholderStyle={{
+                color: "#808080",
+                fontFamily: "QuicksandMedium",
+                fontSize: 16,
+              }}
+              selectedTextStyle={{
+                color: "#000",
+                fontFamily: "QuicksandMedium",
+                fontSize: 16,
+              }}
               onChange={(item) =>
                 handleSecurityChange(0, "question", item.value)
               }
@@ -153,7 +162,7 @@ const EditSecurityQuestions = () => {
             ></Dropdown>
           </View>
           <View>
-            <Text>Answer</Text>
+            <Text style={MyStyles.inputLabel}>Answer</Text>
             <TextInput
               onChangeText={(e) => handleSecurityChange(0, "answer", e)}
               secureTextEntry={true}
@@ -162,7 +171,7 @@ const EditSecurityQuestions = () => {
             />
           </View>
           <View>
-            <Text>Security Question #2</Text>
+            <Text style={MyStyles.inputLabel}>Security Question #2</Text>
             <Dropdown
               labelField="label"
               valueField="value"
@@ -174,7 +183,16 @@ const EditSecurityQuestions = () => {
                   value: ques,
                 }))}
               placeholder="Select"
-              placeholderStyle={{ color: "gray" }}
+              placeholderStyle={{
+                color: "#808080",
+                fontFamily: "QuicksandMedium",
+                fontSize: 16,
+              }}
+              selectedTextStyle={{
+                color: "#000",
+                fontFamily: "QuicksandMedium",
+                fontSize: 16,
+              }}
               onChange={(item) =>
                 handleSecurityChange(1, "question", item.value)
               }
@@ -182,7 +200,7 @@ const EditSecurityQuestions = () => {
             ></Dropdown>
           </View>
           <View>
-            <Text>Answer</Text>
+            <Text style={MyStyles.inputLabel}>Answer</Text>
             <TextInput
               onChangeText={(e) => handleSecurityChange(1, "answer", e)}
               secureTextEntry={true}
@@ -192,7 +210,7 @@ const EditSecurityQuestions = () => {
           </View>
 
           <View>
-            <Text style={MyStyles.inputTitle}>Password</Text>
+            <Text style={MyStyles.inputLabel}>Password</Text>
             <View style={{ position: "relative" }}>
               <TextInput
                 onChangeText={(e) => setPassword(e)}
@@ -217,14 +235,13 @@ const EditSecurityQuestions = () => {
               </TouchableOpacity>
             </View>
           </View>
-
-          <TouchableOpacity
-            onPress={handleQuestionsChange}
-            style={MyStyles.button}
-          >
-            <Text style={MyStyles.buttonText}>Save Changes</Text>
-          </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={handleQuestionsChange}
+          style={MyStyles.button}
+        >
+          <Text style={MyStyles.buttonText}>Save Changes</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

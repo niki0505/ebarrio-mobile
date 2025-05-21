@@ -114,14 +114,33 @@ const Announcement = () => {
     return (
       <View style={{ marginVertical: 10 }}>
         {eventInfo !== "" && (
-          <Text style={{ marginBottom: 5, fontSize: 16 }}>{eventInfo}</Text>
+          <Text
+            style={{
+              marginBottom: 5,
+              fontSize: 16,
+              color: "#04384E",
+              fontFamily: "QuicksandSemiBold",
+            }}
+          >
+            {eventInfo}
+          </Text>
         )}
-        <Text style={{ fontSize: 16, color: "#333", textAlign: "justify" }}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: "#04384E",
+            fontFamily: "QuicksandMedium",
+          }}
+        >
           {displayText}
         </Text>
         {isLong && (
           <Text
-            style={{ color: "#006EFF", marginTop: 5 }}
+            style={{
+              color: "#006EFF",
+              marginTop: 5,
+              fontFamily: "QuicksandMedium",
+            }}
             onPress={() => toggleExpanded(announcement._id)}
           >
             {isExpanded ? "See less" : "See more"}
@@ -165,7 +184,12 @@ const Announcement = () => {
             borderColor: "#ACACAC",
             borderRadius: 5,
             alignSelf: "flex-end",
-            padding: 4,
+            paddingHorizontal: 4,
+          }}
+          selectedTextStyle={{
+            color: "#04384E",
+            fontFamily: "QuicksandSemiBold",
+            fontSize: 16,
           }}
         />
         {sortedAnnouncements.map((element, index) => (
@@ -196,10 +220,22 @@ const Announcement = () => {
               >
                 <Image source={Aniban2Logo} style={{ width: 50, height: 50 }} />
                 <View style={{ marginLeft: 5 }}>
-                  <Text style={{ color: "#04384E", fontSize: 16 }}>
+                  <Text
+                    style={{
+                      color: "#04384E",
+                      fontSize: 16,
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
                     {element.uploadedby}
                   </Text>
-                  <Text style={{ fontSize: 14, color: "000" }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: "#808080",
+                      fontFamily: "QuicksandSemiBold",
+                    }}
+                  >
                     {dayjs(element.createdAt).fromNow()}
                   </Text>
                 </View>
@@ -217,18 +253,26 @@ const Announcement = () => {
               />
             </View>
 
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginVertical: 10 }}>
               <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#04384E", fontSize: 16 }}>
-                  Category:{" "}
-                </Text>
-                <Text style={{ color: "#04384E", fontSize: 16 }}>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 16,
+                    fontFamily: "QuicksandSemiBold",
+                  }}
+                >
                   {element.category}
                 </Text>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#04384E", fontSize: 16 }}>Title: </Text>
-                <Text style={{ color: "#04384E", fontSize: 16 }}>
+                <Text
+                  style={{
+                    color: "#808080",
+                    fontSize: 16,
+                    fontFamily: "QuicksandMedium",
+                  }}
+                >
                   {element.title}
                 </Text>
               </View>
@@ -258,10 +302,18 @@ const Announcement = () => {
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => handleHeart(element._id)}>
-                  <Ionicons name="heart-outline" size={24} color="black" />
+                  <Ionicons name="heart-outline" size={24} color="#808080" />
                 </TouchableOpacity>
               )}
-              <Text>{element.hearts}</Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: "QuicksandSemiBold",
+                  color: "#808080",
+                }}
+              >
+                {element.hearts}
+              </Text>
             </View>
           </View>
         ))}

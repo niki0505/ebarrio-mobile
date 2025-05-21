@@ -58,13 +58,16 @@ const OfflineScreen = () => {
         >
           {!isEmergencyClicked && (
             <>
-              <Text style={[MyStyles.header, { color: "#fff" }]}>
-                Hello, Resident!
-              </Text>
-              <Text style={{ color: "#fff", fontSize: 16 }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 20,
+                  textAlign: "center",
+                  fontWeight: "QuicksandBold",
+                }}
+              >
                 You are currently offline
               </Text>
-
               <View
                 style={{
                   flex: 1,
@@ -99,7 +102,7 @@ const OfflineScreen = () => {
                     >
                       <MaterialCommunityIcons
                         name="lightbulb-on"
-                        size={80}
+                        size={120}
                         color="#BC0F0F"
                       />
                       <Text
@@ -138,7 +141,7 @@ const OfflineScreen = () => {
                         gap: 10,
                       }}
                     >
-                      <MaterialIcons name="call" size={80} color="#BC0F0F" />
+                      <MaterialIcons name="call" size={120} color="#BC0F0F" />
                       <Text
                         style={[
                           MyStyles.emergencyTitle,
@@ -214,8 +217,24 @@ const OfflineScreen = () => {
                       style={MyStyles.phoneIcon}
                     />
                     <View style={{ marginLeft: 10 }}>
-                      <Text>{hotline.name.toUpperCase()}</Text>
-                      <Text>{hotline.contactnumber}</Text>
+                      <Text
+                        style={{
+                          color: "#04384E",
+                          fontFamily: "REMSemiBold",
+                          fontSize: 16,
+                        }}
+                      >
+                        {hotline.name.toUpperCase()}
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#04384E",
+                          fontFamily: "QuicksandSemiBold",
+                          fontSize: 16,
+                        }}
+                      >
+                        {hotline.contactnumber}
+                      </Text>
                     </View>
                   </View>
                 ))}

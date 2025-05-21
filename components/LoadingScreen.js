@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
+import LottieView from "lottie-react-native";
 
 const LoadingScreen = () => {
   const insets = useSafeAreaInsets();
@@ -9,8 +10,13 @@ const LoadingScreen = () => {
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
-      <View>
-        <Text style={[MyStyles.header, { marginBottom: 0 }]}>Loading...</Text>
+      <View style={MyStyles.container}>
+        <LottieView
+          source={require("../assets/loading.json")}
+          autoPlay
+          loop
+          style={{ flex: 1, width: "100%", height: "100%" }}
+        ></LottieView>
       </View>
     </SafeAreaView>
   );

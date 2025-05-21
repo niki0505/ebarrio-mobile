@@ -135,7 +135,7 @@ const SetPassword = () => {
             height: "80%",
             backgroundColor: "#fff",
             borderRadius: 20,
-            overflow: "hidden", // ensures scrollable content doesn't spill over rounded edges
+            overflow: "hidden",
           }}
         >
           <ScrollView
@@ -143,7 +143,7 @@ const SetPassword = () => {
               padding: 30,
               alignItems: "center",
             }}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
           >
             {/* Back arrow and heading */}
             <MaterialIcons
@@ -169,7 +169,7 @@ const SetPassword = () => {
               style={{
                 alignSelf: "flex-start",
                 width: "100%",
-                marginTop: 30,
+                marginVertical: 30,
                 gap: 10,
               }}
             >
