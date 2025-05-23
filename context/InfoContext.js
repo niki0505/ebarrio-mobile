@@ -1,15 +1,15 @@
 import api from "../api";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import * as SecureStore from "expo-secure-store";
 import { io } from "socket.io-client";
+import { AuthContext } from "./AuthContext";
 
 export const SocketContext = createContext();
 
 export const InfoContext = createContext(undefined);
 
-const socket = io("https://ebarrio-mobile-backend.onrender.com");
-
 export const InfoProvider = ({ children }) => {
+  const [socket, setSocket] = useState(null);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
@@ -17,6 +17,49 @@ export const InfoProvider = ({ children }) => {
   const [announcements, setAnnouncements] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
   const [events, setEvents] = useState([]);
+  const [services, setServices] = useState([]);
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!user?.userID) return;
+    const newSocket = io("https://ebarrio-mobile-backend.onrender.com", {
+      query: { userID: user.userID, resID: user.resID },
+      transports: ["websocket"], // ensure persistent connection
+    });
+
+    newSocket.on("connect", () => {
+      console.log("✅ Socket connected:", newSocket.id);
+    });
+
+    newSocket.on("connect_error", (err) => {
+      console.error("❌ Socket connection error:", err.message);
+    });
+
+    newSocket.on("mobile-dbChange", (updatedData) => {
+      console.log(
+        `[${new Date().toISOString()}] 📦 Received dbChange payload:`,
+        updatedData
+      );
+
+      if (updatedData.type === "announcements") {
+        setAnnouncements(updatedData.data);
+        console.log("✅ Announcements updated.");
+      } else if (updatedData.type === "services") {
+        setServices(updatedData.data);
+        console.log("✅ Services updated.");
+      } else {
+        console.warn("⚠️ Unhandled update type:", updatedData.type);
+      }
+    });
+
+    newSocket.onAny((event, ...args) => {
+      console.log(`📡 [SOCKET] Event received: ${event}`, args);
+    });
+
+    setSocket(newSocket);
+
+    return () => newSocket.disconnect();
+  }, [user]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -61,6 +104,15 @@ export const InfoProvider = ({ children }) => {
       setUserDetails(response.data);
     } catch (error) {
       console.error("Failed to fetch user details:", err);
+    }
+  };
+
+  const fetchServices = async () => {
+    try {
+      const response = await api.get(`/getservices`);
+      setServices(response.data);
+    } catch (error) {
+      console.error("Failed to fetch user services:", err);
     }
   };
 
@@ -113,17 +165,29 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    socket.on("dbChange", (updatedData) => {
-      if (updatedData.type === "announcements") {
-        setAnnouncements(updatedData.data);
-      }
-    });
+  // useEffect(() => {
+  //   if (!socket) return;
+  //   const onDbChange = (updatedData) => {
+  //     console.log(
+  //       `[${new Date().toISOString()}] 📦 FULL SOCKET PAYLOAD:`,
+  //       updatedData.type
+  //     );
 
-    return () => {
-      socket.off("dbChange");
-    };
-  }, []);
+  //     if (updatedData.type === "announcements") {
+  //       setAnnouncements(updatedData.data);
+  //       console.log("Announcements updated.");
+  //     } else if (updatedData.type === "services") {
+  //       setServices(updatedData.data);
+  //       console.log("Services updated.");
+  //     }
+  //   };
+
+  //   socket.on("mobile-dbChange", onDbChange);
+
+  //   return () => {
+  //     socket.off("mobile-dbChange", onDbChange);
+  //   };
+  // }, [socket]);
 
   return (
     <SocketContext.Provider value={{ socket }}>
@@ -136,6 +200,8 @@ export const InfoProvider = ({ children }) => {
           announcements,
           userDetails,
           events,
+          services,
+          fetchServices,
           fetchUserDetails,
           fetchEmergencyHotlines,
           fetchWeather,

@@ -298,7 +298,8 @@ const Announcement = () => {
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
             >
-              {element.heartedby.includes(user.userID) ? (
+              {Array.isArray(element.heartedby) &&
+              element.heartedby.includes(user.userID) ? (
                 <TouchableOpacity onPress={() => handleUnheart(element._id)}>
                   <Ionicons name="heart" size={24} color="red" />
                 </TouchableOpacity>

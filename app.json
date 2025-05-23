@@ -19,14 +19,30 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.knicoleknicole.client",
+      "permissions": ["NOTIFICATIONS"],
+      "googleServicesFile": "./android/app/google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store",
-      "expo-font"
-    ]
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#ffffff",
+          "googleServicesFile": "./android/app/google-services.json"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5bd75858-4c47-40a4-bb3a-01fc8150deb0"
+      }
+    }
   }
 }

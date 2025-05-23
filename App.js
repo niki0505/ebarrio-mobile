@@ -45,36 +45,41 @@ import RespondedSOS from "./components/RespondedSOS";
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
+import { SocketProvider } from "./context/SocketContext";
+import NotificationSetup from "./components/NotificationSetUp";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabs = () => {
   return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Announcement") {
-            iconName = focused ? "megaphone" : "megaphone-outline";
-          } else if (route.name === "Notification") {
-            iconName = focused ? "notifications" : "notifications-outline";
-          }
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        headerShown: false,
-        tabBarStyle: MyStyles.tabBar,
-        tabBarLabelStyle: MyStyles.tabBarLabel,
-        tabBarActiveTintColor: "#0E94D3",
-        tabBarInactiveTintColor: "grey",
-      })}
-    >
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Announcement" component={Announcement} />
-      <Tab.Screen name="Notification" component={Notification} />
-    </Tab.Navigator>
+    <>
+      <NotificationSetup />
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === "Home") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Announcement") {
+              iconName = focused ? "megaphone" : "megaphone-outline";
+            } else if (route.name === "Notification") {
+              iconName = focused ? "notifications" : "notifications-outline";
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          headerShown: false,
+          tabBarStyle: MyStyles.tabBar,
+          tabBarLabelStyle: MyStyles.tabBarLabel,
+          tabBarActiveTintColor: "#0E94D3",
+          tabBarInactiveTintColor: "grey",
+        })}
+      >
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Announcement" component={Announcement} />
+        <Tab.Screen name="Notification" component={Notification} />
+      </Tab.Navigator>
+    </>
   );
 };
 
@@ -131,238 +136,248 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <AuthProvider>
-          <OtpProvider>
-            <Stack.Navigator
-              screenOptions={{ headerShown: false }}
-              initialRouteName={isFirstLaunch ? "StartScreen" : "Login"}
-            >
-              {/* Public Routes */}
+          <SocketProvider>
+            <OtpProvider>
+              <Stack.Navigator
+                screenOptions={{ headerShown: false }}
+                initialRouteName={isFirstLaunch ? "StartScreen" : "Login"}
+              >
+                {/* Public Routes */}
 
-              <Stack.Screen
-                name="StartScreen"
-                children={() => <PublicRoute element={<StartScreen />} />}
-              />
+                <Stack.Screen
+                  name="StartScreen"
+                  children={() => <PublicRoute element={<StartScreen />} />}
+                />
 
-              <Stack.Screen
-                name="Preview"
-                children={() => <PublicRoute element={<Preview />} />}
-              />
-              <Stack.Screen
-                name="Login"
-                children={() => <PublicRoute element={<Login />} />}
-              />
-              <Stack.Screen
-                name="Signup"
-                children={() => <PublicRoute element={<Signup />} />}
-              />
-              <Stack.Screen
-                name="OTP"
-                children={() => <PublicRoute element={<OTP />} />}
-              />
+                <Stack.Screen
+                  name="Preview"
+                  children={() => <PublicRoute element={<Preview />} />}
+                />
+                <Stack.Screen
+                  name="Login"
+                  children={() => <PublicRoute element={<Login />} />}
+                />
+                <Stack.Screen
+                  name="Signup"
+                  children={() => <PublicRoute element={<Signup />} />}
+                />
+                <Stack.Screen
+                  name="OTP"
+                  children={() => <PublicRoute element={<OTP />} />}
+                />
 
-              <Stack.Screen
-                name="ForgotPassword"
-                children={() => <PublicRoute element={<ForgotPassword />} />}
-              />
+                <Stack.Screen
+                  name="ForgotPassword"
+                  children={() => <PublicRoute element={<ForgotPassword />} />}
+                />
 
-              <Stack.Screen
-                name="SetPassword"
-                children={() => <PublicRoute element={<SetPassword />} />}
-              />
+                <Stack.Screen
+                  name="SetPassword"
+                  children={() => <PublicRoute element={<SetPassword />} />}
+                />
 
-              {/* Private Routes */}
-              <Stack.Screen
-                name="BottomTabs"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <BottomTabs />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
+                {/* Private Routes */}
+                <Stack.Screen
+                  name="BottomTabs"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <BottomTabs />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
 
-              <Stack.Screen
-                name="Certificates"
-                children={() => <PrivateRoute element={<Certificates />} />}
-              />
-              <Stack.Screen
-                name="CourtReservations"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <CourtReservations />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="Status"
-                children={() => <PrivateRoute element={<Status />} />}
-              />
-              <Stack.Screen
-                name="Blotter"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <Blotter />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="EmergencyHotlines"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <EmergencyHotlines />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="Weather"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <Weather />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="AccountSettings"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <AccountSettings />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
+                <Stack.Screen
+                  name="Certificates"
+                  children={() => <PrivateRoute element={<Certificates />} />}
+                />
+                <Stack.Screen
+                  name="CourtReservations"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <CourtReservations />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="Status"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Status />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="Blotter"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Blotter />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="EmergencyHotlines"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <EmergencyHotlines />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="Weather"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Weather />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="AccountSettings"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <AccountSettings />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
 
-              <Stack.Screen
-                name="Profile"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <Profile />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="ChangeUsername"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <ChangeUsername />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="ChangePassword"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <ChangePassword />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="EditSecurityQuestions"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <EditSecurityQuestions />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="EditMobileNumber"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <EditMobileNumber />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="BrgyCalendar"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <BrgyCalendar />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="SOS"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <SOS />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="SOSRequests"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <SOSRequests />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-              <Stack.Screen
-                name="RespondedSOS"
-                children={() => (
-                  <PrivateRoute
-                    element={
-                      <InfoProvider>
-                        <RespondedSOS />
-                      </InfoProvider>
-                    }
-                  />
-                )}
-              />
-            </Stack.Navigator>
-          </OtpProvider>
+                <Stack.Screen
+                  name="Profile"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Profile />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="ChangeUsername"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <ChangeUsername />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="ChangePassword"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <ChangePassword />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="EditSecurityQuestions"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <EditSecurityQuestions />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="EditMobileNumber"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <EditMobileNumber />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="BrgyCalendar"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <BrgyCalendar />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="SOS"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <SOS />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="SOSRequests"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <SOSRequests />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="RespondedSOS"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <RespondedSOS />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+              </Stack.Navigator>
+            </OtpProvider>
+          </SocketProvider>
         </AuthProvider>
       </NavigationContainer>
     </SafeAreaProvider>

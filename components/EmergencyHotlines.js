@@ -126,8 +126,8 @@ const EmergencyHotlines = () => {
                   <MaterialIcons
                     name="call"
                     size={20}
-                    color="#fff"
-                    style={MyStyles.phoneIcon}
+                    color="#BC0F0F"
+                    style={{ marginRight: 10 }}
                   />
                   <View style={{ marginLeft: 10 }}>
                     <Text
