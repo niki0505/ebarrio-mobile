@@ -1,15 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Alert, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
+import api from "../api";
 
 export default function NotificationSetup() {
   const [expoPushToken, setExpoPushToken] = useState("");
 
   useEffect(() => {
     registerForPushNotificationsAsync()
-      .then((token) => {
+      .then(async (token) => {
         console.log("Expo Push Token:", token);
         setExpoPushToken(token);
+
+        try {
+          await api.put("/setpushtoken", { token });
+          console.log("Push token created successfully!");
+        } catch (error) {
+          const response = error.response;
+          if (response && response.data) {
+            console.log(response.data.message || "Something went wrong.");
+          } else {
+            console.log("❌ Network or unknown error:", error.message);
+          }
+        }
       })
       .catch((err) => {
         console.log("Error getting push token:", err);

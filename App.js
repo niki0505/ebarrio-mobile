@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { InfoProvider } from "./context/InfoContext";
@@ -47,6 +50,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import { SocketProvider } from "./context/SocketContext";
 import NotificationSetup from "./components/NotificationSetUp";
+import * as Notifications from "expo-notifications";
 
 const Tab = createBottomTabNavigator();
 
@@ -84,6 +88,7 @@ const BottomTabs = () => {
 };
 
 export default function App() {
+  const navigationRef = useNavigationContainerRef();
   const Stack = createNativeStackNavigator();
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [isConnected, setIsConnected] = useState(true);
@@ -104,6 +109,24 @@ export default function App() {
     });
 
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const screen = response.notification.request.content.data?.screen;
+        console.log("Screen", screen);
+        if (screen && navigationRef.isReady()) {
+          if (screen === "Announcement") {
+            navigationRef.navigate("BottomTabs", { screen });
+          } else {
+            navigationRef.navigate(screen);
+          }
+        }
+      }
+    );
+
+    return () => subscription.remove();
   }, []);
 
   useEffect(() => {
@@ -134,7 +157,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <AuthProvider>
           <SocketProvider>
             <OtpProvider>

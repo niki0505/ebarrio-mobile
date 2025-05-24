@@ -34,7 +34,7 @@ const Blotter = () => {
     subjectID: "",
     subjectname: "",
     subjectaddress: "",
-    type: "",
+    typeofthecomplaint: "",
     details: "",
   });
 
@@ -148,7 +148,7 @@ const Blotter = () => {
               <Dropdown
                 labelField="label"
                 valueField="value"
-                value={blotterForm.type}
+                value={blotterForm.typeofthecomplaint}
                 data={typeList.map((type) => ({
                   label: type,
                   value: type,
@@ -166,7 +166,7 @@ const Blotter = () => {
                 }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
-                    target: { name: "type", value: itemValue },
+                    target: { name: "typeofthecomplaint", value: itemValue },
                   })
                 }
                 style={MyStyles.input}
