@@ -96,7 +96,7 @@ const EmergencyHotlines = () => {
               <TextInput
                 value={search}
                 onChangeText={handleSearch}
-                style={[MyStyles.input]}
+                style={[MyStyles.input, { paddingLeft: 40, height: 45 }]}
                 placeholder="Search..."
               />
               <MaterialIcons
@@ -111,32 +111,45 @@ const EmergencyHotlines = () => {
               <Text>No results found</Text>
             ) : (
               filteredEmergencyHotlines.map((element) => (
-                <View
+                <TouchableOpacity
                   key={element._id}
+                  onPress={() => handleCall(element.contactnumber)}
                   style={[
                     MyStyles.input,
                     {
                       flexDirection: "row",
                       backgroundColor: "#fff",
+                      alignItems: "center",
                     },
                   ]}
                 >
                   <MaterialIcons
-                    onPress={() => handleCall(element.contactnumber)}
                     name="call"
                     size={20}
-                    color="#fff"
-                    style={MyStyles.phoneIcon}
+                    color="#BC0F0F"
+                    style={{ marginRight: 10 }}
                   />
                   <View style={{ marginLeft: 10 }}>
-                    <Text style={MyStyles.inputTitle}>
+                    <Text
+                      style={{
+                        color: "#04384E",
+                        fontFamily: "REMSemiBold",
+                        fontSize: 16,
+                      }}
+                    >
                       {element.name.toUpperCase()}
                     </Text>
-                    <Text style={{ color: "#04384E" }}>
+                    <Text
+                      style={{
+                        color: "#04384E",
+                        fontFamily: "QuicksandSemiBold",
+                        fontSize: 16,
+                      }}
+                    >
                       {element.contactnumber}
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               ))
             )}
           </View>

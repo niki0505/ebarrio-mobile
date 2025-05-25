@@ -32,12 +32,13 @@ const CourtReservations = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [reservationForm, setReservationForm] = useState({
     resID: user.resID,
     purpose: "",
     date: new Date(),
-    starttime: null,
-    endtime: null,
+    starttime: new Date(),
+    endtime: new Date(),
     amount: "",
   });
 
@@ -49,6 +50,10 @@ const CourtReservations = () => {
   const hourlyRate = 100;
 
   const handleSubmit = async () => {
+    if (errorMsg) {
+      Alert.alert("Error", errorMsg);
+      return;
+    }
     try {
       await api.post("/sendreservationrequest", {
         reservationForm,
@@ -83,13 +88,6 @@ const CourtReservations = () => {
     }));
   };
 
-  const handleInputChange = (name, value) => {
-    setReservationForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   useEffect(() => {
     const calculateAmount = () => {
       const startTime = new Date(reservationForm.starttime);
@@ -120,61 +118,52 @@ const CourtReservations = () => {
     newStartTime.setSeconds(0);
     newStartTime.setMilliseconds(0);
 
-    const endtime = reservationForm.endtime
-      ? new Date(reservationForm.endtime)
-      : null;
+    setReservationForm((prev) => ({
+      ...prev,
+      starttime: newStartTime,
+      amount: "",
+    }));
+    setShowStartTimePicker(false);
+  };
 
-    if (!checkIfTimeSlotIsAvailable(newStartTime, endtime)) {
-      const conflictingReservation = courtreservations.find((reservation) => {
-        const reservedStart = new Date(reservation.starttime);
-        const reservedEnd = new Date(reservation.endtime);
+  const handleEndTimeChange = (event, selectedTime) => {
+    const newEndTime = new Date(reservationForm.date || new Date());
+    newEndTime.setHours(selectedTime.getHours());
+    newEndTime.setMinutes(selectedTime.getMinutes());
+    newEndTime.setSeconds(0);
+    newEndTime.setMilliseconds(0);
 
-        return (
-          (newStartTime >= reservedStart && newStartTime < reservedEnd) ||
-          (newStartTime < reservedStart && endtime > reservedStart)
-        );
-      });
+    const { isAvailable, conflict } = checkIfTimeSlotIsAvailable(
+      reservationForm.starttime,
+      newEndTime
+    );
 
-      if (conflictingReservation) {
-        const newStartTimeAfterConflict = new Date(
-          conflictingReservation.endtime
-        );
-        alert(
-          `The time slot overlaps with an existing reservation. Your start time has been updated to ${newStartTimeAfterConflict.toLocaleTimeString()} (the end time of the previous reservation).`
-        );
-
-        setReservationForm((prev) => ({
-          ...prev,
-          starttime: newStartTimeAfterConflict,
-          amount: "",
-        }));
-      }
+    if (!isAvailable) {
+      const conflictInfo = conflict
+        ? `This time slot overlaps with an existing reservation of ${conflict.start.toLocaleTimeString(
+            [],
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          )} - ${conflict.end.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}.`
+        : "This time slot overlaps with another reservation.";
+      Alert.alert("Error", conflictInfo);
+      setReservationForm((prev) => ({ ...prev, endtime: newEndTime }));
+      setShowEndTimePicker(false);
+      setErrorMsg(conflictInfo);
       return;
     }
 
     setReservationForm((prev) => ({
       ...prev,
-      starttime: newStartTime,
-
-      amount: "",
+      endtime: newEndTime,
     }));
-  };
-
-  const handleEndTimeChange = (event, selectedTime) => {
-    const currentDate = selectedTime || reservationForm.date;
-
-    const updatedStarttime = new Date(currentDate);
-    updatedStarttime.setHours(0, 0, 0, 0);
-
-    const updatedEndtime = new Date(currentDate);
-    updatedEndtime.setHours(0, 0, 0, 0);
-
-    setReservationForm((prev) => ({
-      ...prev,
-      date: currentDate,
-      starttime: updatedStarttime,
-      endtime: updatedEndtime,
-    }));
+    setShowEndTimePicker(false);
+    setErrorMsg("");
   };
 
   const handleDateChange = (event, selectedDate) => {
@@ -198,30 +187,48 @@ const CourtReservations = () => {
       endtime: updatedEndtime,
       amount: "",
     }));
+    setShowDatePicker(false);
   };
 
   const checkIfTimeSlotIsAvailable = (startTime, endTime) => {
     const selectedStartTime = new Date(startTime);
     const selectedEndTime = new Date(endTime);
 
-    return courtreservations.every((reservation) => {
-      const reservedStart = new Date(reservation.starttime);
-      const reservedEnd = new Date(reservation.endtime);
+    if (
+      isNaN(selectedStartTime.getTime()) ||
+      isNaN(selectedEndTime.getTime())
+    ) {
+      console.warn("Invalid selected time range");
+      return { isAvailable: false, conflict: null };
+    }
 
-      if (
-        (selectedStartTime >= reservedStart &&
-          selectedStartTime < reservedEnd) ||
-        (selectedEndTime > reservedStart && selectedEndTime <= reservedEnd)
-      ) {
-        return false;
-      }
-      return (
-        selectedEndTime <= reservedStart || selectedStartTime >= reservedEnd
-      );
-    });
+    const conflict = courtreservations
+      .filter((court) => court.status === "Approved")
+      .find((court) => {
+        const reservedStart = new Date(court.starttime);
+        const reservedEnd = new Date(court.endtime);
+
+        if (isNaN(reservedStart.getTime()) || isNaN(reservedEnd.getTime())) {
+          return false;
+        }
+
+        return (
+          selectedStartTime < reservedEnd && selectedEndTime > reservedStart
+        );
+      });
+
+    if (conflict) {
+      return {
+        isAvailable: false,
+        conflict: {
+          start: new Date(conflict.starttime),
+          end: new Date(conflict.endtime),
+        },
+      };
+    }
+
+    return { isAvailable: true, conflict: null };
   };
-
-  // console.log(reservationForm);
 
   console.log("Date", reservationForm.date);
   console.log("Start time", reservationForm.starttime);
@@ -257,9 +264,9 @@ const CourtReservations = () => {
             Please fill out the required information for reserving a court
           </Text>
 
-          <View style={{ gap: 15 }}>
+          <View style={{ gap: 15, marginVertical: 30 }}>
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Purpose<Text style={{ color: "red" }}>*</Text>
               </Text>
               <Dropdown
@@ -271,7 +278,16 @@ const CourtReservations = () => {
                   value: purp,
                 }))}
                 placeholder="Select"
-                placeholderStyle={{ color: "gray" }}
+                placeholderStyle={{
+                  color: "#808080",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
+                selectedTextStyle={{
+                  color: "#000",
+                  fontFamily: "QuicksandMedium",
+                  fontSize: 16,
+                }}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "purpose", value: itemValue },
@@ -284,7 +300,7 @@ const CourtReservations = () => {
             {Platform.OS === "android" && (
               <>
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Date<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -310,7 +326,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Start Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -342,7 +358,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     End Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -363,7 +379,7 @@ const CourtReservations = () => {
                     />
                   </View>
 
-                  {showStartTimePicker && (
+                  {showEndTimePicker && (
                     <DateTimePicker
                       value={reservationForm.endtime}
                       mode="time"
@@ -378,7 +394,7 @@ const CourtReservations = () => {
             {Platform.OS === "ios" && (
               <>
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Date<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -405,7 +421,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     Start Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -437,7 +453,7 @@ const CourtReservations = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputTitle}>
+                  <Text style={MyStyles.inputLabel}>
                     End Time<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
@@ -472,7 +488,7 @@ const CourtReservations = () => {
 
             {/* {Platform.OS === "ios" && (
               <>
-                <Text style={MyStyles.inputTitle}>
+                <Text style={MyStyles.inputLabel}>
                   Date<Text style={{ color: "red" }}>*</Text>
                 </Text>
                 <DateTimePicker
@@ -482,7 +498,7 @@ const CourtReservations = () => {
                   onChange={handleDateChange}
                   minimumDate={new Date()}
                 />
-                <Text style={MyStyles.inputTitle}>
+                <Text style={MyStyles.inputLabel}>
                   Start Time<Text style={{ color: "red" }}>*</Text>
                 </Text>
                 <DateTimePicker
@@ -491,7 +507,7 @@ const CourtReservations = () => {
                   display="default"
                   onChange={handleStartTimeChange}
                 />
-                <Text style={MyStyles.inputTitle}>
+                <Text style={MyStyles.inputLabel}>
                   End Time<Text style={{ color: "red" }}>*</Text>
                 </Text>
                 <DateTimePicker
@@ -503,7 +519,7 @@ const CourtReservations = () => {
               </>
             )} */}
             <View>
-              <Text style={MyStyles.inputTitle}>
+              <Text style={MyStyles.inputLabel}>
                 Amount<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput

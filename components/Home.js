@@ -17,12 +17,12 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
+import { InfoContext } from "../context/InfoContext";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { InfoContext } from "../context/InfoContext";
 
 //SERVICES ICONS
 import CourtReservation from "../assets/home/basketball.png";
@@ -36,14 +36,29 @@ import Drizzle from "../assets/weather-svg/drizzle";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
 import Rain from "../assets/weather-svg/rain";
 
+import * as SecureStore from "expo-secure-store";
 const Home = () => {
   const insets = useSafeAreaInsets();
   const { logout } = useContext(AuthContext);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { fetchWeather, weather } = useContext(InfoContext);
+  const { fetchWeather, weather, events } = useContext(InfoContext);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentEvents, setCurrentEvents] = useState([]);
 
+  useEffect(() => {
+    const currentevents = events.filter((event) => {
+      const eventDate = new Date(event.start);
+      return (
+        eventDate.getFullYear() === currentDate.getFullYear() &&
+        eventDate.getMonth() === currentDate.getMonth() &&
+        eventDate.getDate() === currentDate.getDate()
+      );
+    });
+
+    setCurrentEvents(currentevents);
+  }, [events, currentDate]);
   useEffect(() => {
     fetchWeather();
 
@@ -127,8 +142,14 @@ const Home = () => {
           >
             <View style={MyStyles.rowAlignment}>
               <View>
-                <Text style={[MyStyles.header, { marginBottom: 0 }]}>Home</Text>
-                <Text style={{ fontSize: 20, color: "#585252" }}>
+                <Text style={MyStyles.header}>Home</Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: "#585252",
+                    fontFamily: "QuicksandSemiBold",
+                  }}
+                >
                   Welcome, {user.name}
                 </Text>
               </View>
@@ -146,18 +167,20 @@ const Home = () => {
                 {showDropdown && (
                   <View
                     style={{
+                      height: "auto",
+                      justifyContent: "center",
                       position: "absolute",
                       top: 45,
                       right: 0,
-                      backgroundColor: "white",
-                      padding: 10,
+                      backgroundColor: "#fff",
+                      padding: 5,
                       borderRadius: 6,
                       shadowColor: "#000",
                       shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.2,
                       shadowRadius: 4,
                       elevation: 5,
-                      zIndex: 999,
+                      zIndex: 1,
                       minWidth: 150,
                       alignSelf: "flex-end",
                     }}
@@ -183,6 +206,7 @@ const Home = () => {
                           fontSize: 16,
                           marginLeft: 3,
                           color: "#04384E",
+                          fontFamily: "QuicksandBold",
                         }}
                         onPress={() => navigation.navigate("AccountSettings")}
                       >
@@ -203,7 +227,12 @@ const Home = () => {
                     >
                       <MaterialIcons name="logout" size={24} color="red" />
                       <Text
-                        style={{ fontSize: 16, color: "red", marginLeft: 3 }}
+                        style={{
+                          fontSize: 16,
+                          color: "red",
+                          marginLeft: 3,
+                          fontFamily: "QuicksandBold",
+                        }}
                       >
                         Logout
                       </Text>
@@ -215,6 +244,7 @@ const Home = () => {
 
             <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
               <TouchableOpacity
+                onPress={() => navigation.navigate("BrgyCalendar")}
                 style={[
                   MyStyles.card,
                   {
@@ -226,34 +256,37 @@ const Home = () => {
               >
                 <Text
                   style={{
-                    textAlign: "start",
                     color: "#BC0F0F",
                     fontSize: 20,
-                    fontWeight: "bold",
+                    fontFamily: "REMSemiBold",
                   }}
                 >
-                  May
+                  {currentDate.toLocaleString("en-US", { month: "long" })}
                 </Text>
                 <Text
                   style={{
-                    textAlign: "start",
                     fontSize: 35,
                     fontWeight: "bold",
                     color: "#04384E",
+                    fontFamily: "REMRegular",
                   }}
                 >
-                  01
+                  {currentDate.getDate()}
                 </Text>
-                <Text
-                  style={{
-                    textAlign: "start",
-                    fontSize: 14,
-                    color: "#ACACAC",
-                    textAlign: "auto",
-                  }}
-                >
-                  Clean-Up Drive: Cleaner Streets, Stronger Community
-                </Text>
+
+                {currentEvents?.map((event, index) => (
+                  <Text
+                    key={index}
+                    style={{
+                      fontSize: 14,
+                      color: "#ACACAC",
+                      marginRight: 10, // space between items
+                    }}
+                  >
+                    {event.title}
+                    {index !== currentEvents.length - 1 ? "," : ""}{" "}
+                  </Text>
+                ))}
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -266,20 +299,35 @@ const Home = () => {
                   end={{ x: 0.5, y: 1 }}
                   style={[MyStyles.gradientBackground]}
                 >
-                  <Text style={MyStyles.weatherBodyText}>Bacoor</Text>
+                  <Text
+                    style={{
+                      fontFamily: "REMRegular",
+                      fontSize: 16,
+                      color: "#fff",
+                    }}
+                  >
+                    Bacoor
+                  </Text>
                   <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
                     {getWeatherIcon(weather.currentcondition, 70, 70)}
                     <Text
-                      style={[
-                        MyStyles.weatherHeaderText,
-                        { marginVertical: 0, fontSize: 28 },
-                      ]}
+                      style={{
+                        fontFamily: "REMRegular",
+                        fontSize: 35,
+                        color: "#fff",
+                      }}
                     >
-                      {weather.currenttemp}
+                      {weather.currenttemp}°
                     </Text>
                   </View>
 
-                  <Text style={[MyStyles.weatherBodyText]}>
+                  <Text
+                    style={{
+                      fontFamily: "QuicksandSemiBold",
+                      fontSize: 16,
+                      color: "#fff",
+                    }}
+                  >
                     High:{Math.round(weather.currenthigh)}° Low:
                     {Math.round(weather.currentlow)}°
                   </Text>
@@ -290,7 +338,12 @@ const Home = () => {
             {user.role === "Resident" && (
               <>
                 <Text
-                  style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMMedium",
+                    marginTop: 15,
+                  }}
                 >
                   Services
                 </Text>
@@ -360,7 +413,14 @@ const Home = () => {
               </>
             )}
 
-            <Text style={[MyStyles.header, { marginBottom: 0, fontSize: 20 }]}>
+            <Text
+              style={{
+                color: "#04384E",
+                fontSize: 20,
+                fontFamily: "REMMedium",
+                marginTop: 15,
+              }}
+            >
               Emergency Tools
             </Text>
             <View
@@ -369,7 +429,10 @@ const Home = () => {
                 gap: 10,
               }}
             >
-              <TouchableOpacity style={MyStyles.sosContainer}>
+              <TouchableOpacity
+                style={MyStyles.sosContainer}
+                onPress={() => navigation.navigate("SOS")}
+              >
                 <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
                   SOS
                 </Text>

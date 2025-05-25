@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import Login from "./Login";
+import LoadingScreen from "./LoadingScreen";
 
 const PrivateRoute = ({ element }) => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -11,15 +11,17 @@ const PrivateRoute = ({ element }) => {
 
   useEffect(() => {
     if (isAuthenticated === false) {
-      navigation.navigate("Login");
+      setTimeout(() => {
+        navigation.navigate("Login");
+      }, 1000);
     }
   }, [isAuthenticated, navigation]);
 
   if (isAuthenticated === null) {
-    return null;
+    return <LoadingScreen />;
   }
   if (!isAuthenticated) {
-    return null;
+    return <LoadingScreen />;
   }
 
   return element;

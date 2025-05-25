@@ -57,7 +57,7 @@ const Preview = () => {
         width,
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 20,
+        paddingHorizontal: 50,
       }}
     >
       <Image
@@ -65,27 +65,15 @@ const Preview = () => {
         style={{
           width: 240,
           height: 240,
-          marginBottom: 20,
           resizeMode: "contain",
+          marginVertical: 70,
         }}
       />
-      <Text
-        style={{
-          fontSize: 25,
-          fontWeight: "bold",
-          color: "#04384E",
-          marginBottom: 10,
-          fontFamily: "REM-Bold",
-        }}
-      >
+      <Text style={[MyStyles.header, { textAlign: "center" }]}>
         {item.title}
       </Text>
       <Text
-        style={{
-          fontSize: 15,
-          color: "#ACACAC",
-          textAlign: "center",
-        }}
+        style={[MyStyles.textMedium, { marginTop: 10, textAlign: "center" }]}
       >
         {item.description}
       </Text>
@@ -101,26 +89,48 @@ const Preview = () => {
     await SecureStore.setItemAsync("hasLaunched", "true");
     navigation.navigate("Signup");
   };
+
+  const goToNextSlide = () => {
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < slides.length) {
+      flatListRef.current.scrollToIndex({ index: nextIndex });
+      setCurrentIndex(nextIndex);
+    }
+  };
+
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }}
     >
-      {/* Skip Button */}
-      <View style={{ alignItems: "flex-end", padding: 16 }}>
-        <TouchableOpacity onPress={handleLogin}>
-          <Text style={{ color: "#0E94D3", fontWeight: "bold" }}>Skip</Text>
-        </TouchableOpacity>
-      </View>
-
+      <TouchableOpacity
+        onPress={handleSignUp}
+        style={MyStyles.button}
+        accessibilityLabel="Join the community"
+        activeOpacity={0.8}
+      >
+        <Text
+          style={{
+            color: "white",
+            fontWeight: "bold",
+            fontSize: 24,
+          }}
+        >
+          Join Us
+        </Text>
+      </TouchableOpacity>
       {/* Slides Section */}
       <View
-        style={{ height: 420, justifyContent: "center", alignItems: "center" }}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <FlatList
           ref={flatListRef}
           data={slides}
           horizontal
           pagingEnabled
+          scrollEnabled={true}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
@@ -132,7 +142,7 @@ const Preview = () => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            marginTop: 20,
+            marginTop: 70,
           }}
         >
           {slides.map((_, index) => (
@@ -153,45 +163,59 @@ const Preview = () => {
       {/* Bottom Buttons */}
       <View
         style={{
-          flex: 1,
-          backgroundColor: "#fff",
           justifyContent: "center",
           alignItems: "center",
           padding: 30,
         }}
       >
-        <TouchableOpacity
-          onPress={handleSignUp}
-          style={MyStyles.button}
-          accessibilityLabel="Join the community"
-          activeOpacity={0.8}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: 24,
-            }}
-          >
-            {isLastSlide ? "Get Started" : "Join Us"}
-          </Text>
-        </TouchableOpacity>
+        {isLastSlide ? (
+          <>
+            {/* Join Us Button */}
+            <TouchableOpacity
+              onPress={handleSignUp}
+              style={MyStyles.button}
+              accessibilityLabel="Join the community"
+              activeOpacity={0.8}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: 24,
+                }}
+              >
+                Join Us
+              </Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={handleLogin}
-          accessibilityLabel="Go to Login"
-        >
-          <Text
-            style={{
-              color: "#0E94D3",
-              fontWeight: "bold",
-              fontSize: 24,
-              marginTop: 15,
-            }}
+            {/* Login Button */}
+            <TouchableOpacity
+              onPress={handleLogin}
+              accessibilityLabel="Go to Login"
+            >
+              <Text
+                style={{
+                  color: "#0E94D3",
+                  fontWeight: "bold",
+                  fontSize: 24,
+                  marginTop: 15,
+                }}
+              >
+                Login
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          /* Next Button */
+          <TouchableOpacity
+            onPress={goToNextSlide}
+            style={MyStyles.button}
+            accessibilityLabel="Go to Next Slide"
+            activeOpacity={0.8}
           >
-            Login
-          </Text>
-        </TouchableOpacity>
+            <Text style={MyStyles.buttonText}>Next</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );

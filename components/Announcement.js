@@ -23,17 +23,18 @@ import api from "../api";
 import { Dropdown } from "react-native-element-dropdown";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import AppLogo from "../assets/applogo-lightbg.png";
+import Aniban2Logo from "../assets/aniban2logo.png";
 
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Announcement = () => {
   const insets = useSafeAreaInsets();
   const { fetchAnnouncements, announcements } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const [sortOption, setSortOption] = useState("Newest");
+  const [sortOption, setSortOption] = useState("newest");
   dayjs.extend(relativeTime);
   const [expandedAnnouncements, setExpandedAnnouncements] = useState([]);
 
@@ -65,6 +66,10 @@ const Announcement = () => {
   };
 
   const sortedAnnouncements = [...announcements].sort((a, b) => {
+    const aPinned = a.status === "Pinned";
+    const bPinned = b.status === "Pinned";
+    if (aPinned && !bPinned) return -1;
+    if (!aPinned && bPinned) return 1;
     if (sortOption === "newest") {
       return new Date(b.createdAt) - new Date(a.createdAt);
     } else {
@@ -96,7 +101,7 @@ const Announcement = () => {
         hour12: true,
       });
 
-      eventInfo = `📅 ${formattedDate}\n🕒 ${formattedStartTime} - ${formattedEndTime}\n\n`;
+      eventInfo = `📅 ${formattedDate}\n🕒 ${formattedStartTime} - ${formattedEndTime}\n`;
     }
 
     const words = announcement.content.split(" ");
@@ -109,14 +114,33 @@ const Announcement = () => {
     return (
       <View style={{ marginVertical: 10 }}>
         {eventInfo !== "" && (
-          <Text style={{ marginBottom: 5, fontSize: 16 }}>{eventInfo}</Text>
+          <Text
+            style={{
+              marginBottom: 5,
+              fontSize: 16,
+              color: "#04384E",
+              fontFamily: "QuicksandSemiBold",
+            }}
+          >
+            {eventInfo}
+          </Text>
         )}
-        <Text style={{ fontSize: 16, color: "#333", textAlign: "justify" }}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: "#04384E",
+            fontFamily: "QuicksandMedium",
+          }}
+        >
           {displayText}
         </Text>
         {isLong && (
           <Text
-            style={{ color: "#006EFF", marginTop: 5 }}
+            style={{
+              color: "#006EFF",
+              marginTop: 5,
+              fontFamily: "QuicksandMedium",
+            }}
             onPress={() => toggleExpanded(announcement._id)}
           >
             {isExpanded ? "See less" : "See more"}
@@ -128,7 +152,7 @@ const Announcement = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <ScrollView
         contentContainerStyle={[
@@ -145,7 +169,7 @@ const Announcement = () => {
         <Dropdown
           data={[
             { label: "Newest", value: "newest" },
-            { label: "Latest", value: "latest" },
+            { label: "Oldest", value: "oldest" },
           ]}
           labelField="label"
           valueField="value"
@@ -160,10 +184,15 @@ const Announcement = () => {
             borderColor: "#ACACAC",
             borderRadius: 5,
             alignSelf: "flex-end",
-            padding: 4,
+            paddingHorizontal: 4,
+          }}
+          selectedTextStyle={{
+            color: "#04384E",
+            fontFamily: "QuicksandSemiBold",
+            fontSize: 16,
           }}
         />
-        {announcements.map((element, index) => (
+        {sortedAnnouncements.map((element, index) => (
           <View
             key={index}
             style={{
@@ -180,31 +209,75 @@ const Announcement = () => {
               elevation: 5,
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={AppLogo}
-                style={{ width: 60, height: 60, marginLeft: -8 }}
-              />
-              <View style={{ marginLeft: 5 }}>
-                <Text style={{ color: "#04384E", fontSize: 16 }}>
-                  {element.uploadedby}
-                </Text>
-                <Text style={{ fontSize: 14, color: "000" }}>
-                  {dayjs(element.createdAt).fromNow()}
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Image source={Aniban2Logo} style={{ width: 50, height: 50 }} />
+                <View style={{ marginLeft: 5 }}>
+                  <Text
+                    style={{
+                      color: "#04384E",
+                      fontSize: 16,
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
+                    Barangay Aniban 2
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: "#808080",
+                      fontFamily: "QuicksandSemiBold",
+                    }}
+                  >
+                    {dayjs(element.createdAt).fromNow()}
+                  </Text>
+                </View>
+              </View>
+
+              {element.status === "Pinned" && (
+                <MaterialIcons
+                  name="push-pin"
+                  size={24}
+                  color="#04384E"
+                  style={{
+                    transform: [{ rotate: "30deg" }],
+                    marginRight: 15,
+                    marginTop: 5,
+                  }}
+                />
+              )}
+            </View>
+
+            <View style={{ marginVertical: 10 }}>
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 16,
+                    fontFamily: "QuicksandSemiBold",
+                  }}
+                >
+                  {element.category}
                 </Text>
               </View>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>Category: </Text>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>
-                {element.category}
-              </Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>Title: </Text>
-              <Text style={{ color: "#04384E", fontSize: 16 }}>
-                {element.title}
-              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  style={{
+                    color: "#808080",
+                    fontSize: 16,
+                    fontFamily: "QuicksandMedium",
+                  }}
+                >
+                  {element.title}
+                </Text>
+              </View>
             </View>
 
             {element.picture && element.picture.trim() !== "" && (
@@ -225,16 +298,25 @@ const Announcement = () => {
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
             >
-              {element.heartedby.includes(user.userID) ? (
+              {Array.isArray(element.heartedby) &&
+              element.heartedby.includes(user.userID) ? (
                 <TouchableOpacity onPress={() => handleUnheart(element._id)}>
                   <Ionicons name="heart" size={24} color="red" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => handleHeart(element._id)}>
-                  <Ionicons name="heart-outline" size={24} color="black" />
+                  <Ionicons name="heart-outline" size={24} color="#808080" />
                 </TouchableOpacity>
               )}
-              <Text>{element.hearts}</Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: "QuicksandSemiBold",
+                  color: "#808080",
+                }}
+              >
+                {element.hearts}
+              </Text>
             </View>
           </View>
         ))}

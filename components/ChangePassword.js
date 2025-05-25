@@ -6,15 +6,18 @@ import {
   ScrollView,
   Touchable,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { MaterialIcons } from "@expo/vector-icons";
 import { AuthContext } from "../context/AuthContext";
 import { useContext, useState } from "react";
-import { TextInput } from "react-native-paper";
 import api from "../api";
+
+//ICONS
+import { MaterialIcons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const ChangePassword = () => {
   const { logout } = useContext(AuthContext);
@@ -23,6 +26,21 @@ const ChangePassword = () => {
   const [renewpassword, setRenewPassword] = useState("");
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const [secureCurrPass, setSecureCurrPass] = useState(true);
+  const [secureNewPass, setSecureNewPass] = useState(true);
+  const [secureConfirmPass, setSecureConfirmPass] = useState(true);
+
+  const togglesecureCurrPass = () => {
+    setSecureCurrPass(!secureCurrPass);
+  };
+
+  const togglesecureNewPass = () => {
+    setSecureNewPass(!secureNewPass);
+  };
+
+  const togglesecureConfirmPass = () => {
+    setSecureConfirmPass(!secureConfirmPass);
+  };
 
   const handlePasswordChange = async () => {
     if (newpassword !== renewpassword) {
@@ -66,38 +84,98 @@ const ChangePassword = () => {
           size={24}
           color="#04384E"
         />
-        <Text style={[MyStyles.header, { marginTop: 10 }]}>
+        <Text style={[MyStyles.header, { marginTop: 20 }]}>
           Change Password
         </Text>
-        <View>
+
+        <View style={{ gap: 15, marginVertical: 30 }}>
           <View>
-            <Text>Current Password</Text>
-            <TextInput
-              onChangeText={(e) => setPassword(e)}
-              secureTextEntry={true}
-              placeholder="Enter password"
-            />
+            <Text style={MyStyles.inputLabel}>Current Password</Text>
+            <View style={{ position: "relative" }}>
+              <TextInput
+                onChangeText={(e) => setPassword(e)}
+                secureTextEntry={secureCurrPass}
+                placeholder="Enter password"
+                style={[MyStyles.input, { paddingRight: 40 }]}
+              />
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: "50%",
+                  transform: [{ translateY: -12 }],
+                }}
+                onPress={togglesecureCurrPass}
+              >
+                <Ionicons
+                  name={secureCurrPass ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
+
           <View>
-            <Text>New Password</Text>
-            <TextInput
-              onChangeText={(e) => setNewPassword(e)}
-              secureTextEntry={true}
-              placeholder="Enter password"
-            />
+            <Text style={MyStyles.inputLabel}>New Password</Text>
+            <View style={{ position: "relative" }}>
+              <TextInput
+                onChangeText={(e) => setNewPassword(e)}
+                secureTextEntry={secureNewPass}
+                placeholder="Enter password"
+                style={[MyStyles.input, { paddingRight: 40 }]}
+              />
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: "50%",
+                  transform: [{ translateY: -12 }],
+                }}
+                onPress={togglesecureNewPass}
+              >
+                <Ionicons
+                  name={secureNewPass ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
+
           <View>
-            <Text>Confirm New Password</Text>
-            <TextInput
-              onChangeText={(e) => setRenewPassword(e)}
-              secureTextEntry={true}
-              placeholder="Enter password"
-            />
+            <Text style={MyStyles.inputLabel}>Confirm New Password</Text>
+            <View style={{ position: "relative" }}>
+              <TextInput
+                onChangeText={(e) => setRenewPassword(e)}
+                secureTextEntry={secureConfirmPass}
+                placeholder="Enter password"
+                style={[MyStyles.input, { paddingRight: 40 }]}
+              />
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: "50%",
+                  transform: [{ translateY: -12 }],
+                }}
+                onPress={togglesecureConfirmPass}
+              >
+                <Ionicons
+                  name={secureConfirmPass ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-          <TouchableOpacity onPress={handlePasswordChange}>
-            <Text>Save Changes</Text>
-          </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={handlePasswordChange}
+          style={MyStyles.button}
+        >
+          <Text style={MyStyles.buttonText}>Save Changes</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

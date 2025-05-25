@@ -11,22 +11,47 @@ import {
   Platform,
   Linking,
   Switch,
+  Image,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { InfoContext } from "../context/InfoContext";
+import LoadingScreen from "./LoadingScreen";
 
 //ICONS
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const AccountSettings = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [pushNotifEnabled, setPushNotifEnabled] = useState(false);
   const [appNotifEnabled, setAppNotifEnabled] = useState(false);
+  const { userDetails, fetchUserDetails } = useContext(InfoContext);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  if (!userDetails) {
+    return <LoadingScreen />;
+  }
+
+  const pictureUri =
+    userDetails.resID?.picture || userDetails.empID?.resID?.picture;
+
+  const firstName =
+    userDetails.resID?.firstname || userDetails.empID?.resID?.firstname;
+
+  const lastName =
+    userDetails.resID?.lastname || userDetails.empID?.resID?.lastname;
 
   return (
     <SafeAreaView
@@ -46,186 +71,295 @@ const AccountSettings = () => {
           size={24}
           color="#04384E"
         />
-        <Text style={[MyStyles.header, { marginTop: 10 }]}>Settings</Text>
 
         <View
           style={{
-            flexDirection: "row",
+            justifyContent: "center",
             alignItems: "center",
-            gap: 10,
-            marginTop: 20,
           }}
         >
-          <FontAwesome5 name="user-circle" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            Account
+          <Image
+            source={{
+              uri: pictureUri,
+            }}
+            onLoad={() => setImageLoaded(true)}
+            style={[
+              MyStyles.profilePic,
+              { width: 60, height: 60, borderRadius: 40 },
+            ]}
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              color: "#04384E",
+              fontFamily: "REMSemiBold",
+            }}
+          >
+            {`${firstName} ${lastName}`}
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: "#808080",
+              fontFamily: "QuicksandBold",
+            }}
+          >
+            {userDetails.username}
           </Text>
         </View>
-        <View
-          style={{
-            height: 1,
-            backgroundColor: "#C1C0C0",
-            width: "100%",
-            marginVertical: 10,
-          }}
-        />
-        <View style={{ gap: 5 }}>
+
+        <View style={{ gap: 20, marginTop: 20 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#808080",
+              fontFamily: "QuicksandBold",
+            }}
+          >
+            Security
+          </Text>
+
           <TouchableOpacity
-            onPress={() => navigation.navigate("Profile")}
+            onPress={() => navigation.navigate("EditMobileNumber")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Profile
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <AntDesign
+                name="mobile1"
+                size={20}
+                color="#808080"
+                style={{
+                  backgroundColor: "#E5E4E2B3",
+                  borderRadius: 10,
+                  padding: 5,
+                }}
+              />
+              <Text
+                style={{
+                  color: "#04384E",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                  marginLeft: 15,
+                }}
+              >
+                Mobile Number
+              </Text>
+            </View>
+
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("ChangeUsername")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Change Username
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome5
+                name="user"
+                size={20}
+                color="#808080"
+                style={{
+                  backgroundColor: "#E5E4E2B3",
+                  borderRadius: 10,
+                  padding: 5,
+                }}
+              />
+              <Text
+                style={{
+                  color: "#04384E",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                  marginLeft: 15,
+                }}
+              >
+                Username
+              </Text>
+            </View>
+
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("ChangePassword")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Change Password
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <MaterialIcons
+                name="password"
+                size={20}
+                color="#808080"
+                style={{
+                  backgroundColor: "#E5E4E2B3",
+                  borderRadius: 10,
+                  padding: 5,
+                }}
+              />
+              <Text
+                style={{
+                  color: "#04384E",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                  marginLeft: 15,
+                }}
+              >
+                Password
+              </Text>
+            </View>
+
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("EditSecurityQuestions")}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Edit Security Questions
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="comment-question-outline"
+                size={20}
+                color="#808080"
+                style={{
+                  backgroundColor: "#E5E4E2B3",
+                  borderRadius: 10,
+                  padding: 5,
+                }}
+              />
+              <Text
+                style={{
+                  color: "#04384E",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                  marginLeft: 15,
+                }}
+              >
+                Security Questions
+              </Text>
+            </View>
+
+            <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
         </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-            marginTop: 30,
-          }}
-        >
-          <Ionicons name="notifications-outline" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            Notifications
-          </Text>
-        </View>
-
-        <View
-          style={{
-            height: 1,
-            backgroundColor: "#C1C0C0",
-            width: "100%",
-            marginVertical: 10,
-          }}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "-10",
-          }}
-        >
-          <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-            Push Notifications
-          </Text>
-          <Switch
-            value={pushNotifEnabled}
-            onValueChange={setPushNotifEnabled}
-            trackColor={{ false: "#ccc", true: "#04384E" }}
-            thumbColor={pushNotifEnabled ? "#ffffff" : "#f4f3f4"}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "-15",
-          }}
-        >
-          <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-            App Notifications
-          </Text>
-          <Switch
-            value={appNotifEnabled}
-            onValueChange={setAppNotifEnabled}
-            trackColor={{ false: "#ccc", true: "#04384E" }}
-            thumbColor={appNotifEnabled ? "#ffffff" : "#f4f3f4"}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-            marginTop: 30,
-          }}
-        >
-          <MaterialIcons name="more-horiz" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            More
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 1,
-            backgroundColor: "#C1C0C0",
-            width: "100%",
-            marginVertical: 10,
-          }}
-        />
-        <View style={{ gap: 5 }}>
-          <TouchableOpacity
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+        <View style={{ marginTop: 30 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#808080",
+              fontFamily: "QuicksandBold",
+            }}
           >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              About eBarrio App
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ color: "#C1C0C0", fontSize: 18, fontWeight: "500" }}>
-              Help
-            </Text>
-            <MaterialIcons name="navigate-next" size={24} color="#C1C0C0" />
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-            marginTop: 30,
-          }}
-        >
-          <MaterialIcons name="logout" size={24} color="#04384E" />
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#04384E" }}>
-            Logout
+            Preferences
           </Text>
-        </TouchableOpacity>
+
+          <View style={{ gap: 20 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="notifications-outline"
+                  size={20}
+                  color="#808080"
+                  style={{
+                    backgroundColor: "#E5E4E2B3",
+                    borderRadius: 10,
+                    padding: 5,
+                  }}
+                />
+
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                    marginLeft: 15,
+                  }}
+                >
+                  Notification
+                </Text>
+              </View>
+
+              <Switch
+                value={pushNotifEnabled}
+                onValueChange={setPushNotifEnabled}
+                trackColor={{ false: "#ccc", true: "#04384E" }}
+                thumbColor={pushNotifEnabled ? "#ffffff" : "#f4f3f4"}
+              />
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: "-15",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="location-outline"
+                  size={20}
+                  color="#808080"
+                  style={{
+                    backgroundColor: "#E5E4E2B3",
+                    borderRadius: 10,
+                    padding: 5,
+                  }}
+                />
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                    marginLeft: 15,
+                  }}
+                >
+                  Location
+                </Text>
+              </View>
+              <Switch
+                value={appNotifEnabled}
+                onValueChange={setAppNotifEnabled}
+                trackColor={{ false: "#ccc", true: "#04384E" }}
+                thumbColor={appNotifEnabled ? "#ffffff" : "#f4f3f4"}
+              />
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

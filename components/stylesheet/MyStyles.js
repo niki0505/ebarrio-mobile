@@ -1,33 +1,24 @@
 import { StyleSheet, Text, View } from "react-native";
 export const MyStyles = StyleSheet.create({
-  title: {
-    fontFamily: "REM-Bold",
-    fontSize: 24,
-  },
-
   container: {
     flex: 1,
     backgroundColor: "#F0F4F7",
     padding: 20,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   header: {
     fontSize: 30,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "start",
     color: "#04384E",
+    fontFamily: "REMBold",
   },
-  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#F0F4F7" },
-  input: {
-    width: "100%",
-    height: 45,
-    borderWidth: 1,
-    borderColor: "#ACACAC",
-    borderRadius: 15,
+  textMedium: {
     fontSize: 16,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
+    color: "#808080",
+    fontFamily: "QuicksandMedium",
   },
+
+  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#F0F4F7" },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -63,7 +54,8 @@ export const MyStyles = StyleSheet.create({
   },
   tabBarLabel: {
     paddingBottom: 5,
-    fontSize: 14,
+    fontSize: 16,
+    fontFamily: "QuicksandSemiBold",
     textAlign: "center",
     marginBottom: 5,
   },
@@ -74,9 +66,21 @@ export const MyStyles = StyleSheet.create({
     borderColor: "#ccc",
     marginVertical: 10,
   },
-  inputTitle: {
+  input: {
+    width: "100%",
+    height: 55,
+    borderWidth: 1,
+    borderColor: "#ACACAC",
+    borderRadius: 15,
+    fontSize: 16,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    fontFamily: "QuicksandMedium",
+  },
+  inputLabel: {
     color: "#04384E",
     fontSize: 16,
+    fontFamily: "QuicksandBold",
   },
   datetimeRow: {
     flexDirection: "row",
@@ -91,19 +95,18 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     width: "100%",
-    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "REMBold",
     fontSize: 24,
   },
 
   //Form message
   formMessage: {
-    fontSize: 18,
-    color: "gray",
-    marginBottom: 20,
+    fontSize: 16,
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
   },
 
   //Suggestion
@@ -153,18 +156,18 @@ export const MyStyles = StyleSheet.create({
   weatherHeaderText: {
     fontSize: 30,
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "REMBold",
     marginVertical: 10,
   },
   weatherBodyText: {
     color: "#fff",
     fontWeight: "400",
-    fontSize: 14,
-    fontWeight: "normal",
+    fontSize: 16,
+    fontFamily: "QuicksandSemiBold",
   },
   weatherSubheaderText: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: "QuicksandBold",
     color: "#fff",
   },
   hourlyforecastContainer: {
@@ -211,7 +214,7 @@ export const MyStyles = StyleSheet.create({
   servicesTitle: {
     fontSize: 16,
     color: "#04384E",
-    fontWeight: "600",
+    fontFamily: "QuicksandBold",
     marginTop: 10,
     textAlign: "center",
   },
@@ -233,8 +236,8 @@ export const MyStyles = StyleSheet.create({
   },
   emergencyTitle: {
     color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontFamily: "REMSemiBold",
     textAlign: "center",
   },
   emergencyMessage: {
@@ -242,13 +245,14 @@ export const MyStyles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     opacity: 0.7,
+    fontFamily: "QuicksandBold",
   },
 
   //Emergency Hotlines
   searchIcon: {
     position: "absolute",
-    right: 10,
-    top: "50%",
+    left: 15,
+    top: "55%",
     transform: [{ translateY: -12 }],
   },
   phoneIcon: {
@@ -276,5 +280,15 @@ export const MyStyles = StyleSheet.create({
     height: 40,
     fontSize: 16,
     color: "#000",
+  },
+  shadow: {
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+
+    // Android shadow
+    elevation: 10,
   },
 });

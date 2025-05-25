@@ -133,15 +133,23 @@ const Weather = () => {
 
         <View style={MyStyles.rowAlignment}>
           <Text style={MyStyles.weatherHeaderText}>Bacoor</Text>
-          <Text style={{ color: "#fff" }}>{weather.currentcondition}</Text>
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 16,
+              fontFamily: "QuicksandSemiBold",
+            }}
+          >
+            {weather.currentcondition}
+          </Text>
         </View>
 
         <View>
-          <Text style={MyStyles.weatherBodyText}>Now</Text>
+          <Text style={MyStyles.weatherSubheaderText}>Now</Text>
           <Text
             style={[
               MyStyles.weatherHeaderText,
-              { fontSize: 50, marginVertical: 0 },
+              { fontSize: 50, marginVertical: 0, fontFamily: "REMSemiBold" },
             ]}
           >
             {weather.currenttemp}°
@@ -180,11 +188,23 @@ const Weather = () => {
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <View style={MyStyles.hourlyforecastContainer}>
-                <Text style={[MyStyles.weatherSubheaderText, { fontSize: 16 }]}>
+                <Text
+                  style={[
+                    MyStyles.weatherBodyText,
+                    { fontFamily: "QuicksandMedium" },
+                  ]}
+                >
                   {Math.round(item.temperature)}°C
                 </Text>
                 {getWeatherIcon(item.condition, 60, 60)}
-                <Text style={MyStyles.weatherBodyText}>{item.time}</Text>
+                <Text
+                  style={[
+                    MyStyles.weatherBodyText,
+                    { fontFamily: "QuicksandMedium" },
+                  ]}
+                >
+                  {item.time}
+                </Text>
               </View>
             )}
           />
@@ -196,12 +216,22 @@ const Weather = () => {
 
           {/* Tomorrow */}
           <View style={MyStyles.forecastcontentContainer}>
-            <Text style={[MyStyles.weatherBodyText, { fontSize: 16 }]}>
+            <Text
+              style={[
+                MyStyles.weatherBodyText,
+                { fontFamily: "QuicksandMedium" },
+              ]}
+            >
               {formatDate(tomorrowDate)}
             </Text>
             <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
               {getWeatherIcon(tomorrow.condition)}
-              <Text style={[MyStyles.weatherBodyText, { fontSize: 16 }]}>
+              <Text
+                style={[
+                  MyStyles.weatherBodyText,
+                  { fontFamily: "QuicksandMedium" },
+                ]}
+              >
                 {Math.round(tomorrow.high)}°C/{Math.round(tomorrow.low)}°C
               </Text>
             </View>
@@ -209,12 +239,22 @@ const Weather = () => {
 
           {/* Day After Tomorrow */}
           <View style={MyStyles.forecastcontentContainer}>
-            <Text style={[MyStyles.weatherBodyText, { fontSize: 16 }]}>
+            <Text
+              style={[
+                MyStyles.weatherBodyText,
+                { fontFamily: "QuicksandMedium" },
+              ]}
+            >
               {formatDate(dayAfterTomorrowDate)}
             </Text>
             <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
               {getWeatherIcon(dayAfterTomorrow.condition)}
-              <Text style={[MyStyles.weatherBodyText, { fontSize: 16 }]}>
+              <Text
+                style={[
+                  MyStyles.weatherBodyText,
+                  { fontFamily: "QuicksandMedium" },
+                ]}
+              >
                 {Math.round(dayAfterTomorrow.high)}°C/
                 {Math.round(dayAfterTomorrow.low)}°C
               </Text>
