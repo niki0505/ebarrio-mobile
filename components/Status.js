@@ -21,12 +21,22 @@ import { Dropdown } from "react-native-element-dropdown";
 import { MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import api from "../api";
+import Dialog from "react-native-dialog";
 
 const Status = () => {
   const { fetchServices, services } = useContext(InfoContext);
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
   const insets = useSafeAreaInsets();
   const [sortOption, setSortOption] = useState("newest");
+  const [certVisible, setCertVisible] = useState(false);
+  const [certReason, setCertReason] = useState("");
+  const [reservationVisible, setReservationVisible] = useState(false);
+  const [reservationReason, setReservationReason] = useState("");
+  const [selectedCertID, setSelectedCertID] = useState(null);
+  const [selectedCertCreated, setSelectedCertCreated] = useState(null);
+  const [selectedReservationID, setSelectedReservationID] = useState(null);
+  const [selectedReservationCreated, setSelectedReservationCreated] =
+    useState(null);
   dayjs.extend(relativeTime);
   const navigation = useNavigation();
 
@@ -43,26 +53,38 @@ const Status = () => {
     }
   });
 
-  const cancelCertificate = async (certID, createdAt) => {
+  const certCancelClick = (certID, createdAt) => {
+    setCertVisible(true);
+    setSelectedCertID(certID);
+    setSelectedCertCreated(createdAt);
+  };
+
+  const reservationCancelClick = (reservationID, createdAt) => {
+    setReservationVisible(true);
+    setSelectedReservationID(reservationID);
+    setSelectedReservationCreated(createdAt);
+  };
+
+  const cancelCertificate = async () => {
     const now = new Date();
-    const createdTime = new Date(createdAt);
+    const createdTime = new Date(selectedCertCreated);
     const diffInMinutes = (now - createdTime) / 60000;
     if (diffInMinutes > 30) {
       alert("Cancellation is only allowed within 30 minutes after submission");
       return;
     }
-
     try {
-      await api.put(`/cancelcertrequest/${certID}`);
+      await api.put(`/cancelcertrequest/${selectedCertID}`, { certReason });
+      setCertVisible(false);
       alert("Certificate cancelled successfully!");
     } catch (error) {
       console.log("Error in cancelling certificate", error);
     }
   };
 
-  const cancelReservation = async (reservationID, createdAt) => {
+  const cancelReservation = async () => {
     const now = new Date();
-    const createdTime = new Date(createdAt);
+    const createdTime = new Date(selectedReservationCreated);
     const diffInMinutes = (now - createdTime) / 60000;
     if (diffInMinutes > 30) {
       alert("Cancellation is only allowed within 30 minutes after submission");
@@ -70,7 +92,10 @@ const Status = () => {
     }
 
     try {
-      await api.put(`/cancelreservationrequest/${reservationID}`);
+      await api.put(`/cancelreservationrequest/${selectedReservationID}`, {
+        reservationReason,
+      });
+      setReservationVisible(false);
       alert("Court reservation cancelled successfully!");
     } catch (error) {
       console.log("Error in cancelling court reservation", error);
@@ -129,6 +154,32 @@ const Status = () => {
             }}
           />
 
+          <Dialog.Container visible={certVisible}>
+            <Dialog.Title>Cancel Certificate</Dialog.Title>
+            <Dialog.Input
+              placeholder="Enter your reason here..."
+              onChangeText={(text) => setCertReason(text)}
+            />
+            <Dialog.Button
+              label="Cancel"
+              onPress={() => setCertVisible(false)}
+            />
+            <Dialog.Button label="Submit" onPress={cancelCertificate} />
+          </Dialog.Container>
+
+          <Dialog.Container visible={reservationVisible}>
+            <Dialog.Title>Cancel Court Reservation</Dialog.Title>
+            <Dialog.Input
+              placeholder="Enter your reason here..."
+              onChangeText={(text) => setReservationReason(text)}
+            />
+            <Dialog.Button
+              label="Cancel"
+              onPress={() => setReservationVisible(false)}
+            />
+            <Dialog.Button label="Submit" onPress={cancelReservation} />
+          </Dialog.Container>
+
           {sortedServices.map((service, index) => {
             return (
               <View key={index}>
@@ -177,12 +228,17 @@ const Status = () => {
                         new Date(new Date().getTime() - 30 * 60 * 1000) && (
                         <TouchableOpacity
                           onPress={() =>
-                            cancelCertificate(service._id, service.createdAt)
+                            certCancelClick(service._id, service.createdAt)
                           }
                         >
                           <Text>Cancel</Text>
                         </TouchableOpacity>
                       )}
+                    {service.status === "Rejected" && (
+                      <>
+                        <Text>Remarks: {service.remarks}</Text>
+                      </>
+                    )}
                   </>
                 )}
 
@@ -210,12 +266,20 @@ const Status = () => {
                         new Date(new Date().getTime() - 30 * 60 * 1000) && (
                         <TouchableOpacity
                           onPress={() =>
-                            cancelReservation(service._id, service.createdAt)
+                            reservationCancelClick(
+                              service._id,
+                              service.createdAt
+                            )
                           }
                         >
                           <Text>Cancel</Text>
                         </TouchableOpacity>
                       )}
+                    {service.status === "Rejected" && (
+                      <>
+                        <Text>Remarks: {service.remarks}</Text>
+                      </>
+                    )}
                   </>
                 )}
 
@@ -274,6 +338,11 @@ const Status = () => {
                         <Text>
                           Agreement Details: {service.agreementdetails}
                         </Text>
+                      </>
+                    )}
+                    {service.status === "Rejected" && (
+                      <>
+                        <Text>Remarks: {service.remarks}</Text>
                       </>
                     )}
                   </>

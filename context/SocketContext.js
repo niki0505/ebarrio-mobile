@@ -17,7 +17,6 @@ export const SocketProvider = ({ children }) => {
     try {
       const response = await api.get("/getnotifications");
       setNotifications(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("❌ Failed to fetch notifications:", error);
     }
@@ -35,7 +34,7 @@ export const SocketProvider = ({ children }) => {
 
     newSocket.on("announcement", (announcement) => {
       Alert.alert(
-        "🎉 Announcement!",
+        announcement.title,
         announcement.message,
         [
           {
@@ -70,8 +69,47 @@ export const SocketProvider = ({ children }) => {
         { cancelable: true }
       );
     });
+
     newSocket.on("notificationUpdate", (updatedNotifications) => {
       setNotifications(updatedNotifications);
+    });
+
+    newSocket.on("blotterUpdate", (blotter) => {
+      Alert.alert(
+        blotter.title,
+        blotter.message,
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancelled"),
+            style: "cancel",
+          },
+          {
+            text: "View Now",
+            onPress: () => navigation.navigate("Status"),
+          },
+        ],
+        { cancelable: true }
+      );
+    });
+
+    newSocket.on("reservationUpdate", (res) => {
+      Alert.alert(
+        res.title,
+        res.message,
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancelled"),
+            style: "cancel",
+          },
+          {
+            text: "View Now",
+            onPress: () => navigation.navigate("Status"),
+          },
+        ],
+        { cancelable: true }
+      );
     });
 
     setSocket(newSocket);

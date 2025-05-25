@@ -3,13 +3,12 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import * as SecureStore from "expo-secure-store";
 import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
-
-export const SocketContext = createContext();
+import { SocketContext } from "./SocketContext";
 
 export const InfoContext = createContext(undefined);
 
 export const InfoProvider = ({ children }) => {
-  const [socket, setSocket] = useState(null);
+  const { socket } = useContext(SocketContext);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
@@ -18,48 +17,44 @@ export const InfoProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState([]);
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
-  const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (!user?.userID) return;
-    const newSocket = io("https://ebarrio-mobile-backend.onrender.com", {
-      query: { userID: user.userID, resID: user.resID },
-      transports: ["websocket"], // ensure persistent connection
-    });
+  // useEffect(() => {
+  //   if (!user?.userID) return;
+  //   const newSocket = io("https://ebarrio-mobile-backend.onrender.com");
 
-    newSocket.on("connect", () => {
-      console.log("✅ Socket connected:", newSocket.id);
-    });
+  //   newSocket.on("connect", () => {
+  //     console.log("✅ Socket connected:", newSocket.id);
+  //   });
 
-    newSocket.on("connect_error", (err) => {
-      console.error("❌ Socket connection error:", err.message);
-    });
+  //   newSocket.on("connect_error", (err) => {
+  //     console.error("❌ Socket connection error:", err.message);
+  //   });
 
-    newSocket.on("mobile-dbChange", (updatedData) => {
-      console.log(
-        `[${new Date().toISOString()}] 📦 Received dbChange payload:`,
-        updatedData
-      );
+  //   newSocket.on("mobile-dbChange", (updatedData) => {
+  //     console.log(
+  //       `[${new Date().toISOString()}] 📦 Received dbChange payload:`,
+  //       updatedData
+  //     );
 
-      if (updatedData.type === "announcements") {
-        setAnnouncements(updatedData.data);
-        console.log("✅ Announcements updated.");
-      } else if (updatedData.type === "services") {
-        setServices(updatedData.data);
-        console.log("✅ Services updated.");
-      } else {
-        console.warn("⚠️ Unhandled update type:", updatedData.type);
-      }
-    });
+  //     if (updatedData.type === "announcements") {
+  //       setAnnouncements(updatedData.data);
+  //       console.log("✅ Announcements updated.");
+  //     } else if (updatedData.type === "services") {
+  //       setServices(updatedData.data);
+  //       console.log("✅ Services updated.");
+  //     } else {
+  //       console.warn("⚠️ Unhandled update type:", updatedData.type);
+  //     }
+  //   });
 
-    newSocket.onAny((event, ...args) => {
-      console.log(`📡 [SOCKET] Event received: ${event}`, args);
-    });
+  //   newSocket.onAny((event, ...args) => {
+  //     console.log(`📡 [SOCKET] Event received: ${event}`, args);
+  //   });
 
-    setSocket(newSocket);
+  //   setSocket(newSocket);
 
-    return () => newSocket.disconnect();
-  }, [user]);
+  //   return () => newSocket.disconnect();
+  // }, [user]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -165,53 +160,45 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!socket) return;
-  //   const onDbChange = (updatedData) => {
-  //     console.log(
-  //       `[${new Date().toISOString()}] 📦 FULL SOCKET PAYLOAD:`,
-  //       updatedData.type
-  //     );
+  useEffect(() => {
+    if (!socket) return;
 
-  //     if (updatedData.type === "announcements") {
-  //       setAnnouncements(updatedData.data);
-  //       console.log("Announcements updated.");
-  //     } else if (updatedData.type === "services") {
-  //       setServices(updatedData.data);
-  //       console.log("Services updated.");
-  //     }
-  //   };
+    const handler = (updatedData) => {
+      if (updatedData.type === "announcements") {
+        setAnnouncements(updatedData.data);
+      } else if (updatedData.type === "services") {
+        setServices(updatedData.data);
+      }
+    };
 
-  //   socket.on("mobile-dbChange", onDbChange);
+    socket.on("mobile-dbChange", handler);
 
-  //   return () => {
-  //     socket.off("mobile-dbChange", onDbChange);
-  //   };
-  // }, [socket]);
+    return () => {
+      socket.off("mobile-dbChange", handler);
+    };
+  }, [socket]);
 
   return (
-    <SocketContext.Provider value={{ socket }}>
-      <InfoContext.Provider
-        value={{
-          emergencyhotlines,
-          weather,
-          residents,
-          courtreservations,
-          announcements,
-          userDetails,
-          events,
-          services,
-          fetchServices,
-          fetchUserDetails,
-          fetchEmergencyHotlines,
-          fetchWeather,
-          fetchResidents,
-          fetchReservations,
-          fetchAnnouncements,
-        }}
-      >
-        {children}
-      </InfoContext.Provider>
-    </SocketContext.Provider>
+    <InfoContext.Provider
+      value={{
+        emergencyhotlines,
+        weather,
+        residents,
+        courtreservations,
+        announcements,
+        userDetails,
+        events,
+        services,
+        fetchServices,
+        fetchUserDetails,
+        fetchEmergencyHotlines,
+        fetchWeather,
+        fetchResidents,
+        fetchReservations,
+        fetchAnnouncements,
+      }}
+    >
+      {children}
+    </InfoContext.Provider>
   );
 };
