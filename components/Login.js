@@ -133,7 +133,6 @@ const Login = () => {
                 secureTextEntry={secureLoginPass}
                 style={[
                   MyStyles.input,
-                  MyStyles.inputLabel,
                   {
                     paddingLeft: 40,
                     paddingRight: 40,

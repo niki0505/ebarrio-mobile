@@ -453,13 +453,14 @@ const Home = () => {
                       alignItems: "center",
                     },
                   ]}
+                  onPress={() => navigation.navigate("Readiness")}
                 >
                   <MaterialCommunityIcons
                     name="lightbulb-on"
                     size={50}
                     color="#fff"
                   />
-                  <Text style={MyStyles.emergencyTitle}>SAFETY TIPS</Text>
+                  <Text style={MyStyles.emergencyTitle}>READINESS</Text>
                   <Text style={MyStyles.emergencyMessage}>
                     Stay Smart, Stay Safe
                   </Text>

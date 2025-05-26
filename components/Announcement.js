@@ -197,16 +197,14 @@ const Announcement = () => {
             key={index}
             style={{
               backgroundColor: "#fff",
-              borderRadius: 15,
-              width: "100%",
-              padding: 10,
-              // iOS shadow
+              borderRadius: 10,
+              padding: 15,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.2,
+              shadowOpacity: 0.1,
               shadowRadius: 4,
-              // Android shadow
-              elevation: 5,
+              elevation: 3,
+              marginBottom: 10,
             }}
           >
             <View

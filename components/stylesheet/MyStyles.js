@@ -138,10 +138,10 @@ export const MyStyles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 10,
+    shadowRadius: 4,
 
     // Android shadow
-    elevation: 10,
+    elevation: 3,
   },
 
   //Gradient Background

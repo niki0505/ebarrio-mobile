@@ -34,6 +34,13 @@ const Notification = () => {
     }
   };
 
+  const truncateNotifMessage = (message, wordLimit = 25) => {
+    const words = message.split(" ");
+    return words.length > wordLimit
+      ? words.slice(0, wordLimit).join(" ") + " ..."
+      : message;
+  };
+
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
@@ -46,7 +53,7 @@ const Notification = () => {
           },
         ]}
       >
-        <Text style={[MyStyles.header, { marginBottom: 0 }]}>
+        <Text style={[MyStyles.header, { marginBottom: 20 }]}>
           Notifications
         </Text>
         {notifications
@@ -56,16 +63,76 @@ const Notification = () => {
               <TouchableOpacity
                 key={index}
                 onPress={() => handleNotif(notif._id, notif.redirectTo)}
+                style={{
+                  flexDirection: "column",
+                  borderTopWidth: 1,
+                  borderTopColor: "#C1C0C0",
+                  padding: 1,
+                }}
               >
-                {!notif.read ? (
-                  <Text style={{ color: "blue" }}>Blue Circle</Text>
-                ) : null}
-                <Text>{notif.title}</Text>
-                <Text>{notif.message}</Text>
-                <Text>{dayjs(notif.createdAt).fromNow()}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginVertical: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      marginRight: 12,
+                      backgroundColor: notif.read ? "transparent" : "#3B82F6",
+                    }}
+                  />
+
+                  <View style={{ flexDirection: "column" }}>
+                    <Text
+                      style={{
+                        color: "#04384E",
+                        fontSize: 16,
+                        fontFamily: "QuicksandBold",
+                      }}
+                    >
+                      {notif.title}
+                    </Text>
+
+                    <Text
+                      style={{
+                        color: "#04384E",
+                        fontSize: 16,
+                        fontFamily: "QuicksandSemiBold",
+                      }}
+                    >
+                      {truncateNotifMessage(notif.message)}
+                    </Text>
+
+                    <Text
+                      style={{
+                        color: "#808080",
+                        fontSize: 16,
+                        fontFamily: "QuicksandSemiBold",
+                      }}
+                    >
+                      {dayjs(notif.createdAt).fromNow()}
+                    </Text>
+                  </View>
+                </View>
               </TouchableOpacity>
             );
           })}
+        <Text
+          style={{
+            color: "#04384E",
+            fontSize: 16,
+            fontFamily: "REMSemiBold",
+            borderTopWidth: 1,
+            borderTopColor: "#C1C0C0",
+          }}
+        >
+          Mark all as read
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );
