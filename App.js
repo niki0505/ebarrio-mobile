@@ -44,6 +44,12 @@ import EditMobileNumber from "./components/EditMobileNumber";
 import SOS from "./components/SOS";
 import SOSRequests from "./components/SOSRequests";
 import RespondedSOS from "./components/RespondedSOS";
+import Readiness from "./components/Readiness";
+import SafetyTips from "./components/SafetyTips";
+import Typhoon from "./components/Typhoon";
+import Flood from "./components/Flood";
+import Earthquake from "./components/Earthquake";
+import Fire from "./components/Fire";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -260,6 +266,79 @@ export default function App() {
                       element={
                         <InfoProvider>
                           <EmergencyHotlines />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+
+                <Stack.Screen
+                  name="Readiness"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Readiness />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="SafetyTips"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <SafetyTips />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="Typhoon"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Typhoon />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="Flood"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Flood />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="Earthquake"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Earthquake />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="Fire"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Fire />
                         </InfoProvider>
                       }
                     />

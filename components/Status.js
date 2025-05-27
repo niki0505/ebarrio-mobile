@@ -69,8 +69,8 @@ const Status = () => {
     const now = new Date();
     const createdTime = new Date(selectedCertCreated);
     const diffInMinutes = (now - createdTime) / 60000;
-    if (diffInMinutes > 30) {
-      alert("Cancellation is only allowed within 30 minutes after submission");
+    if (diffInMinutes > 50) {
+      alert("Cancellation is only allowed within 50 minutes after submission");
       return;
     }
     try {
@@ -86,8 +86,8 @@ const Status = () => {
     const now = new Date();
     const createdTime = new Date(selectedReservationCreated);
     const diffInMinutes = (now - createdTime) / 60000;
-    if (diffInMinutes > 30) {
-      alert("Cancellation is only allowed within 30 minutes after submission");
+    if (diffInMinutes > 50) {
+      alert("Cancellation is only allowed within 50 minutes after submission");
       return;
     }
 
@@ -100,6 +100,42 @@ const Status = () => {
     } catch (error) {
       console.log("Error in cancelling court reservation", error);
     }
+  };
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case "Pending":
+        return { color: "#E5DE48", label: "Pending" };
+      case "Issued":
+        return { color: "#00BA00", label: "Issued" };
+      case "Rejected":
+        return { color: "#BC0F0F", label: "Rejected" };
+      case "Resolved":
+        return { color: "#00BA00", label: "Resolved" };
+      case "Cancelled":
+        return { color: "#BC0F0F", label: "Cancelled" };
+      case "Approved":
+        return { color: "#00BA00", label: "Approved" };
+      case "Settled":
+        return { color: "#00BA00", label: "Settled" };
+      case "Scheduled":
+        return { color: "#00BA00", label: "Settled" };
+      default:
+        return { color: "#aaa", label: status };
+    }
+  };
+
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  const toggleExpand = (index) => {
+    setExpandedIndex((prev) => (prev === index ? null : index));
+  };
+
+  const truncateDetails = (details, wordLimit = 25) => {
+    const words = details.split(" ");
+    return words.length > wordLimit
+      ? words.slice(0, wordLimit).join(" ") + " ..."
+      : details;
   };
 
   return (
@@ -139,8 +175,8 @@ const Status = () => {
             onChange={(item) => setSortOption(item.value)}
             style={{
               backgroundColor: "#fff",
-              width: "30%",
-              height: 30,
+              width: "50%",
+              height: 50,
               borderWidth: 1,
               borderColor: "#ACACAC",
               borderRadius: 5,
@@ -150,102 +186,213 @@ const Status = () => {
             selectedTextStyle={{
               color: "#04384E",
               fontFamily: "QuicksandSemiBold",
-              fontSize: 16,
+              fontSize: 15,
             }}
           />
 
-          <Dialog.Container visible={certVisible}>
-            <Dialog.Title>Cancel Certificate</Dialog.Title>
+          <Dialog.Container
+            visible={certVisible}
+            contentStyle={{
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              padding: 20,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 3,
+            }}
+          >
+            <Dialog.Title
+              style={{
+                fontFamily: "REMBold",
+                fontSize: 20,
+                color: "#04384E",
+              }}
+            >
+              Cancel Certificate
+            </Dialog.Title>
+
             <Dialog.Input
               placeholder="Enter your reason here..."
               onChangeText={(text) => setCertReason(text)}
+              style={{
+                fontFamily: "QuicksandMedium",
+                fontSize: 16,
+                color: "#04384E",
+              }}
+              placeholderTextColor="#808080"
             />
+
             <Dialog.Button
               label="Cancel"
               onPress={() => setCertVisible(false)}
+              style={{ color: "#0E94D3", fontFamily: "REMSemiBold" }}
             />
-            <Dialog.Button label="Submit" onPress={cancelCertificate} />
+            <Dialog.Button
+              label="Submit"
+              onPress={cancelCertificate}
+              style={{ color: "#BC0F0F", fontFamily: "REMSemiBold" }}
+            />
           </Dialog.Container>
 
-          <Dialog.Container visible={reservationVisible}>
-            <Dialog.Title>Cancel Court Reservation</Dialog.Title>
+          <Dialog.Container
+            visible={reservationVisible}
+            contentStyle={{
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              padding: 20,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 3,
+            }}
+          >
+            <Dialog.Title
+              style={{
+                fontFamily: "QuicksandBold",
+                fontSize: 20,
+                color: "#04384E",
+                marginBottom: 10,
+              }}
+            >
+              Cancel Court Reservation
+            </Dialog.Title>
+
             <Dialog.Input
               placeholder="Enter your reason here..."
               onChangeText={(text) => setReservationReason(text)}
+              style={{
+                fontFamily: "QuicksandMedium",
+                fontSize: 16,
+                padding: 10,
+                color: "#04384E",
+              }}
+              placeholderTextColor="#808080"
             />
+
             <Dialog.Button
               label="Cancel"
               onPress={() => setReservationVisible(false)}
+              color="#666"
             />
-            <Dialog.Button label="Submit" onPress={cancelReservation} />
+            <Dialog.Button
+              label="Submit"
+              onPress={cancelReservation}
+              color="#BC0F0F"
+            />
           </Dialog.Container>
 
           {sortedServices.map((service, index) => {
+            const isExpanded = expandedIndex === index;
+            const status = getStatusStyle(service.status);
+
             return (
-              <View key={index}>
+              <View
+                key={index}
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: 10,
+                  padding: 15,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  marginBottom: 10,
+                }}
+              >
+                {/* Status and Time Row */}
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  <Text>{service.status}</Text>
-                  <Text>{dayjs(service.createdAt).fromNow()}</Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 5,
+                        backgroundColor: status.color,
+                        marginRight: 6,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: "#04384E",
+                        fontSize: 15,
+                        fontFamily: "REMMedium",
+                      }}
+                    >
+                      {status.label}
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 15, color: "#808080" }}>
+                    {dayjs(service.createdAt).fromNow()}
+                  </Text>
                 </View>
 
-                {service.type === "Certificate" && (
-                  <>
-                    <Text>{service.type}</Text>
-                    {(service.typeofcertificate === "Barangay Indigency" ||
-                      service.typeofcertificate === "Barangay Clearance") && (
-                      <>
-                        <Text>{service.typeofcertificate}</Text>
-                        <Text>Purpose: {service.purpose}</Text>
-                        <Text>Amount: {service.amount}</Text>
-                      </>
-                    )}
+                <View
+                  style={{
+                    borderBottomColor: "#ccc",
+                    borderBottomWidth: 1,
+                    marginVertical: 10,
+                  }}
+                />
 
-                    {service.typeofcertificate ===
-                      "Barangay Business Clearance" && (
-                      <>
-                        <Text>{service.typeofcertificate}</Text>
-                        <Text>Business Name: {service.businessname}</Text>
-                        <Text>Line of Business: {service.lineofbusiness}</Text>
+                {/* Title + Chevron */}
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                  onPress={() => toggleExpand(index)}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontFamily: "REMSemiBold",
+                      color: "#04384E",
+                    }}
+                  >
+                    {service.type}
+                  </Text>
+                  <MaterialIcons
+                    name={
+                      isExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"
+                    }
+                    size={24}
+                    color="#04384E"
+                  />
+                </TouchableOpacity>
 
-                        {service.locationofbusiness === "Resident's Address" ? (
-                          <Text>
-                            Location of Business: {userDetails.resID.address}
-                          </Text>
-                        ) : (
-                          <Text>
-                            Location of Business: {service.locationofbusiness}
-                          </Text>
-                        )}
-                      </>
-                    )}
-                    {service.status === "Pending" &&
-                      new Date(service.createdAt) >=
-                        new Date(new Date().getTime() - 30 * 60 * 1000) && (
-                        <TouchableOpacity
-                          onPress={() =>
-                            certCancelClick(service._id, service.createdAt)
-                          }
-                        >
-                          <Text>Cancel</Text>
-                        </TouchableOpacity>
-                      )}
-                    {service.status === "Rejected" && (
-                      <>
-                        <Text>Remarks: {service.remarks}</Text>
-                      </>
-                    )}
-                  </>
-                )}
-
-                {service.type === "Reservation" && (
-                  <>
-                    <Text>{service.type}</Text>
-                    <Text>
+                {/* Default visible summary based on type */}
+                <View style={{ marginTop: 5 }}>
+                  {service.type === "Certificate" && (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontFamily: "QuicksandMedium",
+                        color: "#808080",
+                      }}
+                    >
+                      {service.typeofcertificate}
+                    </Text>
+                  )}
+                  {service.type === "Reservation" && (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontFamily: "QuicksandMedium",
+                        color: "#808080",
+                      }}
+                    >
                       {new Date(service.starttime).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
@@ -261,91 +408,462 @@ const Status = () => {
                         minute: "2-digit",
                       })}
                     </Text>
-                    {service.status === "Pending" &&
-                      new Date(service.createdAt) >=
-                        new Date(new Date().getTime() - 30 * 60 * 1000) && (
-                        <TouchableOpacity
-                          onPress={() =>
-                            reservationCancelClick(
-                              service._id,
-                              service.createdAt
-                            )
-                          }
-                        >
-                          <Text>Cancel</Text>
-                        </TouchableOpacity>
-                      )}
-                    {service.status === "Rejected" && (
-                      <>
-                        <Text>Remarks: {service.remarks}</Text>
-                      </>
-                    )}
-                  </>
-                )}
+                  )}
+                  {service.type === "Blotter" && (
+                    <View style={{ flexDirection: "row" }}>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontFamily: "QuicksandSemiBold",
+                          color: "#808080",
+                        }}
+                      >
+                        Details:
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontFamily: "QuicksandMedium",
+                          color: "#808080",
+                          marginLeft: 5,
+                        }}
+                      >
+                        {!isExpanded
+                          ? truncateDetails(service.details)
+                          : service.details}
+                      </Text>
+                    </View>
+                  )}
+                </View>
 
-                {service.type === "Blotter" && (
-                  <>
-                    <Text>{service.type}</Text>
-                    <Text>
-                      Type of the Complaint: {service.typeofthecomplaint}
-                    </Text>
-                    <Text>
-                      Subject of the Complaint:{" "}
-                      {service.subjectID
-                        ? `${service.subjectID.firstname} ${service.subjectID.lastname}`
-                        : service.subjectname}
-                    </Text>
-                    <Text>Complaint Details: {service.details}</Text>
-                    {(service.status === "Scheduled" ||
-                      service.status === "Settled") && (
+                {/* Expanded content */}
+                {isExpanded && (
+                  <View style={{ marginTop: 10 }}>
+                    {service.type === "Certificate" && (
                       <>
-                        <Text>
-                          Scheduled Meeting:{" "}
-                          {new Date(service.starttime).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}{" "}
-                          {new Date(service.starttime).toLocaleTimeString(
-                            "en-US",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}{" "}
-                          -{" "}
-                          {new Date(service.endtime).toLocaleTimeString(
-                            "en-US",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
+                        {(service.typeofcertificate === "Barangay Indigency" ||
+                          service.typeofcertificate ===
+                            "Barangay Clearance") && (
+                          <>
+                            <View style={{ flexDirection: "row" }}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Purpose:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {service.purpose}
+                              </Text>
+                            </View>
+
+                            <View style={{ flexDirection: "row" }}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Amount:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {service.amount}
+                              </Text>
+                            </View>
+                          </>
+                        )}
+
+                        {service.typeofcertificate ===
+                          "Barangay Business Clearance" && (
+                          <>
+                            <View style={{ flexDirection: "row" }}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Business Name:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {service.businessname}
+                              </Text>
+                            </View>
+
+                            <View style={{ flexDirection: "row" }}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Line of Business:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {service.lineofbusiness}
+                              </Text>
+                            </View>
+
+                            <View style={{ flexDirection: "row" }}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Location of Business:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {service.locationofbusiness ===
+                                "Resident's Address"
+                                  ? userDetails.resID.address
+                                  : service.locationofbusiness}
+                              </Text>
+                            </View>
+                          </>
+                        )}
+
+                        {service.status === "Pending" &&
+                          new Date(service.createdAt) >=
+                            new Date(new Date().getTime() - 50 * 60 * 1000) && (
+                            <TouchableOpacity
+                              onPress={() =>
+                                certCancelClick(service._id, service.createdAt)
+                              }
+                              style={[
+                                MyStyles.button,
+                                { marginTop: 15, backgroundColor: "#BC0F0F" },
+                              ]}
+                            >
+                              <Text style={MyStyles.buttonText}>Cancel</Text>
+                            </TouchableOpacity>
                           )}
-                        </Text>
+
+                        {service.status === "Rejected" && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandBold",
+                                color: "#04384E",
+                              }}
+                            >
+                              Remarks:
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandMedium",
+                                color: "#04384E",
+                                marginLeft: 5,
+                              }}
+                            >
+                              {service.remarks}
+                            </Text>
+                          </View>
+                        )}
                       </>
                     )}
-                    {service.status === "Settled" && (
+
+                    {service.type === "Reservation" && (
                       <>
-                        <Text>
-                          Witness:{" "}
-                          {service.witnessID
-                            ? `${service.witnessID.firstname} ${service.witnessID.lastname}`
-                            : service.witnessname}
-                        </Text>
-                        <Text>
-                          Agreement Details: {service.agreementdetails}
-                        </Text>
+                        {service.status === "Pending" &&
+                          new Date(service.createdAt) >=
+                            new Date(new Date().getTime() - 50 * 60 * 1000) && (
+                            <TouchableOpacity
+                              onPress={() =>
+                                reservationCancelClick(
+                                  service._id,
+                                  service.createdAt
+                                )
+                              }
+                            >
+                              <Text style={{ color: "#BC0F0F", marginTop: 5 }}>
+                                Cancel
+                              </Text>
+                            </TouchableOpacity>
+                          )}
+                        {service.status === "Rejected" && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandBold",
+                                color: "#04384E",
+                              }}
+                            >
+                              Remarks:
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandMedium",
+                                color: "#04384E",
+                                marginLeft: 5,
+                              }}
+                            >
+                              {service.remarks}
+                            </Text>
+                          </View>
+                        )}
                       </>
                     )}
-                    {service.status === "Rejected" && (
+
+                    {service.type === "Blotter" && (
                       <>
-                        <Text>Remarks: {service.remarks}</Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontFamily: "QuicksandBold",
+                              color: "#04384E",
+                            }}
+                          >
+                            Type of the Complaint:
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontFamily: "QuicksandMedium",
+                              color: "#04384E",
+                              marginLeft: 5,
+                            }}
+                          >
+                            {service.typeofthecomplaint}
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontFamily: "QuicksandBold",
+                              color: "#04384E",
+                            }}
+                          >
+                            Subject:
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontFamily: "QuicksandMedium",
+                              color: "#04384E",
+                              marginLeft: 5,
+                            }}
+                          >
+                            {service.subjectID
+                              ? `${service.subjectID.firstname} ${service.subjectID.lastname}`
+                              : service.subjectname}
+                          </Text>
+                        </View>
+
+                        {(service.status === "Scheduled" ||
+                          service.status === "Settled") && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandBold",
+                                color: "#04384E",
+                              }}
+                            >
+                              Meeting:
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandMedium",
+                                color: "#04384E",
+                                marginLeft: 5,
+                              }}
+                            >
+                              {new Date(service.starttime).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}{" "}
+                              {new Date(service.starttime).toLocaleTimeString(
+                                "en-US",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}{" "}
+                              -{" "}
+                              {new Date(service.endtime).toLocaleTimeString(
+                                "en-US",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
+                            </Text>
+                          </View>
+                        )}
+
+                        {service.status === "Settled" && (
+                          <>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Witness:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {service.witnessID
+                                  ? `${service.witnessID.firstname} ${service.witnessID.lastname}`
+                                  : service.witnessname}
+                              </Text>
+                            </View>
+
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Agreement:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {!isExpanded
+                                  ? truncateWords(service.agreementdetails)
+                                  : service.agreementdetails}
+                              </Text>
+                            </View>
+                          </>
+                        )}
+
+                        {service.status === "Rejected" && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandBold",
+                                color: "#04384E",
+                              }}
+                            >
+                              Remarks:
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandMedium",
+                                color: "#04384E",
+                                marginLeft: 5,
+                              }}
+                            >
+                              {service.remarks}
+                            </Text>
+                          </View>
+                        )}
                       </>
                     )}
-                  </>
+                  </View>
                 )}
               </View>
             );
