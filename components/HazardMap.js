@@ -32,7 +32,7 @@ const HazardMap = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -49,7 +49,7 @@ const HazardMap = () => {
           ]}
         >
           <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
+            onPress={() => navigation.navigate("Readiness")}
             name="arrow-back-ios"
             size={30}
             color="#fff"

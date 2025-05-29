@@ -24,6 +24,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const OfflineScreen = () => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [storedEmergencyHotlines, setStoredEmergencyHotlines] = useState([]);
   const [isEmergencyClicked, setEmergencyClicked] = useState(false);
@@ -117,6 +118,7 @@ const OfflineScreen = () => {
                   }}
                 >
                   <TouchableOpacity
+                    onPress={() => navigation.navigate("Readiness")}
                     style={{
                       backgroundColor: "#fff",
                       flex: 1,

@@ -158,9 +158,20 @@ export default function App() {
   if (!isConnected) {
     return (
       <SafeAreaProvider>
-        <>
-          <OfflineScreen />
-        </>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Offline" component={OfflineScreen} />
+            <Stack.Screen name="Readiness" component={Readiness} />
+            <Stack.Screen name="SafetyTips" component={SafetyTips} />
+            <Stack.Screen name="QuickTips" component={QuickTips} />
+            <Stack.Screen name="HazardMap" component={HazardMap} />
+            <Stack.Screen name="EvacuationMap" component={EvacuationMap} />
+            <Stack.Screen name="Fire" component={Fire} />
+            <Stack.Screen name="Typhoon" component={Typhoon} />
+            <Stack.Screen name="Flood" component={Flood} />
+            <Stack.Screen name="Earthquake" component={Earthquake} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </SafeAreaProvider>
     );
   }
