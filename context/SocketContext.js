@@ -9,7 +9,7 @@ export const SocketContext = createContext();
 
 export const SocketProvider = ({ children }) => {
   const navigation = useNavigation();
-  const { user } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
   const [socket, setSocket] = useState(null);
 
@@ -44,7 +44,7 @@ export const SocketProvider = ({ children }) => {
           },
           {
             text: "View Now",
-            onPress: () => navigation.navigate("Announcement"),
+            onPress: () => navigation.navigate("Announcements"),
           },
         ],
         { cancelable: true }
@@ -118,6 +118,14 @@ export const SocketProvider = ({ children }) => {
       newSocket.disconnect();
     };
   }, [user?.userID, user?.role]);
+
+  useEffect(() => {
+    if (!isAuthenticated && socket && user?.userID) {
+      socket.emit("unregister", user.userID);
+      socket.disconnect();
+      setSocket(null);
+    }
+  }, [isAuthenticated]);
 
   return (
     <SocketContext.Provider

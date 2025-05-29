@@ -18,44 +18,6 @@ export const InfoProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
 
-  // useEffect(() => {
-  //   if (!user?.userID) return;
-  //   const newSocket = io("https://ebarrio-mobile-backend.onrender.com");
-
-  //   newSocket.on("connect", () => {
-  //     console.log("✅ Socket connected:", newSocket.id);
-  //   });
-
-  //   newSocket.on("connect_error", (err) => {
-  //     console.error("❌ Socket connection error:", err.message);
-  //   });
-
-  //   newSocket.on("mobile-dbChange", (updatedData) => {
-  //     console.log(
-  //       `[${new Date().toISOString()}] 📦 Received dbChange payload:`,
-  //       updatedData
-  //     );
-
-  //     if (updatedData.type === "announcements") {
-  //       setAnnouncements(updatedData.data);
-  //       console.log("✅ Announcements updated.");
-  //     } else if (updatedData.type === "services") {
-  //       setServices(updatedData.data);
-  //       console.log("✅ Services updated.");
-  //     } else {
-  //       console.warn("⚠️ Unhandled update type:", updatedData.type);
-  //     }
-  //   });
-
-  //   newSocket.onAny((event, ...args) => {
-  //     console.log(`📡 [SOCKET] Event received: ${event}`, args);
-  //   });
-
-  //   setSocket(newSocket);
-
-  //   return () => newSocket.disconnect();
-  // }, [user]);
-
   useEffect(() => {
     fetchAnnouncements();
   }, []);
@@ -64,26 +26,30 @@ export const InfoProvider = ({ children }) => {
     if (announcements) {
       const announcementEvents = (announcements || [])
         .filter((a) => a.status !== "Archived")
-        .filter((a) => a.eventStart && a.eventEnd)
-        .map((a) => ({
-          title: a.title,
-          start: new Date(a.eventStart),
-          end: new Date(a.eventEnd),
-          color:
-            a.category === "General"
-              ? "#FF0000"
-              : a.category === "Health & Sanitation"
-              ? "#FA7020"
-              : a.category === "Public Safety & Emergency"
-              ? "#FFB200"
-              : a.category === "Education & Youth"
-              ? "#0E94D3"
-              : a.category === "Social Services"
-              ? "#CF0ED3"
-              : a.category === "Infrastructure"
-              ? "#06D001"
-              : "#3174ad",
-        }));
+        .filter((a) => a.times)
+        .flatMap((a) =>
+          Object.entries(a.times).map(([dateKey, timeObj]) => ({
+            title: a.title,
+            start: new Date(timeObj.starttime),
+            end: new Date(timeObj.endtime),
+            backgroundColor:
+              a.category === "General"
+                ? "#FF0000"
+                : a.category === "Health & Sanitation"
+                ? "#FFB200"
+                : a.category === "Public Safety & Emergency"
+                ? "#2600FF"
+                : a.category === "Education & Youth"
+                ? "#770ED3"
+                : a.category === "Social Services"
+                ? "#FA7020"
+                : a.category === "Infrastructure"
+                ? "#FA7020"
+                : a.category === "Court Reservations"
+                ? "#CF0ED3"
+                : "#3174ad",
+          }))
+        );
 
       setEvents(announcementEvents);
     }

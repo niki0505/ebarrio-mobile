@@ -60,6 +60,7 @@ import PublicRoute from "./components/PublicRoute";
 import { SocketProvider } from "./context/SocketContext";
 import NotificationSetup from "./components/NotificationSetUp";
 import * as Notifications from "expo-notifications";
+import SuccessfulPage from "./components/SuccessfulPage";
 
 const Tab = createBottomTabNavigator();
 
@@ -74,7 +75,7 @@ const BottomTabs = () => {
             let iconName;
             if (route.name === "Home") {
               iconName = focused ? "home" : "home-outline";
-            } else if (route.name === "Announcement") {
+            } else if (route.name === "Announcements") {
               iconName = focused ? "megaphone" : "megaphone-outline";
             } else if (route.name === "Notification") {
               iconName = focused ? "notifications" : "notifications-outline";
@@ -89,7 +90,7 @@ const BottomTabs = () => {
         })}
       >
         <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Announcement" component={Announcement} />
+        <Tab.Screen name="Announcements" component={Announcement} />
         <Tab.Screen name="Notification" component={Notification} />
       </Tab.Navigator>
     </>
@@ -511,6 +512,18 @@ export default function App() {
                       element={
                         <InfoProvider>
                           <RespondedSOS />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="SuccessfulPage"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <SuccessfulPage />
                         </InfoProvider>
                       }
                     />
