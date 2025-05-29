@@ -255,11 +255,7 @@ const Certificates = () => {
           />
 
           <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
-<<<<<<< Updated upstream
-            Request a Document
-=======
             Request Document
->>>>>>> Stashed changes
           </Text>
 
           <Text style={MyStyles.formMessage}>

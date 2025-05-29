@@ -82,7 +82,7 @@ const EditMobileNumber = () => {
     }
     Alert.alert(
       "Confirm",
-      "Are you sure you want to edit your mobile number?",
+      "Are you sure you want to change your mobile number?",
       [
         {
           text: "Cancel",
