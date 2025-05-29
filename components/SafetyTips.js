@@ -3,15 +3,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Alert,
   TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   Image,
   ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -21,14 +18,28 @@ import Flood from "../assets/disasters/flood.png";
 import Earthquake from "../assets/disasters/earthquake.png";
 import Fire from "../assets/disasters/fire.png";
 
-//ICONS
 import { MaterialIcons } from "@expo/vector-icons";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const SafetyTips = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+
+  const disasters = [
+    {
+      image: Earthquake,
+      title: "EARTHQUAKE",
+      subtitle: "Ground Movement",
+      route: "Earthquake",
+    },
+    { image: Fire, title: "FIRE", subtitle: "Rapid Burning", route: "Fire" },
+    { image: Flood, title: "FLOOD", subtitle: "Water Rise", route: "Flood" },
+    {
+      image: Typhoon,
+      title: "TYPHOON",
+      subtitle: "Wind and Rain",
+      route: "Typhoon",
+    },
+  ];
 
   return (
     <SafeAreaView
@@ -44,6 +55,8 @@ const SafetyTips = () => {
             {
               paddingBottom: 20,
               gap: 10,
+              backgroundColor: "#BC0F0F",
+              flexGrow: 1,
             },
           ]}
         >
@@ -51,8 +64,9 @@ const SafetyTips = () => {
             onPress={() => navigation.navigate("BottomTabs")}
             name="arrow-back-ios"
             size={30}
-            color="#04384E"
+            color="#fff"
           />
+
           <Text
             style={[
               MyStyles.header,
@@ -60,184 +74,52 @@ const SafetyTips = () => {
                 marginTop: 20,
                 marginBottom: 0,
                 textAlign: "center",
-                color: "#04384E",
+                color: "#fff",
               },
             ]}
           >
-            Types of Disaster
+            Disaster Safety
           </Text>
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 12,
-              padding: 15,
-              marginHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-              height: 150,
-            }}
-            onPress={() => navigation.navigate("Typhoon")}
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 20,
-              }}
-            >
-              <Image
-                source={Typhoon}
-                style={{ width: 90, height: 90, resizeMode: "contain" }}
-              />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 24,
-                  fontFamily: "REMSemiBold",
-                  textAlign: "center",
-                  width: 150,
-                }}
-              >
-                Typhoon
-              </Text>
+            <View style={{ width: "100%", gap: 60 }}>
+              {[0, 1].map((row) => (
+                <View
+                  key={row}
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  {disasters.slice(row * 2, row * 2 + 2).map((item, index) => (
+                    <TouchableOpacity
+                      key={`${row}-${index}`}
+                      style={MyStyles.safetyTipsCard}
+                      onPress={
+                        item.route
+                          ? () => navigation.navigate(item.route)
+                          : null
+                      }
+                    >
+                      <Image
+                        source={item.image}
+                        style={[MyStyles.readinessImg, { marginRight: 0 }]}
+                      />
+                      <Text style={[MyStyles.readinessTitle, { fontSize: 18 }]}>
+                        {item.title}
+                      </Text>
+                      <Text style={MyStyles.readinessSubTitle}>
+                        {item.subtitle}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ))}
             </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 12,
-              padding: 15,
-              marginHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-              height: 150,
-            }}
-            onPress={() => navigation.navigate("Flood")}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 20,
-              }}
-            >
-              <Image
-                source={Flood}
-                style={{ width: 90, height: 90, resizeMode: "contain" }}
-              />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 24,
-                  fontFamily: "REMSemiBold",
-                  textAlign: "center",
-                  width: 150,
-                }}
-              >
-                Flood
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 12,
-              padding: 15,
-              marginHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-              height: 150,
-            }}
-            onPress={() => navigation.navigate("Earthquake")}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 20,
-              }}
-            >
-              <Image
-                source={Earthquake}
-                style={{ width: 90, height: 90, resizeMode: "contain" }}
-              />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 24,
-                  fontFamily: "REMSemiBold",
-                  textAlign: "center",
-                  width: 150,
-                }}
-              >
-                Earthquake
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 12,
-              padding: 15,
-              marginHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-              height: 150,
-            }}
-            onPress={() => navigation.navigate("Fire")}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 20,
-              }}
-            >
-              <Image
-                source={Fire}
-                style={{ width: 90, height: 90, resizeMode: "contain" }}
-              />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 24,
-                  fontFamily: "REMSemiBold",
-                  textAlign: "center",
-                  width: 150,
-                }}
-              >
-                Fire
-              </Text>
-            </View>
-          </TouchableOpacity>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

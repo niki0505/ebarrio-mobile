@@ -24,6 +24,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Aniban2Logo from "../assets/aniban2logo.png";
+import ImageViewing from "react-native-image-viewing";
 
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -37,6 +38,9 @@ const Announcement = () => {
   const [sortOption, setSortOption] = useState("newest");
   dayjs.extend(relativeTime);
   const [expandedAnnouncements, setExpandedAnnouncements] = useState([]);
+
+  const [visible, setIsVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -279,17 +283,32 @@ const Announcement = () => {
             </View>
 
             {element.picture && element.picture.trim() !== "" && (
-              <Image
-                source={{ uri: element.picture }}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 15,
-                  marginTop: 10,
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedImage([{ uri: element.picture }]);
+                  setIsVisible(true);
                 }}
-                resizeMode="cover"
-              />
+              >
+                <Image
+                  source={{ uri: element.picture }}
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    borderRadius: 15,
+                    marginTop: 10,
+                  }}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
             )}
+
+            <ImageViewing
+              images={selectedImage || []}
+              imageIndex={0}
+              visible={visible}
+              onRequestClose={() => setIsVisible(false)}
+              presentationStyle="overFullScreen"
+            />
 
             {renderContent(element)}
 
