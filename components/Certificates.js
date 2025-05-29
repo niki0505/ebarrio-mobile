@@ -174,7 +174,7 @@ const Certificates = () => {
           />
 
           <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
-            Request Certificate
+            Request a Document
           </Text>
 
           <Text style={MyStyles.formMessage}>

@@ -1,56 +1,52 @@
-import { useState } from "react";
+import React from "react";
 import {
-  StyleSheet,
   Text,
   View,
+  ScrollView,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   Image,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  Alert,
 } from "react-native";
-import * as FileSystem from "expo-file-system";
-import ImageViewing from "react-native-image-viewing";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
 import { MyStyles } from "./stylesheet/MyStyles";
 
-import SafetyTips from "../assets/fire/fire-safety-tips.png";
-import QuickTips from "../assets/fire/fire-quick-tips.png";
-
-// Icons
-import { MaterialIcons } from "@expo/vector-icons";
-
-// Convert local images to URI for viewing/downloading
-const quickTipsUri = Image.resolveAssetSource(QuickTips).uri;
-const safetyTipsUri = Image.resolveAssetSource(SafetyTips).uri;
+import FireImg from "../assets/disasters/fire-light.png";
 
 const Fire = () => {
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const [visible, setIsVisible] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const images = [{ uri: quickTipsUri }, { uri: safetyTipsUri }];
-  const openImageViewer = (index) => {
-    setCurrentIndex(index);
-    setIsVisible(true);
-  };
+  const insets = useSafeAreaInsets();
 
-  const downloadImage = async () => {
-    const imageToDownload = images[currentIndex].uri;
-    const fileUri =
-      FileSystem.documentDirectory + `downloaded-image-${currentIndex + 1}.jpg`;
-
-    try {
-      const download = await FileSystem.downloadAsync(imageToDownload, fileUri);
-      Alert.alert("Download complete", `Saved to: ${download.uri}`);
-    } catch (error) {
-      Alert.alert("Download failed", error.message);
-    }
-  };
+  const tipsData = [
+    {
+      phase: "Before",
+      steps: [
+        "Install Smoke Alarms\nPlace smoke detectors on every level of your home and test them monthly.",
+        "Fire Extinguishers\nKeep them accessible and ensure everyone knows how to use them.",
+        "Escape Plan\nDevelop and practice a fire escape plan with all household members.",
+        "Avoid Overloading Outlets\nDo not overload electrical outlets to prevent fires.",
+      ],
+    },
+    {
+      phase: "During",
+      steps: [
+        "Evacuate Immediately\nLeave the building as quickly as possible and do not stop to collect belongings.",
+        "Stay Low\nIf there's smoke, crawl low under it to your exit.",
+        "Do Not Re-enter\nOnce out, stay out and call emergency services.",
+      ],
+    },
+    {
+      phase: "After",
+      steps: [
+        "Wait for Clearance\nDo not re-enter until authorities declare it safe.",
+        "Check for Injuries\nAdminister first aid if needed and seek medical attention for serious injuries.",
+        "Check for Damage\nAssess the property for structural damage and hazards.",
+        "Seek Support\nContact local disaster relief services for assistance.",
+      ],
+    },
+  ];
 
   return (
     <SafeAreaView
@@ -63,77 +59,97 @@ const Fire = () => {
         <ScrollView
           contentContainerStyle={[
             MyStyles.scrollContainer,
-            {
-              paddingBottom: 20,
-              gap: 20,
-            },
+            { paddingBottom: 20, gap: 20, backgroundColor: "#BC0F0F" },
           ]}
         >
           <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
             name="arrow-back-ios"
             size={30}
-            color="#04384E"
+            color="#fff"
+            onPress={() => navigation.navigate("BottomTabs")}
           />
 
-          <Text
-            style={[MyStyles.header, { textAlign: "center", color: "#04384E" }]}
-          >
-            Quick Tips
-          </Text>
-          <TouchableOpacity onPress={() => openImageViewer(0)}>
-            <Image
-              source={QuickTips}
-              style={{
-                width: Dimensions.get("window").width,
-                height: Dimensions.get("window").height,
-                resizeMode: "contain",
-                alignSelf: "center",
-              }}
-            />
-          </TouchableOpacity>
+          <View style={{ alignItems: "center" }}>
+            <Image source={FireImg} style={{ width: 160, height: 160 }} />
+          </View>
 
           <Text
-            style={[MyStyles.header, { textAlign: "center", color: "#04384E" }]}
+            style={[MyStyles.header, { textAlign: "center", color: "#fff" }]}
           >
-            Safety Tips
+            FIRE
           </Text>
-          <TouchableOpacity onPress={() => openImageViewer(1)}>
-            <Image
-              source={SafetyTips}
+
+          {tipsData.map((section, index) => (
+            <View
+              key={index}
               style={{
-                width: Dimensions.get("window").width,
-                height: Dimensions.get("window").height,
-                resizeMode: "contain",
-                alignSelf: "center",
+                backgroundColor: "#fff",
+                borderRadius: 15,
+                padding: 20,
+                width: "100%",
               }}
-            />
-          </TouchableOpacity>
+            >
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontFamily: "REMBold",
+                  marginBottom: 10,
+                  color: "#BC0F0F",
+                }}
+              >
+                {section.phase}
+              </Text>
+
+              {section.steps.map((step, stepIndex) => (
+                <View
+                  key={stepIndex}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "flex-start",
+                    marginBottom: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 30,
+                      height: 30,
+                      backgroundColor: "#BC0F0F",
+                      borderRadius: 15,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginRight: 10,
+                      marginTop: 4,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontWeight: "bold",
+                        fontSize: 16,
+                      }}
+                    >
+                      {stepIndex + 1}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: "QuicksandMedium",
+                      color: "#333",
+                      flex: 1,
+                    }}
+                  >
+                    <Text style={{ fontFamily: "QuicksandBold" }}>
+                      {step.split("\n")[0]}
+                    </Text>
+                    {"\n" + step.split("\n")[1]}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ))}
         </ScrollView>
       </KeyboardAvoidingView>
-
-      {/* Image Viewer Modal */}
-      <ImageViewing
-        images={images}
-        imageIndex={currentIndex}
-        visible={visible}
-        onRequestClose={() => setIsVisible(false)}
-        FooterComponent={({ imageIndex }) => (
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              bottom: 30,
-              left: 20,
-              backgroundColor: "#ffffffaa",
-              padding: 10,
-              borderRadius: 10,
-            }}
-            onPress={downloadImage}
-          >
-            <Text style={{ color: "#000" }}>Download</Text>
-          </TouchableOpacity>
-        )}
-      />
     </SafeAreaView>
   );
 };

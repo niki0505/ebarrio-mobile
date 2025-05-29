@@ -15,6 +15,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import api from "../api";
 
+import Octicons from "@expo/vector-icons/Octicons";
+
 const Notification = () => {
   const navigation = useNavigation();
   dayjs.extend(relativeTime);
@@ -43,97 +45,130 @@ const Notification = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        backgroundColor: "#F0F4F7",
+      }}
     >
-      <ScrollView
-        contentContainerStyle={[
-          MyStyles.scrollContainer,
-          {
-            paddingBottom: insets.bottom + 70,
-          },
-        ]}
-      >
-        <Text style={[MyStyles.header, { marginBottom: 20 }]}>
-          Notifications
-        </Text>
-        {notifications
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .map((notif, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleNotif(notif._id, notif.redirectTo)}
-                style={{
-                  flexDirection: "column",
-                  borderTopWidth: 1,
-                  borderTopColor: "#C1C0C0",
-                  padding: 1,
-                }}
-              >
-                <View
+      <View style={{ flex: 1, position: "relative" }}>
+        <View
+          style={{
+            padding: 20,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={MyStyles.header}>Notifications</Text>
+          <Octicons name="filter" size={24} color="#04384E" />
+        </View>
+
+        <ScrollView
+          contentContainerStyle={[
+            MyStyles.scrollContainer,
+            {
+              paddingHorizontal: 20,
+              paddingTop: 0,
+              paddingBottom: 120,
+            },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          {notifications
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((notif, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleNotif(notif._id, notif.redirectTo)}
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginVertical: 10,
+                    flexDirection: "column",
+                    borderTopWidth: 1,
+                    borderTopColor: "#C1C0C0",
+                    padding: 1,
+                    position: "relative",
                   }}
                 >
                   <View
                     style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginVertical: 10,
+                      paddingRight: 20,
+                    }}
+                  >
+                    <View style={{ flexDirection: "column", flex: 1 }}>
+                      <Text
+                        style={{
+                          color: "#04384E",
+                          fontSize: 16,
+                          fontFamily: "QuicksandBold",
+                        }}
+                      >
+                        {notif.title}
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#04384E",
+                          fontSize: 16,
+                          fontFamily: "QuicksandSemiBold",
+                        }}
+                      >
+                        {truncateNotifMessage(notif.message)}
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#808080",
+                          fontSize: 16,
+                          fontFamily: "QuicksandSemiBold",
+                        }}
+                      >
+                        {dayjs(notif.createdAt).fromNow()}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: 10,
                       width: 8,
                       height: 8,
                       borderRadius: 4,
-                      marginRight: 12,
                       backgroundColor: notif.read ? "transparent" : "#3B82F6",
+                      transform: [{ translateY: -4 }],
                     }}
                   />
+                </TouchableOpacity>
+              );
+            })}
+        </ScrollView>
 
-                  <View style={{ flexDirection: "column" }}>
-                    <Text
-                      style={{
-                        color: "#04384E",
-                        fontSize: 16,
-                        fontFamily: "QuicksandBold",
-                      }}
-                    >
-                      {notif.title}
-                    </Text>
-
-                    <Text
-                      style={{
-                        color: "#04384E",
-                        fontSize: 16,
-                        fontFamily: "QuicksandSemiBold",
-                      }}
-                    >
-                      {truncateNotifMessage(notif.message)}
-                    </Text>
-
-                    <Text
-                      style={{
-                        color: "#808080",
-                        fontSize: 16,
-                        fontFamily: "QuicksandSemiBold",
-                      }}
-                    >
-                      {dayjs(notif.createdAt).fromNow()}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        <Text
+        <TouchableOpacity
           style={{
-            color: "#04384E",
-            fontSize: 16,
-            fontFamily: "REMSemiBold",
-            borderTopWidth: 1,
+            position: "absolute",
+            bottom: insets.bottom + 40, // Adjusted the button above the bottom tabs
+            left: 0,
+            right: 0,
+            padding: 20,
+            backgroundColor: "#F0F4F7",
             borderTopColor: "#C1C0C0",
           }}
         >
-          Mark all as read
-        </Text>
-      </ScrollView>
+          <Text
+            style={{
+              color: "#04384E",
+              fontSize: 16,
+              fontFamily: "REMSemiBold",
+              textAlign: "start",
+            }}
+          >
+            Mark all as read
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

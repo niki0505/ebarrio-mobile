@@ -27,7 +27,7 @@ const Status = () => {
   const { fetchServices, services } = useContext(InfoContext);
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
   const insets = useSafeAreaInsets();
-  const [sortOption, setSortOption] = useState("newest");
+  const [sortOption, setSortOption] = useState("All");
   const [certVisible, setCertVisible] = useState(false);
   const [certReason, setCertReason] = useState("");
   const [reservationVisible, setReservationVisible] = useState(false);
@@ -165,8 +165,9 @@ const Status = () => {
 
           <Dropdown
             data={[
-              { label: "Newest", value: "newest" },
-              { label: "Oldest", value: "oldest" },
+              { label: "Documents", value: "documents" },
+              { label: "Blotters", value: "blotters" },
+              { label: "Reservations", value: "reservations" },
             ]}
             labelField="label"
             valueField="value"
@@ -410,7 +411,13 @@ const Status = () => {
                     </Text>
                   )}
                   {service.type === "Blotter" && (
-                    <View style={{ flexDirection: "row" }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        alignItems: "flex-start",
+                      }}
+                    >
                       <Text
                         style={{
                           fontSize: 15,
@@ -426,6 +433,8 @@ const Status = () => {
                           fontFamily: "QuicksandMedium",
                           color: "#808080",
                           marginLeft: 5,
+                          flexShrink: 1,
+                          textAlign: "justify",
                         }}
                       >
                         {!isExpanded
@@ -445,7 +454,13 @@ const Status = () => {
                           service.typeofcertificate ===
                             "Barangay Clearance") && (
                           <>
-                            <View style={{ flexDirection: "row" }}>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
                               <Text
                                 style={{
                                   fontSize: 15,
@@ -461,13 +476,21 @@ const Status = () => {
                                   fontFamily: "QuicksandMedium",
                                   color: "#04384E",
                                   marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
                                 }}
                               >
                                 {service.purpose}
                               </Text>
                             </View>
 
-                            <View style={{ flexDirection: "row" }}>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
                               <Text
                                 style={{
                                   fontSize: 15,
@@ -483,6 +506,8 @@ const Status = () => {
                                   fontFamily: "QuicksandMedium",
                                   color: "#04384E",
                                   marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
                                 }}
                               >
                                 {service.amount}
@@ -494,7 +519,13 @@ const Status = () => {
                         {service.typeofcertificate ===
                           "Barangay Business Clearance" && (
                           <>
-                            <View style={{ flexDirection: "row" }}>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
                               <Text
                                 style={{
                                   fontSize: 15,
@@ -510,13 +541,21 @@ const Status = () => {
                                   fontFamily: "QuicksandMedium",
                                   color: "#04384E",
                                   marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
                                 }}
                               >
                                 {service.businessname}
                               </Text>
                             </View>
 
-                            <View style={{ flexDirection: "row" }}>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
                               <Text
                                 style={{
                                   fontSize: 15,
@@ -532,13 +571,21 @@ const Status = () => {
                                   fontFamily: "QuicksandMedium",
                                   color: "#04384E",
                                   marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
                                 }}
                               >
                                 {service.lineofbusiness}
                               </Text>
                             </View>
 
-                            <View style={{ flexDirection: "row" }}>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
                               <Text
                                 style={{
                                   fontSize: 15,
@@ -554,6 +601,8 @@ const Status = () => {
                                   fontFamily: "QuicksandMedium",
                                   color: "#04384E",
                                   marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
                                 }}
                               >
                                 {service.locationofbusiness ===
@@ -585,7 +634,8 @@ const Status = () => {
                           <View
                             style={{
                               flexDirection: "row",
-                              alignItems: "center",
+                              flexWrap: "wrap",
+                              alignItems: "flex-start",
                             }}
                           >
                             <Text
@@ -603,6 +653,8 @@ const Status = () => {
                                 fontFamily: "QuicksandMedium",
                                 color: "#04384E",
                                 marginLeft: 5,
+                                flexShrink: 1,
+                                textAlign: "justify",
                               }}
                             >
                               {service.remarks}
@@ -624,17 +676,20 @@ const Status = () => {
                                   service.createdAt
                                 )
                               }
+                              style={[
+                                MyStyles.button,
+                                { marginTop: 15, backgroundColor: "#BC0F0F" },
+                              ]}
                             >
-                              <Text style={{ color: "#BC0F0F", marginTop: 5 }}>
-                                Cancel
-                              </Text>
+                              <Text style={MyStyles.buttonText}>Cancel</Text>
                             </TouchableOpacity>
                           )}
                         {service.status === "Rejected" && (
                           <View
                             style={{
                               flexDirection: "row",
-                              alignItems: "center",
+                              flexWrap: "wrap",
+                              alignItems: "flex-start",
                             }}
                           >
                             <Text
@@ -652,6 +707,8 @@ const Status = () => {
                                 fontFamily: "QuicksandMedium",
                                 color: "#04384E",
                                 marginLeft: 5,
+                                flexShrink: 1,
+                                textAlign: "justify",
                               }}
                             >
                               {service.remarks}
@@ -666,7 +723,8 @@ const Status = () => {
                         <View
                           style={{
                             flexDirection: "row",
-                            alignItems: "center",
+                            flexWrap: "wrap",
+                            alignItems: "flex-start",
                           }}
                         >
                           <Text
@@ -684,6 +742,8 @@ const Status = () => {
                               fontFamily: "QuicksandMedium",
                               color: "#04384E",
                               marginLeft: 5,
+                              flexShrink: 1,
+                              textAlign: "justify",
                             }}
                           >
                             {service.typeofthecomplaint}
@@ -693,7 +753,8 @@ const Status = () => {
                         <View
                           style={{
                             flexDirection: "row",
-                            alignItems: "center",
+                            flexWrap: "wrap",
+                            alignItems: "flex-start",
                           }}
                         >
                           <Text
@@ -711,6 +772,8 @@ const Status = () => {
                               fontFamily: "QuicksandMedium",
                               color: "#04384E",
                               marginLeft: 5,
+                              flexShrink: 1,
+                              textAlign: "justify",
                             }}
                           >
                             {service.subjectID
@@ -724,7 +787,8 @@ const Status = () => {
                           <View
                             style={{
                               flexDirection: "row",
-                              alignItems: "center",
+                              flexWrap: "wrap",
+                              alignItems: "flex-start",
                             }}
                           >
                             <Text
@@ -742,6 +806,8 @@ const Status = () => {
                                 fontFamily: "QuicksandMedium",
                                 color: "#04384E",
                                 marginLeft: 5,
+                                flexShrink: 1,
+                                textAlign: "justify",
                               }}
                             >
                               {new Date(service.starttime).toLocaleDateString(
@@ -776,7 +842,8 @@ const Status = () => {
                             <View
                               style={{
                                 flexDirection: "row",
-                                alignItems: "center",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
                               }}
                             >
                               <Text
@@ -794,6 +861,8 @@ const Status = () => {
                                   fontFamily: "QuicksandMedium",
                                   color: "#04384E",
                                   marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
                                 }}
                               >
                                 {service.witnessID
@@ -805,7 +874,8 @@ const Status = () => {
                             <View
                               style={{
                                 flexDirection: "row",
-                                alignItems: "center",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
                               }}
                             >
                               <Text
@@ -823,6 +893,8 @@ const Status = () => {
                                   fontFamily: "QuicksandMedium",
                                   color: "#04384E",
                                   marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
                                 }}
                               >
                                 {!isExpanded
@@ -837,7 +909,8 @@ const Status = () => {
                           <View
                             style={{
                               flexDirection: "row",
-                              alignItems: "center",
+                              flexWrap: "wrap",
+                              alignItems: "flex-start",
                             }}
                           >
                             <Text
@@ -855,6 +928,8 @@ const Status = () => {
                                 fontFamily: "QuicksandMedium",
                                 color: "#04384E",
                                 marginLeft: 5,
+                                flexShrink: 1,
+                                textAlign: "justify",
                               }}
                             >
                               {service.remarks}

@@ -373,7 +373,7 @@ const Home = () => {
                           style={MyStyles.servicesImg}
                         />
                       </View>
-                      <Text style={MyStyles.servicesTitle}>Certificate</Text>
+                      <Text style={MyStyles.servicesTitle}>Document</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity

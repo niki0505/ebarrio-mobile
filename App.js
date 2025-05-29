@@ -50,6 +50,9 @@ import Typhoon from "./components/Typhoon";
 import Flood from "./components/Flood";
 import Earthquake from "./components/Earthquake";
 import Fire from "./components/Fire";
+import QuickTips from "./components/QuickTips";
+import HazardMap from "./components/HazardMap";
+import EvacuationMap from "./components/EvacuationMap";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -285,12 +288,48 @@ export default function App() {
                   )}
                 />
                 <Stack.Screen
+                  name="QuickTips"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <QuickTips />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
                   name="SafetyTips"
                   children={() => (
                     <PrivateRoute
                       element={
                         <InfoProvider>
                           <SafetyTips />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="HazardMap"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <HazardMap />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="EvacuationMap"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <EvacuationMap />
                         </InfoProvider>
                       }
                     />

@@ -17,14 +17,45 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-//ICONS
+//ICONS & IMAGES
 import { MaterialIcons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import QuickTips from "../assets/disasters/quick-tips.png";
+import Disaster from "../assets/disasters/disaster.png";
+import Hazard from "../assets/disasters/hazard.png";
+import Evacuation from "../assets/disasters/evacuation.png";
 
 const Readiness = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+
+  const readinessData = [
+    {
+      title: "QUICK SAFETY",
+      subtitle: "Easy access to essential safety information",
+      image: QuickTips,
+      route: "QuickTips",
+    },
+    {
+      title: "DISASTER SAFETY",
+      subtitle: "Learn practical tips to stay safe during natural disasters",
+      image: Disaster,
+      route: "SafetyTips",
+    },
+    {
+      title: "HAZARD MAPS",
+      subtitle: "View areas at risk for natural hazards",
+      image: Hazard,
+      route: "HazardMap",
+    },
+    {
+      title: "EVACUATION MAP",
+      subtitle: "View the route to the nearest evacuation map",
+      image: Evacuation,
+      route: "EvacuationMap",
+    },
+  ];
 
   return (
     <SafeAreaView
@@ -40,6 +71,7 @@ const Readiness = () => {
             {
               paddingBottom: 20,
               gap: 10,
+              backgroundColor: "#BC0F0F",
             },
           ]}
         >
@@ -47,7 +79,7 @@ const Readiness = () => {
             onPress={() => navigation.navigate("BottomTabs")}
             name="arrow-back-ios"
             size={30}
-            color="#04384E"
+            color="#fff"
           />
           <Text
             style={[
@@ -56,115 +88,32 @@ const Readiness = () => {
                 marginTop: 20,
                 marginBottom: 0,
                 textAlign: "center",
-                color: "#BC0F0F",
+                color: "#fff",
               },
             ]}
           >
             Readiness
           </Text>
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#BC0F0F",
-              borderRadius: 12,
-              padding: 15,
-              marginHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-              height: 200,
-            }}
-            onPress={() => navigation.navigate("SafetyTips")}
-          >
-            <MaterialCommunityIcons
-              name="lightbulb-on"
-              size={50}
-              color="#fff"
-              style={{ marginBottom: 10 }}
-            />
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 24,
-                fontFamily: "REMSemiBold",
-                textAlign: "center",
-              }}
-            >
-              Disaster Safety Tips
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#BC0F0F",
-              borderRadius: 12,
-              padding: 15,
-              marginHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-              height: 200,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="map-search"
-              size={50}
-              color="#fff"
-              style={{ marginBottom: 10 }}
-            />
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 24,
-                fontFamily: "REMSemiBold",
-                textAlign: "center",
-              }}
-            >
-              Hazard Map
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#BC0F0F",
-              borderRadius: 12,
-              padding: 15,
-              marginHorizontal: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-              height: 200,
-            }}
-          >
-            <FontAwesome5
-              name="map-marked-alt"
-              size={50}
-              color="#fff"
-              style={{ marginBottom: 10 }}
-            />
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 24,
-                fontFamily: "REMSemiBold",
-                textAlign: "center",
-              }}
-            >
-              Evacuation Map
-            </Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "column", gap: 30 }}>
+            {readinessData.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={MyStyles.readinessCard}
+                onPress={
+                  item.route ? () => navigation.navigate(item.route) : null
+                }
+              >
+                <Image source={item.image} style={MyStyles.readinessImg} />
+                <View style={MyStyles.readinessTextContainer}>
+                  <Text style={MyStyles.readinessTitle}>{item.title}</Text>
+                  <Text style={MyStyles.readinessSubTitle}>
+                    {item.subtitle}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
