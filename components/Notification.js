@@ -54,7 +54,7 @@ const Notification = () => {
       <View style={{ flex: 1, position: "relative" }}>
         <View
           style={{
-            padding: 20,
+            paddingHorizontal: 20,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
@@ -63,6 +63,18 @@ const Notification = () => {
           <Text style={MyStyles.header}>Notifications</Text>
           <Octicons name="filter" size={24} color="#04384E" />
         </View>
+        <Text
+          style={{
+            marginTop: 10,
+            paddingHorizontal: 20,
+            color: "#04384E",
+            fontSize: 16,
+            fontFamily: "REMSemiBold",
+            textAlign: "right",
+          }}
+        >
+          Mark all as read
+        </Text>
 
         <ScrollView
           contentContainerStyle={[
@@ -145,29 +157,6 @@ const Notification = () => {
               );
             })}
         </ScrollView>
-
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            bottom: insets.bottom + 40, // Adjusted the button above the bottom tabs
-            left: 0,
-            right: 0,
-            padding: 20,
-            backgroundColor: "#F0F4F7",
-            borderTopColor: "#C1C0C0",
-          }}
-        >
-          <Text
-            style={{
-              color: "#04384E",
-              fontSize: 16,
-              fontFamily: "REMSemiBold",
-              textAlign: "start",
-            }}
-          >
-            Mark all as read
-          </Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
