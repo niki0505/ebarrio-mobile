@@ -19,6 +19,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { InfoContext } from "../context/InfoContext";
+import api from "../api";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -36,7 +37,6 @@ import Drizzle from "../assets/weather-svg/drizzle";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
 import Rain from "../assets/weather-svg/rain";
 
-import * as SecureStore from "expo-secure-store";
 const Home = () => {
   const insets = useSafeAreaInsets();
   const { logout } = useContext(AuthContext);
@@ -114,6 +114,70 @@ const Home = () => {
 
   const toggleProfile = () => {
     setShowDropdown((prev) => !prev);
+  };
+
+  const viewEmergencyHotlines = async () => {
+    const action = "Emergency Hotlines";
+    const description = "User viewed emergency hotlines.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("EmergencyHotlines");
+    } catch (error) {
+      console.log("Error in viewing emergency hotlines", error);
+    }
+  };
+
+  const viewReadiness = async () => {
+    const action = "Readiness";
+    const description = "User viewed readiness.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("Readiness");
+    } catch (error) {
+      console.log("Error in viewing readiness", error);
+    }
+  };
+
+  const viewWeather = async () => {
+    const action = "Weather";
+    const description = "User viewed weather.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("Weather");
+    } catch (error) {
+      console.log("Error in viewing weather", error);
+    }
+  };
+
+  const viewCalendar = async () => {
+    const action = "Barangay Calendar";
+    const description = "User viewed barangay calendar.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("BrgyCalendar");
+    } catch (error) {
+      console.log("Error in viewing barangay calendar", error);
+    }
+  };
+
+  const handleConfirm = () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            logout();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -217,7 +281,7 @@ const Home = () => {
                     <TouchableOpacity
                       onPress={() => {
                         setShowDropdown(false);
-                        logout(navigation);
+                        handleConfirm();
                       }}
                       style={{
                         paddingVertical: 8,
@@ -244,7 +308,7 @@ const Home = () => {
 
             <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("BrgyCalendar")}
+                onPress={viewCalendar}
                 style={[
                   MyStyles.card,
                   {
@@ -289,10 +353,7 @@ const Home = () => {
                 ))}
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Weather")}
-                style={MyStyles.card}
-              >
+              <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
                 <LinearGradient
                   colors={getGradientColors(weather.currentcondition)}
                   start={{ x: 0.5, y: 0 }}
@@ -453,7 +514,7 @@ const Home = () => {
                       alignItems: "center",
                     },
                   ]}
-                  onPress={() => navigation.navigate("Readiness")}
+                  onPress={viewReadiness}
                 >
                   <MaterialCommunityIcons
                     name="lightbulb-on"
@@ -467,7 +528,7 @@ const Home = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("EmergencyHotlines")}
+                  onPress={viewEmergencyHotlines}
                   style={[
                     MyStyles.sosContainer,
                     {

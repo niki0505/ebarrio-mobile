@@ -139,7 +139,7 @@ const BrgyCalendar = () => {
               style={[
                 MyStyles.shadow,
                 {
-                  backgroundColor: event.color || "#3174ad",
+                  backgroundColor: event.backgroundColor || "#3174ad",
                   padding: 10,
                   borderRadius: 10,
                   marginTop: 10,

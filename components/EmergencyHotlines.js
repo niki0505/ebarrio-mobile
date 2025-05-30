@@ -24,7 +24,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 const EmergencyHotlines = () => {
   const insets = useSafeAreaInsets();
-  const { logout, user } = useContext(AuthContext);
   const { fetchEmergencyHotlines, emergencyhotlines } = useContext(InfoContext);
   const [filteredEmergencyHotlines, setFilteredEmergencyHotlines] = useState(
     []
@@ -36,11 +35,19 @@ const EmergencyHotlines = () => {
     fetchEmergencyHotlines();
   }, []);
 
-  const handleCall = (contactNumber) => {
+  const handleCall = async (contactName, contactNumber) => {
     const phoneNumber = `tel:${contactNumber}`;
     Linking.openURL(phoneNumber).catch((err) =>
       console.error("Error opening dialer: ", err)
     );
+    const action = "Emergency Hotlines";
+    const description = `User tapped the contact number of ${contactName}, initiating a phone call.`;
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("EmergencyHotlines");
+    } catch (error) {
+      console.log("Error in viewing emergency hotlines", error);
+    }
   };
 
   const handleSearch = (text) => {
@@ -110,47 +117,51 @@ const EmergencyHotlines = () => {
             {filteredEmergencyHotlines.length === 0 ? (
               <Text>No results found</Text>
             ) : (
-              filteredEmergencyHotlines.map((element) => (
-                <TouchableOpacity
-                  key={element._id}
-                  onPress={() => handleCall(element.contactnumber)}
-                  style={[
-                    MyStyles.input,
-                    {
-                      flexDirection: "row",
-                      backgroundColor: "#fff",
-                      alignItems: "center",
-                    },
-                  ]}
-                >
-                  <MaterialIcons
-                    name="call"
-                    size={20}
-                    color="#BC0F0F"
-                    style={{ marginRight: 10 }}
-                  />
-                  <View style={{ marginLeft: 10 }}>
-                    <Text
-                      style={{
-                        color: "#04384E",
-                        fontFamily: "REMSemiBold",
-                        fontSize: 16,
-                      }}
-                    >
-                      {element.name.toUpperCase()}
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#04384E",
-                        fontFamily: "QuicksandSemiBold",
-                        fontSize: 16,
-                      }}
-                    >
-                      {element.contactnumber}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))
+              filteredEmergencyHotlines
+                .filter((element) => element.status !== "Archived")
+                .map((element) => (
+                  <TouchableOpacity
+                    key={element._id}
+                    onPress={() =>
+                      handleCall(element.name, element.contactnumber)
+                    }
+                    style={[
+                      MyStyles.input,
+                      {
+                        flexDirection: "row",
+                        backgroundColor: "#fff",
+                        alignItems: "center",
+                      },
+                    ]}
+                  >
+                    <MaterialIcons
+                      name="call"
+                      size={20}
+                      color="#BC0F0F"
+                      style={{ marginRight: 10 }}
+                    />
+                    <View style={{ marginLeft: 10 }}>
+                      <Text
+                        style={{
+                          color: "#04384E",
+                          fontFamily: "REMSemiBold",
+                          fontSize: 16,
+                        }}
+                      >
+                        {element.name.toUpperCase()}
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#04384E",
+                          fontFamily: "QuicksandSemiBold",
+                          fontSize: 16,
+                        }}
+                      >
+                        {element.contactnumber}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))
             )}
           </View>
         </ScrollView>

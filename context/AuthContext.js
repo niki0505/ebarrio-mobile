@@ -68,9 +68,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const res = await api.post("/logout", {
-        userID: user.userID,
-      });
+      await api.post("/logout");
       await SecureStore.deleteItemAsync("refreshToken");
       await SecureStore.deleteItemAsync("accessToken");
       setUser(null);
