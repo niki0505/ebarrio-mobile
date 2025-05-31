@@ -175,13 +175,14 @@ export const MyStyles = StyleSheet.create({
     width: 100,
     height: 100,
     justifyContent: "center",
+   
   },
   forecastcontentContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#fff",
-    paddingHorizontal: 10,
+    padding:10,
     borderRadius: 10,
     backgroundColor: "rgba(255, 255, 255, 0.4)",
   },
