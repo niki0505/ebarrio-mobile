@@ -28,7 +28,7 @@ const SuccessfulPage = () => {
       style={{
         flex: 1,
         paddingTop: insets.top,
-        backgroundColor: "#04384E",
+        backgroundColor: "#F0F4F7",
         justifyContent: "center", // Center vertically
         alignItems: "center", // Center horizontally
       }}

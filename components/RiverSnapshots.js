@@ -14,14 +14,12 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import Snapshot from "../assets/cctv-snapshot.png"; // Update with actual image
+import Snapshot from "../assets/cctv-snapshot.png";
 
 const RiverSnapshots = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-
-  // State to track if 'Current' or 'History' button is selected
-  const [viewMode, setViewMode] = useState("current"); // 'current' or 'history'
+  const [viewMode, setViewMode] = useState("current");
 
   return (
     <SafeAreaView
@@ -60,7 +58,6 @@ const RiverSnapshots = () => {
             River Snapshots
           </Text>
 
-          {/* Button to toggle between current and history view */}
           <View
             style={{
               flexDirection: "row",
@@ -73,7 +70,7 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
-                  flex: 1, // Ensure buttons take equal width
+                  flex: 1,
                   backgroundColor:
                     viewMode === "current" ? "#D9D9D9" : "#F0F4F7",
                   marginHorizontal: 10,
@@ -87,7 +84,7 @@ const RiverSnapshots = () => {
                   {
                     fontSize: 16,
                     color: viewMode === "current" ? "#04384E" : "#04384E",
-                    textAlign: "center", // Ensure the text is centered
+                    textAlign: "center",
                   },
                 ]}
               >
@@ -99,7 +96,7 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
-                  flex: 1, // Ensure buttons take equal width
+                  flex: 1,
                   backgroundColor:
                     viewMode === "history" ? "#D9D9D9" : "#F0F4F7",
                   marginHorizontal: 10,
@@ -113,7 +110,7 @@ const RiverSnapshots = () => {
                   {
                     fontSize: 16,
                     color: viewMode === "history" ? "#04384E" : "#04384E",
-                    textAlign: "center", // Ensure the text is centered
+                    textAlign: "center",
                   },
                 ]}
               >
@@ -122,44 +119,18 @@ const RiverSnapshots = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Conditional Rendering of Images based on View Mode */}
           {viewMode === "current" ? (
             <View style={{ alignItems: "center" }}>
-              <Text
+              <Image
+                source={Snapshot}
                 style={{
-                  color: "#00BA00",
-                  fontSize: 40,
-                  fontFamily: "QuicksandBold",
-                  textAlign: "center",
-                  marginTop: 30,
-                }}
-              >
-                SAFE
-              </Text>
-
-              <View
-                style={{
-                  backgroundColor: "#00BA00",
-                  padding: 10,
                   width: "100%",
                   height: 250,
                   borderRadius: 15,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  overflow: "hidden",
+                  resizeMode: "cover",
+                  marginTop: 50,
                 }}
-              >
-                <Image
-                  source={Snapshot}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 15,
-                    resizeMode: "cover",
-                  }}
-                />
-              </View>
+              />
 
               <Text
                 style={{
@@ -201,166 +172,72 @@ const RiverSnapshots = () => {
           ) : (
             <View style={{ marginTop: 50, flexDirection: "column", gap: 30 }}>
               <View>
-                <View
+                <Image
+                  source={Snapshot}
                   style={{
-                    backgroundColor: "#BC0F0F",
-                    padding: 10,
                     width: "100%",
                     height: 250,
                     borderRadius: 15,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    overflow: "hidden",
+                    resizeMode: "cover",
                   }}
-                >
-                  <Image
-                    source={Snapshot}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: 15,
-                      resizeMode: "cover",
-                    }}
-                  />
-                </View>
+                />
 
-                <View
+                <Text
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    fontSize: 16,
+                    color: "#04384E",
+                    fontFamily: "QuicksandBold",
+                    textAlign: "right",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#04384E",
-                      fontFamily: "QuicksandBold",
-                      textAlign: "right",
-                    }}
-                  >
-                    Status: CRITICAL
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#04384E",
-                      fontFamily: "QuicksandBold",
-                      textAlign: "right",
-                    }}
-                  >
-                    CCTV Snapshot as of 10:30 AM
-                  </Text>
-                </View>
+                  CCTV Snapshot as of 10:30 AM
+                </Text>
               </View>
 
               <View>
-                <View
+                <Image
+                  source={Snapshot}
                   style={{
-                    backgroundColor: "#F46608",
-                    padding: 10,
                     width: "100%",
                     height: 250,
                     borderRadius: 15,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    overflow: "hidden",
+                    resizeMode: "cover",
                   }}
-                >
-                  <Image
-                    source={Snapshot}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: 15,
-                      resizeMode: "cover",
-                    }}
-                  />
-                </View>
-                <View
+                />
+
+                <Text
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    fontSize: 16,
+                    color: "#04384E",
+                    fontFamily: "QuicksandBold",
+                    textAlign: "right",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#04384E",
-                      fontFamily: "QuicksandBold",
-                      textAlign: "right",
-                    }}
-                  >
-                    Status: WARNING
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#04384E",
-                      fontFamily: "QuicksandBold",
-                      textAlign: "right",
-                    }}
-                  >
-                    CCTV Snapshot as of 9:30 AM
-                  </Text>
-                </View>
+                  CCTV Snapshot as of 9:30 AM
+                </Text>
               </View>
 
               <View>
-                <View
+                <Image
+                  source={Snapshot}
                   style={{
-                    backgroundColor: "#00BA00",
-                    padding: 10,
                     width: "100%",
                     height: 250,
                     borderRadius: 15,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    overflow: "hidden",
+                    resizeMode: "cover",
                   }}
-                >
-                  <Image
-                    source={Snapshot}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: 15,
-                      resizeMode: "cover",
-                    }}
-                  />
-                </View>
-                <View
+                />
+
+                <Text
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    fontSize: 16,
+                    color: "#04384E",
+                    fontFamily: "QuicksandBold",
+                    textAlign: "right",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#04384E",
-                      fontFamily: "QuicksandBold",
-                      textAlign: "right",
-                    }}
-                  >
-                    Status: SAFE
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#04384E",
-                      fontFamily: "QuicksandBold",
-                      textAlign: "right",
-                    }}
-                  >
-                    CCTV Snapshot as of 8:30 AM
-                  </Text>
-                </View>
+                  CCTV Snapshot as of 8:30 AM
+                </Text>
               </View>
             </View>
           )}

@@ -384,25 +384,27 @@ const CourtReservations = () => {
 
             {selectedDateForTime && (
               <>
-                <Text style={MyStyles.inputLabel}>
-                  Start Time for {selectedDateForTime}
-                  <Text style={{ color: "red" }}>*</Text>
-                </Text>
-
-                <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                  <Text>
-                    {currentTimes?.starttime.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                <View style={{ marginTop: 15 }}>
+                  <Text style={MyStyles.inputLabel}>
+                    Start Time for {selectedDateForTime}
+                    <Text style={{ color: "red" }}>*</Text>
                   </Text>
 
-                  <MaterialIcons
-                    onPress={() => setShowStartTimePicker((prev) => !prev)}
-                    name="access-time"
-                    size={24}
-                    color="#C1C0C0"
-                  />
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
+                    <Text>
+                      {currentTimes?.starttime.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </Text>
+
+                    <MaterialIcons
+                      onPress={() => setShowStartTimePicker((prev) => !prev)}
+                      name="access-time"
+                      size={24}
+                      color="#C1C0C0"
+                    />
+                  </View>
                 </View>
 
                 {showStartTimePicker && (
@@ -415,25 +417,27 @@ const CourtReservations = () => {
                   />
                 )}
 
-                <Text style={MyStyles.inputLabel}>
-                  End Time for {selectedDateForTime}
-                  <Text style={{ color: "red" }}>*</Text>
-                </Text>
-
-                <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                  <Text>
-                    {currentTimes?.endtime.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                <View style={{ marginTop: 15 }}>
+                  <Text style={MyStyles.inputLabel}>
+                    End Time for {selectedDateForTime}
+                    <Text style={{ color: "red" }}>*</Text>
                   </Text>
 
-                  <MaterialIcons
-                    onPress={() => setShowEndTimePicker((prev) => !prev)}
-                    name="access-time"
-                    size={24}
-                    color="#C1C0C0"
-                  />
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
+                    <Text>
+                      {currentTimes?.endtime.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </Text>
+
+                    <MaterialIcons
+                      onPress={() => setShowEndTimePicker((prev) => !prev)}
+                      name="access-time"
+                      size={24}
+                      color="#C1C0C0"
+                    />
+                  </View>
                 </View>
 
                 {showEndTimePicker && (
@@ -452,7 +456,7 @@ const CourtReservations = () => {
             <TextInput
               editable={false}
               value={reservationForm.amount}
-              style={MyStyles.input}
+              style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
               placeholder="Amount"
             />
 

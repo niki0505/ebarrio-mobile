@@ -311,7 +311,7 @@ const EditMobileNumber = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       {!isVerified ? (
         <ScrollView
@@ -349,7 +349,7 @@ const EditMobileNumber = () => {
               <Text style={MyStyles.inputLabel}>New Mobile Number</Text>
               <TextInput
                 onChangeText={mobileInputChange}
-                placeholder="Enter new mobile number"
+                placeholder="New Mobile Number"
                 value={mobilenumber}
                 style={MyStyles.input}
               />
@@ -372,7 +372,7 @@ const EditMobileNumber = () => {
                 <TextInput
                   onChangeText={handlePassChange}
                   secureTextEntry={securePass}
-                  placeholder="Enter password"
+                  placeholder="Password"
                   style={[MyStyles.input, { paddingRight: 40 }]}
                 />
                 <TouchableOpacity

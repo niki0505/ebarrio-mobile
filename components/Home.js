@@ -698,7 +698,10 @@ const Home = () => {
               onPress={() => navigation.navigate("Chat")}
               style={{
                 position: "absolute",
-                bottom: insets.bottom + 70, 
+                bottom:
+                  Platform.OS === "ios"
+                    ? insets.bottom + 20
+                    : insets.bottom + 60,
                 right: 20,
                 backgroundColor: "#fff",
                 width: 60,

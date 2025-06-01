@@ -163,7 +163,7 @@ const ChangePassword = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <ScrollView
         contentContainerStyle={[
@@ -191,7 +191,7 @@ const ChangePassword = () => {
                 onChangeText={handlePassChange}
                 value={password}
                 secureTextEntry={secureCurrPass}
-                placeholder="Enter password"
+                placeholder="Current Password"
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity
@@ -230,7 +230,7 @@ const ChangePassword = () => {
                 onChangeText={passwordValidation}
                 value={newpassword}
                 secureTextEntry={secureNewPass}
-                placeholder="Enter password"
+                placeholder="New Password"
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity
@@ -274,7 +274,7 @@ const ChangePassword = () => {
                 onChangeText={repasswordValidation}
                 value={renewpassword}
                 secureTextEntry={secureConfirmPass}
-                placeholder="Enter password"
+                placeholder="Confirm New Password"
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity

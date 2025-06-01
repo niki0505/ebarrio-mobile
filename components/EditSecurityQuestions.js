@@ -167,7 +167,7 @@ const EditSecurityQuestions = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -226,7 +226,7 @@ const EditSecurityQuestions = () => {
                 value={securityquestions[0].answer}
                 onChangeText={(e) => handleSecurityChange(0, "answer", e)}
                 secureTextEntry={true}
-                placeholder="Enter answer"
+                placeholder="Answer"
                 style={MyStyles.input}
               />
             </View>
@@ -265,7 +265,7 @@ const EditSecurityQuestions = () => {
                 value={securityquestions[1].answer}
                 onChangeText={(e) => handleSecurityChange(1, "answer", e)}
                 secureTextEntry={true}
-                placeholder="Enter answer"
+                placeholder="Answer"
                 style={MyStyles.input}
               />
             </View>
@@ -277,7 +277,7 @@ const EditSecurityQuestions = () => {
                   onChangeText={handlePassChange}
                   value={password}
                   secureTextEntry={securePass}
-                  placeholder="Enter password"
+                  placeholder="Password"
                   style={[MyStyles.input, { paddingRight: 40 }]}
                 />
                 <TouchableOpacity
