@@ -133,66 +133,75 @@ const BrgyCalendar = () => {
             Important Events
           </Text>
 
-          {events.map((event, index) => (
-            <View
-              key={index}
-              style={[
-                MyStyles.shadow,
-                {
-                  backgroundColor: event.backgroundColor || "#3174ad",
-                  padding: 10,
-                  borderRadius: 10,
-                  marginTop: 10,
-                  gap: 5,
-                },
-              ]}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                }}
+          {events
+            .filter((event) => {
+              const eventDate = new Date(event.start);
+              const now = new Date();
+              return (
+                eventDate.getMonth() === now.getMonth() &&
+                eventDate.getFullYear() === now.getFullYear()
+              );
+            })
+            .map((event, index) => (
+              <View
+                key={index}
+                style={[
+                  MyStyles.shadow,
+                  {
+                    backgroundColor: event.backgroundColor || "#3174ad",
+                    padding: 10,
+                    borderRadius: 10,
+                    marginTop: 10,
+                    gap: 5,
+                  },
+                ]}
               >
-                📅{" "}
-                {new Date(event.start).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                  }}
+                >
+                  📅{" "}
+                  {new Date(event.start).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </Text>
 
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                }}
-              >
-                🕒{" "}
-                {new Date(event.start).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
-                -{" "}
-                {new Date(event.end).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                  }}
+                >
+                  🕒{" "}
+                  {new Date(event.start).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
+                  -{" "}
+                  {new Date(event.end).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
 
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  marginTop: 10,
-                  fontFamily: "QuicksandMedium",
-                }}
-              >
-                {event.title}
-              </Text>
-            </View>
-          ))}
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    marginTop: 10,
+                    fontFamily: "QuicksandMedium",
+                  }}
+                >
+                  {event.title}
+                </Text>
+              </View>
+            ))}
         </View>
       </ScrollView>
     </SafeAreaView>

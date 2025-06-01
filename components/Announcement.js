@@ -1,12 +1,7 @@
 import {
-  StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
   SafeAreaView,
   ScrollView,
   Image,
@@ -16,7 +11,6 @@ import { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
-import axios from "axios";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { InfoContext } from "../context/InfoContext";
 import api from "../api";
@@ -34,7 +28,6 @@ const Announcement = () => {
   const insets = useSafeAreaInsets();
   const { fetchAnnouncements, announcements } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
-  const navigation = useNavigation();
   const [sortOption, setSortOption] = useState("newest");
   dayjs.extend(relativeTime);
   const [expandedAnnouncements, setExpandedAnnouncements] = useState([]);
@@ -82,32 +75,6 @@ const Announcement = () => {
   });
 
   const renderContent = (announcement) => {
-    let eventInfo = "";
-    if (announcement.eventStart) {
-      const startDate = new Date(announcement.eventStart);
-      const endDate = new Date(announcement.eventEnd);
-
-      const formattedDate = startDate.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-
-      const formattedStartTime = startDate.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      const formattedEndTime = endDate.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      eventInfo = `📅 ${formattedDate}\n🕒 ${formattedStartTime} - ${formattedEndTime}\n`;
-    }
-
     const words = announcement.content.split(" ");
     const isLong = words.length > 25;
     const isExpanded = expandedAnnouncements.includes(announcement._id);
@@ -117,7 +84,7 @@ const Announcement = () => {
 
     return (
       <View style={{ marginVertical: 10 }}>
-        {eventInfo !== "" && (
+        {announcement.eventdetails !== "" && (
           <Text
             style={{
               marginBottom: 5,
@@ -126,7 +93,7 @@ const Announcement = () => {
               fontFamily: "QuicksandSemiBold",
             }}
           >
-            {eventInfo}
+            {announcement.eventdetails}
           </Text>
         )}
         <Text

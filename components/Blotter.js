@@ -29,7 +29,6 @@ const Blotter = () => {
   const [subjectSuggestions, setSubjectSuggestions] = useState([]);
   const [typeErrors, setTypeErrors] = useState(null);
   const [subjectError, setSubjectError] = useState(null);
-  const [addressError, setAddressError] = useState(null);
   const [detailsError, setDetailsError] = useState(null);
   const initialForm = {
     complainantID: user.resID,
@@ -59,26 +58,15 @@ const Blotter = () => {
     }
 
     if (!blotterForm.subjectID) {
-      setSubjectError("This field is required.");
-      hasError = true;
+      if (!blotterForm.subjectname) {
+        setSubjectError("This field is required.");
+        hasError = true;
+      } else {
+        setSubjectError(null);
+      }
     } else {
       setSubjectError(null);
     }
-
-    if (!blotterForm.subjectname) {
-      setSubjectError("This field is required.");
-      hasError = true;
-    } else {
-      setSubjectError(null);
-    }
-
-    if (!blotterForm.subjectaddress) {
-      setAddressError("This field is required.");
-      hasError = true;
-    } else {
-      setAddressError(null);
-    }
-
     if (!blotterForm.details) {
       setDetailsError("This field is required.");
       hasError = true;
@@ -146,9 +134,6 @@ const Blotter = () => {
     if (name === "subjectname") {
       setSubjectError(!value ? "This field is required." : null);
     }
-    if (name === "subjectaddress") {
-      setAddressError(!value ? "This field is required." : null);
-    }
     if (name === "details") {
       setDetailsError(!value ? "This field is required." : null);
     }
@@ -169,6 +154,10 @@ const Blotter = () => {
       subjectID: "",
       subjectaddress: "",
     }));
+
+    if (blotterForm.subjectname) {
+      setSubjectError(!value ? "This field is required." : null);
+    }
   };
 
   const handleSubjectSuggestionClick = (res) => {
@@ -183,7 +172,6 @@ const Blotter = () => {
       subjectaddress: res.address,
     }));
     setSubjectError(null);
-    setAddressError(null);
     setSubjectSuggestions([]);
   };
 
@@ -317,17 +305,6 @@ const Blotter = () => {
                   handleInputChange("subjectaddress", text)
                 }
               />
-              {addressError ? (
-                <Text
-                  style={{
-                    color: "red",
-                    fontFamily: "QuicksandMedium",
-                    fontSize: 16,
-                  }}
-                >
-                  {addressError}
-                </Text>
-              ) : null}
             </View>
 
             <View>

@@ -45,13 +45,20 @@ const Status = () => {
     fetchUserDetails();
   }, []);
 
-  const sortedServices = [...services].sort((a, b) => {
-    if (sortOption === "newest") {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    } else {
-      return new Date(a.createdAt) - new Date(b.createdAt);
+  const filteredServices = services.filter((service) => {
+    if (sortOption === "documents") {
+      return service.type === "Certificate";
+    } else if (sortOption === "reservations") {
+      return service.type === "Reservation";
+    } else if (sortOption === "blotters") {
+      return service.type === "Blotter";
     }
+    return true;
   });
+
+  const sortedServices = [...filteredServices].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   const certCancelClick = (certID, createdAt) => {
     setCertVisible(true);
@@ -165,6 +172,7 @@ const Status = () => {
 
           <Dropdown
             data={[
+              { label: "All", value: "all" },
               { label: "Documents", value: "documents" },
               { label: "Blotters", value: "blotters" },
               { label: "Reservations", value: "reservations" },
@@ -386,30 +394,38 @@ const Status = () => {
                       {service.typeofcertificate}
                     </Text>
                   )}
-                  {service.type === "Reservation" && (
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontFamily: "QuicksandMedium",
-                        color: "#808080",
-                      }}
-                    >
-                      {new Date(service.starttime).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
-                      {new Date(service.starttime).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}{" "}
-                      -{" "}
-                      {new Date(service.endtime).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </Text>
-                  )}
+                  {service.type === "Reservation" &&
+                    service.times &&
+                    Object.entries(service.times).map(([date, timeData]) => {
+                      const start = new Date(timeData.starttime);
+                      const end = new Date(timeData.endtime);
+
+                      return (
+                        <Text
+                          key={date}
+                          style={{
+                            fontSize: 15,
+                            fontFamily: "QuicksandMedium",
+                            color: "#808080",
+                          }}
+                        >
+                          {new Date(date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}{" "}
+                          {start.toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}{" "}
+                          -{" "}
+                          {end.toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </Text>
+                      );
+                    })}
                   {service.type === "Blotter" && (
                     <View
                       style={{

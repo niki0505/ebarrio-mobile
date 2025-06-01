@@ -128,10 +128,13 @@ export const InfoProvider = ({ children }) => {
     if (!socket) return;
 
     const handler = (updatedData) => {
+      console.log(updatedData.data);
       if (updatedData.type === "announcements") {
         setAnnouncements(updatedData.data);
       } else if (updatedData.type === "services") {
         setServices(updatedData.data);
+      } else if (updatedData.type === "emergencyhotlines") {
+        setEmergencyHotlines(updatedData.data);
       }
     };
 
