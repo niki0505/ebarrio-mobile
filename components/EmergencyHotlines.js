@@ -73,7 +73,7 @@ const EmergencyHotlines = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -83,8 +83,7 @@ const EmergencyHotlines = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
-              gap: 10,
+              backgroundColor: "#BC0F0F",
             },
           ]}
         >
@@ -92,9 +91,14 @@ const EmergencyHotlines = () => {
             onPress={() => navigation.navigate("BottomTabs")}
             name="arrow-back-ios"
             size={24}
-            color="#04384E"
+            color="#fff"
           />
-          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 30 }]}>
+          <Text
+            style={[
+              MyStyles.header,
+              { marginTop: 20, marginBottom: 30, color: "#fff" },
+            ]}
+          >
             Hotlines
           </Text>
 
@@ -109,13 +113,21 @@ const EmergencyHotlines = () => {
               <MaterialIcons
                 name="search"
                 size={20}
-                color="#C1C0C0"
+                color="#808080"
                 style={MyStyles.searchIcon}
               />
             </View>
 
             {filteredEmergencyHotlines.length === 0 ? (
-              <Text>No results found</Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontFamily: "QuicksandSemiBold",
+                  fontSize: 16,
+                }}
+              >
+                No results found
+              </Text>
             ) : (
               filteredEmergencyHotlines
                 .filter((element) => element.status !== "Archived")

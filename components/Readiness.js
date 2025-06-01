@@ -34,25 +34,25 @@ const Readiness = () => {
     {
       title: "QUICK SAFETY",
       subtitle: "Easy access to essential safety information",
-      image: QuickTips,
+      image: require("../assets/disasters/quick-tips.png"),
       route: "QuickTips",
     },
     {
       title: "DISASTER SAFETY",
       subtitle: "Learn practical tips to stay safe during natural disasters",
-      image: Disaster,
+      image: require("../assets/disasters/disaster.png"),
       route: "SafetyTips",
     },
     {
       title: "HAZARD MAPS",
       subtitle: "View areas at risk for natural hazards",
-      image: Hazard,
+      image: require("../assets/disasters/hazard.png"),
       route: "HazardMap",
     },
     {
       title: "EVACUATION MAP",
       subtitle: "View the route to the nearest evacuation map",
-      image: Evacuation,
+      image: require("../assets/disasters/evacuation.png"),
       route: "EvacuationMap",
     },
   ];

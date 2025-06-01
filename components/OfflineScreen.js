@@ -146,7 +146,7 @@ const OfflineScreen = () => {
                           { color: "#BC0F0F", fontSize: 30 },
                         ]}
                       >
-                        SAFETY TIPS
+                        READINESS
                       </Text>
                       <Text
                         style={[
@@ -229,7 +229,7 @@ const OfflineScreen = () => {
                   <MaterialIcons
                     name="search"
                     size={20}
-                    color="#C1C0C0"
+                    color="#808080"
                     style={MyStyles.searchIcon}
                   />
                 </View>

@@ -55,7 +55,7 @@ const AccountSettings = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
     >
       <ScrollView
         contentContainerStyle={[
@@ -85,7 +85,7 @@ const AccountSettings = () => {
             onLoad={() => setImageLoaded(true)}
             style={[
               MyStyles.profilePic,
-              { width: 60, height: 60, borderRadius: 40 },
+              { width: 150, height: 150, borderRadius: 75 },
             ]}
           />
           <Text

@@ -233,7 +233,7 @@ const Certificates = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -473,7 +473,7 @@ const Certificates = () => {
               <TextInput
                 value={certificateForm.amount}
                 editable={false}
-                style={[MyStyles.input, { backgroundColor: "#f0f0f0" }]}
+                style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
               />
             </View>
           </View>

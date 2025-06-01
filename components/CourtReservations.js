@@ -236,7 +236,7 @@ const CourtReservations = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -524,7 +524,8 @@ const CourtReservations = () => {
               </Text>
               <TextInput
                 value={reservationForm.amount}
-                style={[MyStyles.input, { backgroundColor: "#f0f0f0" }]}
+                editable={false}
+                style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
               />
             </View>
           </View>

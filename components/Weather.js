@@ -213,6 +213,7 @@ const Weather = () => {
 
     return iconMap[normalized] || iconMap["default"];
   };
+  
   //Background changes based on the condition
   const getGradientColors = (condition) => {
     const normalized = condition?.trim().toLowerCase();

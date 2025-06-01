@@ -26,15 +26,25 @@ const SafetyTips = () => {
 
   const disasters = [
     {
-      image: Earthquake,
+      image: require("../assets/disasters/earthquake.png"),
       title: "EARTHQUAKE",
       subtitle: "Ground Movement",
       route: "Earthquake",
     },
-    { image: Fire, title: "FIRE", subtitle: "Rapid Burning", route: "Fire" },
-    { image: Flood, title: "FLOOD", subtitle: "Water Rise", route: "Flood" },
     {
-      image: Typhoon,
+      image: require("../assets/disasters/fire.png"),
+      title: "FIRE",
+      subtitle: "Rapid Burning",
+      route: "Fire",
+    },
+    {
+      image: require("../assets/disasters/flood.png"),
+      title: "FLOOD",
+      subtitle: "Water Rise",
+      route: "Flood",
+    },
+    {
+      image: require("../assets/disasters/typhoon.png"),
       title: "TYPHOON",
       subtitle: "Wind and Rain",
       route: "Typhoon",
@@ -53,10 +63,7 @@ const SafetyTips = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20,
-              gap: 10,
               backgroundColor: "#BC0F0F",
-              flexGrow: 1,
             },
           ]}
         >

@@ -16,11 +16,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import ImageViewing from "react-native-image-viewing";
 
-// Importing hazard maps
-import Fire from "../assets/hazard-map/fire-hazard-map.jpg";
-import Flood from "../assets/hazard-map/flood-hazard-map.png";
-import Earthquake from "../assets/hazard-map/earthquake-hazard-map.png";
-
 const HazardMap = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -29,6 +24,18 @@ const HazardMap = () => {
   const [visibleFire, setVisibleFire] = useState(false);
   const [visibleFlood, setVisibleFlood] = useState(false);
   const [visibleEarthquake, setVisibleEarthquake] = useState(false);
+
+  const fireHazardMap = Image.resolveAssetSource(
+    require("../assets/hazard-map/fire-hazard-map.jpg")
+  ).uri;
+
+  const floodHazardMap = Image.resolveAssetSource(
+    require("../assets/hazard-map/flood-hazard-map.png")
+  ).uri;
+
+  const earthquakeHazardMap = Image.resolveAssetSource(
+    require("../assets/hazard-map/earthquake-hazard-map.png")
+  ).uri;
 
   return (
     <SafeAreaView
@@ -85,7 +92,7 @@ const HazardMap = () => {
 
             <TouchableOpacity onPress={() => setVisibleFire(true)}>
               <Image
-                source={Fire}
+                source={require("../assets/hazard-map/fire-hazard-map.jpg")}
                 style={{
                   width: "100%",
                   height: 200,
@@ -99,7 +106,7 @@ const HazardMap = () => {
             </TouchableOpacity>
 
             <ImageViewing
-              images={[{ uri: Image.resolveAssetSource(Fire).uri }]}
+              images={[{ uri: fireHazardMap }]}
               imageIndex={0}
               visible={visibleFire}
               onRequestClose={() => setVisibleFire(false)}
@@ -123,7 +130,7 @@ const HazardMap = () => {
 
             <TouchableOpacity onPress={() => setVisibleFlood(true)}>
               <Image
-                source={Flood}
+                source={require("../assets/hazard-map/flood-hazard-map.png")}
                 style={{
                   width: "100%",
                   height: 200,
@@ -137,7 +144,7 @@ const HazardMap = () => {
             </TouchableOpacity>
 
             <ImageViewing
-              images={[{ uri: Image.resolveAssetSource(Flood).uri }]}
+              images={[{ uri: floodHazardMap }]}
               imageIndex={0}
               visible={visibleFlood}
               onRequestClose={() => setVisibleFlood(false)}
@@ -161,7 +168,7 @@ const HazardMap = () => {
 
             <TouchableOpacity onPress={() => setVisibleEarthquake(true)}>
               <Image
-                source={Earthquake}
+                source={require("../assets/hazard-map/earthquake-hazard-map.png")}
                 style={{
                   width: "100%",
                   height: 200,
@@ -175,7 +182,7 @@ const HazardMap = () => {
             </TouchableOpacity>
 
             <ImageViewing
-              images={[{ uri: Image.resolveAssetSource(Earthquake).uri }]}
+              images={[{ uri: earthquakeHazardMap }]}
               imageIndex={0}
               visible={visibleEarthquake}
               onRequestClose={() => setVisibleEarthquake(false)}

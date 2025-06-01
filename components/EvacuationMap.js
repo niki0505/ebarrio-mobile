@@ -16,13 +16,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import ImageViewing from "react-native-image-viewing";
 
-import Evacuation from "../assets/hazard-map/evacuation-map.png";
-
 const EvacuationMap = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
   const [visible, setIsVisible] = useState(false);
+  const evacuationMap = Image.resolveAssetSource(
+    require("../assets/hazard-map/evacuation-map.png")
+  ).uri;
 
   return (
     <SafeAreaView
@@ -78,7 +79,7 @@ const EvacuationMap = () => {
 
             <TouchableOpacity onPress={() => setIsVisible(true)}>
               <Image
-                source={Evacuation}
+                source={require("../assets/hazard-map/evacuation-map.png")}
                 style={{
                   width: "100%",
                   height: 200,
@@ -92,7 +93,7 @@ const EvacuationMap = () => {
             </TouchableOpacity>
 
             <ImageViewing
-              images={[{ uri: Image.resolveAssetSource(Evacuation).uri }]}
+              images={[{ uri: evacuationMap }]}
               imageIndex={0}
               visible={visible}
               onRequestClose={() => setIsVisible(false)}
