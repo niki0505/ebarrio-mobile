@@ -233,7 +233,7 @@ const Certificates = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -407,7 +407,7 @@ const Certificates = () => {
                       <View>
                         <Text style={MyStyles.inputLabel}>Address Number</Text>
                         <TextInput
-                          placeholder="Enter address number"
+                          placeholder="Address Number"
                           placeholderStyle={{ color: "#808080" }}
                           onChangeText={(text) =>
                             handleInputChange("addressnumber", text)
@@ -422,7 +422,7 @@ const Certificates = () => {
                     Business Name<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
-                    placeholder="Enter business name"
+                    placeholder="Business Name"
                     onChangeText={(text) =>
                       handleInputChange("businessname", text)
                     }
@@ -446,7 +446,7 @@ const Certificates = () => {
                     Line of Business<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
-                    placeholder="Enter line of business"
+                    placeholder="Line of Business"
                     onChangeText={(text) =>
                       handleInputChange("lineofbusiness", text)
                     }

@@ -314,7 +314,7 @@ const Signup = () => {
               <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
                 <TextInput
                   style={MyStyles.input}
-                  placeholder="Enter first name"
+                  placeholder="First name"
                   value={firstname}
                   onChangeText={firstnameValidation}
                 />
@@ -332,7 +332,7 @@ const Signup = () => {
 
                 <TextInput
                   style={MyStyles.input}
-                  placeholder="Enter last name"
+                  placeholder="Last name"
                   value={lastname}
                   onChangeText={lastnameValidation}
                 />
@@ -350,14 +350,14 @@ const Signup = () => {
 
                 <TextInput
                   style={MyStyles.input}
-                  placeholder="Enter mobile number"
+                  placeholder="Mobile Number"
                   value={mobilenumber}
                   onChangeText={setMobileNumber}
                 />
 
                 <TextInput
                   style={MyStyles.input}
-                  placeholder="Enter username"
+                  placeholder="Username"
                   value={username}
                   autoCapitalize="none"
                   onChangeText={usernameValidation}
@@ -385,7 +385,7 @@ const Signup = () => {
                     value={password}
                     onChangeText={passwordValidation}
                     secureTextEntry={secureNewPass}
-                    placeholder="Enter password"
+                    placeholder="Password"
                     style={[MyStyles.input, { paddingRight: 40 }]}
                   />
                   <TouchableOpacity
@@ -426,7 +426,7 @@ const Signup = () => {
                     value={repassword}
                     onChangeText={repasswordValidation}
                     secureTextEntry={secureConfirmPass}
-                    placeholder="Enter password"
+                    placeholder="Confirm New Password"
                     style={[MyStyles.input, { paddingRight: 40 }]}
                   />
                   <TouchableOpacity
@@ -461,6 +461,30 @@ const Signup = () => {
                     ))}
                   </View>
                 )}
+
+                <View style={{ flexDirection: "column" }}>
+                  <Text
+                    style={{
+                      color: "#808080",
+                      alignSelf: "flex-start",
+                      fontSize: 16,
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
+                    By clicking Sign Up, you agree to eBarrio’s{" "}
+                  </Text>
+                  <Text
+                    onPress={() => navigation.navigate("TermsConditions")}
+                    style={{
+                      color: "#006EFF",
+                      alignSelf: "flex-start",
+                      fontSize: 16,
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
+                    Terms and Conditions
+                  </Text>
+                </View>
               </View>
 
               <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>

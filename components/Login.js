@@ -71,7 +71,7 @@ const Login = () => {
   };
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <View style={{ flex: 4, backgroundColor: "#04384E" }}>
         <View style={{ flex: 1, alignSelf: "center" }}>

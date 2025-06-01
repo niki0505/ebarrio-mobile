@@ -114,7 +114,7 @@ const SetPassword = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <BackgroundOverlay />
       {/* Card container with transparency */}

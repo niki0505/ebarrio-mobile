@@ -268,7 +268,7 @@ const ForgotPassword = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       {/* 1st Design */}
       {!isExisting && (
@@ -306,7 +306,7 @@ const ForgotPassword = () => {
             <View style={{ marginVertical: 30, gap: 10, width: "100%" }}>
               <TextInput
                 onChangeText={setUsername}
-                placeholder="Enter username"
+                placeholder="Username"
                 style={MyStyles.input}
               />
             </View>
@@ -662,7 +662,7 @@ const ForgotPassword = () => {
                       <TextInput
                         onChangeText={(e) => handleInputChange("answer", e)}
                         secureTextEntry={true}
-                        placeholder="Enter answer"
+                        placeholder="Answer"
                         style={MyStyles.input}
                       />
                     </View>

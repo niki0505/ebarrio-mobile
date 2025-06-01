@@ -158,7 +158,7 @@ const ChangeUsername = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <ScrollView
         contentContainerStyle={[
@@ -195,7 +195,7 @@ const ChangeUsername = () => {
             <Text style={MyStyles.inputLabel}>New Username</Text>
             <TextInput
               onChangeText={usernameValidation}
-              placeholder="Enter new username"
+              placeholder="New Username"
               style={MyStyles.input}
               value={username}
             />
@@ -224,7 +224,7 @@ const ChangeUsername = () => {
                 onChangeText={handlePassChange}
                 secureTextEntry={securePass}
                 value={password}
-                placeholder="Enter password"
+                placeholder="Password"
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity

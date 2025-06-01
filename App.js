@@ -56,6 +56,7 @@ import EvacuationMap from "./components/EvacuationMap";
 import RiverSnapshots from "./components/RiverSnapshots";
 import SOSStatusPage from "./components/SOSStatusPage";
 import Chat from "./components/Chat";
+import TermsConditions from "./components/TermsConditions";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -205,6 +206,10 @@ export default function App() {
                   children={() => <PublicRoute element={<Login />} />}
                 />
                 <Stack.Screen
+                  name="TermsConditions"
+                  children={() => <PublicRoute element={<TermsConditions />} />}
+                />
+                <Stack.Screen
                   name="Signup"
                   children={() => <PublicRoute element={<Signup />} />}
                 />
@@ -289,6 +294,7 @@ export default function App() {
                     />
                   )}
                 />
+
                 <Stack.Screen
                   name="EmergencyHotlines"
                   children={() => (

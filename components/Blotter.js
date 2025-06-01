@@ -177,7 +177,7 @@ const Blotter = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -254,7 +254,7 @@ const Blotter = () => {
                 Name of the Accused<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
-                placeholder="Enter subject name"
+                placeholder="Name of the Accused"
                 style={MyStyles.input}
                 value={blotterForm.subjectname}
                 type="text"
@@ -296,7 +296,7 @@ const Blotter = () => {
             <View>
               <Text style={MyStyles.inputLabel}>Address of the Accused</Text>
               <TextInput
-                placeholder="Enter subject address"
+                placeholder="Address of the Accused"
                 style={MyStyles.input}
                 value={blotterForm.subjectaddress}
                 editable={!blotterForm.subjectID}
@@ -312,7 +312,7 @@ const Blotter = () => {
                 Details of the Incident<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
-                placeholder="Enter details of the accident"
+                placeholder="Details of the Incident"
                 style={[
                   MyStyles.input,
                   { height: 150, textAlignVertical: "top" },
