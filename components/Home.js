@@ -319,413 +319,395 @@ const Home = () => {
       <SafeAreaView
         style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
-          <>
-            <ScrollView
-              contentContainerStyle={[
-                MyStyles.scrollContainer,
-                {
-                  paddingBottom: insets.bottom + 70,
-                  gap: 10,
-                },
-              ]}
-            >
-              <View style={MyStyles.rowAlignment}>
-                <View>
-                  <Text style={MyStyles.header}>Home</Text>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      color: "#585252",
-                      fontFamily: "QuicksandSemiBold",
-                    }}
-                  >
-                    Welcome, {user.name}
-                  </Text>
-                </View>
-
-                <View style={{ position: "relative" }}>
-                  <TouchableOpacity onPress={toggleProfile}>
-                    <Image
-                      source={{ uri: user.picture }}
-                      style={MyStyles.profilePic}
-                    />
-                  </TouchableOpacity>
-
-                  {showDropdown && (
-                    <View
-                      style={{
-                        height: "auto",
-                        justifyContent: "center",
-                        position: "absolute",
-                        top: 45,
-                        right: 0,
-                        backgroundColor: "#fff",
-                        padding: 5,
-                        borderRadius: 6,
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                        elevation: 5,
-                        zIndex: 1,
-                        minWidth: 150,
-                        alignSelf: "flex-end",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => {
-                          setShowDropdown(false);
-                          navigation.navigate("AccountSettings");
-                        }}
-                        style={{
-                          paddingVertical: 8,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <MaterialIcons
-                          name="settings"
-                          size={20}
-                          color="#04384E"
-                        />
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            marginLeft: 3,
-                            color: "#04384E",
-                            fontFamily: "QuicksandBold",
-                          }}
-                        >
-                          Account Settings
-                        </Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => {
-                          setShowDropdown(false);
-                          handleConfirm();
-                        }}
-                        style={{
-                          paddingVertical: 8,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <MaterialIcons name="logout" size={24} color="red" />
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            color: "red",
-                            marginLeft: 3,
-                            fontFamily: "QuicksandBold",
-                          }}
-                        >
-                          Logout
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </View>
+        <>
+          <ScrollView
+            contentContainerStyle={[
+              MyStyles.scrollContainer,
+              {
+                paddingBottom: insets.bottom + 70,
+                gap: 10,
+              },
+            ]}
+          >
+            <View style={MyStyles.rowAlignment}>
+              <View>
+                <Text style={MyStyles.header}>Home</Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: "#585252",
+                    fontFamily: "QuicksandSemiBold",
+                  }}
+                >
+                  Welcome, {user.name}
+                </Text>
               </View>
 
-              <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
-                <TouchableOpacity
-                  onPress={viewCalendar}
+              <View style={{ position: "relative" }}>
+                <TouchableOpacity onPress={toggleProfile}>
+                  <Image
+                    source={{ uri: user.picture }}
+                    style={MyStyles.profilePic}
+                  />
+                </TouchableOpacity>
+
+                {showDropdown && (
+                  <View
+                    style={{
+                      height: "auto",
+                      justifyContent: "center",
+                      position: "absolute",
+                      top: 45,
+                      right: 0,
+                      backgroundColor: "#fff",
+                      padding: 5,
+                      borderRadius: 6,
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 4,
+                      elevation: 5,
+                      zIndex: 1,
+                      minWidth: 150,
+                      alignSelf: "flex-end",
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        setShowDropdown(false);
+                        navigation.navigate("AccountSettings");
+                      }}
+                      style={{
+                        paddingVertical: 8,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <MaterialIcons
+                        name="settings"
+                        size={20}
+                        color="#04384E"
+                      />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          marginLeft: 3,
+                          color: "#04384E",
+                          fontFamily: "QuicksandBold",
+                        }}
+                      >
+                        Account Settings
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        setShowDropdown(false);
+                        handleConfirm();
+                      }}
+                      style={{
+                        paddingVertical: 8,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <MaterialIcons name="logout" size={24} color="red" />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: "red",
+                          marginLeft: 3,
+                          fontFamily: "QuicksandBold",
+                        }}
+                      >
+                        Logout
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </View>
+
+            <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
+              <TouchableOpacity
+                onPress={viewCalendar}
+                style={[
+                  MyStyles.card,
+                  {
+                    padding: 10,
+                    flex: 0,
+                    width: 180,
+                  },
+                ]}
+              >
+                <ScrollView horizontal={false} style={{ marginTop: 5 }}>
+                  <Text
+                    style={{
+                      color: "#BC0F0F",
+                      fontSize: 20,
+                      fontFamily: "REMSemiBold",
+                    }}
+                  >
+                    {currentDate.toLocaleString("en-US", { month: "long" })}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 35,
+                      fontWeight: "bold",
+                      color: "#04384E",
+                      fontFamily: "REMRegular",
+                    }}
+                  >
+                    {currentDate.getDate()}
+                  </Text>
+
+                  {currentEvents?.map((event, index) => (
+                    <Text
+                      key={index}
+                      style={{
+                        fontSize: 14,
+                        color: "#ACACAC",
+                        marginRight: 10,
+                      }}
+                    >
+                      {event.title}
+                      {index !== currentEvents.length - 1 ? "," : ""}{" "}
+                    </Text>
+                  ))}
+                </ScrollView>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
+                <LinearGradient
+                  colors={getGradientColors(weather.currentcondition)}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={[MyStyles.gradientBackground]}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "REMRegular",
+                      fontSize: 16,
+                      color: "#fff",
+                    }}
+                  >
+                    Bacoor
+                  </Text>
+                  <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
+                    {getWeatherIcon(weather.currentcondition, 70, 70)}
+                    <Text
+                      style={{
+                        fontFamily: "REMRegular",
+                        fontSize: 35,
+                        color: "#fff",
+                      }}
+                    >
+                      {weather.currenttemp}°
+                    </Text>
+                  </View>
+
+                  <Text
+                    style={{
+                      fontFamily: "QuicksandSemiBold",
+                      fontSize: 16,
+                      color: "#fff",
+                    }}
+                  >
+                    High:{Math.round(weather.currenthigh)}° Low:
+                    {Math.round(weather.currentlow)}°
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            {user.role === "Resident" && (
+              <>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMMedium",
+                    marginTop: 15,
+                  }}
+                >
+                  Services
+                </Text>
+                <View
                   style={[
                     MyStyles.card,
+                    { justifyContent: "center", alignItems: "center" },
+                  ]}
+                >
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={[MyStyles.rowAlignment, { gap: 10 }]}
+                  >
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("Certificates")}
+                      style={{ alignItems: "center" }}
+                    >
+                      <View style={MyStyles.servicesImgContainer}>
+                        <Image
+                          source={Certificate}
+                          style={MyStyles.servicesImg}
+                        />
+                      </View>
+                      <Text style={MyStyles.servicesTitle}>Document</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("Blotter")}
+                      style={{ alignItems: "center" }}
+                    >
+                      <View style={MyStyles.servicesImgContainer}>
+                        <Image source={Blotter} style={MyStyles.servicesImg} />
+                      </View>
+                      <Text style={MyStyles.servicesTitle}>Blotter</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("CourtReservations")}
+                      style={{ alignItems: "center" }}
+                    >
+                      <View style={MyStyles.servicesImgContainer}>
+                        <Image
+                          source={CourtReservation}
+                          style={MyStyles.servicesImg}
+                        />
+                      </View>
+                      <Text style={MyStyles.servicesTitle}>Reservation</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("Status")}
+                      style={{ alignItems: "center" }}
+                    >
+                      <View style={MyStyles.servicesImgContainer}>
+                        <Image source={Status} style={MyStyles.servicesImg} />
+                      </View>
+                      <Text style={MyStyles.servicesTitle}>Status</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
+                </View>
+              </>
+            )}
+
+            <Text
+              style={{
+                color: "#04384E",
+                fontSize: 20,
+                fontFamily: "REMMedium",
+                marginTop: 15,
+              }}
+            >
+              Emergency Tools
+            </Text>
+            <View style={{ flexDirection: "column", gap: 10 }}>
+              <TouchableOpacity
+                style={MyStyles.sosContainer}
+                onPress={() => navigation.navigate("SOS")}
+              >
+                <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
+                  SOS
+                </Text>
+              </TouchableOpacity>
+
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <TouchableOpacity
+                  style={[
+                    MyStyles.sosContainer,
                     {
-                      padding: 10,
-                      flex: 0,
-                      width: 180,
+                      flex: 1,
+                      flexDirection: "column",
+                      alignItems: "center",
+                    },
+                  ]}
+                  onPress={viewReadiness}
+                >
+                  <MaterialCommunityIcons
+                    name="lightbulb-on"
+                    size={50}
+                    color="#fff"
+                  />
+                  <Text style={MyStyles.emergencyTitle}>READINESS</Text>
+                  <Text style={MyStyles.emergencyMessage}>
+                    Stay Smart, Stay Safe
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={viewEmergencyHotlines}
+                  style={[
+                    MyStyles.sosContainer,
+                    {
+                      flex: 1,
+                      flexDirection: "column",
+                      alignItems: "center",
                     },
                   ]}
                 >
-                  <ScrollView horizontal={false} style={{ marginTop: 5 }}>
-                    <Text
-                      style={{
-                        color: "#BC0F0F",
-                        fontSize: 20,
-                        fontFamily: "REMSemiBold",
-                      }}
-                    >
-                      {currentDate.toLocaleString("en-US", { month: "long" })}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 35,
-                        fontWeight: "bold",
-                        color: "#04384E",
-                        fontFamily: "REMRegular",
-                      }}
-                    >
-                      {currentDate.getDate()}
-                    </Text>
-
-                    {currentEvents?.map((event, index) => (
-                      <Text
-                        key={index}
-                        style={{
-                          fontSize: 14,
-                          color: "#ACACAC",
-                          marginRight: 10,
-                        }}
-                      >
-                        {event.title}
-                        {index !== currentEvents.length - 1 ? "," : ""}{" "}
-                      </Text>
-                    ))}
-                  </ScrollView>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
-                  <LinearGradient
-                    colors={getGradientColors(weather.currentcondition)}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                    style={[MyStyles.gradientBackground]}
-                  >
-                    <Text
-                      style={{
-                        fontFamily: "REMRegular",
-                        fontSize: 16,
-                        color: "#fff",
-                      }}
-                    >
-                      Bacoor
-                    </Text>
-                    <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
-                      {getWeatherIcon(weather.currentcondition, 70, 70)}
-                      <Text
-                        style={{
-                          fontFamily: "REMRegular",
-                          fontSize: 35,
-                          color: "#fff",
-                        }}
-                      >
-                        {weather.currenttemp}°
-                      </Text>
-                    </View>
-
-                    <Text
-                      style={{
-                        fontFamily: "QuicksandSemiBold",
-                        fontSize: 16,
-                        color: "#fff",
-                      }}
-                    >
-                      High:{Math.round(weather.currenthigh)}° Low:
-                      {Math.round(weather.currentlow)}°
-                    </Text>
-                  </LinearGradient>
+                  <MaterialIcons name="call" size={50} color="#fff" />
+                  <Text style={MyStyles.emergencyTitle}>HOTLINES</Text>
+                  <Text style={MyStyles.emergencyMessage}>
+                    Call for Assistance
+                  </Text>
                 </TouchableOpacity>
               </View>
 
-              {user.role === "Resident" && (
-                <>
-                  <Text
-                    style={{
-                      color: "#04384E",
-                      fontSize: 20,
-                      fontFamily: "REMMedium",
-                      marginTop: 15,
-                    }}
-                  >
-                    Services
-                  </Text>
-                  <View
-                    style={[
-                      MyStyles.card,
-                      { justifyContent: "center", alignItems: "center" },
-                    ]}
-                  >
-                    <ScrollView
-                      horizontal={true}
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={[
-                        MyStyles.rowAlignment,
-                        { gap: 10 },
-                      ]}
-                    >
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate("Certificates")}
-                        style={{ alignItems: "center" }}
-                      >
-                        <View style={MyStyles.servicesImgContainer}>
-                          <Image
-                            source={Certificate}
-                            style={MyStyles.servicesImg}
-                          />
-                        </View>
-                        <Text style={MyStyles.servicesTitle}>Document</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate("Blotter")}
-                        style={{ alignItems: "center" }}
-                      >
-                        <View style={MyStyles.servicesImgContainer}>
-                          <Image
-                            source={Blotter}
-                            style={MyStyles.servicesImg}
-                          />
-                        </View>
-                        <Text style={MyStyles.servicesTitle}>Blotter</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate("CourtReservations")}
-                        style={{ alignItems: "center" }}
-                      >
-                        <View style={MyStyles.servicesImgContainer}>
-                          <Image
-                            source={CourtReservation}
-                            style={MyStyles.servicesImg}
-                          />
-                        </View>
-                        <Text style={MyStyles.servicesTitle}>Reservation</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate("Status")}
-                        style={{ alignItems: "center" }}
-                      >
-                        <View style={MyStyles.servicesImgContainer}>
-                          <Image source={Status} style={MyStyles.servicesImg} />
-                        </View>
-                        <Text style={MyStyles.servicesTitle}>Status</Text>
-                      </TouchableOpacity>
-                    </ScrollView>
-                  </View>
-                </>
-              )}
-
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 20,
-                  fontFamily: "REMMedium",
-                  marginTop: 15,
-                }}
+              <TouchableOpacity
+                style={MyStyles.sosContainer}
+                onPress={() => navigation.navigate("RiverSnapshots")}
               >
-                Emergency Tools
-              </Text>
-              <View style={{ flexDirection: "column", gap: 10 }}>
-                <TouchableOpacity
-                  style={MyStyles.sosContainer}
-                  onPress={() => navigation.navigate("SOS")}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
-                    SOS
-                  </Text>
-                </TouchableOpacity>
-
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <TouchableOpacity
-                    style={[
-                      MyStyles.sosContainer,
-                      {
-                        flex: 1,
-                        flexDirection: "column",
-                        alignItems: "center",
-                      },
-                    ]}
-                    onPress={viewReadiness}
-                  >
-                    <MaterialCommunityIcons
-                      name="lightbulb-on"
-                      size={50}
-                      color="#fff"
-                    />
-                    <Text style={MyStyles.emergencyTitle}>READINESS</Text>
+                  <MaterialCommunityIcons
+                    name="cctv"
+                    size={50}
+                    color="#fff"
+                    style={{ transform: [{ rotateY: "180deg" }] }}
+                  />
+                  <View style={{ textAlign: "start" }}>
+                    <Text style={MyStyles.emergencyTitle}>MONITOR RIVER</Text>
                     <Text style={MyStyles.emergencyMessage}>
-                      Stay Smart, Stay Safe
+                      Observe Water-Level
                     </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={viewEmergencyHotlines}
-                    style={[
-                      MyStyles.sosContainer,
-                      {
-                        flex: 1,
-                        flexDirection: "column",
-                        alignItems: "center",
-                      },
-                    ]}
-                  >
-                    <MaterialIcons name="call" size={50} color="#fff" />
-                    <Text style={MyStyles.emergencyTitle}>HOTLINES</Text>
-                    <Text style={MyStyles.emergencyMessage}>
-                      Call for Assistance
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity
-                  style={MyStyles.sosContainer}
-                  onPress={() => navigation.navigate("RiverSnapshots")}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="cctv"
-                      size={50}
-                      color="#fff"
-                      style={{ transform: [{ rotateY: "180deg" }] }}
-                    />
-                    <View style={{ textAlign: "start" }}>
-                      <Text style={MyStyles.emergencyTitle}>MONITOR RIVER</Text>
-                      <Text style={MyStyles.emergencyMessage}>
-                        Observe Water-Level
-                      </Text>
-                    </View>
                   </View>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
 
-            {/* Fixed Floating Chat Button */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Chat")}
-              style={{
-                position: "absolute",
-                bottom:
-                  Platform.OS === "ios"
-                    ? insets.bottom + 20
-                    : insets.bottom + 60,
-                right: 20,
-                backgroundColor: "#fff",
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                elevation: 10,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.2,
-                shadowRadius: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View onPress={() => navigation.navigate("Chat")}>
-                <Ionicons
-                  name="chatbubble-ellipses"
-                  size={30}
-                  color="#0E94D3"
-                />
-              </View>
-            </TouchableOpacity>
-          </>
-        </KeyboardAvoidingView>
+          {/* Fixed Floating Chat Button */}
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Chat")}
+            style={{
+              position: "absolute",
+              bottom: insets.bottom + 60,
+              right: 20,
+              backgroundColor: "#fff",
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              elevation: 10,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View onPress={() => navigation.navigate("Chat")}>
+              <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
+            </View>
+          </TouchableOpacity>
+        </>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

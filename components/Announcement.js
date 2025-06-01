@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Platform,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState } from "react";
@@ -25,6 +26,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Announcement = () => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { fetchAnnouncements, announcements } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
@@ -305,14 +307,12 @@ const Announcement = () => {
           </View>
         ))}
       </ScrollView>
-
       {/* Fixed Floating Chat Button */}
       <TouchableOpacity
         onPress={() => navigation.navigate("Chat")}
         style={{
           position: "absolute",
-          bottom:
-            Platform.OS === "ios" ? insets.bottom + 20 : insets.bottom + 60,
+          bottom: insets.bottom + 60,
           right: 20,
           backgroundColor: "#fff",
           width: 60,

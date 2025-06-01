@@ -27,22 +27,6 @@ const SetPassword = () => {
   const navigation = useNavigation();
   const [password, setPassword] = useState("");
   const [repassword, setRePassword] = useState("");
-  const [securityquestions, setSecurityQuestions] = useState([
-    { question: "", answer: "" },
-    { question: "", answer: "" },
-  ]);
-
-  const securityQuestionsList = [
-    "What was the name of your first pet?",
-    "What is your mother's maiden name?",
-    "What was the name of your first school?",
-  ];
-
-  const handleSecurityChange = (index, field, value) => {
-    const updated = [...securityquestions];
-    updated[index][field] = value;
-    setSecurityQuestions(updated);
-  };
 
   const handleSubmit = async () => {
     if (password !== repassword) {
@@ -52,7 +36,6 @@ const SetPassword = () => {
     try {
       await api.put(`/resetpassword/${username}`, {
         password,
-        securityquestions,
       });
       alert("Password reset successfully!");
       navigation.navigate("Login");
@@ -189,68 +172,6 @@ const SetPassword = () => {
                   onChangeText={setRePassword}
                   secureTextEntry={true}
                   placeholder="Enter password"
-                  style={MyStyles.input}
-                />
-              </View>
-
-              <View>
-                <Text>Security Question #1</Text>
-                <Dropdown
-                  labelField="label"
-                  valueField="value"
-                  value={securityquestions[0].question}
-                  data={securityQuestionsList
-                    .filter((ques) => ques !== securityquestions[1].question)
-                    .map((ques) => ({
-                      label: ques,
-                      value: ques,
-                    }))}
-                  placeholder="Select"
-                  placeholderStyle={{ color: "gray" }}
-                  onChange={(item) =>
-                    handleSecurityChange(0, "question", item.value)
-                  }
-                  style={MyStyles.input}
-                ></Dropdown>
-              </View>
-
-              <View>
-                <Text>Answer</Text>
-                <TextInput
-                  onChangeText={(e) => handleSecurityChange(0, "answer", e)}
-                  secureTextEntry={true}
-                  placeholder="Enter answer"
-                  style={MyStyles.input}
-                />
-              </View>
-
-              <View>
-                <Text>Security Question #2</Text>
-                <Dropdown
-                  labelField="label"
-                  valueField="value"
-                  value={securityquestions[1].question}
-                  data={securityQuestionsList
-                    .filter((ques) => ques !== securityquestions[0].question)
-                    .map((ques) => ({
-                      label: ques,
-                      value: ques,
-                    }))}
-                  placeholder="Select"
-                  placeholderStyle={{ color: "gray" }}
-                  onChange={(item) =>
-                    handleSecurityChange(1, "question", item.value)
-                  }
-                  style={MyStyles.input}
-                ></Dropdown>
-              </View>
-
-              <View>
-                <Text>Answer</Text>
-                <TextInput
-                  onChangeText={(e) => handleSecurityChange(1, "answer", e)}
-                  secureTextEntry={true}
-                  placeholder="Enter answer"
                   style={MyStyles.input}
                 />
               </View>

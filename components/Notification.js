@@ -159,33 +159,31 @@ const Notification = () => {
               );
             })}
         </ScrollView>
-
-        {/* Fixed Floating Chat Button */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Chat")}
-          style={{
-            position: "absolute",
-            bottom:
-              Platform.OS === "ios" ? insets.bottom + 20 : insets.bottom + 60,
-            right: 20,
-            backgroundColor: "#fff",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            elevation: 10,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View onPress={() => navigation.navigate("Chat")}>
-            <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
-          </View>
-        </TouchableOpacity>
       </View>
+      {/* Fixed Floating Chat Button */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Chat")}
+        style={{
+          position: "absolute",
+          bottom: insets.bottom + 60,
+          right: 20,
+          backgroundColor: "#fff",
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          elevation: 10,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <View onPress={() => navigation.navigate("Chat")}>
+          <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
+        </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
