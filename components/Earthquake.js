@@ -13,11 +13,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MyStyles } from "./stylesheet/MyStyles";
 
-import EarthquakeImg from "../assets/disasters/earthquake-light.png";
-
 const Earthquake = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+
+  const earthquakeImg = require("../assets/disasters/earthquake-light.png");
 
   const tipsData = [
     {
@@ -70,7 +70,7 @@ const Earthquake = () => {
           />
 
           <View style={{ alignItems: "center" }}>
-            <Image source={EarthquakeImg} style={{ width: 160, height: 160 }} />
+            <Image source={earthquakeImg} style={{ width: 160, height: 160 }} />
           </View>
 
           <Text

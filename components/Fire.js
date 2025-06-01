@@ -13,11 +13,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MyStyles } from "./stylesheet/MyStyles";
 
-import FireImg from "../assets/disasters/fire-light.png";
-
 const Fire = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+
+  const fireImg = require("../assets/disasters/fire-light.png");
 
   const tipsData = [
     {
@@ -70,7 +70,7 @@ const Fire = () => {
           />
 
           <View style={{ alignItems: "center" }}>
-            <Image source={FireImg} style={{ width: 160, height: 160 }} />
+            <Image source={fireImg} style={{ width: 160, height: 160 }} />
           </View>
 
           <Text

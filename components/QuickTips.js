@@ -17,19 +17,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import FireExtinguisher from "../assets/quick-tips/fire-extinguisher.png";
-import LeakingGas from "../assets/quick-tips/leaking-gas.png";
-import GreaseFire from "../assets/quick-tips/grease-fire.png";
-import Breaker from "../assets/quick-tips/breaker.png";
-import Sandbags from "../assets/quick-tips/flood-sandbags.png";
-import Bottle from "../assets/quick-tips/float-bottle.jpg";
-import Roof from "../assets/quick-tips/roof.jpg";
-import Window from "../assets/quick-tips/window.jpg";
-import Unplug from "../assets/quick-tips/unplug.png";
-import DropCover from "../assets/quick-tips/drop-cover.png";
-import TriangleLife from "../assets/quick-tips/triangleLife.png";
-import SafeSpot from "../assets/quick-tips/safe-spot.jpg";
-
 const QuickTips = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -39,17 +26,17 @@ const QuickTips = () => {
 
   const quickTipsData = [
     {
-      image: FireExtinguisher,
+      image: require("../assets/quick-tips/fire-extinguisher.png"),
       title: "How To Use a Fire Extinguisher",
       steps: [
-        "Pull the pin to unlock it",
+        "Pull the pin to unlock it.",
         "Aim the nozzle at the base or bottom of the fire.",
         "Squeeze the handle to release the spray.",
         "Sweep from side to side at the bottom of the fire.",
       ],
     },
     {
-      image: LeakingGas,
+      image: require("../assets/quick-tips/leaking-gas.png"),
       title: "How to Turn Off a Leaking or Burning Gas Tank",
       steps: [
         "Leave the area immediately.",
@@ -59,17 +46,17 @@ const QuickTips = () => {
       ],
     },
     {
-      image: GreaseFire,
+      image: require("../assets/quick-tips/grease-fire.png"),
       title: "How to Stop a Grease Fire with Baking Soda",
       steps: [
         "Turn off the stove.",
-        "Turn off the stove",
+        "Cover the fire with a metal lid.",
         "Pour a large amount of baking soda on the fire.",
         "Never use water as it makes it worse!",
       ],
     },
     {
-      image: Breaker,
+      image: require("../assets/quick-tips/breaker.png"),
       title: "How to Safely Turn Off the Breaker (Power Box)",
       steps: [
         "Stand on a dry place.",
@@ -78,7 +65,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: Sandbags,
+      image: require("../assets/quick-tips/sandbags.png"),
       title: "How to Block Flood Water Using Sandbags",
       steps: [
         "Fill sandbags halfway with sand or soil.",
@@ -87,7 +74,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: Bottle,
+      image: require("../assets/quick-tips/float-bottle.jpg"),
       title: "How to Make a DIY Floating Device with Water Gallons",
       steps: [
         "Use empty, tightly sealed water gallons.",
@@ -96,16 +83,16 @@ const QuickTips = () => {
       ],
     },
     {
-      image: Roof,
+      image: require("../assets/quick-tips/roof.png"),
       title: "How to Tie Down Your Roof",
       steps: [
         "Use strong ropes, straps, or wires.",
         "Tie the roof securely to the main structure or posts.",
-        "Add weights like sandbags on the roof to help hold it down and make it stronger",
+        "Add weights like sandbags on the roof to help hold it down and make it stronger.",
       ],
     },
     {
-      image: Window,
+      image: require("../assets/quick-tips/window.png"),
       title: "How to Cover Windows",
       steps: [
         "Cut wood (plywood) to fit over your windows.",
@@ -114,7 +101,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: Unplug,
+      image: require("../assets/quick-tips/unplug.png"),
       title: "How to Unplug Devices If Outlet Is Wet",
       steps: [
         "Do not touch anything with wet hands or near water!",
@@ -123,7 +110,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: DropCover,
+      image: require("../assets/quick-tips/drop-cover.png"),
       title: "Drop, Cover, and Hold",
       steps: [
         "Drop to your hands and knees to the ground.",
@@ -132,7 +119,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: TriangleLife,
+      image: require("../assets/quick-tips/triangle-life.png"),
       title: "Triangle of Life",
       steps: [
         "Find a strong, large object like a couch, bed, or desk.",
@@ -141,7 +128,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: SafeSpot,
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "Find a Safe Spot in Your Home",
       steps: [
         "Under a strong table or desk.",
@@ -173,7 +160,7 @@ const QuickTips = () => {
         <ScrollView
           contentContainerStyle={[
             MyStyles.scrollContainer,
-            { paddingBottom: 20, gap: 10, backgroundColor: "#BC0F0F" },
+            { backgroundColor: "#BC0F0F" },
           ]}
         >
           <MaterialIcons
@@ -197,7 +184,12 @@ const QuickTips = () => {
           </Text>
 
           <View
-            style={{ flexDirection: "column", gap: 30, alignItems: "center" }}
+            style={{
+              flexDirection: "column",
+              gap: 30,
+              alignItems: "center",
+              marginTop: 20,
+            }}
           >
             {quickTipsData.map((item, index) => (
               <TouchableOpacity

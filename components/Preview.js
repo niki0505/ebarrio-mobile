@@ -100,7 +100,7 @@ const Preview = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
     >
       {/* <TouchableOpacity
         onPress={handleSignUp}

@@ -312,7 +312,7 @@ const Signup = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}

@@ -13,11 +13,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MyStyles } from "./stylesheet/MyStyles";
 
-import FloodImg from "../assets/disasters/flood-light.png";
-
 const Flood = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+
+  const floodImg = require("../assets/disasters/flood-light.png");
 
   const tipsData = [
     {
@@ -71,7 +71,7 @@ const Flood = () => {
           />
 
           <View style={{ alignItems: "center" }}>
-            <Image source={FloodImg} style={{ width: 160, height: 160 }} />
+            <Image source={floodImg} style={{ width: 160, height: 160 }} />
           </View>
 
           <Text

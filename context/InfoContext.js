@@ -34,19 +34,17 @@ export const InfoProvider = ({ children }) => {
             end: new Date(timeObj.endtime),
             backgroundColor:
               a.category === "General"
-                ? "#FF0000"
+                ? "#4A90E2"
                 : a.category === "Health & Sanitation"
-                ? "#FFB200"
+                ? "#7ED321"
                 : a.category === "Public Safety & Emergency"
-                ? "#2600FF"
+                ? "#FF0000"
                 : a.category === "Education & Youth"
-                ? "#770ED3"
+                ? "#FFD942"
                 : a.category === "Social Services"
-                ? "#FA7020"
+                ? "#B3B6B7"
                 : a.category === "Infrastructure"
-                ? "#FA7020"
-                : a.category === "Court Reservations"
-                ? "#CF0ED3"
+                ? "#EC9300"
                 : "#3174ad",
           }))
         );

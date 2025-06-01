@@ -189,7 +189,7 @@ const Blotter = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }} // para hindi nago-overlap sa status bar when scrolled
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -263,7 +263,7 @@ const Blotter = () => {
 
             <View>
               <Text style={MyStyles.inputLabel}>
-                Subject Name<Text style={{ color: "red" }}>*</Text>
+                Name of the Accused<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
                 placeholder="Enter subject name"
@@ -306,9 +306,7 @@ const Blotter = () => {
             </View>
 
             <View>
-              <Text style={MyStyles.inputLabel}>
-                Subject Address<Text style={{ color: "red" }}>*</Text>
-              </Text>
+              <Text style={MyStyles.inputLabel}>Address of the Accused</Text>
               <TextInput
                 placeholder="Enter subject address"
                 style={MyStyles.input}
@@ -338,9 +336,14 @@ const Blotter = () => {
               </Text>
               <TextInput
                 placeholder="Enter details of the accident"
-                style={MyStyles.input}
+                style={[
+                  MyStyles.input,
+                  { height: 150, textAlignVertical: "top" },
+                ]}
                 value={blotterForm.details}
                 type="text"
+                multiline={true}
+                numberOfLines={4}
                 maxLength={3000}
                 onChangeText={(text) => handleInputChange("details", text)}
               />
@@ -361,15 +364,22 @@ const Blotter = () => {
                     {detailsError}
                   </Text>
                 ) : null}
-                <Text
+                <View
                   style={{
-                    textAlign: "right",
-                    color: "#808080",
-                    fontFamily: "QuicksandSemiBold",
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    width: "100%",
                   }}
                 >
-                  {blotterForm.details.length}/3000
-                </Text>
+                  <Text
+                    style={{
+                      color: "#808080",
+                      fontFamily: "QuicksandSemiBold",
+                    }}
+                  >
+                    {blotterForm.details.length}/3000
+                  </Text>
+                </View>
               </View>
             </View>
           </View>

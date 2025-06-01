@@ -53,6 +53,9 @@ import Fire from "./components/Fire";
 import QuickTips from "./components/QuickTips";
 import HazardMap from "./components/HazardMap";
 import EvacuationMap from "./components/EvacuationMap";
+import RiverSnapshots from "./components/RiverSnapshots";
+import SOSStatusPage from "./components/SOSStatusPage";
+import Chat from "./components/Chat";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -275,6 +278,18 @@ export default function App() {
                   )}
                 />
                 <Stack.Screen
+                  name="Chat"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <Chat />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
                   name="EmergencyHotlines"
                   children={() => (
                     <PrivateRoute
@@ -294,6 +309,18 @@ export default function App() {
                       element={
                         <InfoProvider>
                           <Readiness />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="RiverSnapshots"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <RiverSnapshots />
                         </InfoProvider>
                       }
                     />
@@ -499,6 +526,18 @@ export default function App() {
                       element={
                         <InfoProvider>
                           <SOS />
+                        </InfoProvider>
+                      }
+                    />
+                  )}
+                />
+                <Stack.Screen
+                  name="SOSStatusPage"
+                  children={() => (
+                    <PrivateRoute
+                      element={
+                        <InfoProvider>
+                          <SOSStatusPage />
                         </InfoProvider>
                       }
                     />

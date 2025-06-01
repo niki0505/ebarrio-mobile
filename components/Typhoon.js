@@ -13,11 +13,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MyStyles } from "./stylesheet/MyStyles";
 
-import TyphoonImg from "../assets/disasters/typhoon-light.png";
-
 const Typhoon = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+
+  const typhoonImg = require("../assets/disasters/typhoon-light.png");
 
   const tipsData = [
     {
@@ -71,7 +71,7 @@ const Typhoon = () => {
           />
 
           <View style={{ alignItems: "center" }}>
-            <Image source={TyphoonImg} style={{ width: 160, height: 160 }} />
+            <Image source={typhoonImg} style={{ width: 160, height: 160 }} />
           </View>
 
           <Text

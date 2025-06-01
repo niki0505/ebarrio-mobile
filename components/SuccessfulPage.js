@@ -28,7 +28,7 @@ const SuccessfulPage = () => {
       style={{
         flex: 1,
         paddingTop: insets.top,
-        backgroundColor: "#F0F4F7",
+        backgroundColor: "#04384E",
         justifyContent: "center", // Center vertically
         alignItems: "center", // Center horizontally
       }}
@@ -44,6 +44,7 @@ const SuccessfulPage = () => {
               justifyContent: "center",
               alignItems: "center",
               gap: 10,
+              padding: 50,
             },
           ]}
         >
@@ -123,9 +124,10 @@ const SuccessfulPage = () => {
           >
             <Text style={MyStyles.buttonText}>View Status</Text>
           </TouchableOpacity>
+
           <Text
+            style={[MyStyles.buttonText, { color: "#0E94D3" }]}
             onPress={() => navigation.navigate("BottomTabs")}
-            style={MyStyles.buttonText}
           >
             Back to Home
           </Text>

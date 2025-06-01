@@ -15,14 +15,14 @@ const BrgyCalendar = () => {
 
   const categories = [
     [
-      { label: "General", color: "#FF0000" },
-      { label: "Health and Sanitation", color: "#FA7020" },
-      { label: "Public Safety & Emergency", color: "#FFB200" },
+      { label: "General", color: "#4A90E2" },
+      { label: "Health and Sanitation", color: "#7ED321" },
+      { label: "Public Safety & Emergency", color: "#FF0000" },
     ],
     [
-      { label: "Education and Youth", color: "#0E94D3" },
-      { label: "Social Services", color: "#CF0ED3" },
-      { label: "Infrastructure", color: "#06D001" },
+      { label: "Education and Youth", color: "#FFD942" },
+      { label: "Social Services", color: "#B3B6B7" },
+      { label: "Infrastructure", color: "#EC9300" },
     ],
   ];
 
@@ -49,7 +49,7 @@ const BrgyCalendar = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
     >
       <ScrollView
         contentContainerStyle={[

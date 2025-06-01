@@ -96,8 +96,8 @@ const Notification = () => {
                   onPress={() => handleNotif(notif._id, notif.redirectTo)}
                   style={{
                     flexDirection: "column",
-                    borderTopWidth: 1,
-                    borderTopColor: "#C1C0C0",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#C1C0C0",
                     padding: 1,
                     position: "relative",
                   }}
