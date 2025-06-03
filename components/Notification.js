@@ -1,11 +1,13 @@
 import {
-  StyleSheet,
+  MyStylesheet,
   View,
   Text,
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
   Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -15,15 +17,17 @@ import { SocketContext } from "../context/SocketContext";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import api from "../api";
-
 import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useState } from "react";
 
 const Notification = () => {
   const navigation = useNavigation();
   dayjs.extend(relativeTime);
   const insets = useSafeAreaInsets();
   const { notifications, fetchNotifications } = useContext(SocketContext);
+  const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(false);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     fetchNotifications();
@@ -45,146 +49,197 @@ const Notification = () => {
       : message;
   };
 
+  const filteredNotifications = notifications.filter((notif) => {
+    if (filter === "read") {
+      return notif.read;
+    } else if (filter === "unread") {
+      return !notif.read;
+    }
+    return true; // all notifications
+  });
+
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        backgroundColor: "#F0F4F7",
+    <TouchableWithoutFeedback
+      onPress={() => {
+        setIsFilterDropdownVisible(false);
+        Keyboard.dismiss();
       }}
     >
-      <View style={{ flex: 1, position: "relative" }}>
-        <View
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          backgroundColor: "#F0F4F7",
+        }}
+      >
+        <View style={{ flex: 1, position: "relative" }}>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text style={MyStyles.header}>Notifications</Text>
+            <TouchableOpacity
+              onPress={() =>
+                setIsFilterDropdownVisible(!isFilterDropdownVisible)
+              }
+            >
+              <Octicons name="filter" size={24} color="#04384E" />
+            </TouchableOpacity>
+          </View>
+          {/* Dropdown Modal */}
+          {isFilterDropdownVisible && (
+            <View style={MyStyles.filterDropdown}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsFilterDropdownVisible(false);
+                }}
+                style={MyStyles.filterDropdownItem}
+              >
+                <Text style={MyStyles.filterDropdownText}>All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsFilterDropdownVisible(false);
+                }}
+                style={MyStyles.filterDropdownItem}
+              >
+                <Text style={MyStyles.filterDropdownText}>Read</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsFilterDropdownVisible(false);
+                }}
+                style={MyStyles.filterDropdownItem}
+              >
+                <Text style={MyStyles.filterDropdownText}>Unread</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <Text
+            style={{
+              marginTop: 10,
+              paddingHorizontal: 20,
+              color: "#04384E",
+              fontSize: 16,
+              fontFamily: "REMSemiBold",
+              textAlign: "right",
+            }}
+          >
+            Mark all as read
+          </Text>
+
+          <ScrollView
+            contentContainerStyle={[
+              MyStyles.scrollContainer,
+              {
+                paddingHorizontal: 20,
+                paddingTop: 0,
+                paddingBottom: 120,
+              },
+            ]}
+            showsVerticalScrollIndicator={false}
+          >
+            {notifications
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((notif, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleNotif(notif._id, notif.redirectTo)}
+                    style={{
+                      flexDirection: "column",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#C1C0C0",
+                      padding: 1,
+                      position: "relative",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginVertical: 10,
+                        paddingRight: 20,
+                      }}
+                    >
+                      <View style={{ flexDirection: "column", flex: 1 }}>
+                        <Text
+                          style={{
+                            color: "#04384E",
+                            fontSize: 16,
+                            fontFamily: "QuicksandBold",
+                          }}
+                        >
+                          {notif.title}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#04384E",
+                            fontSize: 16,
+                            fontFamily: "QuicksandSemiBold",
+                          }}
+                        >
+                          {truncateNotifMessage(notif.message)}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#808080",
+                            fontSize: 16,
+                            fontFamily: "QuicksandSemiBold",
+                          }}
+                        >
+                          {dayjs(notif.createdAt).fromNow()}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: 10,
+                        width: 8,
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: notif.read ? "transparent" : "#3B82F6",
+                        transform: [{ translateY: -4 }],
+                      }}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+          </ScrollView>
+        </View>
+        {/* Fixed Floating Chat Button */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Chat")}
           style={{
-            paddingHorizontal: 20,
-            flexDirection: "row",
-            justifyContent: "space-between",
+            position: "absolute",
+            bottom: insets.bottom + 60,
+            right: 20,
+            backgroundColor: "#fff",
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            elevation: 10,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 5,
+            justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Text style={MyStyles.header}>Notifications</Text>
-          <Octicons name="filter" size={24} color="#04384E" />
-        </View>
-        <Text
-          style={{
-            marginTop: 10,
-            paddingHorizontal: 20,
-            color: "#04384E",
-            fontSize: 16,
-            fontFamily: "REMSemiBold",
-            textAlign: "right",
-          }}
-        >
-          Mark all as read
-        </Text>
-
-        <ScrollView
-          contentContainerStyle={[
-            MyStyles.scrollContainer,
-            {
-              paddingHorizontal: 20,
-              paddingTop: 0,
-              paddingBottom: 120,
-            },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          {notifications
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-            .map((notif, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleNotif(notif._id, notif.redirectTo)}
-                  style={{
-                    flexDirection: "column",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#C1C0C0",
-                    padding: 1,
-                    position: "relative",
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginVertical: 10,
-                      paddingRight: 20,
-                    }}
-                  >
-                    <View style={{ flexDirection: "column", flex: 1 }}>
-                      <Text
-                        style={{
-                          color: "#04384E",
-                          fontSize: 16,
-                          fontFamily: "QuicksandBold",
-                        }}
-                      >
-                        {notif.title}
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#04384E",
-                          fontSize: 16,
-                          fontFamily: "QuicksandSemiBold",
-                        }}
-                      >
-                        {truncateNotifMessage(notif.message)}
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#808080",
-                          fontSize: 16,
-                          fontFamily: "QuicksandSemiBold",
-                        }}
-                      >
-                        {dayjs(notif.createdAt).fromNow()}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      right: 10,
-                      width: 8,
-                      height: 8,
-                      borderRadius: 4,
-                      backgroundColor: notif.read ? "transparent" : "#3B82F6",
-                      transform: [{ translateY: -4 }],
-                    }}
-                  />
-                </TouchableOpacity>
-              );
-            })}
-        </ScrollView>
-      </View>
-      {/* Fixed Floating Chat Button */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Chat")}
-        style={{
-          position: "absolute",
-          bottom: insets.bottom + 60,
-          right: 20,
-          backgroundColor: "#fff",
-          width: 60,
-          height: 60,
-          borderRadius: 30,
-          elevation: 10,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-          shadowRadius: 5,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <View onPress={() => navigation.navigate("Chat")}>
-          <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
-        </View>
-      </TouchableOpacity>
-    </SafeAreaView>
+          <View onPress={() => navigation.navigate("Chat")}>
+            <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
+          </View>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

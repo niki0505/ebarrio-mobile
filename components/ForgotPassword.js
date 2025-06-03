@@ -304,11 +304,16 @@ const ForgotPassword = () => {
             </Text>
 
             <View style={{ marginVertical: 30, gap: 10, width: "100%" }}>
-              <TextInput
-                onChangeText={setUsername}
-                placeholder="Username"
-                style={MyStyles.input}
-              />
+              <View>
+                <Text style={MyStyles.inputLabel}>
+                  Username<Text style={{ color: "red" }}>*</Text>
+                </Text>
+                <TextInput
+                  onChangeText={setUsername}
+                  placeholder="Username"
+                  style={MyStyles.input}
+                />
+              </View>
             </View>
 
             <TouchableOpacity onPress={handleSubmit} style={MyStyles.button}>
@@ -350,7 +355,7 @@ const ForgotPassword = () => {
                 <View
                   style={{
                     width: "80%",
-                    height: "50%",
+                    height: "55%",
                     backgroundColor: "#fff",
                     borderRadius: 20,
                     overflow: "hidden",
@@ -400,52 +405,64 @@ const ForgotPassword = () => {
                     <View
                       style={{ marginVertical: 30, gap: 10, width: "100%" }}
                     >
-                      <View style={{ position: "relative" }}>
-                        <TextInput
-                          onChangeText={setNewPassword}
-                          secureTextEntry={secureNewPass}
-                          placeholder="New Password"
-                          style={[MyStyles.input, { paddingRight: 40 }]}
-                        />
-                        <TouchableOpacity
-                          style={{
-                            position: "absolute",
-                            right: 10,
-                            top: "50%",
-                            transform: [{ translateY: -12 }],
-                          }}
-                          onPress={togglesecureNewPass}
-                        >
-                          <Ionicons
-                            name={secureNewPass ? "eye-off" : "eye"}
-                            size={24}
-                            color="#808080"
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          New Password<Text style={{ color: "red" }}>*</Text>
+                        </Text>
+                        <View style={{ position: "relative" }}>
+                          <TextInput
+                            onChangeText={setNewPassword}
+                            secureTextEntry={secureNewPass}
+                            placeholder="New Password"
+                            style={[MyStyles.input, { paddingRight: 40 }]}
                           />
-                        </TouchableOpacity>
+                          <TouchableOpacity
+                            style={{
+                              position: "absolute",
+                              right: 10,
+                              top: "50%",
+                              transform: [{ translateY: -12 }],
+                            }}
+                            onPress={togglesecureNewPass}
+                          >
+                            <Ionicons
+                              name={secureNewPass ? "eye-off" : "eye"}
+                              size={24}
+                              color="#808080"
+                            />
+                          </TouchableOpacity>
+                        </View>
                       </View>
 
-                      <View style={{ position: "relative" }}>
-                        <TextInput
-                          onChangeText={setReNewPassword}
-                          secureTextEntry={secureConfirmPass}
-                          placeholder="Confirm New Password"
-                          style={[MyStyles.input, { paddingRight: 40 }]}
-                        />
-                        <TouchableOpacity
-                          style={{
-                            position: "absolute",
-                            right: 10,
-                            top: "50%",
-                            transform: [{ translateY: -12 }],
-                          }}
-                          onPress={togglesecureConfirmPass}
-                        >
-                          <Ionicons
-                            name={secureConfirmPass ? "eye-off" : "eye"}
-                            size={24}
-                            color="#808080"
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          Confirm New Password
+                          <Text style={{ color: "red" }}>*</Text>
+                        </Text>
+
+                        <View style={{ position: "relative" }}>
+                          <TextInput
+                            onChangeText={setReNewPassword}
+                            secureTextEntry={secureConfirmPass}
+                            placeholder="Confirm New Password"
+                            style={[MyStyles.input, { paddingRight: 40 }]}
                           />
-                        </TouchableOpacity>
+                          <TouchableOpacity
+                            style={{
+                              position: "absolute",
+                              right: 10,
+                              top: "50%",
+                              transform: [{ translateY: -12 }],
+                            }}
+                            onPress={togglesecureConfirmPass}
+                          >
+                            <Ionicons
+                              name={secureConfirmPass ? "eye-off" : "eye"}
+                              size={24}
+                              color="#808080"
+                            />
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
 
@@ -596,7 +613,7 @@ const ForgotPassword = () => {
                 <View
                   style={{
                     width: "80%",
-                    height: "50%",
+                    height: "55%",
                     backgroundColor: "#fff",
                     borderRadius: 20,
                     overflow: "hidden",
@@ -644,27 +661,40 @@ const ForgotPassword = () => {
                     <View
                       style={{ marginVertical: 30, gap: 10, width: "100%" }}
                     >
-                      <Dropdown
-                        labelField="label"
-                        valueField="value"
-                        value={securityquestion.question}
-                        data={user.securityquestions?.map((q) => ({
-                          label: q.question,
-                          value: q.question,
-                        }))}
-                        placeholder="Select"
-                        placeholderStyle={{ color: "#808080" }}
-                        onChange={(item) =>
-                          handleInputChange("question", item.value)
-                        }
-                        style={MyStyles.input}
-                      ></Dropdown>
-                      <TextInput
-                        onChangeText={(e) => handleInputChange("answer", e)}
-                        secureTextEntry={true}
-                        placeholder="Answer"
-                        style={MyStyles.input}
-                      />
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          Security Question
+                          <Text style={{ color: "red" }}>*</Text>
+                        </Text>
+                        <Dropdown
+                          labelField="label"
+                          valueField="value"
+                          value={securityquestion.question}
+                          data={user.securityquestions?.map((q) => ({
+                            label: q.question,
+                            value: q.question,
+                          }))}
+                          placeholder="Select"
+                          placeholderStyle={{ color: "#808080" }}
+                          onChange={(item) =>
+                            handleInputChange("question", item.value)
+                          }
+                          style={MyStyles.input}
+                        ></Dropdown>
+                      </View>
+
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          Answer
+                          <Text style={{ color: "red" }}>*</Text>
+                        </Text>
+                        <TextInput
+                          onChangeText={(e) => handleInputChange("answer", e)}
+                          secureTextEntry={true}
+                          placeholder="Answer"
+                          style={MyStyles.input}
+                        />
+                      </View>
                     </View>
 
                     <TouchableOpacity

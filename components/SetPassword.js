@@ -20,6 +20,7 @@ import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const SetPassword = () => {
   const route = useRoute();
@@ -30,6 +31,17 @@ const SetPassword = () => {
   const [repassword, setRePassword] = useState("");
   const [passwordErrors, setPasswordErrors] = useState([]);
   const [repasswordErrors, setRePasswordErrors] = useState([]);
+
+  const [securePass, setSecurePass] = useState(true);
+  const [secureConfirmPass, setSecureConfirmPass] = useState(true);
+
+  const togglesecurePass = () => {
+    setSecurePass(!securePass);
+  };
+
+  const togglesecureConfirmPass = () => {
+    setSecureConfirmPass(!secureConfirmPass);
+  };
 
   const handleSubmit = async () => {
     try {
@@ -188,7 +200,7 @@ const SetPassword = () => {
         <View
           style={{
             width: "80%",
-            height: "80%",
+            height: "50%",
             backgroundColor: "#fff",
             borderRadius: 20,
             overflow: "hidden",
@@ -199,7 +211,7 @@ const SetPassword = () => {
               padding: 30,
               alignItems: "center",
             }}
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator={false}
           >
             {/* Back arrow and heading */}
             <MaterialIcons
@@ -209,62 +221,82 @@ const SetPassword = () => {
               style={{ alignSelf: "flex-start" }}
               onPress={() => navigation.navigate("Login")}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                color: "#04384E",
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-                marginTop: 10,
-              }}
-            >
+            <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Set Password
             </Text>
 
             {/* Form fields */}
-            <View
-              style={{
-                alignSelf: "flex-start",
-                width: "100%",
-                marginVertical: 30,
-                gap: 10,
-              }}
-            >
+            <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
               <View>
-                <Text>Password</Text>
-                <TextInput
-                  onChangeText={passwordValidation}
-                  value={password}
-                  secureTextEntry={true}
-                  placeholder="Enter password"
-                  style={MyStyles.input}
-                />
-              </View>
-              {passwordErrors.length > 0 && (
-                <View style={{ marginTop: 5, width: 300 }}>
-                  {passwordErrors.map((error, index) => (
-                    <Text
-                      key={index}
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
-                      {error}
-                    </Text>
-                  ))}
+                <Text style={MyStyles.inputLabel}>Password</Text>
+                <View style={{ position: "relative" }}>
+                  <TextInput
+                    value={password}
+                    onChangeText={passwordValidation}
+                    secureTextEntry={securePass}
+                    placeholder="Password"
+                    style={[MyStyles.input, { paddingRight: 40 }]}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      right: 10,
+                      top: "50%",
+                      transform: [{ translateY: -12 }],
+                    }}
+                    onPress={togglesecurePass}
+                  >
+                    <Ionicons
+                      name={securePass ? "eye-off" : "eye"}
+                      size={24}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
                 </View>
-              )}
+                {passwordErrors.length > 0 && (
+                  <View style={{ marginTop: 5, width: 300 }}>
+                    {passwordErrors.map((error, index) => (
+                      <Text
+                        key={index}
+                        style={{
+                          color: "red",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                      >
+                        {error}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+
               <View>
-                <Text>Confirm Password</Text>
-                <TextInput
-                  onChangeText={repasswordValidation}
-                  value={repassword}
-                  secureTextEntry={true}
-                  placeholder="Enter password"
-                  style={MyStyles.input}
-                />
+                <Text style={MyStyles.inputLabel}>Confirm Password</Text>
+                <View style={{ position: "relative" }}>
+                  <TextInput
+                    value={repassword}
+                    onChangeText={repasswordValidation}
+                    secureTextEntry={secureConfirmPass}
+                    placeholder="Confirm Password"
+                    style={[MyStyles.input, { paddingRight: 40 }]}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      right: 10,
+                      top: "50%",
+                      transform: [{ translateY: -12 }],
+                    }}
+                    onPress={togglesecureConfirmPass}
+                  >
+                    <Ionicons
+                      name={secureConfirmPass ? "eye-off" : "eye"}
+                      size={24}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
                 {repasswordErrors.length > 0 && (
                   <View style={{ marginTop: 5, width: 300 }}>
                     {repasswordErrors.map((error, index) => (
@@ -285,19 +317,8 @@ const SetPassword = () => {
             </View>
 
             {/* Submit Button */}
-            <TouchableOpacity
-              onPress={handleConfirm}
-              style={[MyStyles.button, { marginTop: 30 }]}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: 24,
-                }}
-              >
-                Submit
-              </Text>
+            <TouchableOpacity onPress={handleConfirm} style={[MyStyles.button]}>
+              <Text style={MyStyles.buttonText}>Submit</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

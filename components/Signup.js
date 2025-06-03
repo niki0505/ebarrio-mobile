@@ -295,7 +295,7 @@ const Signup = () => {
               backgroundColor: "#F0F4F7",
               borderRadius: 30,
               flex: 3,
-              bottom: "-10",
+              marginBottom: "-10",
             }}
           >
             <ScrollView
@@ -304,7 +304,7 @@ const Signup = () => {
                 padding: 30,
                 alignItems: "center",
               }}
-              showsVerticalScrollIndicator={true}
+              showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             >
               <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
@@ -312,155 +312,186 @@ const Signup = () => {
               </Text>
 
               <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
-                <TextInput
-                  style={MyStyles.input}
-                  placeholder="First name"
-                  value={firstname}
-                  onChangeText={firstnameValidation}
-                />
-                {fnameError ? (
-                  <Text
-                    style={{
-                      color: "red",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                  >
-                    {fnameError}
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    First Name<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                ) : null}
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="First name"
+                    value={firstname}
+                    onChangeText={firstnameValidation}
+                  />
+                  {fnameError ? (
+                    <Text
+                      style={{
+                        color: "red",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
+                      {fnameError}
+                    </Text>
+                  ) : null}
+                </View>
 
-                <TextInput
-                  style={MyStyles.input}
-                  placeholder="Last name"
-                  value={lastname}
-                  onChangeText={lastnameValidation}
-                />
-                {lnameError ? (
-                  <Text
-                    style={{
-                      color: "red",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                  >
-                    {lnameError}
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Last Name<Text style={{ color: "red" }}>*</Text>
                   </Text>
-                ) : null}
-
-                <TextInput
-                  style={MyStyles.input}
-                  placeholder="Mobile Number"
-                  value={mobilenumber}
-                  onChangeText={setMobileNumber}
-                />
-
-                <TextInput
-                  style={MyStyles.input}
-                  placeholder="Username"
-                  value={username}
-                  autoCapitalize="none"
-                  onChangeText={usernameValidation}
-                  onBlur={() => setUsername(username.toLowerCase())}
-                />
-                {usernameErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
-                    {usernameErrors.map((error, index) => (
-                      <Text
-                        key={index}
-                        style={{
-                          color: "red",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                      >
-                        {error}
-                      </Text>
-                    ))}
-                  </View>
-                )}
-
-                <View style={{ position: "relative" }}>
                   <TextInput
-                    value={password}
-                    onChangeText={passwordValidation}
-                    secureTextEntry={secureNewPass}
-                    placeholder="Password"
-                    style={[MyStyles.input, { paddingRight: 40 }]}
+                    style={MyStyles.input}
+                    placeholder="Last name"
+                    value={lastname}
+                    onChangeText={lastnameValidation}
                   />
-                  <TouchableOpacity
-                    style={{
-                      position: "absolute",
-                      right: 10,
-                      top: "50%",
-                      transform: [{ translateY: -12 }],
-                    }}
-                    onPress={togglesecureNewPass}
-                  >
-                    <Ionicons
-                      name={secureNewPass ? "eye-off" : "eye"}
-                      size={24}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
+                  {lnameError ? (
+                    <Text
+                      style={{
+                        color: "red",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
+                      {lnameError}
+                    </Text>
+                  ) : null}
                 </View>
-                {passwordErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
-                    {passwordErrors.map((error, index) => (
-                      <Text
-                        key={index}
-                        style={{
-                          color: "red",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                      >
-                        {error}
-                      </Text>
-                    ))}
-                  </View>
-                )}
 
-                <View style={{ position: "relative" }}>
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Mobile Number<Text style={{ color: "red" }}>*</Text>
+                  </Text>
                   <TextInput
-                    value={repassword}
-                    onChangeText={repasswordValidation}
-                    secureTextEntry={secureConfirmPass}
-                    placeholder="Confirm New Password"
-                    style={[MyStyles.input, { paddingRight: 40 }]}
+                    style={MyStyles.input}
+                    placeholder="Mobile Number"
+                    value={mobilenumber}
+                    onChangeText={setMobileNumber}
                   />
-                  <TouchableOpacity
-                    style={{
-                      position: "absolute",
-                      right: 10,
-                      top: "50%",
-                      transform: [{ translateY: -12 }],
-                    }}
-                    onPress={togglesecureConfirmPass}
-                  >
-                    <Ionicons
-                      name={secureConfirmPass ? "eye-off" : "eye"}
-                      size={24}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
                 </View>
-                {repasswordErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
-                    {repasswordErrors.map((error, index) => (
-                      <Text
-                        key={index}
-                        style={{
-                          color: "red",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                      >
-                        {error}
-                      </Text>
-                    ))}
+
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Username<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={MyStyles.input}
+                    placeholder="Username"
+                    value={username}
+                    autoCapitalize="none"
+                    onChangeText={usernameValidation}
+                    onBlur={() => setUsername(username.toLowerCase())}
+                  />
+                  {usernameErrors.length > 0 && (
+                    <View style={{ marginTop: 5, width: 300 }}>
+                      {usernameErrors.map((error, index) => (
+                        <Text
+                          key={index}
+                          style={{
+                            color: "red",
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+                </View>
+
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Password<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <View style={{ position: "relative" }}>
+                    <TextInput
+                      value={password}
+                      onChangeText={passwordValidation}
+                      secureTextEntry={secureNewPass}
+                      placeholder="Password"
+                      style={[MyStyles.input, { paddingRight: 40 }]}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: "absolute",
+                        right: 10,
+                        top: "50%",
+                        transform: [{ translateY: -12 }],
+                      }}
+                      onPress={togglesecureNewPass}
+                    >
+                      <Ionicons
+                        name={secureNewPass ? "eye-off" : "eye"}
+                        size={24}
+                        color="gray"
+                      />
+                    </TouchableOpacity>
                   </View>
-                )}
+
+                  {passwordErrors.length > 0 && (
+                    <View style={{ marginTop: 5, width: 300 }}>
+                      {passwordErrors.map((error, index) => (
+                        <Text
+                          key={index}
+                          style={{
+                            color: "red",
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+                </View>
+
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Confirm Password<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <View style={{ position: "relative" }}>
+                    <TextInput
+                      value={repassword}
+                      onChangeText={repasswordValidation}
+                      secureTextEntry={secureConfirmPass}
+                      placeholder="Confirm New Password"
+                      style={[MyStyles.input, { paddingRight: 40 }]}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: "absolute",
+                        right: 10,
+                        top: "50%",
+                        transform: [{ translateY: -12 }],
+                      }}
+                      onPress={togglesecureConfirmPass}
+                    >
+                      <Ionicons
+                        name={secureConfirmPass ? "eye-off" : "eye"}
+                        size={24}
+                        color="gray"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {repasswordErrors.length > 0 && (
+                    <View style={{ marginTop: 5, width: 300 }}>
+                      {repasswordErrors.map((error, index) => (
+                        <Text
+                          key={index}
+                          style={{
+                            color: "red",
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+                </View>
 
                 <View style={{ flexDirection: "column" }}>
                   <Text
