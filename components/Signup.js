@@ -28,7 +28,7 @@ const Signup = () => {
   const { sendOTP } = useContext(OtpContext);
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [mobilenumber, setMobileNumber] = useState("");
+  const [mobilenumber, setMobileNumber] = useState("+63");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRePassword] = useState("");
@@ -36,6 +36,7 @@ const Signup = () => {
   const [lnameError, setLnameError] = useState(null);
   const [usernameErrors, setUsernameErrors] = useState([]);
   const [passwordErrors, setPasswordErrors] = useState([]);
+  const [mobilenumErrors, setMobileNumErrors] = useState([]);
   const [repasswordErrors, setRePasswordErrors] = useState([]);
   const [secureNewPass, setSecureNewPass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
@@ -48,16 +49,10 @@ const Signup = () => {
     setSecureConfirmPass(!secureConfirmPass);
   };
 
-  const securityQuestionsList = [
-    "What was the name of your first pet?",
-    "What is your mother's maiden name?",
-    "What was the name of your first school?",
-  ];
-
   const firstnameValidation = (val) => {
     setFirstname(val);
     if (!val) {
-      setFnameError("First name must not be empty");
+      setFnameError("First name must not be empty.");
     } else {
       setFnameError(null);
     }
@@ -66,7 +61,7 @@ const Signup = () => {
   const lastnameValidation = (val) => {
     setLastname(val);
     if (!val) {
-      setLnameError("Last name must not be empty");
+      setLnameError("Last name must not be empty.");
     } else {
       setLnameError(null);
     }
@@ -78,13 +73,13 @@ const Signup = () => {
     setUsername(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Username must not be empty");
+      errors.push("Username must not be empty.");
     }
     if (
       (formattedVal && formattedVal.length < 3) ||
       (formattedVal && formattedVal.length > 16)
     ) {
-      errors.push("Username must be between 3 and 16 characters only");
+      errors.push("Username must be between 3 and 16 characters only.");
     }
     if (formattedVal && !/^[a-zA-Z0-9_]+$/.test(formattedVal)) {
       errors.push(
@@ -95,7 +90,7 @@ const Signup = () => {
       (formattedVal && formattedVal.startsWith("_")) ||
       (formattedVal && formattedVal.endsWith("_"))
     ) {
-      errors.push("Username must not start or end with an underscore");
+      errors.push("Username must not start or end with an underscore.");
     }
 
     setUsernameErrors(errors);
@@ -107,12 +102,33 @@ const Signup = () => {
     setRePassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty");
+      errors.push("Password must not be empty.");
     }
     if (formattedVal !== password && formattedVal.length > 0) {
-      errors.push("Passwords do not match");
+      errors.push("Passwords do not match.");
     }
     setRePasswordErrors(errors);
+  };
+
+  const mobileInputChange = (val) => {
+    let errors = [];
+    let formattedVal = val.replace(/\D/g, "");
+    setMobileNumber(formattedVal);
+
+    if (!formattedVal.startsWith("+63")) {
+      formattedVal = "+63" + formattedVal.replace(/^0+/, "").slice(2);
+    }
+    if (formattedVal.length > 13) {
+      formattedVal = formattedVal.slice(0, 13);
+    }
+    if (formattedVal.length >= 4 && formattedVal[3] === "0") {
+      return;
+    }
+
+    if (formattedVal.length < 13) {
+      errors.push("Invalid mobile number.");
+    }
+    setMobileNumErrors(errors);
   };
 
   const passwordValidation = (val) => {
@@ -121,13 +137,13 @@ const Signup = () => {
     setPassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty");
+      errors.push("Password must not be empty.");
     }
     if (
       (formattedVal && formattedVal.length < 8) ||
       (formattedVal && formattedVal.length > 64)
     ) {
-      errors.push("Password must be between 8 and 64 characters only");
+      errors.push("Password must be between 8 and 64 characters only.");
     }
     if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
       errors.push(
@@ -138,10 +154,18 @@ const Signup = () => {
   };
 
   const handleSignUp = async () => {
-    if (!firstname || !lastname || !username || !password || !repassword) {
+    if (
+      !firstname ||
+      !lastname ||
+      !username ||
+      !password ||
+      !repassword ||
+      !mobilenumber
+    ) {
       firstnameValidation(firstname);
       lastnameValidation(lastname);
       usernameValidation(username);
+      mobileInputChange(mobilenumber);
       passwordValidation(password);
       repasswordValidation(repassword);
       return;
@@ -156,20 +180,25 @@ const Signup = () => {
       if (repasswordErrors.length !== 0) {
         return;
       }
+      if (mobilenumErrors.length !== 0) {
+        return;
+      }
+      let formattedNumber = mobilenumber;
+      formattedNumber = "0" + mobilenumber.slice(3);
 
       try {
         const response = await api.post("/checkresident", {
           username,
           firstname,
           lastname,
-          mobilenumber,
+          mobilenumber: formattedNumber,
         });
         try {
-          sendOTP(username, mobilenumber);
+          sendOTP(username, { mobilenumber: formattedNumber });
           navigation.navigate("OTP", {
             username: username,
             password: password,
-            mobilenumber: mobilenumber,
+            mobilenumber: formattedNumber,
             resID: response.data.resID,
             navigatelink: "Login",
           });
@@ -366,8 +395,24 @@ const Signup = () => {
                     style={MyStyles.input}
                     placeholder="Mobile Number"
                     value={mobilenumber}
-                    onChangeText={setMobileNumber}
+                    onChangeText={mobileInputChange}
                   />
+                  {mobilenumErrors.length > 0 && (
+                    <View style={{ marginTop: 5, width: 300 }}>
+                      {mobilenumErrors.map((error, index) => (
+                        <Text
+                          key={index}
+                          style={{
+                            color: "red",
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
                 </View>
 
                 <View>

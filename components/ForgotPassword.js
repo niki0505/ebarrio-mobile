@@ -118,7 +118,7 @@ const ForgotPassword = () => {
       );
     } catch (error) {
       if (error.response && error.response.status === 429) {
-        alert("OTP use is currently disabled. Try again later.");
+        alert("OTP use is currently disabled. Try again after 30 minutes.");
       } else {
         console.error("Error checking OTP:", error);
       }
