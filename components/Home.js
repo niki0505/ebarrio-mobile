@@ -31,6 +31,8 @@ import CourtReservation from "../assets/home/basketball.png";
 import Blotter from "../assets/home/letter.png";
 import Certificate from "../assets/home/stamp.png";
 import Status from "../assets/home/status.png";
+import Check from "../assets/home/check.png";
+import SOS from "../assets/home/sos.png";
 
 //WEATHER SVGS
 import ClearDay from "../assets/weather-svg/clear-day";
@@ -610,14 +612,66 @@ const Home = () => {
               Emergency Tools
             </Text>
             <View style={{ flexDirection: "column", gap: 10 }}>
-              <TouchableOpacity
-                style={MyStyles.sosContainer}
-                onPress={() => navigation.navigate("SOS")}
-              >
-                <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
-                  SOS
-                </Text>
-              </TouchableOpacity>
+              <View>
+                {user.role !== "Resident" && (
+                  <View style={{ flexDirection: "column", gap: 10 }}>
+                    <TouchableOpacity style={MyStyles.sosContainer}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          width: "80%",
+                          marginLeft: 30,
+                        }}
+                      >
+                        <Image source={SOS} style={MyStyles.servicesImg} />
+                        <Text
+                          style={[
+                            MyStyles.emergencyTitle,
+                            { fontSize: 25, marginLeft: 15 },
+                          ]}
+                        >
+                          SOS REQUESTS
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={MyStyles.sosContainer}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          width: "80%",
+                          marginLeft: 30,
+                        }}
+                      >
+                        <Image source={Check} style={MyStyles.servicesImg} />
+                        <Text
+                          style={[
+                            MyStyles.emergencyTitle,
+                            { fontSize: 25, marginLeft: 15 },
+                          ]}
+                        >
+                          RESPONDED SOS
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+
+              {user.role === "Resident" && (
+                <TouchableOpacity
+                  style={MyStyles.sosContainer}
+                  onPress={() => navigation.navigate("SOS")}
+                >
+                  <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
+                    SOS
+                  </Text>
+                </TouchableOpacity>
+              )}
 
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <TouchableOpacity
@@ -689,30 +743,38 @@ const Home = () => {
             </View>
           </ScrollView>
 
-          {/* Fixed Floating Chat Button */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Chat")}
-            style={{
-              position: "absolute",
-              bottom: insets.bottom + 60,
-              right: 20,
-              backgroundColor: "#fff",
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              elevation: 10,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.2,
-              shadowRadius: 5,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <View onPress={() => navigation.navigate("Chat")}>
-              <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
-            </View>
-          </TouchableOpacity>
+          {user.role === "Resident" && (
+            <>
+              {/* Fixed Floating Chat Button */}
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Chat")}
+                style={{
+                  position: "absolute",
+                  bottom: insets.bottom + 60,
+                  right: 20,
+                  backgroundColor: "#fff",
+                  width: 60,
+                  height: 60,
+                  borderRadius: 30,
+                  elevation: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View onPress={() => navigation.navigate("Chat")}>
+                  <Ionicons
+                    name="chatbubble-ellipses"
+                    size={30}
+                    color="#0E94D3"
+                  />
+                </View>
+              </TouchableOpacity>
+            </>
+          )}
         </>
       </SafeAreaView>
     </TouchableWithoutFeedback>

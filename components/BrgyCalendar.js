@@ -87,16 +87,55 @@ const BrgyCalendar = () => {
             })}
           </Text>
           <Calendar
+            hourRowHeight={80}
             events={events}
             height={500}
             mode="month"
             weekStartsOn={1}
             showTime
             eventCellStyle={(event) => ({
-              backgroundColor: event.color,
-              border: "2px solid",
-              borderColor: "#04384E",
+              backgroundColor: event.backgroundColor,
             })}
+            eventStyle={(event) => ({
+              overflow: "hidden",
+              padding: 5,
+            })}
+            renderEvent={(event) => {
+              return (
+                <View
+                  style={{
+                    backgroundColor: event.backgroundColor || "#3174ad",
+                    borderRadius: 10,
+                    padding: 5,
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 10,
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
+                    {event.title}
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 10,
+                      fontFamily: "QuicksandMedium",
+                    }}
+                  >
+                    {new Date(event.start).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                </View>
+              );
+            }}
           />
         </View>
 

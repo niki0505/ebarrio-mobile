@@ -324,9 +324,12 @@ const Blotter = () => {
                 maxLength={3000}
                 onChangeText={(text) => handleInputChange("details", text)}
               />
+
               <View
                 style={{
+                  display: "flex",
                   flexDirection: "row",
+                  marginTop: 8,
                   justifyContent: "space-between",
                 }}
               >
@@ -340,23 +343,20 @@ const Blotter = () => {
                   >
                     {detailsError}
                   </Text>
-                ) : null}
-                <View
+                ) : (
+                  <View style={{ flex: 1 }} />
+                )}
+
+                <Text
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                    width: "100%",
+                    color: "#808080",
+                    fontFamily: "QuicksandSemiBold",
+                    fontSize: 16,
+                    textAlign: "right",
                   }}
                 >
-                  <Text
-                    style={{
-                      color: "#808080",
-                      fontFamily: "QuicksandSemiBold",
-                    }}
-                  >
-                    {blotterForm.details.length}/3000
-                  </Text>
-                </View>
+                  {blotterForm.details.length}/3000
+                </Text>
               </View>
             </View>
           </View>

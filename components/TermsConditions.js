@@ -391,9 +391,26 @@ const TermsConditions = () => {
                 <Text style={{ fontFamily: "QuicksandMedium" }}>
                   {"\n"}For questions or concerns regarding these terms and
                   conditions, or if you need support related to the App, please
-                  contact us at:
-                  {"\n"}Email: brgyaniban2bacoorcity@gmail.com
-                  {"\n"}Phone: [Insert Phone Number]
+                  contact us at:{"\n"} {"\n"}{" "}
+                  <Text
+                    style={{
+                      fontFamily: "QuicksandSemiBold",
+                      fontSize: 16,
+                      color: "#04384E",
+                    }}
+                  >
+                    Email: brgyaniban2bacoorcity@gmail.com
+                  </Text>
+                  {"\n"}{" "}
+                  <Text
+                    style={{
+                      fontFamily: "QuicksandSemiBold",
+                      fontSize: 16,
+                      color: "#04384E",
+                    }}
+                  >
+                    Telephone: 476-9397
+                  </Text>
                 </Text>
               </Text>
             </ScrollView>

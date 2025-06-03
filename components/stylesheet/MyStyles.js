@@ -175,14 +175,13 @@ export const MyStyles = StyleSheet.create({
     width: 100,
     height: 100,
     justifyContent: "center",
-   
   },
   forecastcontentContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding:10,
+    padding: 10,
     borderRadius: 10,
     backgroundColor: "rgba(255, 255, 255, 0.4)",
   },
@@ -425,13 +424,13 @@ export const MyStyles = StyleSheet.create({
   },
 
   //Hazard Map and Evacuation Map
-   mapOverlay: {
+  mapOverlay: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.6)", 
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
@@ -440,5 +439,29 @@ export const MyStyles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontFamily: "REMSemiBold",
+  },
+  //Notification
+  filterDropdown: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 10,
+    zIndex: 1000,
+  },
+  filterDropdownItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  filterDropdownText: {
+    fontSize: 16,
+    color: "#04384E",
+    fontFamily: "QuicksandSemiBold",
   },
 });
