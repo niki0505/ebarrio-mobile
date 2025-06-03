@@ -117,6 +117,10 @@ const EmergencyHotlines = () => {
                 style={MyStyles.searchIcon}
               />
             </View>
+            <Text style={[MyStyles.formMessage, { color: "#fff" }]}>
+              Tapping on the designated hotline number will be immediately
+              directed to your contact.
+            </Text>
 
             {filteredEmergencyHotlines.length === 0 ? (
               <Text
