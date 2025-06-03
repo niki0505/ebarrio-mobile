@@ -180,8 +180,7 @@ const CourtReservations = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    console.log(reservationForm);
+  const handleConfirm = () => {
     if (reservationForm.date.length === 0) {
       Alert.alert("Error", "Please select at least one date.");
       return;
@@ -277,19 +276,71 @@ const CourtReservations = () => {
       );
       return;
     }
-    try {
-      await api.post("/sendreservationrequest", {
-        reservationForm: {
-          ...reservationForm,
-          times: preparedTimes,
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to submit a court reservation request?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
         },
-      });
-      navigation.navigate("SuccessfulPage", {
-        service: "Reservation",
-      });
-    } catch (error) {
-      console.log("Reservation submission error:", error);
-      Alert.alert("Error", "Failed to submit reservation. Please try again.");
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSubmit();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const handleSubmit = async () => {
+    const combineDateAndTime = (dateStr, timeObj) => {
+      const date = new Date(dateStr);
+      date.setHours(timeObj.getHours());
+      date.setMinutes(timeObj.getMinutes());
+      date.setSeconds(timeObj.getSeconds());
+      date.setMilliseconds(timeObj.getMilliseconds());
+      return date.toISOString();
+    };
+
+    const conflicts = [];
+    const preparedTimes = {};
+    for (const date of reservationForm.date) {
+      const times = reservationForm.times[date];
+      if (!times) {
+        Alert.alert("Error", `Times not set for ${date}.`);
+        return;
+      }
+      const dateStart = new Date(date);
+      const startDateTime = new Date(dateStart);
+      startDateTime.setHours(times.starttime.getHours());
+      startDateTime.setMinutes(times.starttime.getMinutes());
+
+      const endDateTime = new Date(dateStart);
+      endDateTime.setHours(times.endtime.getHours());
+      endDateTime.setMinutes(times.endtime.getMinutes());
+
+      preparedTimes[date] = {
+        starttime: combineDateAndTime(date, times.starttime),
+        endtime: combineDateAndTime(date, times.endtime),
+      };
+
+      try {
+        await api.post("/sendreservationrequest", {
+          reservationForm: {
+            ...reservationForm,
+            times: preparedTimes,
+          },
+        });
+        navigation.navigate("SuccessfulPage", {
+          service: "Reservation",
+        });
+      } catch (error) {
+        console.log("Reservation submission error:", error);
+        Alert.alert("Error", "Failed to submit reservation. Please try again.");
+      }
     }
   };
 
@@ -457,12 +508,11 @@ const CourtReservations = () => {
               editable={false}
               value={reservationForm.amount}
               style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
-              placeholder="Amount"
             />
 
             <TouchableOpacity
               style={[MyStyles.button, { marginTop: 30 }]}
-              onPress={handleSubmit}
+              onPress={handleConfirm}
             >
               <Text style={MyStyles.buttonText}>Submit</Text>
             </TouchableOpacity>

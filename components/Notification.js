@@ -27,7 +27,7 @@ const Notification = () => {
   const insets = useSafeAreaInsets();
   const { notifications, fetchNotifications } = useContext(SocketContext);
   const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(false);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("All");
 
   useEffect(() => {
     fetchNotifications();
@@ -42,6 +42,14 @@ const Notification = () => {
     }
   };
 
+  const markAllAsRead = async () => {
+    try {
+      await api.put("/readnotifications");
+    } catch (error) {
+      console.log("Error in marking all as read", error);
+    }
+  };
+
   const truncateNotifMessage = (message, wordLimit = 25) => {
     const words = message.split(" ");
     return words.length > wordLimit
@@ -50,12 +58,10 @@ const Notification = () => {
   };
 
   const filteredNotifications = notifications.filter((notif) => {
-    if (filter === "read") {
-      return notif.read;
-    } else if (filter === "unread") {
-      return !notif.read;
-    }
-    return true; // all notifications
+    if (filter === "All") return true;
+    if (filter === "Read") return notif.read === true;
+    if (filter === "Unread") return notif.read === false;
+    return true;
   });
 
   return (
@@ -95,6 +101,7 @@ const Notification = () => {
             <View style={MyStyles.filterDropdown}>
               <TouchableOpacity
                 onPress={() => {
+                  setFilter("All");
                   setIsFilterDropdownVisible(false);
                 }}
                 style={MyStyles.filterDropdownItem}
@@ -103,6 +110,7 @@ const Notification = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
+                  setFilter("Read");
                   setIsFilterDropdownVisible(false);
                 }}
                 style={MyStyles.filterDropdownItem}
@@ -111,6 +119,7 @@ const Notification = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
+                  setFilter("Unread");
                   setIsFilterDropdownVisible(false);
                 }}
                 style={MyStyles.filterDropdownItem}
@@ -119,18 +128,20 @@ const Notification = () => {
               </TouchableOpacity>
             </View>
           )}
-          <Text
-            style={{
-              marginTop: 10,
-              paddingHorizontal: 20,
-              color: "#04384E",
-              fontSize: 16,
-              fontFamily: "REMSemiBold",
-              textAlign: "right",
-            }}
-          >
-            Mark all as read
-          </Text>
+          <TouchableOpacity onPress={markAllAsRead}>
+            <Text
+              style={{
+                marginTop: 10,
+                paddingHorizontal: 20,
+                color: "#04384E",
+                fontSize: 16,
+                fontFamily: "REMSemiBold",
+                textAlign: "right",
+              }}
+            >
+              Mark all as read
+            </Text>
+          </TouchableOpacity>
 
           <ScrollView
             contentContainerStyle={[
@@ -143,7 +154,7 @@ const Notification = () => {
             ]}
             showsVerticalScrollIndicator={false}
           >
-            {notifications
+            {filteredNotifications
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
               .map((notif, index) => {
                 return (

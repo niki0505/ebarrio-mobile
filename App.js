@@ -117,6 +117,21 @@ export default function App() {
     REMBold: require("./assets/fonts/rem/REM-Bold.ttf"),
   });
 
+  // const forceClearSecureStore = async () => {
+  //   const keysToClear = ["accessToken", "refreshToken"]; // Replace with your actual keys
+
+  //   for (const key of keysToClear) {
+  //     await SecureStore.deleteItemAsync(key);
+  //     const remaining = await SecureStore.getItemAsync(key);
+  //     console.log(`Key: ${key}, Remaining:`, remaining); // Should log null
+  //   }
+
+  //   console.log("SecureStore should now be cleared.");
+  // };
+
+  // useEffect(() => {
+  //   forceClearSecureStore();
+  // });
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected && state.isInternetReachable);

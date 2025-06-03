@@ -351,6 +351,7 @@ const EditMobileNumber = () => {
               <TextInput
                 onChangeText={mobileInputChange}
                 placeholder="New Mobile Number"
+                keyboardType="numeric"
                 value={mobilenumber}
                 style={MyStyles.input}
               />

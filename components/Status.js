@@ -45,6 +45,8 @@ const Status = () => {
     fetchUserDetails();
   }, []);
 
+  console.log(services);
+
   const filteredServices = services.filter((service) => {
     if (sortOption === "documents") {
       return service.type === "Certificate";
@@ -126,7 +128,7 @@ const Status = () => {
       case "Settled":
         return { color: "#00BA00", label: "Settled" };
       case "Scheduled":
-        return { color: "#00BA00", label: "Settled" };
+        return { color: "#00BA00", label: "Scheduled" };
       default:
         return { color: "#aaa", label: status };
     }

@@ -112,22 +112,23 @@ const Signup = () => {
 
   const mobileInputChange = (val) => {
     let errors = [];
-    let formattedVal = val.replace(/\D/g, "");
-    setMobileNumber(formattedVal);
+    val.replace(/\D/g, "");
 
-    if (!formattedVal.startsWith("+63")) {
-      formattedVal = "+63" + formattedVal.replace(/^0+/, "").slice(2);
+    if (!val.startsWith("+63")) {
+      val = "+63" + val.replace(/^0+/, "").slice(2);
     }
-    if (formattedVal.length > 13) {
-      formattedVal = formattedVal.slice(0, 13);
+    if (val.length > 13) {
+      val = val.slice(0, 13);
     }
-    if (formattedVal.length >= 4 && formattedVal[3] === "0") {
+    if (val.length >= 4 && val[3] === "0") {
       return;
     }
 
-    if (formattedVal.length < 13) {
+    if (val.length < 13) {
       errors.push("Invalid mobile number.");
     }
+
+    setMobileNumber(val);
     setMobileNumErrors(errors);
   };
 
@@ -395,6 +396,7 @@ const Signup = () => {
                     style={MyStyles.input}
                     placeholder="Mobile Number"
                     value={mobilenumber}
+                    keyboardType="numeric"
                     onChangeText={mobileInputChange}
                   />
                   {mobilenumErrors.length > 0 && (
