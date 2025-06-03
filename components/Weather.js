@@ -148,6 +148,12 @@ const Weather = () => {
         <Rain width={width} height={height} />
       ),
 
+      "patchy rain nearby": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
       "light rain": isDay ? (
         <Rain width={width} height={height} />
       ) : (
@@ -213,7 +219,7 @@ const Weather = () => {
 
     return iconMap[normalized] || iconMap["default"];
   };
-  
+
   //Background changes based on the condition
   const getGradientColors = (condition) => {
     const normalized = condition?.trim().toLowerCase();

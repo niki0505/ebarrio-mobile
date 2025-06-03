@@ -135,6 +135,12 @@ const Home = () => {
         <FogNight width={width} height={height} />
       ),
 
+      "patchy rain nearby": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
       "patchy light drizzle": isDay ? (
         <OvercastDayDrizzle width={width} height={height} />
       ) : (

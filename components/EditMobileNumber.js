@@ -182,7 +182,7 @@ const EditMobileNumber = () => {
     }
 
     return () => clearInterval(interval);
-  }, [isResendDisabled]);
+  }, [isVerified, isResendDisabled]);
 
   const handleOTP = async () => {
     try {
@@ -195,6 +195,7 @@ const EditMobileNumber = () => {
         return;
       }
       setIsVerified(true);
+      setIsResendDisabled(true);
       setResendCount((prevCount) => prevCount + 1);
       setResendTimer(30);
       sendOTP(userDetails.username, mobilenumber);

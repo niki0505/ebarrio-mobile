@@ -8,6 +8,7 @@ import { SocketContext } from "./SocketContext";
 export const InfoContext = createContext(undefined);
 
 export const InfoProvider = ({ children }) => {
+  const { isAuthenticated, setUserStatus, user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
@@ -17,6 +18,7 @@ export const InfoProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState([]);
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -56,6 +58,31 @@ export const InfoProvider = ({ children }) => {
   useEffect(() => {
     fetchEmergencyHotlines();
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUsers();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (users && user) {
+      users.map((usr) => {
+        if (usr._id === user.userID) {
+          setUserStatus(usr.status);
+        }
+      });
+    }
+  }, [users, user]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get("/getusers");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch users:", error);
+    }
+  };
 
   const fetchUserDetails = async () => {
     try {
@@ -128,13 +155,14 @@ export const InfoProvider = ({ children }) => {
     if (!socket) return;
 
     const handler = (updatedData) => {
-      console.log(updatedData.data);
       if (updatedData.type === "announcements") {
         setAnnouncements(updatedData.data);
       } else if (updatedData.type === "services") {
         setServices(updatedData.data);
       } else if (updatedData.type === "emergencyhotlines") {
         setEmergencyHotlines(updatedData.data);
+      } else if (updatedData.type === "users") {
+        setUsers(updatedData.data);
       }
     };
 

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -27,12 +28,10 @@ const SetPassword = () => {
   const navigation = useNavigation();
   const [password, setPassword] = useState("");
   const [repassword, setRePassword] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState([]);
+  const [repasswordErrors, setRePasswordErrors] = useState([]);
 
   const handleSubmit = async () => {
-    if (password !== repassword) {
-      alert("Passwords do not match.");
-      return;
-    }
     try {
       await api.put(`/resetpassword/${username}`, {
         password,
@@ -42,6 +41,80 @@ const SetPassword = () => {
     } catch (error) {
       console.log("Failed to reset password", error);
     }
+  };
+
+  const handleConfirm = () => {
+    let hasErrors = false;
+    let perrors = [];
+    let rerrors = [];
+    if (!password) {
+      perrors.push("Password must not be empty.");
+      setPasswordErrors(perrors);
+      hasErrors = true;
+    }
+    if (!repassword) {
+      rerrors.push("Password must not be empty.");
+      setRePasswordErrors(rerrors);
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      return;
+    }
+
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to set your password?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSubmit();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const passwordValidation = (val) => {
+    let errors = [];
+    let formattedVal = val.replace(/\s+/g, "");
+    setPassword(formattedVal);
+
+    if (!formattedVal) {
+      errors.push("Password must not be empty.");
+    }
+    if (
+      (formattedVal && formattedVal.length < 8) ||
+      (formattedVal && formattedVal.length > 64)
+    ) {
+      errors.push("Password must be between 8 and 64 characters only.");
+    }
+    if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
+      errors.push(
+        "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #."
+      );
+    }
+    setPasswordErrors(errors);
+  };
+
+  const repasswordValidation = (val) => {
+    let errors = [];
+    let formattedVal = val.replace(/\s+/g, "");
+    setRePassword(formattedVal);
+
+    if (!formattedVal) {
+      errors.push("Password must not be empty.");
+    }
+    if (formattedVal !== password && formattedVal.length > 0) {
+      errors.push("Passwords do not match.");
+    }
+    setRePasswordErrors(errors);
   };
 
   const BackgroundOverlay = () => (
@@ -134,6 +207,7 @@ const SetPassword = () => {
               size={30}
               color="#04384E"
               style={{ alignSelf: "flex-start" }}
+              onPress={() => navigation.navigate("Login")}
             />
             <Text
               style={{
@@ -159,27 +233,60 @@ const SetPassword = () => {
               <View>
                 <Text>Password</Text>
                 <TextInput
-                  onChangeText={setPassword}
+                  onChangeText={passwordValidation}
+                  value={password}
                   secureTextEntry={true}
                   placeholder="Enter password"
                   style={MyStyles.input}
                 />
               </View>
-
+              {passwordErrors.length > 0 && (
+                <View style={{ marginTop: 5, width: 300 }}>
+                  {passwordErrors.map((error, index) => (
+                    <Text
+                      key={index}
+                      style={{
+                        color: "red",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
+                      {error}
+                    </Text>
+                  ))}
+                </View>
+              )}
               <View>
                 <Text>Confirm Password</Text>
                 <TextInput
-                  onChangeText={setRePassword}
+                  onChangeText={repasswordValidation}
+                  value={repassword}
                   secureTextEntry={true}
                   placeholder="Enter password"
                   style={MyStyles.input}
                 />
+                {repasswordErrors.length > 0 && (
+                  <View style={{ marginTop: 5, width: 300 }}>
+                    {repasswordErrors.map((error, index) => (
+                      <Text
+                        key={index}
+                        style={{
+                          color: "red",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                      >
+                        {error}
+                      </Text>
+                    ))}
+                  </View>
+                )}
               </View>
             </View>
 
             {/* Submit Button */}
             <TouchableOpacity
-              onPress={handleSubmit}
+              onPress={handleConfirm}
               style={[MyStyles.button, { marginTop: 30 }]}
             >
               <Text
