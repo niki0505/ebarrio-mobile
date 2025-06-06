@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -19,6 +20,7 @@ import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const SetPassword = () => {
   const route = useRoute();
@@ -27,38 +29,104 @@ const SetPassword = () => {
   const navigation = useNavigation();
   const [password, setPassword] = useState("");
   const [repassword, setRePassword] = useState("");
-  const [securityquestions, setSecurityQuestions] = useState([
-    { question: "", answer: "" },
-    { question: "", answer: "" },
-  ]);
+  const [passwordErrors, setPasswordErrors] = useState([]);
+  const [repasswordErrors, setRePasswordErrors] = useState([]);
 
-  const securityQuestionsList = [
-    "What was the name of your first pet?",
-    "What is your mother's maiden name?",
-    "What was the name of your first school?",
-  ];
+  const [securePass, setSecurePass] = useState(true);
+  const [secureConfirmPass, setSecureConfirmPass] = useState(true);
 
-  const handleSecurityChange = (index, field, value) => {
-    const updated = [...securityquestions];
-    updated[index][field] = value;
-    setSecurityQuestions(updated);
+  const togglesecurePass = () => {
+    setSecurePass(!securePass);
+  };
+
+  const togglesecureConfirmPass = () => {
+    setSecureConfirmPass(!secureConfirmPass);
   };
 
   const handleSubmit = async () => {
-    if (password !== repassword) {
-      alert("Passwords do not match.");
-      return;
-    }
     try {
       await api.put(`/resetpassword/${username}`, {
         password,
-        securityquestions,
       });
       alert("Password reset successfully!");
       navigation.navigate("Login");
     } catch (error) {
       console.log("Failed to reset password", error);
     }
+  };
+
+  const handleConfirm = () => {
+    let hasErrors = false;
+    let perrors = [];
+    let rerrors = [];
+    if (!password) {
+      perrors.push("Password must not be empty.");
+      setPasswordErrors(perrors);
+      hasErrors = true;
+    }
+    if (!repassword) {
+      rerrors.push("Password must not be empty.");
+      setRePasswordErrors(rerrors);
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      return;
+    }
+
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to set your password?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSubmit();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const passwordValidation = (val) => {
+    let errors = [];
+    let formattedVal = val.replace(/\s+/g, "");
+    setPassword(formattedVal);
+
+    if (!formattedVal) {
+      errors.push("Password must not be empty.");
+    }
+    if (
+      (formattedVal && formattedVal.length < 8) ||
+      (formattedVal && formattedVal.length > 64)
+    ) {
+      errors.push("Password must be between 8 and 64 characters only.");
+    }
+    if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
+      errors.push(
+        "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #."
+      );
+    }
+    setPasswordErrors(errors);
+  };
+
+  const repasswordValidation = (val) => {
+    let errors = [];
+    let formattedVal = val.replace(/\s+/g, "");
+    setRePassword(formattedVal);
+
+    if (!formattedVal) {
+      errors.push("Password must not be empty.");
+    }
+    if (formattedVal !== password && formattedVal.length > 0) {
+      errors.push("Passwords do not match.");
+    }
+    setRePasswordErrors(errors);
   };
 
   const BackgroundOverlay = () => (
@@ -132,7 +200,7 @@ const SetPassword = () => {
         <View
           style={{
             width: "80%",
-            height: "80%",
+            height: "50%",
             backgroundColor: "#fff",
             borderRadius: 20,
             overflow: "hidden",
@@ -143,7 +211,7 @@ const SetPassword = () => {
               padding: 30,
               alignItems: "center",
             }}
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator={false}
           >
             {/* Back arrow and heading */}
             <MaterialIcons
@@ -151,125 +219,106 @@ const SetPassword = () => {
               size={30}
               color="#04384E"
               style={{ alignSelf: "flex-start" }}
+              onPress={() => navigation.navigate("Login")}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                color: "#04384E",
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-                marginTop: 10,
-              }}
-            >
+            <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Set Password
             </Text>
 
             {/* Form fields */}
-            <View
-              style={{
-                alignSelf: "flex-start",
-                width: "100%",
-                marginVertical: 30,
-                gap: 10,
-              }}
-            >
+            <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
               <View>
-                <Text>Password</Text>
-                <TextInput
-                  onChangeText={setPassword}
-                  secureTextEntry={true}
-                  placeholder="Enter password"
-                  style={MyStyles.input}
-                />
+                <Text style={MyStyles.inputLabel}>Password</Text>
+                <View style={{ position: "relative" }}>
+                  <TextInput
+                    value={password}
+                    onChangeText={passwordValidation}
+                    secureTextEntry={securePass}
+                    placeholder="Password"
+                    style={[MyStyles.input, { paddingRight: 40 }]}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      right: 10,
+                      top: "50%",
+                      transform: [{ translateY: -12 }],
+                    }}
+                    onPress={togglesecurePass}
+                  >
+                    <Ionicons
+                      name={securePass ? "eye-off" : "eye"}
+                      size={24}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
+                {passwordErrors.length > 0 && (
+                  <View style={{ marginTop: 5, width: 300 }}>
+                    {passwordErrors.map((error, index) => (
+                      <Text
+                        key={index}
+                        style={{
+                          color: "red",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                      >
+                        {error}
+                      </Text>
+                    ))}
+                  </View>
+                )}
               </View>
 
               <View>
-                <Text>Confirm Password</Text>
-                <TextInput
-                  onChangeText={setRePassword}
-                  secureTextEntry={true}
-                  placeholder="Enter password"
-                  style={MyStyles.input}
-                />
-              </View>
-
-              <View>
-                <Text>Security Question #1</Text>
-                <Dropdown
-                  labelField="label"
-                  valueField="value"
-                  value={securityquestions[0].question}
-                  data={securityQuestionsList
-                    .filter((ques) => ques !== securityquestions[1].question)
-                    .map((ques) => ({
-                      label: ques,
-                      value: ques,
-                    }))}
-                  placeholder="Select"
-                  placeholderStyle={{ color: "gray" }}
-                  onChange={(item) =>
-                    handleSecurityChange(0, "question", item.value)
-                  }
-                  style={MyStyles.input}
-                ></Dropdown>
-              </View>
-
-              <View>
-                <Text>Answer</Text>
-                <TextInput
-                  onChangeText={(e) => handleSecurityChange(0, "answer", e)}
-                  secureTextEntry={true}
-                  placeholder="Enter answer"
-                  style={MyStyles.input}
-                />
-              </View>
-
-              <View>
-                <Text>Security Question #2</Text>
-                <Dropdown
-                  labelField="label"
-                  valueField="value"
-                  value={securityquestions[1].question}
-                  data={securityQuestionsList
-                    .filter((ques) => ques !== securityquestions[0].question)
-                    .map((ques) => ({
-                      label: ques,
-                      value: ques,
-                    }))}
-                  placeholder="Select"
-                  placeholderStyle={{ color: "gray" }}
-                  onChange={(item) =>
-                    handleSecurityChange(1, "question", item.value)
-                  }
-                  style={MyStyles.input}
-                ></Dropdown>
-              </View>
-
-              <View>
-                <Text>Answer</Text>
-                <TextInput
-                  onChangeText={(e) => handleSecurityChange(1, "answer", e)}
-                  secureTextEntry={true}
-                  placeholder="Enter answer"
-                  style={MyStyles.input}
-                />
+                <Text style={MyStyles.inputLabel}>Confirm Password</Text>
+                <View style={{ position: "relative" }}>
+                  <TextInput
+                    value={repassword}
+                    onChangeText={repasswordValidation}
+                    secureTextEntry={secureConfirmPass}
+                    placeholder="Confirm Password"
+                    style={[MyStyles.input, { paddingRight: 40 }]}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      right: 10,
+                      top: "50%",
+                      transform: [{ translateY: -12 }],
+                    }}
+                    onPress={togglesecureConfirmPass}
+                  >
+                    <Ionicons
+                      name={secureConfirmPass ? "eye-off" : "eye"}
+                      size={24}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
+                {repasswordErrors.length > 0 && (
+                  <View style={{ marginTop: 5, width: 300 }}>
+                    {repasswordErrors.map((error, index) => (
+                      <Text
+                        key={index}
+                        style={{
+                          color: "red",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                      >
+                        {error}
+                      </Text>
+                    ))}
+                  </View>
+                )}
               </View>
             </View>
 
             {/* Submit Button */}
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={[MyStyles.button, { marginTop: 30 }]}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: 24,
-                }}
-              >
-                Submit
-              </Text>
+            <TouchableOpacity onPress={handleConfirm} style={[MyStyles.button]}>
+              <Text style={MyStyles.buttonText}>Submit</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

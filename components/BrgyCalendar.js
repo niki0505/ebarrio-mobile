@@ -15,14 +15,14 @@ const BrgyCalendar = () => {
 
   const categories = [
     [
-      { label: "General", color: "#FF0000" },
-      { label: "Health and Sanitation", color: "#FA7020" },
-      { label: "Public Safety & Emergency", color: "#FFB200" },
+      { label: "General", color: "#4A90E2" },
+      { label: "Health and Sanitation", color: "#7ED321" },
+      { label: "Public Safety & Emergency", color: "#FF0000" },
     ],
     [
-      { label: "Education and Youth", color: "#0E94D3" },
-      { label: "Social Services", color: "#CF0ED3" },
-      { label: "Infrastructure", color: "#06D001" },
+      { label: "Education and Youth", color: "#FFD942" },
+      { label: "Social Services", color: "#B3B6B7" },
+      { label: "Infrastructure", color: "#EC9300" },
     ],
   ];
 
@@ -87,16 +87,55 @@ const BrgyCalendar = () => {
             })}
           </Text>
           <Calendar
+            hourRowHeight={80}
             events={events}
             height={500}
             mode="month"
             weekStartsOn={1}
             showTime
             eventCellStyle={(event) => ({
-              backgroundColor: event.color,
-              border: "2px solid",
-              borderColor: "#04384E",
+              backgroundColor: event.backgroundColor,
             })}
+            eventStyle={(event) => ({
+              overflow: "hidden",
+              padding: 5,
+            })}
+            renderEvent={(event) => {
+              return (
+                <View
+                  style={{
+                    backgroundColor: event.backgroundColor || "#3174ad",
+                    borderRadius: 10,
+                    padding: 5,
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 10,
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
+                    {event.title}
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 10,
+                      fontFamily: "QuicksandMedium",
+                    }}
+                  >
+                    {new Date(event.start).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                </View>
+              );
+            }}
           />
         </View>
 
@@ -133,66 +172,75 @@ const BrgyCalendar = () => {
             Important Events
           </Text>
 
-          {events.map((event, index) => (
-            <View
-              key={index}
-              style={[
-                MyStyles.shadow,
-                {
-                  backgroundColor: event.color || "#3174ad",
-                  padding: 10,
-                  borderRadius: 10,
-                  marginTop: 10,
-                  gap: 5,
-                },
-              ]}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                }}
+          {events
+            .filter((event) => {
+              const eventDate = new Date(event.start);
+              const now = new Date();
+              return (
+                eventDate.getMonth() === now.getMonth() &&
+                eventDate.getFullYear() === now.getFullYear()
+              );
+            })
+            .map((event, index) => (
+              <View
+                key={index}
+                style={[
+                  MyStyles.shadow,
+                  {
+                    backgroundColor: event.backgroundColor || "#3174ad",
+                    padding: 10,
+                    borderRadius: 10,
+                    marginTop: 10,
+                    gap: 5,
+                  },
+                ]}
               >
-                📅{" "}
-                {new Date(event.start).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                  }}
+                >
+                  📅{" "}
+                  {new Date(event.start).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </Text>
 
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                }}
-              >
-                🕒{" "}
-                {new Date(event.start).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
-                -{" "}
-                {new Date(event.end).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                  }}
+                >
+                  🕒{" "}
+                  {new Date(event.start).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
+                  -{" "}
+                  {new Date(event.end).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
 
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  marginTop: 10,
-                  fontFamily: "QuicksandMedium",
-                }}
-              >
-                {event.title}
-              </Text>
-            </View>
-          ))}
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    marginTop: 10,
+                    fontFamily: "QuicksandMedium",
+                  }}
+                >
+                  {event.title}
+                </Text>
+              </View>
+            ))}
         </View>
       </ScrollView>
     </SafeAreaView>

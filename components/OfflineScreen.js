@@ -24,6 +24,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const OfflineScreen = () => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [storedEmergencyHotlines, setStoredEmergencyHotlines] = useState([]);
   const [isEmergencyClicked, setEmergencyClicked] = useState(false);
@@ -117,6 +118,7 @@ const OfflineScreen = () => {
                   }}
                 >
                   <TouchableOpacity
+                    onPress={() => navigation.navigate("Readiness")}
                     style={{
                       backgroundColor: "#fff",
                       flex: 1,
@@ -144,7 +146,7 @@ const OfflineScreen = () => {
                           { color: "#BC0F0F", fontSize: 30 },
                         ]}
                       >
-                        SAFETY TIPS
+                        READINESS
                       </Text>
                       <Text
                         style={[
@@ -227,7 +229,7 @@ const OfflineScreen = () => {
                   <MaterialIcons
                     name="search"
                     size={20}
-                    color="#C1C0C0"
+                    color="#808080"
                     style={MyStyles.searchIcon}
                   />
                 </View>

@@ -1,22 +1,17 @@
 import {
-  StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
   SafeAreaView,
   ScrollView,
   Image,
+  Platform,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
-import axios from "axios";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { InfoContext } from "../context/InfoContext";
 import api from "../api";
@@ -24,19 +19,23 @@ import { Dropdown } from "react-native-element-dropdown";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Aniban2Logo from "../assets/aniban2logo.png";
+import ImageViewing from "react-native-image-viewing";
 
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Announcement = () => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { fetchAnnouncements, announcements } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
-  const navigation = useNavigation();
   const [sortOption, setSortOption] = useState("newest");
   dayjs.extend(relativeTime);
   const [expandedAnnouncements, setExpandedAnnouncements] = useState([]);
+
+  const [visible, setIsVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -78,32 +77,6 @@ const Announcement = () => {
   });
 
   const renderContent = (announcement) => {
-    let eventInfo = "";
-    if (announcement.eventStart) {
-      const startDate = new Date(announcement.eventStart);
-      const endDate = new Date(announcement.eventEnd);
-
-      const formattedDate = startDate.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-
-      const formattedStartTime = startDate.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      const formattedEndTime = endDate.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      eventInfo = `📅 ${formattedDate}\n🕒 ${formattedStartTime} - ${formattedEndTime}\n`;
-    }
-
     const words = announcement.content.split(" ");
     const isLong = words.length > 25;
     const isExpanded = expandedAnnouncements.includes(announcement._id);
@@ -113,7 +86,7 @@ const Announcement = () => {
 
     return (
       <View style={{ marginVertical: 10 }}>
-        {eventInfo !== "" && (
+        {announcement.eventdetails !== "" && (
           <Text
             style={{
               marginBottom: 5,
@@ -122,7 +95,7 @@ const Announcement = () => {
               fontFamily: "QuicksandSemiBold",
             }}
           >
-            {eventInfo}
+            {announcement.eventdetails}
           </Text>
         )}
         <Text
@@ -197,16 +170,14 @@ const Announcement = () => {
             key={index}
             style={{
               backgroundColor: "#fff",
-              borderRadius: 15,
-              width: "100%",
-              padding: 10,
-              // iOS shadow
+              borderRadius: 10,
+              padding: 15,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.2,
+              shadowOpacity: 0.1,
               shadowRadius: 4,
-              // Android shadow
-              elevation: 5,
+              elevation: 3,
+              marginBottom: 10,
             }}
           >
             <View
@@ -281,17 +252,32 @@ const Announcement = () => {
             </View>
 
             {element.picture && element.picture.trim() !== "" && (
-              <Image
-                source={{ uri: element.picture }}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 15,
-                  marginTop: 10,
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedImage([{ uri: element.picture }]);
+                  setIsVisible(true);
                 }}
-                resizeMode="cover"
-              />
+              >
+                <Image
+                  source={{ uri: element.picture }}
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    borderRadius: 15,
+                    marginTop: 10,
+                  }}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
             )}
+
+            <ImageViewing
+              images={selectedImage || []}
+              imageIndex={0}
+              visible={visible}
+              onRequestClose={() => setIsVisible(false)}
+              presentationStyle="overFullScreen"
+            />
 
             {renderContent(element)}
 
@@ -321,6 +307,30 @@ const Announcement = () => {
           </View>
         ))}
       </ScrollView>
+      {/* Fixed Floating Chat Button */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Chat")}
+        style={{
+          position: "absolute",
+          bottom: insets.bottom + 60,
+          right: 20,
+          backgroundColor: "#fff",
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          elevation: 10,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <View onPress={() => navigation.navigate("Chat")}>
+          <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
+        </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

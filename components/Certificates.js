@@ -23,9 +23,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 const Certificates = () => {
   const insets = useSafeAreaInsets();
-  const { logout, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const [certificateForm, setCertificateForm] = useState({
+  const [typeErrors, setTypeErrors] = useState(null);
+  const [purposeError, setPurposeError] = useState(null);
+  const [streetError, setStreetError] = useState(null);
+  const [busNameError, setBusNameError] = useState(null);
+  const [lineBusError, setLineBusError] = useState(null);
+  const initialForm = {
     typeofcertificate: "",
     amount: "",
     purpose: "",
@@ -34,7 +39,8 @@ const Certificates = () => {
     addressnumber: "",
     street: "",
     locationofbusiness: "",
-  });
+  };
+  const [certificateForm, setCertificateForm] = useState(initialForm);
 
   const certificates = [
     { name: "Barangay Indigency", price: "₱10.00" },
@@ -77,6 +83,72 @@ const Certificates = () => {
     ],
   };
 
+  const handleConfirm = () => {
+    if (!certificateForm.typeofcertificate) {
+      setTypeErrors("This field is required.");
+      return;
+    } else {
+      setTypeErrors(null);
+
+      if (
+        certificateForm.typeofcertificate === "Barangay Indigency" ||
+        certificateForm.typeofcertificate === "Barangay Clearance"
+      ) {
+        if (!certificateForm.purpose) {
+          setPurposeError("This field is required.");
+          return;
+        } else {
+          setPurposeError(null);
+        }
+      } else if (
+        certificateForm.typeofcertificate === "Barangay Business Clearance"
+      ) {
+        let hasError = false;
+
+        if (!certificateForm.street) {
+          setStreetError("This field is required.");
+          hasError = true;
+        } else {
+          setStreetError(null);
+        }
+
+        if (!certificateForm.businessname) {
+          setBusNameError("This field is required.");
+          hasError = true;
+        } else {
+          setBusNameError(null);
+        }
+
+        if (!certificateForm.lineofbusiness) {
+          setLineBusError("This field is required.");
+          hasError = true;
+        } else {
+          setLineBusError(null);
+        }
+
+        if (hasError) return;
+      }
+    }
+
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to request a document?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSubmit();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const handleSubmit = async () => {
     const requiredFields =
       certificateFields[certificateForm.typeofcertificate] || [];
@@ -115,7 +187,10 @@ const Certificates = () => {
         filteredData,
         userID: user.userID,
       });
-      Alert.alert("Certificate requested successfully!");
+
+      navigation.navigate("SuccessfulPage", {
+        service: "Document",
+      });
     } catch (error) {
       console.log("Error", error);
     }
@@ -132,11 +207,14 @@ const Certificates = () => {
         [name]: value.value,
         amount: selectedCert ? selectedCert.price : "",
       }));
+      setTypeErrors(null);
     } else {
       setCertificateForm((prev) => ({
         ...prev,
         [name]: value.value,
       }));
+      setPurposeError(null);
+      setStreetError(null);
     }
   };
 
@@ -145,10 +223,13 @@ const Certificates = () => {
       ...prev,
       [name]: value,
     }));
+    if (name === "businessname") {
+      setBusNameError(!value ? "This field is required." : null);
+    }
+    if (name === "lineofbusiness") {
+      setLineBusError(!value ? "This field is required." : null);
+    }
   };
-
-  const [openTypeofCertificate, setOpenTypeofCertificate] = useState(false);
-  console.log(certificateForm);
 
   return (
     <SafeAreaView
@@ -174,7 +255,7 @@ const Certificates = () => {
           />
 
           <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
-            Request Certificate
+            Request Document
           </Text>
 
           <Text style={MyStyles.formMessage}>
@@ -184,7 +265,7 @@ const Certificates = () => {
           <View style={{ gap: 15, marginVertical: 30 }}>
             <View>
               <Text style={MyStyles.inputLabel}>
-                Type of Certificate<Text style={{ color: "red" }}>*</Text>
+                Type of Document<Text style={{ color: "red" }}>*</Text>
               </Text>
               <Dropdown
                 labelField="label"
@@ -212,6 +293,17 @@ const Certificates = () => {
                 }
                 style={MyStyles.input}
               ></Dropdown>
+              {typeErrors ? (
+                <Text
+                  style={{
+                    color: "red",
+                    fontFamily: "QuicksandMedium",
+                    fontSize: 16,
+                  }}
+                >
+                  {typeErrors}
+                </Text>
+              ) : null}
             </View>
 
             {["Barangay Indigency", "Barangay Clearance"].includes(
@@ -248,6 +340,17 @@ const Certificates = () => {
                     }
                     style={MyStyles.input}
                   ></Dropdown>
+                  {purposeError ? (
+                    <Text
+                      style={{
+                        color: "red",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
+                      {purposeError}
+                    </Text>
+                  ) : null}
                 </View>
               </>
             )}
@@ -285,17 +388,26 @@ const Certificates = () => {
                     }
                     style={MyStyles.input}
                   ></Dropdown>
+                  {streetError ? (
+                    <Text
+                      style={{
+                        color: "red",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
+                      {streetError}
+                    </Text>
+                  ) : null}
                 </View>
 
                 {certificateForm.street &&
                   certificateForm.street !== "My Address" && (
                     <>
                       <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Address Number<Text style={{ color: "red" }}>*</Text>
-                        </Text>
+                        <Text style={MyStyles.inputLabel}>Address Number</Text>
                         <TextInput
-                          placeholder="Enter address number"
+                          placeholder="Address Number"
                           placeholderStyle={{ color: "#808080" }}
                           onChangeText={(text) =>
                             handleInputChange("addressnumber", text)
@@ -305,30 +417,53 @@ const Certificates = () => {
                       </View>
                     </>
                   )}
-
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     Business Name<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
-                    placeholder="Enter business name"
+                    placeholder="Business Name"
                     onChangeText={(text) =>
                       handleInputChange("businessname", text)
                     }
                     style={MyStyles.input}
+                    value={certificateForm.businessname}
                   />
+                  {busNameError ? (
+                    <Text
+                      style={{
+                        color: "red",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
+                      {busNameError}
+                    </Text>
+                  ) : null}
                 </View>
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     Line of Business<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
-                    placeholder="Enter line of business"
+                    placeholder="Line of Business"
                     onChangeText={(text) =>
                       handleInputChange("lineofbusiness", text)
                     }
                     style={MyStyles.input}
+                    value={certificateForm.lineofbusinesss}
                   />
+                  {lineBusError ? (
+                    <Text
+                      style={{
+                        color: "red",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
+                      {lineBusError}
+                    </Text>
+                  ) : null}
                 </View>
               </>
             )}
@@ -338,12 +473,12 @@ const Certificates = () => {
               <TextInput
                 value={certificateForm.amount}
                 editable={false}
-                style={[MyStyles.input, { backgroundColor: "#f0f0f0" }]}
+                style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
               />
             </View>
           </View>
 
-          <TouchableOpacity style={MyStyles.button} onPress={handleSubmit}>
+          <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
             <Text style={MyStyles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </ScrollView>

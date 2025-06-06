@@ -19,24 +19,44 @@ import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { InfoContext } from "../context/InfoContext";
+import api from "../api";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { MaterialIcons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 //SERVICES ICONS
 import CourtReservation from "../assets/home/basketball.png";
 import Blotter from "../assets/home/letter.png";
 import Certificate from "../assets/home/stamp.png";
 import Status from "../assets/home/status.png";
+import Check from "../assets/home/check.png";
+import SOS from "../assets/home/sos.png";
 
 //WEATHER SVGS
 import ClearDay from "../assets/weather-svg/clear-day";
-import Drizzle from "../assets/weather-svg/drizzle";
+import ClearNight from "../assets/weather-svg/clear-night";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
+import PartlyCloudyNight from "../assets/weather-svg/partly-cloudy-night";
+import Cloudy from "../assets/weather-svg/cloudy";
+import OvercastDay from "../assets/weather-svg/overcast-day";
+import OvercastNight from "../assets/weather-svg/overcast-night";
+import Mist from "../assets/weather-svg/mist";
 import Rain from "../assets/weather-svg/rain";
+import ExtremeDayRain from "../assets/weather-svg/extreme-day-rain";
+import ExtremeNightRain from "../assets/weather-svg/extreme-night-rain";
+import ThunderstormsDayRain from "../assets/weather-svg/thunderstorms-day-rain";
+import ThunderstormsNightRain from "../assets/weather-svg/thunderstorms-night-rain";
+import ThunderstormsDayExtremeRain from "../assets/weather-svg/thunderstorms-day-extreme-rain";
+import ThunderstormsNightExtremeRain from "../assets/weather-svg/thunderstorms-night-extreme-rain";
+import OvercastDayDrizzle from "../assets/weather-svg/overcast-day-drizzle";
+import OvercastNightDrizzle from "../assets/weather-svg/overcast-night-drizzle";
+import FogDay from "../assets/weather-svg/fog-day";
+import FogNight from "../assets/weather-svg/fog-night";
+import ThunderstormsDay from "../assets/weather-svg/thunderstorms-day";
+import ThunderstormsNight from "../assets/weather-svg/thunderstorms-night";
 
-import * as SecureStore from "expo-secure-store";
 const Home = () => {
   const insets = useSafeAreaInsets();
   const { logout } = useContext(AuthContext);
@@ -69,26 +89,142 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const isDayTime = () => {
+    const currentHour = new Date().getHours();
+    return currentHour >= 6 && currentHour < 18; // Day is between 6 AM and 6 PM
+  };
+
   const getWeatherIcon = (condition, width = 40, height = 40) => {
     if (!condition) return null;
 
     const normalized = condition.trim().toLowerCase();
+    const isDay = isDayTime();
 
-    switch (normalized) {
-      case "clear":
-        return <ClearDay width={width} height={height} />;
-      case "sunny":
-        return <ClearDay width={width} height={height} />;
-      case "partly cloudy":
-        return <PartlyCloudyDay width={width} height={height} />;
-      case "patchy light drizzle":
-        return <Drizzle width={width} height={height} />;
-      case "light rain shower":
-      case "patchy rain nearby":
-        return <Rain width={width} height={height} />;
-      default:
-        return null;
-    }
+    const iconMap = {
+      sunny: isDay ? (
+        <ClearDay width={width} height={height} />
+      ) : (
+        <ClearNight width={width} height={height} />
+      ),
+      "partly cloudy": isDay ? (
+        <PartlyCloudyDay width={width} height={height} />
+      ) : (
+        <PartlyCloudyNight width={width} height={height} />
+      ),
+      cloudy: <Cloudy width={width} height={height} />,
+      overcast: isDay ? (
+        <OvercastDay width={width} height={height} />
+      ) : (
+        <OvercastNight width={width} height={height} />
+      ),
+      mist: <Mist width={width} height={height} />,
+
+      "patchy rain possible": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "Thundery outbreaks possible": isDay ? (
+        <ThunderstormsDay width={width} height={height} />
+      ) : (
+        <ThunderstormsNight width={width} height={height} />
+      ),
+
+      Fog: isDay ? (
+        <FogDay width={width} height={height} />
+      ) : (
+        <FogNight width={width} height={height} />
+      ),
+
+      "patchy rain nearby": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "patchy light drizzle": isDay ? (
+        <OvercastDayDrizzle width={width} height={height} />
+      ) : (
+        <OvercastNightDrizzle width={width} height={height} />
+      ),
+
+      "light drizzle": isDay ? (
+        <OvercastDayDrizzle width={width} height={height} />
+      ) : (
+        <OvercastNightDrizzle width={width} height={height} />
+      ),
+
+      "patchy light rain": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "light rain": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "moderate rain at times": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "moderate rain": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "heavy rain at times": isDay ? (
+        <ExtremeDayRain width={width} height={height} />
+      ) : (
+        <ExtremeNightRain width={width} height={height} />
+      ),
+
+      "heavy rain": isDay ? (
+        <ExtremeDayRain width={width} height={height} />
+      ) : (
+        <ExtremeNightRain width={width} height={height} />
+      ),
+
+      "light rain shower": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "Moderate or heavy rain shower": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "Torrential rain shower": isDay ? (
+        <Rain width={width} height={height} />
+      ) : (
+        <Rain width={width} height={height} />
+      ),
+
+      "patchy light rain with thunder": isDay ? (
+        <ThunderstormsDayRain width={width} height={height} />
+      ) : (
+        <ThunderstormsNightRain width={width} height={height} />
+      ),
+
+      "moderate or heavy rain with thunder": isDay ? (
+        <ThunderstormsDayExtremeRain width={width} height={height} />
+      ) : (
+        <ThunderstormsNightExtremeRain width={width} height={height} />
+      ),
+
+      default: <ClearDay width={width} height={height} />,
+    };
+
+    return iconMap[normalized] || iconMap["default"];
   };
 
   //Background changes based on the condition
@@ -116,8 +252,72 @@ const Home = () => {
     setShowDropdown((prev) => !prev);
   };
 
+  const viewEmergencyHotlines = async () => {
+    const action = "Emergency Hotlines";
+    const description = "User viewed emergency hotlines.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("EmergencyHotlines");
+    } catch (error) {
+      console.log("Error in viewing emergency hotlines", error);
+    }
+  };
+
+  const viewReadiness = async () => {
+    const action = "Readiness";
+    const description = "User viewed readiness.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("Readiness");
+    } catch (error) {
+      console.log("Error in viewing readiness", error);
+    }
+  };
+
+  const viewWeather = async () => {
+    const action = "Weather";
+    const description = "User viewed weather.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("Weather");
+    } catch (error) {
+      console.log("Error in viewing weather", error);
+    }
+  };
+
+  const viewCalendar = async () => {
+    const action = "Barangay Calendar";
+    const description = "User viewed barangay calendar.";
+    try {
+      await api.post("/logactivity", { action, description });
+      navigation.navigate("BrgyCalendar");
+    } catch (error) {
+      console.log("Error in viewing barangay calendar", error);
+    }
+  };
+
+  const handleConfirm = () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            logout();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   return (
-    //to allow detection of taps anywhere outside the dropdown
+    // To allow detection of taps anywhere outside the dropdown
     <TouchableWithoutFeedback
       onPress={() => {
         setShowDropdown(false);
@@ -127,10 +327,7 @@ const Home = () => {
       <SafeAreaView
         style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
+        <>
           <ScrollView
             contentContainerStyle={[
               MyStyles.scrollContainer,
@@ -157,9 +354,7 @@ const Home = () => {
               <View style={{ position: "relative" }}>
                 <TouchableOpacity onPress={toggleProfile}>
                   <Image
-                    source={{
-                      uri: user.picture,
-                    }}
+                    source={{ uri: user.picture }}
                     style={MyStyles.profilePic}
                   />
                 </TouchableOpacity>
@@ -208,7 +403,6 @@ const Home = () => {
                           color: "#04384E",
                           fontFamily: "QuicksandBold",
                         }}
-                        onPress={() => navigation.navigate("AccountSettings")}
                       >
                         Account Settings
                       </Text>
@@ -217,7 +411,7 @@ const Home = () => {
                     <TouchableOpacity
                       onPress={() => {
                         setShowDropdown(false);
-                        logout(navigation);
+                        handleConfirm();
                       }}
                       style={{
                         paddingVertical: 8,
@@ -244,7 +438,7 @@ const Home = () => {
 
             <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("BrgyCalendar")}
+                onPress={viewCalendar}
                 style={[
                   MyStyles.card,
                   {
@@ -254,45 +448,44 @@ const Home = () => {
                   },
                 ]}
               >
-                <Text
-                  style={{
-                    color: "#BC0F0F",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                  }}
-                >
-                  {currentDate.toLocaleString("en-US", { month: "long" })}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 35,
-                    fontWeight: "bold",
-                    color: "#04384E",
-                    fontFamily: "REMRegular",
-                  }}
-                >
-                  {currentDate.getDate()}
-                </Text>
-
-                {currentEvents?.map((event, index) => (
+                <ScrollView horizontal={false} style={{ marginTop: 5 }}>
                   <Text
-                    key={index}
                     style={{
-                      fontSize: 14,
-                      color: "#ACACAC",
-                      marginRight: 10, // space between items
+                      color: "#BC0F0F",
+                      fontSize: 20,
+                      fontFamily: "REMSemiBold",
                     }}
                   >
-                    {event.title}
-                    {index !== currentEvents.length - 1 ? "," : ""}{" "}
+                    {currentDate.toLocaleString("en-US", { month: "long" })}
                   </Text>
-                ))}
+                  <Text
+                    style={{
+                      fontSize: 35,
+                      fontWeight: "bold",
+                      color: "#04384E",
+                      fontFamily: "REMRegular",
+                    }}
+                  >
+                    {currentDate.getDate()}
+                  </Text>
+
+                  {currentEvents?.map((event, index) => (
+                    <Text
+                      key={index}
+                      style={{
+                        fontSize: 14,
+                        color: "#ACACAC",
+                        marginRight: 10,
+                      }}
+                    >
+                      {event.title}
+                      {index !== currentEvents.length - 1 ? "," : ""}{" "}
+                    </Text>
+                  ))}
+                </ScrollView>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Weather")}
-                style={MyStyles.card}
-              >
+              <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
                 <LinearGradient
                   colors={getGradientColors(weather.currentcondition)}
                   start={{ x: 0.5, y: 0 }}
@@ -356,12 +549,7 @@ const Home = () => {
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={[
-                      MyStyles.rowAlignment,
-                      {
-                        gap: 10,
-                      },
-                    ]}
+                    contentContainerStyle={[MyStyles.rowAlignment, { gap: 10 }]}
                   >
                     <TouchableOpacity
                       onPress={() => navigation.navigate("Certificates")}
@@ -373,7 +561,7 @@ const Home = () => {
                           style={MyStyles.servicesImg}
                         />
                       </View>
-                      <Text style={MyStyles.servicesTitle}>Certificate</Text>
+                      <Text style={MyStyles.servicesTitle}>Document</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -423,27 +611,69 @@ const Home = () => {
             >
               Emergency Tools
             </Text>
-            <View
-              style={{
-                flexDirection: "column",
-                gap: 10,
-              }}
-            >
-              <TouchableOpacity
-                style={MyStyles.sosContainer}
-                onPress={() => navigation.navigate("SOS")}
-              >
-                <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
-                  SOS
-                </Text>
-              </TouchableOpacity>
+            <View style={{ flexDirection: "column", gap: 10 }}>
+              <View>
+                {user.role !== "Resident" && (
+                  <View style={{ flexDirection: "column", gap: 10 }}>
+                    <TouchableOpacity style={MyStyles.sosContainer}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          width: "80%",
+                          marginLeft: 30,
+                        }}
+                      >
+                        <Image source={SOS} style={MyStyles.servicesImg} />
+                        <Text
+                          style={[
+                            MyStyles.emergencyTitle,
+                            { fontSize: 25, marginLeft: 15 },
+                          ]}
+                        >
+                          SOS REQUESTS
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                }}
-              >
+                    <TouchableOpacity style={MyStyles.sosContainer}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          width: "80%",
+                          marginLeft: 30,
+                        }}
+                      >
+                        <Image source={Check} style={MyStyles.servicesImg} />
+                        <Text
+                          style={[
+                            MyStyles.emergencyTitle,
+                            { fontSize: 25, marginLeft: 15 },
+                          ]}
+                        >
+                          RESPONDED SOS
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+
+              {user.role === "Resident" && (
+                <TouchableOpacity
+                  style={MyStyles.sosContainer}
+                  onPress={() => navigation.navigate("SOS")}
+                >
+                  <Text style={[MyStyles.emergencyTitle, { fontSize: 60 }]}>
+                    SOS
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              <View style={{ flexDirection: "row", gap: 10 }}>
                 <TouchableOpacity
                   style={[
                     MyStyles.sosContainer,
@@ -453,20 +683,21 @@ const Home = () => {
                       alignItems: "center",
                     },
                   ]}
+                  onPress={viewReadiness}
                 >
                   <MaterialCommunityIcons
                     name="lightbulb-on"
                     size={50}
                     color="#fff"
                   />
-                  <Text style={MyStyles.emergencyTitle}>SAFETY TIPS</Text>
+                  <Text style={MyStyles.emergencyTitle}>READINESS</Text>
                   <Text style={MyStyles.emergencyMessage}>
                     Stay Smart, Stay Safe
                   </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("EmergencyHotlines")}
+                  onPress={viewEmergencyHotlines}
                   style={[
                     MyStyles.sosContainer,
                     {
@@ -484,7 +715,10 @@ const Home = () => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={MyStyles.sosContainer}>
+              <TouchableOpacity
+                style={MyStyles.sosContainer}
+                onPress={() => navigation.navigate("RiverSnapshots")}
+              >
                 <View
                   style={{
                     flexDirection: "row",
@@ -508,7 +742,40 @@ const Home = () => {
               </TouchableOpacity>
             </View>
           </ScrollView>
-        </KeyboardAvoidingView>
+
+          {user.role === "Resident" && (
+            <>
+              {/* Fixed Floating Chat Button */}
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Chat")}
+                style={{
+                  position: "absolute",
+                  bottom: insets.bottom + 60,
+                  right: 20,
+                  backgroundColor: "#fff",
+                  width: 60,
+                  height: 60,
+                  borderRadius: 30,
+                  elevation: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View onPress={() => navigation.navigate("Chat")}>
+                  <Ionicons
+                    name="chatbubble-ellipses"
+                    size={30}
+                    color="#0E94D3"
+                  />
+                </View>
+              </TouchableOpacity>
+            </>
+          )}
+        </>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

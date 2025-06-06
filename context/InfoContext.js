@@ -8,6 +8,7 @@ import { SocketContext } from "./SocketContext";
 export const InfoContext = createContext(undefined);
 
 export const InfoProvider = ({ children }) => {
+  const { isAuthenticated, setUserStatus, user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
@@ -17,44 +18,7 @@ export const InfoProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState([]);
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
-
-  // useEffect(() => {
-  //   if (!user?.userID) return;
-  //   const newSocket = io("https://ebarrio-mobile-backend.onrender.com");
-
-  //   newSocket.on("connect", () => {
-  //     console.log("✅ Socket connected:", newSocket.id);
-  //   });
-
-  //   newSocket.on("connect_error", (err) => {
-  //     console.error("❌ Socket connection error:", err.message);
-  //   });
-
-  //   newSocket.on("mobile-dbChange", (updatedData) => {
-  //     console.log(
-  //       `[${new Date().toISOString()}] 📦 Received dbChange payload:`,
-  //       updatedData
-  //     );
-
-  //     if (updatedData.type === "announcements") {
-  //       setAnnouncements(updatedData.data);
-  //       console.log("✅ Announcements updated.");
-  //     } else if (updatedData.type === "services") {
-  //       setServices(updatedData.data);
-  //       console.log("✅ Services updated.");
-  //     } else {
-  //       console.warn("⚠️ Unhandled update type:", updatedData.type);
-  //     }
-  //   });
-
-  //   newSocket.onAny((event, ...args) => {
-  //     console.log(`📡 [SOCKET] Event received: ${event}`, args);
-  //   });
-
-  //   setSocket(newSocket);
-
-  //   return () => newSocket.disconnect();
-  // }, [user]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -64,26 +28,28 @@ export const InfoProvider = ({ children }) => {
     if (announcements) {
       const announcementEvents = (announcements || [])
         .filter((a) => a.status !== "Archived")
-        .filter((a) => a.eventStart && a.eventEnd)
-        .map((a) => ({
-          title: a.title,
-          start: new Date(a.eventStart),
-          end: new Date(a.eventEnd),
-          color:
-            a.category === "General"
-              ? "#FF0000"
-              : a.category === "Health & Sanitation"
-              ? "#FA7020"
-              : a.category === "Public Safety & Emergency"
-              ? "#FFB200"
-              : a.category === "Education & Youth"
-              ? "#0E94D3"
-              : a.category === "Social Services"
-              ? "#CF0ED3"
-              : a.category === "Infrastructure"
-              ? "#06D001"
-              : "#3174ad",
-        }));
+        .filter((a) => a.times)
+        .flatMap((a) =>
+          Object.entries(a.times).map(([dateKey, timeObj]) => ({
+            title: a.title,
+            start: new Date(timeObj.starttime),
+            end: new Date(timeObj.endtime),
+            backgroundColor:
+              a.category === "General"
+                ? "#4A90E2"
+                : a.category === "Health & Sanitation"
+                ? "#7ED321"
+                : a.category === "Public Safety & Emergency"
+                ? "#FF0000"
+                : a.category === "Education & Youth"
+                ? "#FFD942"
+                : a.category === "Social Services"
+                ? "#B3B6B7"
+                : a.category === "Infrastructure"
+                ? "#EC9300"
+                : "#3174ad",
+          }))
+        );
 
       setEvents(announcementEvents);
     }
@@ -92,6 +58,31 @@ export const InfoProvider = ({ children }) => {
   useEffect(() => {
     fetchEmergencyHotlines();
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUsers();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (users && user) {
+      users.map((usr) => {
+        if (usr._id === user.userID) {
+          setUserStatus(usr.status);
+        }
+      });
+    }
+  }, [users, user]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get("/getusers");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch users:", error);
+    }
+  };
 
   const fetchUserDetails = async () => {
     try {
@@ -168,6 +159,10 @@ export const InfoProvider = ({ children }) => {
         setAnnouncements(updatedData.data);
       } else if (updatedData.type === "services") {
         setServices(updatedData.data);
+      } else if (updatedData.type === "emergencyhotlines") {
+        setEmergencyHotlines(updatedData.data);
+      } else if (updatedData.type === "users") {
+        setUsers(updatedData.data);
       }
     };
 

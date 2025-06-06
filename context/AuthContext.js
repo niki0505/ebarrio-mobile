@@ -12,14 +12,22 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const [userStatus, setUserStatus] = useState(null);
+
+  useEffect(() => {
+    if (userStatus && userStatus === "Deactivated") {
+      autologout();
+    } else if (userStatus && userStatus === "Archived") {
+      autologout2();
+    } else if (userStatus && userStatus === "Password Not Set") {
+      autologout3();
+    }
+  }, [userStatus]);
 
   useEffect(() => {
     const checkRefreshToken = async () => {
       const refreshToken = await SecureStore.getItemAsync("refreshToken");
-      console.log("Got Refresh Token", refreshToken);
-      console.log(isAuthenticated);
       if (!refreshToken) {
-        console.log("No refresh token found. User needs to login.");
         setIsAuthenticated(false);
         return;
       }
@@ -40,6 +48,55 @@ export const AuthProvider = ({ children }) => {
     };
     checkRefreshToken();
   }, []);
+
+  const autologout3 = async () => {
+    try {
+      await api.post(`/updateduser`);
+      alert(
+        "You've been logged out because your account credentials has been updated. If this is unexpected, please contact the admin."
+      );
+      await SecureStore.deleteItemAsync("refreshToken");
+      await SecureStore.deleteItemAsync("accessToken");
+      setUser(null);
+      setIsAuthenticated(false);
+      navigation("Login");
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const autologout2 = async () => {
+    try {
+      await api.post(`/archiveduser/${user.userID}`);
+      alert(
+        "You've been logged out because your account has been archived. If this is unexpected, please contact the admin."
+      );
+      await SecureStore.deleteItemAsync("refreshToken");
+      await SecureStore.deleteItemAsync("accessToken");
+      setUser(null);
+      setIsAuthenticated(false);
+      navigation("Login");
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const autologout = async () => {
+    try {
+      await api.post(`/deactivateduser`);
+      alert(
+        "You've been logged out because your account has been deactivated. If this is unexpected, please contact the admin."
+      );
+      await SecureStore.deleteItemAsync("refreshToken");
+      await SecureStore.deleteItemAsync("accessToken");
+      setUser(null);
+      setIsAuthenticated(false);
+      navigation("Login");
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
   const login = async (credentials) => {
     try {
       const res = await axios.post(
@@ -68,9 +125,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const res = await api.post("/logout", {
-        userID: user.userID,
-      });
+      await api.post("/logout");
       await SecureStore.deleteItemAsync("refreshToken");
       await SecureStore.deleteItemAsync("accessToken");
       setUser(null);
@@ -91,6 +146,7 @@ export const AuthProvider = ({ children }) => {
         user,
         login,
         isAuthenticated,
+        setUserStatus,
         isFirstLaunch,
         logout,
         setIsAuthenticated,

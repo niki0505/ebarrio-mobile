@@ -100,9 +100,9 @@ const Preview = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#fff" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={handleSignUp}
         style={MyStyles.button}
         accessibilityLabel="Join the community"
@@ -117,7 +117,7 @@ const Preview = () => {
         >
           Join Us
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {/* Slides Section */}
       <View
         style={{

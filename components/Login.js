@@ -43,15 +43,15 @@ const Login = () => {
       });
       if (res.status === 200) {
         if (res.data.message === "Credentials verified") {
-          await login({ username, password });
-          // const response = await api.get(`/getmobilenumber/${username}`);
-          // sendOTP(username, response.data.mobilenumber);
-          // navigation.navigate("OTP", {
-          //   navigatelink: "BottomTabs",
-          //   username,
-          //   mobilenumber: response.data.mobilenumber,
-          //   password: password,
-          // });
+          // await login({ username, password });
+          const response = await api.get(`/getmobilenumber/${username}`);
+          sendOTP(username, response.data.mobilenumber);
+          navigation.navigate("OTP", {
+            navigatelink: "BottomTabs",
+            username,
+            mobilenumber: response.data.mobilenumber,
+            password: password,
+          });
         } else if (res.data.message === "Token verified successfully!") {
           navigation.navigate("SetPassword", {
             username,
@@ -71,7 +71,7 @@ const Login = () => {
   };
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <View style={{ flex: 4, backgroundColor: "#04384E" }}>
         <View style={{ flex: 1, alignSelf: "center" }}>
@@ -133,7 +133,6 @@ const Login = () => {
                 secureTextEntry={secureLoginPass}
                 style={[
                   MyStyles.input,
-                  MyStyles.inputLabel,
                   {
                     paddingLeft: 40,
                     paddingRight: 40,

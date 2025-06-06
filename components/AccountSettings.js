@@ -85,7 +85,7 @@ const AccountSettings = () => {
             onLoad={() => setImageLoaded(true)}
             style={[
               MyStyles.profilePic,
-              { width: 60, height: 60, borderRadius: 40 },
+              { width: 150, height: 150, borderRadius: 75 },
             ]}
           />
           <Text
@@ -258,107 +258,6 @@ const AccountSettings = () => {
 
             <MaterialIcons name="navigate-next" size={24} color="gray" />
           </TouchableOpacity>
-        </View>
-
-        <View style={{ marginTop: 30 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: "#808080",
-              fontFamily: "QuicksandBold",
-            }}
-          >
-            Preferences
-          </Text>
-
-          <View style={{ gap: 20 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons
-                  name="notifications-outline"
-                  size={20}
-                  color="#808080"
-                  style={{
-                    backgroundColor: "#E5E4E2B3",
-                    borderRadius: 10,
-                    padding: 5,
-                  }}
-                />
-
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
-                    marginLeft: 15,
-                  }}
-                >
-                  Notification
-                </Text>
-              </View>
-
-              <Switch
-                value={pushNotifEnabled}
-                onValueChange={setPushNotifEnabled}
-                trackColor={{ false: "#ccc", true: "#04384E" }}
-                thumbColor={pushNotifEnabled ? "#ffffff" : "#f4f3f4"}
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: "-15",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons
-                  name="location-outline"
-                  size={20}
-                  color="#808080"
-                  style={{
-                    backgroundColor: "#E5E4E2B3",
-                    borderRadius: 10,
-                    padding: 5,
-                  }}
-                />
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
-                    marginLeft: 15,
-                  }}
-                >
-                  Location
-                </Text>
-              </View>
-              <Switch
-                value={appNotifEnabled}
-                onValueChange={setAppNotifEnabled}
-                trackColor={{ false: "#ccc", true: "#04384E" }}
-                thumbColor={appNotifEnabled ? "#ffffff" : "#f4f3f4"}
-              />
-            </View>
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

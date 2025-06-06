@@ -83,7 +83,6 @@ const OTP = ({}) => {
             username,
             password,
             resID,
-            securityquestions,
           });
           navigation.navigate("Login");
         } catch (error) {

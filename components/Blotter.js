@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   Alert,
@@ -14,7 +13,6 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { Dropdown } from "react-native-element-dropdown";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import api from "../api";
 import { InfoContext } from "../context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,24 +23,79 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 const Blotter = () => {
   const insets = useSafeAreaInsets();
-  const { logout, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { fetchResidents, residents } = useContext(InfoContext);
   const navigation = useNavigation();
   const [subjectSuggestions, setSubjectSuggestions] = useState([]);
-  const [blotterForm, setBlotterForm] = useState({
+  const [typeErrors, setTypeErrors] = useState(null);
+  const [subjectError, setSubjectError] = useState(null);
+  const [detailsError, setDetailsError] = useState(null);
+  const initialForm = {
     complainantID: user.resID,
     subjectID: "",
     subjectname: "",
     subjectaddress: "",
     typeofthecomplaint: "",
     details: "",
-  });
+  };
+
+  const [blotterForm, setBlotterForm] = useState(initialForm);
 
   useEffect(() => {
     fetchResidents();
   }, []);
 
   const typeList = ["Theft", "Assault", "Physical Injury", "Missing Person"];
+
+  const handleConfirm = async () => {
+    let hasError = false;
+
+    if (!blotterForm.typeofthecomplaint) {
+      setTypeErrors("This field is required.");
+      hasError = true;
+    } else {
+      setTypeErrors(null);
+    }
+
+    if (!blotterForm.subjectID) {
+      if (!blotterForm.subjectname) {
+        setSubjectError("This field is required.");
+        hasError = true;
+      } else {
+        setSubjectError(null);
+      }
+    } else {
+      setSubjectError(null);
+    }
+    if (!blotterForm.details) {
+      setDetailsError("This field is required.");
+      hasError = true;
+    } else {
+      setDetailsError(null);
+    }
+
+    if (hasError) {
+      return;
+    }
+
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to file a blotter?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSubmit();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   const handleSubmit = async () => {
     let updatedForm = { ...blotterForm };
@@ -56,7 +109,10 @@ const Blotter = () => {
       await api.post("/sendblotter", {
         updatedForm,
       });
-      Alert.alert("Blotter submitted successfully!");
+      setBlotterForm(initialForm);
+      navigation.navigate("SuccessfulPage", {
+        service: "Blotter",
+      });
     } catch (error) {
       console.log("Error", error);
     }
@@ -67,6 +123,7 @@ const Blotter = () => {
       ...prev,
       [name]: value.value,
     }));
+    setTypeErrors(null);
   };
 
   const handleInputChange = (name, value) => {
@@ -74,6 +131,12 @@ const Blotter = () => {
       ...prev,
       [name]: value,
     }));
+    if (name === "subjectname") {
+      setSubjectError(!value ? "This field is required." : null);
+    }
+    if (name === "details") {
+      setDetailsError(!value ? "This field is required." : null);
+    }
   };
 
   const handleSubjectChange = (value) => {
@@ -91,6 +154,10 @@ const Blotter = () => {
       subjectID: "",
       subjectaddress: "",
     }));
+
+    if (blotterForm.subjectname) {
+      setSubjectError(!value ? "This field is required." : null);
+    }
   };
 
   const handleSubjectSuggestionClick = (res) => {
@@ -104,11 +171,9 @@ const Blotter = () => {
       subjectname: fullName,
       subjectaddress: res.address,
     }));
-
+    setSubjectError(null);
     setSubjectSuggestions([]);
   };
-
-  console.log(blotterForm);
 
   return (
     <SafeAreaView
@@ -122,7 +187,7 @@ const Blotter = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
+              paddingBottom: 20,
               gap: 10,
             },
           ]}
@@ -171,14 +236,25 @@ const Blotter = () => {
                 }
                 style={MyStyles.input}
               ></Dropdown>
+              {typeErrors ? (
+                <Text
+                  style={{
+                    color: "red",
+                    fontFamily: "QuicksandMedium",
+                    fontSize: 16,
+                  }}
+                >
+                  {typeErrors}
+                </Text>
+              ) : null}
             </View>
 
             <View>
               <Text style={MyStyles.inputLabel}>
-                Subject Name<Text style={{ color: "red" }}>*</Text>
+                Name of the Accused<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
-                placeholder="Enter subject name"
+                placeholder="Name of the Accused"
                 style={MyStyles.input}
                 value={blotterForm.subjectname}
                 type="text"
@@ -204,16 +280,26 @@ const Blotter = () => {
                     })}
                   </View>
                 )}
+              {subjectError ? (
+                <Text
+                  style={{
+                    color: "red",
+                    fontFamily: "QuicksandMedium",
+                    fontSize: 16,
+                  }}
+                >
+                  {subjectError}
+                </Text>
+              ) : null}
             </View>
 
             <View>
-              <Text style={MyStyles.inputLabel}>
-                Subject Address<Text style={{ color: "red" }}>*</Text>
-              </Text>
+              <Text style={MyStyles.inputLabel}>Address of the Accused</Text>
               <TextInput
-                placeholder="Enter subject address"
+                placeholder="Address of the Accused"
                 style={MyStyles.input}
                 value={blotterForm.subjectaddress}
+                editable={!blotterForm.subjectID}
                 type="text"
                 onChangeText={(text) =>
                   handleInputChange("subjectaddress", text)
@@ -226,26 +312,56 @@ const Blotter = () => {
                 Details of the Incident<Text style={{ color: "red" }}>*</Text>
               </Text>
               <TextInput
-                placeholder="Enter details of the accident"
-                style={MyStyles.input}
+                placeholder="Details of the Incident"
+                style={[
+                  MyStyles.input,
+                  { height: 150, textAlignVertical: "top" },
+                ]}
                 value={blotterForm.details}
                 type="text"
+                multiline={true}
+                numberOfLines={4}
                 maxLength={3000}
                 onChangeText={(text) => handleInputChange("details", text)}
               />
-              <Text
+
+              <View
                 style={{
-                  textAlign: "right",
-                  color: "#808080",
-                  fontFamily: "QuicksandSemiBold",
+                  display: "flex",
+                  flexDirection: "row",
+                  marginTop: 8,
+                  justifyContent: "space-between",
                 }}
               >
-                {blotterForm.details.length}/3000
-              </Text>
+                {detailsError ? (
+                  <Text
+                    style={{
+                      color: "red",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
+                  >
+                    {detailsError}
+                  </Text>
+                ) : (
+                  <View style={{ flex: 1 }} />
+                )}
+
+                <Text
+                  style={{
+                    color: "#808080",
+                    fontFamily: "QuicksandSemiBold",
+                    fontSize: 16,
+                    textAlign: "right",
+                  }}
+                >
+                  {blotterForm.details.length}/3000
+                </Text>
+              </View>
             </View>
           </View>
 
-          <TouchableOpacity style={MyStyles.button} onPress={handleSubmit}>
+          <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
             <Text style={MyStyles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </ScrollView>
