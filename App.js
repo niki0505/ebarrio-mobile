@@ -57,6 +57,7 @@ import RiverSnapshots from "./components/RiverSnapshots";
 import SOSStatusPage from "./components/SOSStatusPage";
 import Chat from "./components/Chat";
 import TermsConditions from "./components/TermsConditions";
+import ResidentForm from "./components/ResidentForm";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -270,6 +271,13 @@ export default function App() {
                     <Stack.Screen
                       name="Signup"
                       children={() => <PublicRoute element={<Signup />} />}
+                    />
+
+                    <Stack.Screen
+                      name="ResidentForm"
+                      children={() => (
+                        <PublicRoute element={<ResidentForm />} />
+                      )}
                     />
                     <Stack.Screen
                       name="OTP"

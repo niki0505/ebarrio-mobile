@@ -4,6 +4,7 @@ import * as SecureStore from "expo-secure-store";
 import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
 import { SocketContext } from "./SocketContext";
+import axios from "axios";
 
 export const InfoContext = createContext(undefined);
 
