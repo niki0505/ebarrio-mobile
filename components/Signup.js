@@ -565,6 +565,19 @@ const Signup = () => {
                 </View>
               </View>
 
+              <Text
+                onPress={() => navigation.navigate("ResidentForm")}
+                style={{
+                  color: "#006EFF",
+                  alignSelf: "flex-start",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                  marginBottom: 15,
+                }}
+              >
+                Resident
+              </Text>
+
               <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>
                 <Text style={MyStyles.buttonText}>Sign up</Text>
               </TouchableOpacity>
