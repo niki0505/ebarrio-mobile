@@ -26,6 +26,7 @@
     "expo-notifications": "~0.31.2",
     "expo-secure-store": "~14.2.3",
     "expo-status-bar": "~2.2.3",
+    "firebase": "^11.9.1",
     "jwt-decode": "^4.0.0",
     "lottie-react-native": "^7.2.2",
     "react": "^19.0.0",
