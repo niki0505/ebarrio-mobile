@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Pressable,
+  FlatList,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -21,6 +22,8 @@ import AppLogo from "../assets/applogo-darkbg.png";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
+import { storage } from "../firebase";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
 //ICONS
 import { useState, useEffect, useContext } from "react";
@@ -100,6 +103,16 @@ const ResidentForm = () => {
     haveFPmethod: false,
     fpmethod: "",
     fpstatus: "",
+  });
+  const [householdForm, setHouseholdForm] = useState({
+    members: [],
+    vehicles: [],
+    ethnicity: "",
+    tribe: "",
+    sociostatus: "",
+    nhtsno: "",
+    watersource: "",
+    toiletfacility: "",
   });
 
   // DROPDOWN VALUES
@@ -300,6 +313,32 @@ const ResidentForm = () => {
     "Overhung Latrine",
     "Open Pit Latrine",
     "Without Toilet",
+  ];
+
+  const kindOptions = [
+    { label: "Sedan", value: "Sedan" },
+    { label: "SUV", value: "SUV" },
+    { label: "Motorcycle", value: "Motorcycle" },
+    { label: "Van", value: "Van" },
+    { label: "Truck", value: "Truck" },
+    { label: "Tricycle", value: "Tricycle" },
+    { label: "Bicycle", value: "Bicycle" },
+    { label: "Other", value: "Other" },
+  ];
+
+  const positionList = [
+    { label: "Select", value: "" },
+    { label: "Spouse", value: "Spouse" },
+    { label: "Child", value: "Child" },
+    { label: "Parent", value: "Parent" },
+    { label: "Sibling", value: "Sibling" },
+    { label: "Grandparent", value: "Grandparent" },
+    { label: "Grandchild", value: "Grandchild" },
+    { label: "In-law", value: "In-law" },
+    { label: "Relative", value: "Relative" },
+    { label: "Housemate", value: "Housemate" },
+    { label: "Househelp", value: "Househelp" },
+    { label: "Other", value: "Other" },
   ];
 
   useEffect(() => {
@@ -544,7 +583,242 @@ const ResidentForm = () => {
     });
   };
 
+  const handleHouseholdRadioChange = (name, value) => {
+    setHouseholdForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleHouseholdInputChange = (name, value) => {
+    setHouseholdForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleHouseholdDropdownChange = (name, value) => {
+    setHouseholdForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const addVehicle = () => {
+    setHouseholdForm((prev) => ({
+      ...prev,
+      vehicles: [
+        ...prev.vehicles,
+        { model: "", color: "", kind: "", platenumber: "" },
+      ],
+    }));
+  };
+
+  const removeVehicle = (index) => {
+    setHouseholdForm((prev) => ({
+      ...prev,
+      vehicles: prev.vehicles.filter((_, i) => i !== index),
+    }));
+  };
+  const handleVehicleChange = (index, field, value) => {
+    const updatedVehicles = [...householdForm.vehicles];
+    updatedVehicles[index][field] = value;
+    setHouseholdForm((prev) => ({
+      ...prev,
+      vehicles: updatedVehicles,
+    }));
+  };
+
+  const [memberSuggestions, setMemberSuggestions] = useState([[]]);
+
+  const handleMemberChange = (index, field, value) => {
+    const updatedMembers = [...householdForm.members];
+
+    if (field === "resident") {
+      updatedMembers[index] = {
+        ...updatedMembers[index],
+        resident: value,
+        resID: "",
+      };
+
+      setHouseholdForm((prev) => ({
+        ...prev,
+        members: updatedMembers,
+      }));
+
+      if (value.trim() === "") {
+        setMemberSuggestions((prev) => {
+          const newSuggestions = [...prev];
+          newSuggestions[index] = [];
+          return newSuggestions;
+        });
+        return;
+      }
+
+      const matches = residents
+        .filter((r) => !r.householdno)
+        .filter((res) => {
+          const fullName = `${res.firstname} ${
+            res.middlename ? res.middlename + " " : ""
+          }${res.lastname}`.toLowerCase();
+          return fullName.includes(value.toLowerCase());
+        });
+
+      setMemberSuggestions((prev) => {
+        const newSuggestions = [...prev];
+        newSuggestions[index] = matches;
+        return newSuggestions;
+      });
+    } else {
+      updatedMembers[index][field] = value;
+      setHouseholdForm((prev) => ({
+        ...prev,
+        members: updatedMembers,
+      }));
+    }
+  };
+
+  const handleMemberSuggestionClick = (index, res) => {
+    const fullName = `${res.firstname} ${
+      res.middlename ? res.middlename + " " : ""
+    }${res.lastname}`;
+
+    const updatedMembers = [...householdForm.members];
+    updatedMembers[index] = {
+      ...updatedMembers[index],
+      resident: fullName,
+      resID: res._id,
+    };
+
+    setHouseholdForm((prev) => ({
+      ...prev,
+      members: updatedMembers,
+    }));
+
+    setMemberSuggestions((prev) => {
+      const newSuggestions = [...prev];
+      newSuggestions[index] = [];
+      return newSuggestions;
+    });
+  };
+
+  const addMember = () => {
+    setHouseholdForm((prev) => ({
+      ...prev,
+      members: [...prev.members, { resident: "", position: "", resID: "" }],
+    }));
+    setMemberSuggestions((prev) => [...prev, []]);
+  };
+
+  const removeMember = (index) => {
+    setHouseholdForm((prev) => ({
+      ...prev,
+      members: prev.members.filter((_, i) => i !== index),
+    }));
+    setMemberSuggestions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  useEffect(() => {
+    if (residentForm.birthdate) {
+      const birthDate = new Date(residentForm.birthdate);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      const dayDiff = today.getDate() - birthDate.getDate();
+
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+
+      const isSenior =
+        age > 60 ||
+        (age === 60 && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
+
+      const isInfant = age === 0;
+      const isChild = age >= 1 && age <= 17;
+
+      setResidentForm((prev) => ({
+        ...prev,
+        age,
+        isSenior,
+        isInfant,
+        isChild,
+      }));
+    }
+  }, [residentForm.birthdate]);
+
+  function formatToDateOnly(isoString) {
+    const date = new Date(isoString);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  async function uploadToFirebase(url) {
+    const randomString = Math.random().toString(36).substring(2, 15);
+    const fileName = `id_images/${Date.now()}_${randomString}.png`;
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = new File([blob], fileName, { type: blob.type });
+    const storageRef = ref(storage, fileName);
+    await uploadBytes(storageRef, file);
+
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  }
+
+  const handleSubmit = async () => {
+    try {
+      const fulladdress = `${residentForm.housenumber} ${residentForm.street} Aniban 2, Bacoor, Cavite`;
+      const idPicture = await uploadToFirebase(residentForm.id);
+      const signaturePicture = await uploadToFirebase(residentForm.signature);
+
+      let formattedMobileNumber = residentForm.mobilenumber;
+      formattedMobileNumber = "0" + residentForm.mobilenumber.slice(3);
+
+      let formattedEmergencyMobileNumber = residentForm.emergencymobilenumber;
+      formattedEmergencyMobileNumber =
+        "0" + residentForm.emergencymobilenumber.slice(3);
+
+      let formattedTelephone = residentForm.telephone;
+      if (residentForm.telephone !== "+63") {
+        formattedTelephone = "0" + residentForm.telephone.slice(3);
+        delete residentForm.telephone;
+      } else {
+        formattedTelephone = "";
+      }
+
+      delete residentForm.mobilenumber;
+      delete residentForm.emergencymobilenumber;
+      delete residentForm.id;
+      delete residentForm.signature;
+
+      const updatedResidentForm = {
+        ...residentForm,
+        address: fulladdress,
+        mobilenumber: formattedMobileNumber,
+        emergencymobilenumber: formattedEmergencyMobileNumber,
+        telephone: formattedTelephone,
+      };
+
+      const response = await axios.post(
+        "https://ebarrio-mobile-backend.onrender.com/api/createresident",
+        {
+          picture: idPicture,
+          signature: signaturePicture,
+          ...updatedResidentForm,
+          householdForm,
+        }
+      );
+      alert("Resident successfully created!");
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
   console.log(residentForm);
+  // console.log(householdForm);
 
   return (
     <SafeAreaView
@@ -831,9 +1105,9 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Age</Text>
                   <TextInput
+                    value={residentForm.age?.toString() || ""}
                     style={MyStyles.input}
-                    keyboardType="numeric"
-                    readOnly
+                    editable={false}
                   />
                 </View>
 
@@ -918,100 +1192,109 @@ const ResidentForm = () => {
                   ></Dropdown>
                 </View>
 
-                <View>
-                  <Text style={MyStyles.inputLabel}>Last Menstrual Period</Text>
-                  <DateTimePicker
-                    mode="date"
-                    display="default"
-                    value={residentForm.lastmenstrual || new Date()}
-                    onChange={(event, selectedDate) => {
-                      if (selectedDate) {
-                        handleInputChange("lastmenstrual", selectedDate);
-                      }
-                    }}
-                  />
-                </View>
+                {residentForm.sex === "Female" && (
+                  <>
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Last Menstrual Period
+                      </Text>
+                      <DateTimePicker
+                        mode="date"
+                        display="default"
+                        value={residentForm.lastmenstrual || new Date()}
+                        onChange={(event, selectedDate) => {
+                          if (selectedDate) {
+                            handleInputChange("lastmenstrual", selectedDate);
+                          }
+                        }}
+                      />
+                    </View>
 
-                <View>
-                  <Text style={MyStyles.inputLabel}>Using any FP method?</Text>
-                  <View style={styles.radioGroup}>
-                    {["Yes", "No"].map((option) => (
-                      <Pressable
-                        key={option}
-                        style={styles.radioOption}
-                        onPress={() => handleRadioChange("fpmethod", option)}
-                      >
-                        <View style={styles.radioCircle}>
-                          {residentForm.fpmethod === option && (
-                            <View style={styles.radioDot} />
-                          )}
-                        </View>
-                        <Text>{option}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </View>
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Using any FP method?
+                      </Text>
+                      <View style={styles.radioGroup}>
+                        {["Yes", "No"].map((option) => (
+                          <Pressable
+                            key={option}
+                            style={styles.radioOption}
+                            onPress={() =>
+                              handleRadioChange("fpmethod", option)
+                            }
+                          >
+                            <View style={styles.radioCircle}>
+                              {residentForm.fpmethod === option && (
+                                <View style={styles.radioDot} />
+                              )}
+                            </View>
+                            <Text>{option}</Text>
+                          </Pressable>
+                        ))}
+                      </View>
+                    </View>
 
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Family Planning Method
-                  </Text>
-                  <Dropdown
-                    labelField="label"
-                    valueField="value"
-                    value={residentForm.fpmethod}
-                    data={fpmethodList.map((purp) => ({
-                      label: purp,
-                      value: purp,
-                    }))}
-                    placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    onChange={(item) =>
-                      handleDropdownChange("fpmethod", item.value)
-                    }
-                    style={MyStyles.input}
-                  ></Dropdown>
-                </View>
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Family Planning Method
+                      </Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={residentForm.fpmethod}
+                        data={fpmethodList.map((purp) => ({
+                          label: purp,
+                          value: purp,
+                        }))}
+                        placeholder="Select"
+                        placeholderStyle={{
+                          color: "#808080",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        selectedTextStyle={{
+                          color: "#000",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        onChange={(item) =>
+                          handleDropdownChange("fpmethod", item.value)
+                        }
+                        style={MyStyles.input}
+                      ></Dropdown>
+                    </View>
 
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Family Planning Status
-                  </Text>
-                  <Dropdown
-                    labelField="label"
-                    valueField="value"
-                    value={residentForm.fpstatus}
-                    data={fpstatusList.map((purp) => ({
-                      label: purp,
-                      value: purp,
-                    }))}
-                    placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    onChange={(item) =>
-                      handleDropdownChange("fpstatus", item.value)
-                    }
-                    style={MyStyles.input}
-                  ></Dropdown>
-                </View>
-
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Family Planning Status
+                      </Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={residentForm.fpstatus}
+                        data={fpstatusList.map((purp) => ({
+                          label: purp,
+                          value: purp,
+                        }))}
+                        placeholder="Select"
+                        placeholderStyle={{
+                          color: "#808080",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        selectedTextStyle={{
+                          color: "#000",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        onChange={(item) =>
+                          handleDropdownChange("fpstatus", item.value)
+                        }
+                        style={MyStyles.input}
+                      ></Dropdown>
+                    </View>
+                  </>
+                )}
                 <View>
                   <Text style={MyStyles.inputLabel}>Blood Type</Text>
                   <Dropdown
@@ -1512,6 +1795,337 @@ const ResidentForm = () => {
                 </View>
 
                 {/* Household Information */}
+                <Text style={{ color: "red" }}>Household Information</Text>
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Head of the Household?
+                  </Text>
+                  <View style={styles.radioGroup}>
+                    {["Yes", "No"].map((option) => (
+                      <Pressable
+                        key={option}
+                        style={styles.radioOption}
+                        onPress={() => handleRadioChange("head", option)}
+                      >
+                        <View style={styles.radioCircle}>
+                          {residentForm.head === option && (
+                            <View style={styles.radioDot} />
+                          )}
+                        </View>
+                        <Text>{option}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </View>
+
+                {residentForm.head === "Yes" && (
+                  <>
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Ethnicity<Text style={{ color: "red" }}>*</Text>
+                      </Text>
+                      <View style={styles.radioGroup}>
+                        {["IP Household", "Non-IP Household"].map((option) => (
+                          <Pressable
+                            key={option}
+                            style={styles.radioOption}
+                            onPress={() =>
+                              handleHouseholdRadioChange("ethnicity", option)
+                            }
+                          >
+                            <View style={styles.radioCircle}>
+                              {householdForm.ethnicity === option && (
+                                <View style={styles.radioDot} />
+                              )}
+                            </View>
+                            <Text>{option}</Text>
+                          </Pressable>
+                        ))}
+                      </View>
+                    </View>
+
+                    {householdForm.ethnicity === "IP Household" && (
+                      <>
+                        <View>
+                          <Text style={MyStyles.inputLabel}>Tribe</Text>
+                          <TextInput
+                            style={MyStyles.input}
+                            value={householdForm.tribe}
+                            onChangeText={(text) =>
+                              handleHouseholdInputChange("tribe", text)
+                            }
+                          />
+                        </View>
+                      </>
+                    )}
+
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Socioeconomic Status
+                        <Text style={{ color: "red" }}>*</Text>
+                      </Text>
+                      <View style={styles.radioGroup}>
+                        {["NHTS 4Ps", "NHTS Non-4Ps", "Non-NHTS"].map(
+                          (option) => (
+                            <Pressable
+                              key={option}
+                              style={styles.radioOption}
+                              onPress={() =>
+                                handleHouseholdRadioChange(
+                                  "sociostatus",
+                                  option
+                                )
+                              }
+                            >
+                              <View style={styles.radioCircle}>
+                                {householdForm.sociostatus === option && (
+                                  <View style={styles.radioDot} />
+                                )}
+                              </View>
+                              <Text>{option}</Text>
+                            </Pressable>
+                          )
+                        )}
+                      </View>
+                    </View>
+
+                    {(householdForm.sociostatus === "NHTS 4Ps" ||
+                      householdForm.sociostatus === "NHTS Non-4Ps") && (
+                      <>
+                        <View>
+                          <Text style={MyStyles.inputLabel}>NHTS No.</Text>
+                          <TextInput
+                            style={MyStyles.input}
+                            value={householdForm.nhtsno}
+                            keyboardType="numeric"
+                            onChangeText={(text) =>
+                              handleHouseholdInputChange("nhtsno", text)
+                            }
+                          />
+                        </View>
+                      </>
+                    )}
+
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Type of Water Source
+                        <Text style={{ color: "red" }}>*</Text>
+                      </Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={householdForm.watersource}
+                        data={watersourceList.map((purp) => ({
+                          label: purp,
+                          value: purp,
+                        }))}
+                        placeholder="Select"
+                        placeholderStyle={{
+                          color: "#808080",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        selectedTextStyle={{
+                          color: "#000",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        onChange={(item) =>
+                          handleHouseholdDropdownChange(
+                            "watersource",
+                            item.value
+                          )
+                        }
+                        style={MyStyles.input}
+                      ></Dropdown>
+                    </View>
+
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Type of Toilet Facility
+                        <Text style={{ color: "red" }}>*</Text>
+                      </Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={householdForm.toiletfacility}
+                        data={toiletfacilityList.map((purp) => ({
+                          label: purp,
+                          value: purp,
+                        }))}
+                        placeholder="Select"
+                        placeholderStyle={{
+                          color: "#808080",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        selectedTextStyle={{
+                          color: "#000",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        onChange={(item) =>
+                          handleHouseholdDropdownChange(
+                            "toiletfacility",
+                            item.value
+                          )
+                        }
+                        style={MyStyles.input}
+                      ></Dropdown>
+                    </View>
+
+                    <View>
+                      <Text style={MyStyles.inputLabel}>Members</Text>
+                      {householdForm.members.map((member, index) => (
+                        <View key={index} style={{ marginBottom: 20 }}>
+                          <Text>Resident Name</Text>
+                          <TextInput
+                            value={member.resident}
+                            onChangeText={(text) =>
+                              handleMemberChange(index, "resident", text)
+                            }
+                            placeholder="Enter resident name"
+                            style={{
+                              borderWidth: 1,
+                              padding: 8,
+                              marginBottom: 5,
+                              borderRadius: 5,
+                            }}
+                          />
+
+                          {memberSuggestions[index]?.length > 0 && (
+                            <View
+                              style={{
+                                backgroundColor: "#fff",
+                                borderWidth: 1,
+                                borderColor: "#ccc",
+                                borderRadius: 5,
+                                marginBottom: 10,
+                              }}
+                            >
+                              {memberSuggestions[index].map((item) => {
+                                const fullName = `${item.firstname} ${
+                                  item.middlename ? item.middlename + " " : ""
+                                }${item.lastname}`;
+
+                                return (
+                                  <TouchableOpacity
+                                    key={item._id}
+                                    onPress={() =>
+                                      handleMemberSuggestionClick(index, item)
+                                    }
+                                    style={{
+                                      padding: 10,
+                                      borderBottomWidth: 1,
+                                      borderColor: "#eee",
+                                    }}
+                                  >
+                                    <Text>{fullName}</Text>
+                                  </TouchableOpacity>
+                                );
+                              })}
+                            </View>
+                          )}
+
+                          <Text style={styles.label}>Position</Text>
+                          <Dropdown
+                            data={positionList}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select"
+                            value={member.position}
+                            onChange={(item) =>
+                              handleMemberChange(index, "position", item.value)
+                            }
+                            style={styles.dropdown}
+                            containerStyle={styles.dropdownContainer}
+                          />
+
+                          <TouchableOpacity
+                            onPress={() => removeMember(index)}
+                            style={{ marginTop: 8 }}
+                          >
+                            <Text style={{ color: "red" }}>Remove Member</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ))}
+
+                      <TouchableOpacity
+                        onPress={addMember}
+                        style={styles.addButton}
+                      >
+                        <Text style={styles.addText}>+ Add Member</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <Text style={MyStyles.inputLabel}>Vehicles</Text>
+                    {householdForm.vehicles.map((vehicle, index) => (
+                      <View key={index} style={styles.card}>
+                        <Text style={styles.cardTitle}>
+                          Vehicle {index + 1}
+                        </Text>
+
+                        <Text style={styles.label}>Model</Text>
+                        <TextInput
+                          style={styles.input}
+                          value={vehicle.model}
+                          placeholder="e.g. Toyota Vios"
+                          onChangeText={(text) =>
+                            handleVehicleChange(index, "model", text)
+                          }
+                        />
+
+                        <Text style={styles.label}>Color</Text>
+                        <TextInput
+                          style={styles.input}
+                          value={vehicle.color}
+                          placeholder="e.g. Red"
+                          onChangeText={(text) =>
+                            handleVehicleChange(index, "color", text)
+                          }
+                        />
+
+                        <Text style={styles.label}>Kind</Text>
+                        <Dropdown
+                          data={kindOptions}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Select kind"
+                          value={vehicle.kind}
+                          onChange={(item) =>
+                            handleVehicleChange(index, "kind", item.value)
+                          }
+                          style={styles.dropdown}
+                          containerStyle={styles.dropdownContainer}
+                        />
+
+                        <Text style={styles.label}>Plate Number</Text>
+                        <TextInput
+                          style={styles.input}
+                          value={vehicle.platenumber}
+                          placeholder="e.g. ABC1234"
+                          onChangeText={(text) =>
+                            handleVehicleChange(index, "platenumber", text)
+                          }
+                        />
+
+                        <TouchableOpacity
+                          onPress={() => removeVehicle(index)}
+                          style={styles.removeButton}
+                        >
+                          <Text style={styles.removeText}>Remove Vehicle</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+
+                    <TouchableOpacity
+                      onPress={addVehicle}
+                      style={styles.addButton}
+                    >
+                      <Text style={styles.addText}>+ Add Vehicle</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
 
                 {/* Employment Information */}
                 <Text style={{ color: "red" }}>Employment Information</Text>
@@ -1656,7 +2270,7 @@ const ResidentForm = () => {
                 </View>
               </View>
 
-              <TouchableOpacity style={MyStyles.button}>
+              <TouchableOpacity style={MyStyles.button} onPress={handleSubmit}>
                 <Text style={MyStyles.buttonText}>Submit</Text>
               </TouchableOpacity>
             </ScrollView>
@@ -1732,5 +2346,57 @@ const styles = StyleSheet.create({
     width: 10,
     borderRadius: 5,
     backgroundColor: "#444",
+  },
+  container: {
+    padding: 10,
+  },
+  headerRow: {
+    flexDirection: "row",
+    backgroundColor: "#ddd",
+    padding: 5,
+  },
+  headerCell: {
+    flex: 1,
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 12,
+  },
+  dataRow: {
+    flexDirection: "row",
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    padding: 4,
+    marginHorizontal: 2,
+    fontSize: 12,
+    borderRadius: 5,
+  },
+  dropdown: {
+    flex: 1,
+    marginHorizontal: 2,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    height: 40,
+    justifyContent: "center",
+  },
+  dropdownContainer: {
+    zIndex: 1000,
+  },
+  removeButton: {
+    backgroundColor: "red",
+    padding: 6,
+    borderRadius: 4,
+    marginLeft: 2,
+  },
+  addButton: {
+    backgroundColor: "green",
+    padding: 10,
+    alignItems: "center",
+    marginTop: 20,
+    borderRadius: 6,
   },
 });
