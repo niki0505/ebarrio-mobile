@@ -24,6 +24,7 @@ import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
 import { storage } from "../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { MaterialIcons } from "@expo/vector-icons";
 
 //ICONS
 import { useState, useEffect, useContext } from "react";
@@ -36,6 +37,9 @@ const ResidentForm = () => {
   const [isIDProcessing, setIsIDProcessing] = useState(false);
   const [isSignProcessing, setIsSignProcessing] = useState(false);
   const [residents, setResidents] = useState([]);
+  const [households, setHouseholds] = useState([]);
+  const [showBirthdatePicker, setShowBirthdatePicker] = useState(false);
+  const [showLastMenstrualPicker, setShowLastMenstrualPicker] = useState(false);
   const [residentForm, setResidentForm] = useState({
     id: "",
     signature: "",
@@ -353,6 +357,20 @@ const ResidentForm = () => {
       }
     };
     fetchResidents();
+  }, []);
+
+  useEffect(() => {
+    const fetchHouseholds = async () => {
+      try {
+        const response = await axios.get(
+          "https://ebarrio-mobile-backend.onrender.com/api/gethouseholds"
+        );
+        setHouseholds(response.data);
+      } catch (error) {
+        console.error("❌ Failed to fetch residents:", error);
+      }
+    };
+    fetchHouseholds();
   }, []);
 
   const pickIDImage = async () => {
@@ -722,7 +740,7 @@ const ResidentForm = () => {
     if (residentForm.birthdate) {
       const birthDate = new Date(residentForm.birthdate);
       const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
+      let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
       const dayDiff = today.getDate() - birthDate.getDate();
 
@@ -789,6 +807,14 @@ const ResidentForm = () => {
         formattedTelephone = "";
       }
 
+      const formattedBirthdate = residentForm.birthdate
+        ? formatToDateOnly(residentForm.birthdate)
+        : null;
+
+      const formattedLastMenstrual = residentForm.lastmenstrual
+        ? formatToDateOnly(residentForm.lastmenstrual)
+        : null;
+
       delete residentForm.mobilenumber;
       delete residentForm.emergencymobilenumber;
       delete residentForm.id;
@@ -800,6 +826,8 @@ const ResidentForm = () => {
         mobilenumber: formattedMobileNumber,
         emergencymobilenumber: formattedEmergencyMobileNumber,
         telephone: formattedTelephone,
+        birthdate: formattedBirthdate,
+        lastmenstrual: formattedLastMenstrual,
       };
 
       const response = await axios.post(
@@ -1086,7 +1114,7 @@ const ResidentForm = () => {
                   ></Dropdown>
                 </View>
 
-                <View>
+                {/* <View>
                   <Text style={MyStyles.inputLabel}>
                     Birthdate<Text style={{ color: "red" }}>*</Text>
                   </Text>
@@ -1100,6 +1128,43 @@ const ResidentForm = () => {
                       }
                     }}
                   />
+                </View> */}
+
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Birthdate<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+
+                  <View style={[MyStyles.input, MyStyles.datetimeRow]}>
+                    <Text>
+                      {residentForm.birthdate
+                        ? new Date(residentForm.birthdate).toLocaleDateString()
+                        : "Select date"}
+                    </Text>
+
+                    <MaterialIcons
+                      name="calendar-today"
+                      size={24}
+                      color="#C1C0C0"
+                      onPress={() => setShowBirthdatePicker((prev) => !prev)}
+                    />
+                  </View>
+
+                  {showBirthdatePicker && (
+                    <DateTimePicker
+                      value={residentForm.birthdate || new Date()}
+                      mode="date"
+                      display={Platform.OS === "ios" ? "spinner" : "default"}
+                      onChange={(event, selectedDate) => {
+                        if (Platform.OS === "android") {
+                          setShowBirthdatePicker(false);
+                        }
+                        if (selectedDate) {
+                          handleInputChange("birthdate", selectedDate);
+                        }
+                      }}
+                    />
+                  )}
                 </View>
 
                 <View>
@@ -1198,16 +1263,43 @@ const ResidentForm = () => {
                       <Text style={MyStyles.inputLabel}>
                         Last Menstrual Period
                       </Text>
-                      <DateTimePicker
-                        mode="date"
-                        display="default"
-                        value={residentForm.lastmenstrual || new Date()}
-                        onChange={(event, selectedDate) => {
-                          if (selectedDate) {
-                            handleInputChange("lastmenstrual", selectedDate);
+
+                      <View style={[MyStyles.input, MyStyles.datetimeRow]}>
+                        <Text>
+                          {residentForm.lastmenstrual
+                            ? new Date(
+                                residentForm.lastmenstrual
+                              ).toLocaleDateString()
+                            : "Select date"}
+                        </Text>
+
+                        <MaterialIcons
+                          name="calendar-today"
+                          size={24}
+                          color="#C1C0C0"
+                          onPress={() =>
+                            setShowLastMenstrualPicker((prev) => !prev)
                           }
-                        }}
-                      />
+                        />
+                      </View>
+
+                      {showLastMenstrualPicker && (
+                        <DateTimePicker
+                          mode="date"
+                          display={
+                            Platform.OS === "ios" ? "spinner" : "default"
+                          }
+                          value={residentForm.lastmenstrual || new Date()}
+                          onChange={(event, selectedDate) => {
+                            if (Platform.OS === "android") {
+                              setShowLastMenstrualPicker(false);
+                            }
+                            if (selectedDate) {
+                              handleInputChange("lastmenstrual", selectedDate);
+                            }
+                          }}
+                        />
+                      )}
                     </View>
 
                     <View>
@@ -1817,6 +1909,83 @@ const ResidentForm = () => {
                     ))}
                   </View>
                 </View>
+
+                {residentForm.head === "No" && (
+                  <>
+                    <View>
+                      <Text style={MyStyles.inputLabel}>Household</Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={residentForm.householdno}
+                        data={households.map((h) => {
+                          const head = h.members.find(
+                            (m) => m.position === "Head"
+                          );
+                          const headName = head?.resID
+                            ? `${head.resID.lastname}'s Residence - ${head.resID.address}`
+                            : "Unnamed";
+                          return {
+                            label: headName,
+                            value: h._id,
+                          };
+                        })}
+                        placeholder="Select"
+                        placeholderStyle={{
+                          color: "#808080",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        selectedTextStyle={{
+                          color: "#000",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        onChange={(item) =>
+                          handleDropdownChange("householdno", item.value)
+                        }
+                        style={MyStyles.input}
+                      />
+                    </View>
+
+                    <View>
+                      <Text style={MyStyles.inputLabel}>Position</Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={residentForm.householdposition}
+                        data={[
+                          "Spouse",
+                          "Child",
+                          "Parent",
+                          "Sibling",
+                          "Grandparent",
+                          "Grandchild",
+                          "In-law",
+                          "Relative",
+                          "Housemate",
+                          "Househelp",
+                          "Other",
+                        ].map((item) => ({ label: item, value: item }))}
+                        placeholder="Select Position"
+                        placeholderStyle={{
+                          color: "#808080",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        selectedTextStyle={{
+                          color: "#000",
+                          fontFamily: "QuicksandMedium",
+                          fontSize: 16,
+                        }}
+                        onChange={(item) =>
+                          handleDropdownChange("householdposition", item.value)
+                        }
+                        style={MyStyles.input}
+                      />
+                    </View>
+                  </>
+                )}
 
                 {residentForm.head === "Yes" && (
                   <>

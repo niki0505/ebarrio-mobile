@@ -217,7 +217,28 @@ const Signup = () => {
         const response = error.response;
         if (response && response.data) {
           console.log("❌ Error status:", response.status);
-          alert(response.data.message || "Something went wrong.");
+          if (
+            response.status === 404 &&
+            response.data.message === "Resident not found"
+          ) {
+            Alert.alert(
+              "Resident not found",
+              "Would you like to register your resident profile now?",
+              [
+                {
+                  text: "No",
+                  style: "cancel",
+                },
+                {
+                  text: "Yes",
+                  onPress: () => navigation.navigate("ResidentForm"),
+                },
+              ],
+              { cancelable: true }
+            );
+          } else {
+            alert(response.data.message || "Something went wrong.");
+          }
         } else {
           console.log("❌ Network or unknown error:", error.message);
           alert("An unexpected error occurred.");
@@ -226,83 +247,6 @@ const Signup = () => {
     } catch (error) {
       Alert.alert("Error", error.message);
     }
-  };
-
-  const handleSignUp2 = async () => {
-    navigation.navigate("OTP");
-    // let errors1 = [];
-    // let errors2 = [];
-    // let errors3 = [];
-    // let errors4 = [];
-    // if (securityquestions[0].question === "") {
-    //   errors1.push("Security question must not be empty");
-    // } else {
-    //   errors1 = errors1.filter(
-    //     (error) => error !== "Security question must not be empty"
-    //   );
-    // }
-
-    // if (securityquestions[0].answer === "") {
-    //   errors3.push("Answer must not be empty");
-    // } else {
-    //   errors3 = errors3.filter((error) => error !== "Answer must not be empty");
-    // }
-
-    // if (securityquestions[1].question === "") {
-    //   errors2.push("Security question must not be empty");
-    // } else {
-    //   errors2 = errors2.filter(
-    //     (error) => error !== "Security question must not be empty"
-    //   );
-    // }
-
-    // if (securityquestions[1].answer === "") {
-    //   errors4.push("Answer must not be empty");
-    // } else {
-    //   errors4 = errors4.filter((error) => error !== "Answer must not be empty");
-    // }
-    // setQuestionErrors1(errors1);
-    // setQuestionErrors2(errors2);
-    // setAnswerErrors1(errors3);
-    // setAnswerErrors2(errors4);
-    // try {
-    //   if (questionErrors1.length !== 0) {
-    //     return;
-    //   }
-
-    //   if (questionErrors2.length !== 0) {
-    //     return;
-    //   }
-
-    //   if (answerErrors1.length !== 0) {
-    //     return;
-    //   }
-
-    //   if (answerErrors2.length !== 0) {
-    //     return;
-    //   }
-    //   try {
-    //     sendOTP(username, mobilenumber);
-    //     navigation.navigate("OTP", {
-    //       username: username,
-    //       password: password,
-    //       resID: resID,
-    //       securityquestions: securityquestions,
-    //       navigatelink: "Login",
-    //     });
-    //   } catch (error) {
-    //     const response = error.response;
-    //     if (response && response.data) {
-    //       console.log("❌ Error status:", response.status);
-    //       alert(response.data.message || "Something went wrong.");
-    //     } else {
-    //       console.log("❌ Network or unknown error:", error.message);
-    //       alert("An unexpected error occurred.");
-    //     }
-    //   }
-    // } catch (error) {
-    //   Alert.alert("Error", error.message);
-    // }
   };
 
   return (
@@ -565,18 +509,28 @@ const Signup = () => {
                 </View>
               </View>
 
-              <Text
-                onPress={() => navigation.navigate("ResidentForm")}
-                style={{
-                  color: "#006EFF",
-                  alignSelf: "flex-start",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                  marginBottom: 15,
-                }}
-              >
-                Resident
-              </Text>
+              <View style={{ marginTop: 10 }}>
+                <Text
+                  style={{
+                    color: "#808080",
+                    fontSize: 16,
+                    fontFamily: "QuicksandSemiBold",
+                    textAlign: "center",
+                  }}
+                >
+                  Don’t have a resident profile?
+                  <Text
+                    onPress={() => navigation.navigate("ResidentForm")}
+                    style={{
+                      color: "#006EFF",
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
+                    {" "}
+                    Create one
+                  </Text>
+                </Text>
+              </View>
 
               <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>
                 <Text style={MyStyles.buttonText}>Sign up</Text>
