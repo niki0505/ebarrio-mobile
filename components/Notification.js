@@ -20,6 +20,7 @@ import api from "../api";
 import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState } from "react";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const Notification = () => {
   const navigation = useNavigation();
@@ -87,7 +88,25 @@ const Notification = () => {
               alignItems: "center",
             }}
           >
-            <Text style={MyStyles.header}>Notifications</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Entypo
+                name="menu"
+                size={35}
+                color="#04384E"
+                onPress={() => navigation.openDrawer()}
+                style={{ marginTop: 5, marginRight:10 }}
+              />
+              <View>
+                <Text style={MyStyles.header}>Notifications</Text>
+              </View>
+            </View>
+
             <TouchableOpacity
               onPress={() =>
                 setIsFilterDropdownVisible(!isFilterDropdownVisible)
@@ -226,7 +245,7 @@ const Notification = () => {
           </ScrollView>
         </View>
         {/* Fixed Floating Chat Button */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => navigation.navigate("Chat")}
           style={{
             position: "absolute",
@@ -248,7 +267,7 @@ const Notification = () => {
           <View onPress={() => navigation.navigate("Chat")}>
             <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

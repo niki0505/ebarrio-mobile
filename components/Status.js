@@ -156,6 +156,7 @@ const Status = () => {
         style={{ flex: 1 }}
       >
         <ScrollView
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
@@ -303,9 +304,10 @@ const Status = () => {
               <View
                 key={index}
                 style={{
+                  flexDirection: "row",
+                  overflow: "hidden",
                   backgroundColor: "#fff",
                   borderRadius: 10,
-                  padding: 15,
                   shadowColor: "#000",
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.1,
@@ -314,24 +316,22 @@ const Status = () => {
                   marginBottom: 10,
                 }}
               >
-                {/* Status and Time Row */}
+                {/* Left status bar */}
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    width: 15,
+                    backgroundColor: status.color,
                   }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <View
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 5,
-                        backgroundColor: status.color,
-                        marginRight: 6,
-                      }}
-                    />
+                />
+                {/* Right content */}
+                <View style={{ flex: 1, padding: 15 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <Text
                       style={{
                         color: "#04384E",
@@ -341,623 +341,632 @@ const Status = () => {
                     >
                       {status.label}
                     </Text>
+
+                    <Text style={{ fontSize: 15, color: "#808080" }}>
+                      {dayjs(service.createdAt).fromNow()}
+                    </Text>
                   </View>
-                  <Text style={{ fontSize: 15, color: "#808080" }}>
-                    {dayjs(service.createdAt).fromNow()}
-                  </Text>
-                </View>
 
-                <View
-                  style={{
-                    borderBottomColor: "#ccc",
-                    borderBottomWidth: 1,
-                    marginVertical: 10,
-                  }}
-                />
-
-                {/* Title + Chevron */}
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                  onPress={() => toggleExpand(index)}
-                  activeOpacity={0.7}
-                >
-                  <Text
+                  <View
                     style={{
-                      fontSize: 24,
-                      fontFamily: "REMSemiBold",
-                      color: "#04384E",
+                      borderBottomColor: "#ccc",
+                      borderBottomWidth: 1,
+                      marginVertical: 10,
                     }}
-                  >
-                    {service.type}
-                  </Text>
-                  <MaterialIcons
-                    name={
-                      isExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"
-                    }
-                    size={24}
-                    color="#04384E"
                   />
-                </TouchableOpacity>
 
-                {/* Default visible summary based on type */}
-                <View style={{ marginTop: 5 }}>
-                  {service.type === "Certificate" && (
+                  {/* Title + Chevron */}
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                    onPress={() => toggleExpand(index)}
+                    activeOpacity={0.7}
+                  >
                     <Text
                       style={{
-                        fontSize: 15,
-                        fontFamily: "QuicksandMedium",
-                        color: "#808080",
+                        fontSize: 24,
+                        fontFamily: "REMSemiBold",
+                        color: "#04384E",
                       }}
                     >
-                      {service.typeofcertificate}
+                      {service.type}
                     </Text>
-                  )}
-                  {service.type === "Reservation" &&
-                    service.times &&
-                    Object.entries(service.times).map(([date, timeData]) => {
-                      const start = new Date(timeData.starttime);
-                      const end = new Date(timeData.endtime);
+                    <MaterialIcons
+                      name={
+                        isExpanded ? "keyboard-arrow-up" : "keyboard-arrow-down"
+                      }
+                      size={24}
+                      color="#04384E"
+                    />
+                  </TouchableOpacity>
 
-                      return (
-                        <Text
-                          key={date}
-                          style={{
-                            fontSize: 15,
-                            fontFamily: "QuicksandMedium",
-                            color: "#808080",
-                          }}
-                        >
-                          {new Date(date).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}{" "}
-                          {start.toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}{" "}
-                          -{" "}
-                          {end.toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </Text>
-                      );
-                    })}
-                  {service.type === "Blotter" && (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          fontFamily: "QuicksandSemiBold",
-                          color: "#808080",
-                        }}
-                      >
-                        Details:
-                      </Text>
+                  {/* Default visible summary based on type */}
+                  <View style={{ marginTop: 5 }}>
+                    {service.type === "Certificate" && (
                       <Text
                         style={{
                           fontSize: 15,
                           fontFamily: "QuicksandMedium",
                           color: "#808080",
-                          marginLeft: 5,
-                          flexShrink: 1,
-                          textAlign: "justify",
                         }}
                       >
-                        {!isExpanded
-                          ? truncateDetails(service.details)
-                          : service.details}
+                        {service.typeofcertificate}
                       </Text>
+                    )}
+                    {service.type === "Reservation" &&
+                      service.times &&
+                      Object.entries(service.times).map(([date, timeData]) => {
+                        const start = new Date(timeData.starttime);
+                        const end = new Date(timeData.endtime);
+
+                        return (
+                          <Text
+                            key={date}
+                            style={{
+                              fontSize: 15,
+                              fontFamily: "QuicksandMedium",
+                              color: "#808080",
+                            }}
+                          >
+                            {new Date(date).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}{" "}
+                            {start.toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}{" "}
+                            -{" "}
+                            {end.toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </Text>
+                        );
+                      })}
+                    {service.type === "Blotter" && (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontFamily: "QuicksandSemiBold",
+                            color: "#808080",
+                          }}
+                        >
+                          Details:
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontFamily: "QuicksandMedium",
+                            color: "#808080",
+                            marginLeft: 5,
+                            flexShrink: 1,
+                            textAlign: "justify",
+                          }}
+                        >
+                          {!isExpanded
+                            ? truncateDetails(service.details)
+                            : service.details}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  {/* Expanded content */}
+                  {isExpanded && (
+                    <View style={{ marginTop: 10 }}>
+                      {service.type === "Certificate" && (
+                        <>
+                          {(service.typeofcertificate ===
+                            "Barangay Indigency" ||
+                            service.typeofcertificate ===
+                              "Barangay Clearance") && (
+                            <>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandBold",
+                                    color: "#04384E",
+                                  }}
+                                >
+                                  Purpose:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandMedium",
+                                    color: "#04384E",
+                                    marginLeft: 5,
+                                    flexShrink: 1,
+                                    textAlign: "justify",
+                                  }}
+                                >
+                                  {service.purpose}
+                                </Text>
+                              </View>
+
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandBold",
+                                    color: "#04384E",
+                                  }}
+                                >
+                                  Amount:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandMedium",
+                                    color: "#04384E",
+                                    marginLeft: 5,
+                                    flexShrink: 1,
+                                    textAlign: "justify",
+                                  }}
+                                >
+                                  {service.amount}
+                                </Text>
+                              </View>
+                            </>
+                          )}
+
+                          {service.typeofcertificate ===
+                            "Barangay Business Clearance" && (
+                            <>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandBold",
+                                    color: "#04384E",
+                                  }}
+                                >
+                                  Business Name:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandMedium",
+                                    color: "#04384E",
+                                    marginLeft: 5,
+                                    flexShrink: 1,
+                                    textAlign: "justify",
+                                  }}
+                                >
+                                  {service.businessname}
+                                </Text>
+                              </View>
+
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandBold",
+                                    color: "#04384E",
+                                  }}
+                                >
+                                  Line of Business:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandMedium",
+                                    color: "#04384E",
+                                    marginLeft: 5,
+                                    flexShrink: 1,
+                                    textAlign: "justify",
+                                  }}
+                                >
+                                  {service.lineofbusiness}
+                                </Text>
+                              </View>
+
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandBold",
+                                    color: "#04384E",
+                                  }}
+                                >
+                                  Location of Business:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandMedium",
+                                    color: "#04384E",
+                                    marginLeft: 5,
+                                    flexShrink: 1,
+                                    textAlign: "justify",
+                                  }}
+                                >
+                                  {service.locationofbusiness ===
+                                  "Resident's Address"
+                                    ? userDetails.resID.address
+                                    : service.locationofbusiness}
+                                </Text>
+                              </View>
+                            </>
+                          )}
+
+                          {service.status === "Pending" &&
+                            new Date(service.createdAt) >=
+                              new Date(
+                                new Date().getTime() - 50 * 60 * 1000
+                              ) && (
+                              <TouchableOpacity
+                                onPress={() =>
+                                  certCancelClick(
+                                    service._id,
+                                    service.createdAt
+                                  )
+                                }
+                                style={[
+                                  MyStyles.button,
+                                  { marginTop: 15, backgroundColor: "#BC0F0F" },
+                                ]}
+                              >
+                                <Text style={MyStyles.buttonText}>Cancel</Text>
+                              </TouchableOpacity>
+                            )}
+
+                          {service.status === "Rejected" && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Remarks:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
+                                }}
+                              >
+                                {service.remarks}
+                              </Text>
+                            </View>
+                          )}
+                        </>
+                      )}
+
+                      {service.type === "Reservation" && (
+                        <>
+                          {service.status === "Pending" &&
+                            new Date(service.createdAt) >=
+                              new Date(
+                                new Date().getTime() - 50 * 60 * 1000
+                              ) && (
+                              <TouchableOpacity
+                                onPress={() =>
+                                  reservationCancelClick(
+                                    service._id,
+                                    service.createdAt
+                                  )
+                                }
+                                style={[
+                                  MyStyles.button,
+                                  { marginTop: 15, backgroundColor: "#BC0F0F" },
+                                ]}
+                              >
+                                <Text style={MyStyles.buttonText}>Cancel</Text>
+                              </TouchableOpacity>
+                            )}
+                          {service.status === "Rejected" && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Remarks:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
+                                }}
+                              >
+                                {service.remarks}
+                              </Text>
+                            </View>
+                          )}
+                        </>
+                      )}
+
+                      {service.type === "Blotter" && (
+                        <>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              flexWrap: "wrap",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandBold",
+                                color: "#04384E",
+                              }}
+                            >
+                              Type of the Complaint:
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandMedium",
+                                color: "#04384E",
+                                marginLeft: 5,
+                                flexShrink: 1,
+                                textAlign: "justify",
+                              }}
+                            >
+                              {service.typeofthecomplaint}
+                            </Text>
+                          </View>
+
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              flexWrap: "wrap",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandBold",
+                                color: "#04384E",
+                              }}
+                            >
+                              Subject:
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontFamily: "QuicksandMedium",
+                                color: "#04384E",
+                                marginLeft: 5,
+                                flexShrink: 1,
+                                textAlign: "justify",
+                              }}
+                            >
+                              {service.subjectID
+                                ? `${service.subjectID.firstname} ${service.subjectID.lastname}`
+                                : service.subjectname}
+                            </Text>
+                          </View>
+
+                          {(service.status === "Scheduled" ||
+                            service.status === "Settled") && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Meeting:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
+                                }}
+                              >
+                                {new Date(service.starttime).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  }
+                                )}{" "}
+                                {new Date(service.starttime).toLocaleTimeString(
+                                  "en-US",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}{" "}
+                                -{" "}
+                                {new Date(service.endtime).toLocaleTimeString(
+                                  "en-US",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </Text>
+                            </View>
+                          )}
+
+                          {service.status === "Settled" && (
+                            <>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandBold",
+                                    color: "#04384E",
+                                  }}
+                                >
+                                  Witness:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandMedium",
+                                    color: "#04384E",
+                                    marginLeft: 5,
+                                    flexShrink: 1,
+                                    textAlign: "justify",
+                                  }}
+                                >
+                                  {service.witnessID
+                                    ? `${service.witnessID.firstname} ${service.witnessID.lastname}`
+                                    : service.witnessname}
+                                </Text>
+                              </View>
+
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandBold",
+                                    color: "#04384E",
+                                  }}
+                                >
+                                  Agreement:
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontFamily: "QuicksandMedium",
+                                    color: "#04384E",
+                                    marginLeft: 5,
+                                    flexShrink: 1,
+                                    textAlign: "justify",
+                                  }}
+                                >
+                                  {!isExpanded
+                                    ? truncateWords(service.agreementdetails)
+                                    : service.agreementdetails}
+                                </Text>
+                              </View>
+                            </>
+                          )}
+
+                          {service.status === "Rejected" && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandBold",
+                                  color: "#04384E",
+                                }}
+                              >
+                                Remarks:
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#04384E",
+                                  marginLeft: 5,
+                                  flexShrink: 1,
+                                  textAlign: "justify",
+                                }}
+                              >
+                                {service.remarks}
+                              </Text>
+                            </View>
+                          )}
+                        </>
+                      )}
                     </View>
                   )}
                 </View>
-
-                {/* Expanded content */}
-                {isExpanded && (
-                  <View style={{ marginTop: 10 }}>
-                    {service.type === "Certificate" && (
-                      <>
-                        {(service.typeofcertificate === "Barangay Indigency" ||
-                          service.typeofcertificate ===
-                            "Barangay Clearance") && (
-                          <>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
-                              >
-                                Purpose:
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
-                                {service.purpose}
-                              </Text>
-                            </View>
-
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
-                              >
-                                Amount:
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
-                                {service.amount}
-                              </Text>
-                            </View>
-                          </>
-                        )}
-
-                        {service.typeofcertificate ===
-                          "Barangay Business Clearance" && (
-                          <>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
-                              >
-                                Business Name:
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
-                                {service.businessname}
-                              </Text>
-                            </View>
-
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
-                              >
-                                Line of Business:
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
-                                {service.lineofbusiness}
-                              </Text>
-                            </View>
-
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
-                              >
-                                Location of Business:
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
-                                {service.locationofbusiness ===
-                                "Resident's Address"
-                                  ? userDetails.resID.address
-                                  : service.locationofbusiness}
-                              </Text>
-                            </View>
-                          </>
-                        )}
-
-                        {service.status === "Pending" &&
-                          new Date(service.createdAt) >=
-                            new Date(new Date().getTime() - 50 * 60 * 1000) && (
-                            <TouchableOpacity
-                              onPress={() =>
-                                certCancelClick(service._id, service.createdAt)
-                              }
-                              style={[
-                                MyStyles.button,
-                                { marginTop: 15, backgroundColor: "#BC0F0F" },
-                              ]}
-                            >
-                              <Text style={MyStyles.buttonText}>Cancel</Text>
-                            </TouchableOpacity>
-                          )}
-
-                        {service.status === "Rejected" && (
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              flexWrap: "wrap",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandBold",
-                                color: "#04384E",
-                              }}
-                            >
-                              Remarks:
-                            </Text>
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandMedium",
-                                color: "#04384E",
-                                marginLeft: 5,
-                                flexShrink: 1,
-                                textAlign: "justify",
-                              }}
-                            >
-                              {service.remarks}
-                            </Text>
-                          </View>
-                        )}
-                      </>
-                    )}
-
-                    {service.type === "Reservation" && (
-                      <>
-                        {service.status === "Pending" &&
-                          new Date(service.createdAt) >=
-                            new Date(new Date().getTime() - 50 * 60 * 1000) && (
-                            <TouchableOpacity
-                              onPress={() =>
-                                reservationCancelClick(
-                                  service._id,
-                                  service.createdAt
-                                )
-                              }
-                              style={[
-                                MyStyles.button,
-                                { marginTop: 15, backgroundColor: "#BC0F0F" },
-                              ]}
-                            >
-                              <Text style={MyStyles.buttonText}>Cancel</Text>
-                            </TouchableOpacity>
-                          )}
-                        {service.status === "Rejected" && (
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              flexWrap: "wrap",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandBold",
-                                color: "#04384E",
-                              }}
-                            >
-                              Remarks:
-                            </Text>
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandMedium",
-                                color: "#04384E",
-                                marginLeft: 5,
-                                flexShrink: 1,
-                                textAlign: "justify",
-                              }}
-                            >
-                              {service.remarks}
-                            </Text>
-                          </View>
-                        )}
-                      </>
-                    )}
-
-                    {service.type === "Blotter" && (
-                      <>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            flexWrap: "wrap",
-                            alignItems: "flex-start",
-                          }}
-                        >
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontFamily: "QuicksandBold",
-                              color: "#04384E",
-                            }}
-                          >
-                            Type of the Complaint:
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontFamily: "QuicksandMedium",
-                              color: "#04384E",
-                              marginLeft: 5,
-                              flexShrink: 1,
-                              textAlign: "justify",
-                            }}
-                          >
-                            {service.typeofthecomplaint}
-                          </Text>
-                        </View>
-
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            flexWrap: "wrap",
-                            alignItems: "flex-start",
-                          }}
-                        >
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontFamily: "QuicksandBold",
-                              color: "#04384E",
-                            }}
-                          >
-                            Subject:
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontFamily: "QuicksandMedium",
-                              color: "#04384E",
-                              marginLeft: 5,
-                              flexShrink: 1,
-                              textAlign: "justify",
-                            }}
-                          >
-                            {service.subjectID
-                              ? `${service.subjectID.firstname} ${service.subjectID.lastname}`
-                              : service.subjectname}
-                          </Text>
-                        </View>
-
-                        {(service.status === "Scheduled" ||
-                          service.status === "Settled") && (
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              flexWrap: "wrap",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandBold",
-                                color: "#04384E",
-                              }}
-                            >
-                              Meeting:
-                            </Text>
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandMedium",
-                                color: "#04384E",
-                                marginLeft: 5,
-                                flexShrink: 1,
-                                textAlign: "justify",
-                              }}
-                            >
-                              {new Date(service.starttime).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                }
-                              )}{" "}
-                              {new Date(service.starttime).toLocaleTimeString(
-                                "en-US",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )}{" "}
-                              -{" "}
-                              {new Date(service.endtime).toLocaleTimeString(
-                                "en-US",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )}
-                            </Text>
-                          </View>
-                        )}
-
-                        {service.status === "Settled" && (
-                          <>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
-                              >
-                                Witness:
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
-                                {service.witnessID
-                                  ? `${service.witnessID.firstname} ${service.witnessID.lastname}`
-                                  : service.witnessname}
-                              </Text>
-                            </View>
-
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
-                              >
-                                Agreement:
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
-                                {!isExpanded
-                                  ? truncateWords(service.agreementdetails)
-                                  : service.agreementdetails}
-                              </Text>
-                            </View>
-                          </>
-                        )}
-
-                        {service.status === "Rejected" && (
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              flexWrap: "wrap",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandBold",
-                                color: "#04384E",
-                              }}
-                            >
-                              Remarks:
-                            </Text>
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandMedium",
-                                color: "#04384E",
-                                marginLeft: 5,
-                                flexShrink: 1,
-                                textAlign: "justify",
-                              }}
-                            >
-                              {service.remarks}
-                            </Text>
-                          </View>
-                        )}
-                      </>
-                    )}
-                  </View>
-                )}
               </View>
             );
           })}

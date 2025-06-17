@@ -72,7 +72,11 @@ const AccountSettings = () => {
           color="#04384E"
         />
 
-        <View
+        <Text style={[MyStyles.header, { marginTop: 20 }]}>
+          Account Settings
+        </Text>
+
+        {/* <View
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -106,7 +110,7 @@ const AccountSettings = () => {
           >
             {userDetails.username}
           </Text>
-        </View>
+        </View> */}
 
         <View style={{ gap: 20, marginTop: 20 }}>
           <Text
