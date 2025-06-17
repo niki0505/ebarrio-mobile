@@ -1588,7 +1588,6 @@ const ResidentForm = () => {
                   <TextInput
                     style={MyStyles.input}
                     placeholder="Precinct"
-                    keyboardType="numeric"
                     value={residentForm.precinct}
                     onChangeText={(text) => handleInputChange("precinct", text)}
                   />
@@ -2187,7 +2186,8 @@ const ResidentForm = () => {
                         value={residentForm.householdposition}
                         data={[
                           "Spouse",
-                          "Child",
+                          "Son",
+                          "Daughter",
                           "Parent",
                           "Sibling",
                           "Grandparent",
