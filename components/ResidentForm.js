@@ -338,7 +338,8 @@ const ResidentForm = () => {
   const positionList = [
     { label: "Select", value: "" },
     { label: "Spouse", value: "Spouse" },
-    { label: "Child", value: "Child" },
+    { label: "Son", value: "Son" },
+    { label: "Daughter", value: "Daughter" },
     { label: "Parent", value: "Parent" },
     { label: "Sibling", value: "Sibling" },
     { label: "Grandparent", value: "Grandparent" },
