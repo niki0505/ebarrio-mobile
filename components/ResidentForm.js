@@ -539,18 +539,20 @@ const ResidentForm = () => {
     for (let i = 0; i < numberOfSiblings; i++) {
       siblingsDropdowns.push(
         <View key={i} style={{ marginVertical: 8 }}>
-          <Text style={{ marginBottom: 4 }}>Sibling {i + 1}</Text>
+          <Text style={[MyStyles.inputLabel, { marginBottom: 4 }]}>
+            Sibling {i + 1}
+          </Text>
           <Dropdown
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 8,
-              padding: 12,
-            }}
+            style={MyStyles.input}
             data={residentOptions}
             labelField="label"
             valueField="value"
             placeholder="Select"
+            placeholderStyle={{
+              color: "#808080",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
             value={residentForm.siblings?.[i] || null}
             onChange={(item) =>
               handleMultipleDropdownChange(item.value, i, "siblings")
@@ -569,18 +571,20 @@ const ResidentForm = () => {
     for (let i = 0; i < numberOfChildren; i++) {
       childrenDropdowns.push(
         <View key={i} style={{ marginVertical: 8 }}>
-          <Text style={{ marginBottom: 4 }}>Child {i + 1}</Text>
+          <Text style={[MyStyles.inputLabel, { marginBottom: 4 }]}>
+            Child {i + 1}
+          </Text>
           <Dropdown
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 8,
-              padding: 12,
-            }}
+            style={MyStyles.input}
             data={residentOptions}
             labelField="label"
             valueField="value"
             placeholder="Select"
+            placeholderStyle={{
+              color: "#808080",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
             value={residentForm.children?.[i] || null}
             onChange={(item) =>
               handleMultipleDropdownChange(item.value, i, "children")
@@ -857,15 +861,12 @@ const ResidentForm = () => {
         style={{ flex: 1 }}
       >
         <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-          <View style={{ flex: 1, alignSelf: "center" }}>
-            <Image source={AppLogo} style={{ width: "180", height: "180" }} />
-          </View>
-
           <View
             style={{
               flexDirection: "column",
               alignItems: "center",
               backgroundColor: "#F0F4F7",
+              marginTop: 30,
               borderRadius: 30,
               flex: 3,
               marginBottom: "-10",
@@ -884,84 +885,96 @@ const ResidentForm = () => {
                 Create your Account
               </Text>
 
-              {/* Personal Information */}
-
-              {/* ID */}
-              <Text style={{ color: "red" }}>Personal Information</Text>
-              <View style={styles.uploadBox}>
-                <View style={styles.previewContainer}>
-                  {isIDProcessing ? (
-                    <ActivityIndicator size="small" color="#0000ff" />
-                  ) : residentForm.id ? (
-                    <Image
-                      source={{ uri: residentForm.id }}
-                      style={styles.image}
-                    />
-                  ) : (
-                    <View style={styles.placeholder}>
-                      <Text style={styles.placeholderText}>
-                        Attach ID Picture
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                <View style={styles.buttons}>
-                  <TouchableOpacity
-                    onPress={toggleIDCamera}
-                    style={styles.button}
-                  >
-                    <Text>📷</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={pickIDImage} style={styles.button}>
-                    <Text>📤</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* Signature */}
-              <View style={styles.uploadBox}>
-                <View style={styles.previewContainer}>
-                  {isSignProcessing ? (
-                    <ActivityIndicator size="small" color="#0000ff" />
-                  ) : residentForm.signature ? (
-                    <Image
-                      source={{ uri: residentForm.signature }}
-                      style={styles.image}
-                    />
-                  ) : (
-                    <View style={styles.placeholder}>
-                      <Text style={styles.placeholderText}>
-                        Attach Signature
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                <View style={styles.buttons}>
-                  <TouchableOpacity
-                    onPress={toggleSigCamera}
-                    style={styles.button}
-                  >
-                    <Text>📷</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={pickSigImage}
-                    style={styles.button}
-                  >
-                    <Text>📤</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
               <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
+                {/* Personal Information */}
+
+                {/* ID */}
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  Personal Information
+                </Text>
+                <View style={styles.uploadBox}>
+                  <View style={styles.previewContainer}>
+                    {isIDProcessing ? (
+                      <ActivityIndicator size="small" color="#0000ff" />
+                    ) : residentForm.id ? (
+                      <Image
+                        source={{ uri: residentForm.id }}
+                        style={styles.image}
+                      />
+                    ) : (
+                      <View style={styles.placeholder}>
+                        <Text style={styles.placeholderText}>
+                          Attach ID Picture
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={styles.buttons}>
+                    <TouchableOpacity
+                      onPress={toggleIDCamera}
+                      style={styles.button}
+                    >
+                      <Text>📷</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={pickIDImage}
+                      style={styles.button}
+                    >
+                      <Text>📤</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Signature */}
+                <View style={styles.uploadBox}>
+                  <View style={styles.previewContainer}>
+                    {isSignProcessing ? (
+                      <ActivityIndicator size="small" color="#0000ff" />
+                    ) : residentForm.signature ? (
+                      <Image
+                        source={{ uri: residentForm.signature }}
+                        style={styles.image}
+                      />
+                    ) : (
+                      <View style={styles.placeholder}>
+                        <Text style={styles.placeholderText}>
+                          Attach Signature
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={styles.buttons}>
+                    <TouchableOpacity
+                      onPress={toggleSigCamera}
+                      style={styles.button}
+                    >
+                      <Text>📷</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={pickSigImage}
+                      style={styles.button}
+                    >
+                      <Text>📤</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     First Name<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
                     style={MyStyles.input}
-                    placeholder="First name"
+                    placeholder="First Name"
                     value={residentForm.firstname}
                     onChangeText={(text) =>
                       handleInputChange("firstname", text)
@@ -973,7 +986,7 @@ const ResidentForm = () => {
                   <Text style={MyStyles.inputLabel}>Middle Name</Text>
                   <TextInput
                     style={MyStyles.input}
-                    placeholder="Last name"
+                    placeholder="Middle Name"
                     value={residentForm.middlename}
                     onChangeText={(text) =>
                       handleInputChange("middlename", text)
@@ -987,7 +1000,7 @@ const ResidentForm = () => {
                   </Text>
                   <TextInput
                     style={MyStyles.input}
-                    placeholder="Last name"
+                    placeholder="Last Name"
                     value={residentForm.lastname}
                     onChangeText={(text) => handleInputChange("lastname", text)}
                   />
@@ -1025,6 +1038,7 @@ const ResidentForm = () => {
                   <Text style={MyStyles.inputLabel}>Alias</Text>
                   <TextInput
                     style={MyStyles.input}
+                    placeholder="Alias"
                     value={residentForm.alias}
                     onChangeText={(text) => handleInputChange("alias", text)}
                   />
@@ -1136,7 +1150,13 @@ const ResidentForm = () => {
                   </Text>
 
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                    <Text>
+                    <Text
+                      style={{
+                        color: residentForm.birthdate ? "black" : "#808080",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
                       {residentForm.birthdate
                         ? new Date(residentForm.birthdate).toLocaleDateString()
                         : "Select date"}
@@ -1170,6 +1190,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Age</Text>
                   <TextInput
+                    placeholder="Age"
                     value={residentForm.age?.toString() || ""}
                     style={MyStyles.input}
                     editable={false}
@@ -1179,6 +1200,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Birthplace</Text>
                   <TextInput
+                    placeholder="Birthplace"
                     style={MyStyles.input}
                     value={residentForm.birthplace}
                     onChangeText={(text) =>
@@ -1220,6 +1242,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>PhilHealth ID</Text>
                   <TextInput
+                    placeholder="Philhealth ID"
                     style={MyStyles.input}
                     keyboardType="numeric"
                     value={residentForm.philhealthid}
@@ -1265,7 +1288,15 @@ const ResidentForm = () => {
                       </Text>
 
                       <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                        <Text>
+                        <Text
+                          style={{
+                            color: residentForm.lastmenstrual
+                              ? "black"
+                              : "#808080",
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
                           {residentForm.lastmenstrual
                             ? new Date(
                                 residentForm.lastmenstrual
@@ -1320,7 +1351,14 @@ const ResidentForm = () => {
                                 <View style={styles.radioDot} />
                               )}
                             </View>
-                            <Text>{option}</Text>
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                            >
+                              {option}
+                            </Text>
                           </Pressable>
                         ))}
                       </View>
@@ -1487,7 +1525,14 @@ const ResidentForm = () => {
                             <View style={styles.radioDot} />
                           )}
                         </View>
-                        <Text>{option}</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {option}
+                        </Text>
                       </Pressable>
                     ))}
                   </View>
@@ -1497,17 +1542,15 @@ const ResidentForm = () => {
                   <Text style={MyStyles.inputLabel}>Precinct</Text>
                   <TextInput
                     style={MyStyles.input}
+                    placeholder="Precinct"
                     keyboardType="numeric"
                     value={residentForm.precinct}
                     onChangeText={(text) => handleInputChange("precinct", text)}
                   />
                 </View>
 
-                <View style={{ marginVertical: 10 }}>
-                  <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-                    Classification
-                  </Text>
-
+                <View>
+                  <Text style={MyStyles.inputLabel}>Classification</Text>
                   <CheckBox
                     label="4Ps Beneficiary"
                     value={residentForm.is4Ps}
@@ -1556,10 +1599,8 @@ const ResidentForm = () => {
                   />
                 </View>
 
-                <View style={{ marginVertical: 10 }}>
-                  <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-                    Medical History
-                  </Text>
+                <View>
+                  <Text style={MyStyles.inputLabel}>Medical History</Text>
 
                   <CheckBox
                     label="Hypertension"
@@ -1604,7 +1645,14 @@ const ResidentForm = () => {
                             <View style={styles.radioDot} />
                           )}
                         </View>
-                        <Text>{option}</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {option}
+                        </Text>
                       </Pressable>
                     ))}
                   </View>
@@ -1612,10 +1660,21 @@ const ResidentForm = () => {
 
                 {/* Contact Information */}
 
-                <Text style={{ color: "red" }}>Contact Information</Text>
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Contact Information
+                </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>Email</Text>
                   <TextInput
+                    placeholder="Email"
                     style={MyStyles.input}
                     value={residentForm.email}
                     onChangeText={(text) => handleInputChange("email", text)}
@@ -1651,6 +1710,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Facebook</Text>
                   <TextInput
+                    placeholder="Facebook"
                     style={MyStyles.input}
                     value={residentForm.facebook}
                     onChangeText={(text) => handleInputChange("facebook", text)}
@@ -1659,14 +1719,23 @@ const ResidentForm = () => {
 
                 {/* In Case Of Emergency Situation */}
 
-                <Text style={{ color: "red" }}>
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
                   In Case Of Emergency Situation
                 </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>
-                    Name<Text style={{ color: "red" }}>*</Text>
+                    Name of Guardian<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
+                    placeholder="Full Name"
                     style={MyStyles.input}
                     value={residentForm.emergencyname}
                     onChangeText={(text) =>
@@ -1694,6 +1763,7 @@ const ResidentForm = () => {
                     Address<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
+                    placeholder="Address"
                     style={MyStyles.input}
                     value={residentForm.emergencyaddress}
                     onChangeText={(text) =>
@@ -1704,7 +1774,17 @@ const ResidentForm = () => {
 
                 {/* Family Information */}
 
-                <Text style={{ color: "red" }}>Family Information</Text>
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Family Information
+                </Text>
 
                 <View>
                   <Text style={MyStyles.inputLabel}>Mother</Text>
@@ -1721,6 +1801,11 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Mother"
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.mother}
                     onChange={(item) => handleInputChange("mother", item.value)}
                   />
@@ -1741,6 +1826,11 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Father"
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.father}
                     onChange={(item) => handleInputChange("father", item.value)}
                   />
@@ -1759,14 +1849,20 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Spouse"
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.spouse}
                     onChange={(item) => handleInputChange("spouse", item.value)}
                   />
                 </View>
 
-                <View style={{ marginVertical: 8 }}>
-                  <Text>Number of Siblings</Text>
+                <View>
+                  <Text style={MyStyles.inputLabel}>Number of Siblings</Text>
                   <TextInput
+                    placeholder="Number of Siblings"
                     value={residentForm.numberofsiblings}
                     onChangeText={(text) =>
                       setResidentForm({
@@ -1776,21 +1872,16 @@ const ResidentForm = () => {
                     }
                     keyboardType="numeric"
                     maxLength={1}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "#ccc",
-                      borderRadius: 8,
-                      padding: 10,
-                      marginBottom: 10,
-                    }}
+                    style={MyStyles.input}
                   />
                 </View>
                 {parseInt(residentForm.numberofsiblings, 10) > 0 &&
                   renderSiblingsDropdown()}
 
-                <View style={{ marginVertical: 8 }}>
-                  <Text>Number of Children</Text>
+                <View>
+                  <Text style={MyStyles.inputLabel}>Number of Children</Text>
                   <TextInput
+                    placeholder="Number of Children"
                     value={residentForm.numberofchildren}
                     onChangeText={(text) =>
                       setResidentForm({
@@ -1800,23 +1891,28 @@ const ResidentForm = () => {
                     }
                     keyboardType="numeric"
                     maxLength={1}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "#ccc",
-                      borderRadius: 8,
-                      padding: 10,
-                      marginBottom: 10,
-                    }}
+                    style={MyStyles.input}
                   />
                 </View>
                 {parseInt(residentForm.numberofchildren, 10) > 0 &&
                   renderChildrenDropdown()}
 
                 {/* Address Information */}
-                <Text style={{ color: "red" }}>Address Information</Text>
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Address Information
+                </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>House Number</Text>
                   <TextInput
+                    placeholder="House Number"
                     style={MyStyles.input}
                     keyboardType="numeric"
                     value={residentForm.housenumber}
@@ -1887,7 +1983,17 @@ const ResidentForm = () => {
                 </View>
 
                 {/* Household Information */}
-                <Text style={{ color: "red" }}>Household Information</Text>
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Household Information
+                </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     Head of the Household?
@@ -1904,7 +2010,14 @@ const ResidentForm = () => {
                             <View style={styles.radioDot} />
                           )}
                         </View>
-                        <Text>{option}</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {option}
+                        </Text>
                       </Pressable>
                     ))}
                   </View>
@@ -2297,7 +2410,17 @@ const ResidentForm = () => {
                 )}
 
                 {/* Employment Information */}
-                <Text style={{ color: "red" }}>Employment Information</Text>
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Employment Information
+                </Text>
 
                 <View>
                   <Text style={MyStyles.inputLabel}>
@@ -2332,6 +2455,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Occupation</Text>
                   <TextInput
+                    placeholder="Occupation"
                     style={MyStyles.input}
                     value={residentForm.occupation}
                     onChangeText={(text) =>
@@ -2369,7 +2493,17 @@ const ResidentForm = () => {
                 </View>
 
                 {/* Educational Information */}
-                <Text style={{ color: "red" }}>Educational Information</Text>
+                <Text
+                  style={{
+                    color: "red",
+                    fontSize: 16,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Educational Information
+                </Text>
 
                 <View>
                   <Text style={MyStyles.inputLabel}>
@@ -2432,6 +2566,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Course</Text>
                   <TextInput
+                    placeholder="Course"
                     style={MyStyles.input}
                     value={residentForm.course}
                     onChangeText={(text) => handleInputChange("course", text)}
@@ -2472,7 +2607,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   placeholderText: {
-    color: "#999",
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
   },
   image: {
     width: "100%",
