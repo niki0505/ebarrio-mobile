@@ -24,6 +24,7 @@ import ImageViewing from "react-native-image-viewing";
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const Announcement = () => {
   const navigation = useNavigation();
@@ -128,6 +129,7 @@ const Announcement = () => {
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
     >
       <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           MyStyles.scrollContainer,
           {
@@ -136,9 +138,25 @@ const Announcement = () => {
           },
         ]}
       >
-        <Text style={[MyStyles.header, { marginBottom: 0 }]}>
-          Announcements
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <Entypo
+            name="menu"
+            size={35}
+            color="#04384E"
+            onPress={() => navigation.openDrawer()}
+            style={{ marginTop: 5, marginRight: 10 }}
+          />
+          <View>
+            <Text style={MyStyles.header}>Announcements</Text>
+          </View>
+        </View>
+
         <Dropdown
           data={[
             { label: "Newest", value: "newest" },
@@ -158,6 +176,7 @@ const Announcement = () => {
             borderRadius: 5,
             alignSelf: "flex-end",
             paddingHorizontal: 4,
+            marginTop: 20,
           }}
           selectedTextStyle={{
             color: "#04384E",
@@ -308,7 +327,7 @@ const Announcement = () => {
         ))}
       </ScrollView>
       {/* Fixed Floating Chat Button */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => navigation.navigate("Chat")}
         style={{
           position: "absolute",
@@ -330,7 +349,7 @@ const Announcement = () => {
         <View onPress={() => navigation.navigate("Chat")}>
           <Ionicons name="chatbubble-ellipses" size={30} color="#0E94D3" />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </SafeAreaView>
   );
 };

@@ -63,10 +63,6 @@ const Chat = () => {
             marginLeft: 10,
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("BottomTabs")}>
-            <MaterialIcons name="arrow-back-ios" size={30} color="#04384E" />
-          </TouchableOpacity>
-
           <View
             style={{
               flexDirection: "row",
@@ -117,6 +113,7 @@ const Chat = () => {
 
         {/* Chat Messages ScrollView */}
         <ScrollView
+          showsVerticalScrollIndicator={false}
           style={{ flex: 1, marginHorizontal: 10, marginTop: 10 }}
           contentContainerStyle={{ paddingBottom: 20 }}
           ref={scrollViewRef}
@@ -158,7 +155,7 @@ const Chat = () => {
             alignItems: "center",
             borderTopWidth: 1,
             borderColor: "#ccc",
-            paddingBottom: 20,
+            paddingBottom: 30,
           }}
         >
           <TextInput
