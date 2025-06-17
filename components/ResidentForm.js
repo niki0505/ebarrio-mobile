@@ -89,13 +89,18 @@ const ResidentForm = () => {
     householdposition: "",
     head: "",
     course: "",
-    is4Ps: false,
     isSenior: false,
     isInfant: false,
-    isChild: false,
+    isNewborn: false,
+    isUnder5: false,
+    isSchoolAge: false,
+    isAdolescent: false,
+    isAdolescentPregnant: false,
+    isAdult: false,
+    isPostpartum: false,
+    isWomenOfReproductive: false,
     isPregnant: false,
     isPWD: false,
-    isSoloParent: false,
     philhealthid: "",
     philhealthtype: "",
     philhealthcategory: "",
@@ -104,7 +109,7 @@ const ResidentForm = () => {
     haveTubercolosis: false,
     haveSurgery: false,
     lastmenstrual: "",
-    haveFPmethod: false,
+    haveFPmethod: "",
     fpmethod: "",
     fpstatus: "",
   });
@@ -752,19 +757,27 @@ const ResidentForm = () => {
         age--;
       }
 
-      const isSenior =
-        age > 60 ||
-        (age === 60 && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
+      const isSenior = age >= 60;
 
-      const isInfant = age === 0;
-      const isChild = age >= 1 && age <= 17;
+      const ageInDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+
+      const isNewborn = age === 0 && ageInDays <= 28;
+      const isInfant = (age === 0 && ageInDays > 28) || age === 1;
+      const isUnder5 = age >= 2 && age <= 4;
+      const isAdolescent = age >= 10 && age <= 19;
+      const isAdult = age > 25;
+      const isWomenOfReproductive = age >= 15 && age <= 49;
 
       setResidentForm((prev) => ({
         ...prev,
         age,
         isSenior,
+        isNewborn,
         isInfant,
-        isChild,
+        isUnder5,
+        isAdolescent,
+        isAdult,
+        isWomenOfReproductive,
       }));
     }
   }, [residentForm.birthdate]);
@@ -789,6 +802,26 @@ const ResidentForm = () => {
     const downloadURL = await getDownloadURL(storageRef);
     return downloadURL;
   }
+
+  const handleConfirm = () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to create your resident profile?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSubmit();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   const handleSubmit = async () => {
     try {
@@ -843,7 +876,9 @@ const ResidentForm = () => {
           householdForm,
         }
       );
-      alert("Resident successfully created!");
+      navigation.navigate("SuccessfulPage", {
+        service: "ResidentForm",
+      });
     } catch (error) {
       console.log("Error", error);
     }
@@ -882,7 +917,7 @@ const ResidentForm = () => {
               keyboardShouldPersistTaps="handled"
             >
               <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                Create your Account
+                Resident Profile
               </Text>
 
               <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
@@ -1552,15 +1587,9 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Classification</Text>
                   <CheckBox
-                    label="4Ps Beneficiary"
-                    value={residentForm.is4Ps}
-                    onValueChange={() => handleCheckboxChange("is4Ps")}
-                  />
-
-                  <CheckBox
-                    label="Senior Citizen"
-                    value={residentForm.isSenior}
-                    onValueChange={() => handleCheckboxChange("isSenior")}
+                    label="Newborn"
+                    value={residentForm.isNewborn}
+                    onValueChange={() => handleCheckboxChange("isNewborn")}
                     disabled
                   />
 
@@ -1572,13 +1601,60 @@ const ResidentForm = () => {
                   />
 
                   <CheckBox
-                    label="Child"
-                    value={residentForm.isChild}
-                    onValueChange={() => handleCheckboxChange("isChild")}
+                    label="Under 5 y.o"
+                    value={residentForm.isUnder5}
+                    onValueChange={() => handleCheckboxChange("isUnder5")}
+                    disabled
+                  />
+
+                  <CheckBox
+                    label="Adolescent"
+                    value={residentForm.isAdolescent}
+                    onValueChange={() => handleCheckboxChange("isAdolescent")}
+                    disabled
+                  />
+
+                  <CheckBox
+                    label="Adult"
+                    value={residentForm.isAdult}
+                    onValueChange={() => handleCheckboxChange("isAdult")}
+                    disabled
+                  />
+
+                  <CheckBox
+                    label="Senior Citizen"
+                    value={residentForm.isSenior}
+                    onValueChange={() => handleCheckboxChange("isSenior")}
                     disabled
                   />
 
                   {residentForm.sex === "Female" && (
+                    <CheckBox
+                      label="Women of Reproductive Age"
+                      value={residentForm.isWomenOfReproductive}
+                      onValueChange={() =>
+                        handleCheckboxChange("isWomenOfReproductive")
+                      }
+                    />
+                  )}
+
+                  {Boolean(
+                    residentForm.age &&
+                      residentForm.age >= 0 &&
+                      residentForm.age <= 5
+                  ) && (
+                    <CheckBox
+                      label="School of Age"
+                      value={residentForm.isSchoolAge}
+                      onValueChange={() => handleCheckboxChange("isSchoolAge")}
+                    />
+                  )}
+
+                  {Boolean(
+                    residentForm.age &&
+                      residentForm.sex === "Female" &&
+                      residentForm.age > 19
+                  ) && (
                     <CheckBox
                       label="Pregnant"
                       value={residentForm.isPregnant}
@@ -1586,16 +1662,33 @@ const ResidentForm = () => {
                     />
                   )}
 
+                  {Boolean(
+                    residentForm.age &&
+                      residentForm.sex === "Female" &&
+                      residentForm.age >= 10 &&
+                      residentForm.age <= 19
+                  ) && (
+                    <CheckBox
+                      label="Adolescent Pregnant"
+                      value={residentForm.isAdolescentPregnant}
+                      onValueChange={() =>
+                        handleCheckboxChange("isAdolescentPregnant")
+                      }
+                    />
+                  )}
+
+                  {residentForm.sex === "Female" && (
+                    <CheckBox
+                      label="Postpartum"
+                      value={residentForm.isPostpartum}
+                      onValueChange={() => handleCheckboxChange("isPostpartum")}
+                    />
+                  )}
+
                   <CheckBox
                     label="Person with Disability (PWD)"
                     value={residentForm.isPWD}
                     onValueChange={() => handleCheckboxChange("isPWD")}
-                  />
-
-                  <CheckBox
-                    label="Solo Parent"
-                    value={residentForm.isSoloParent}
-                    onValueChange={() => handleCheckboxChange("isSoloParent")}
                   />
                 </View>
 
@@ -2574,7 +2667,7 @@ const ResidentForm = () => {
                 </View>
               </View>
 
-              <TouchableOpacity style={MyStyles.button} onPress={handleSubmit}>
+              <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
                 <Text style={MyStyles.buttonText}>Submit</Text>
               </TouchableOpacity>
             </ScrollView>
