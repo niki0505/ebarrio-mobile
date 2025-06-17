@@ -226,7 +226,7 @@ const DrawerContent = ({ navigation }) => {
         }}
       >
         <Image
-          source={{ uri: user?.picture || "https://via.placeholder.com/100" }}
+          source={{ uri: user?.picture || "" }}
           style={{
             width: 50,
             height: 50,

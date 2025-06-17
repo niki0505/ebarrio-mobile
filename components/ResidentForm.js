@@ -558,6 +558,11 @@ const ResidentForm = () => {
               fontFamily: "QuicksandMedium",
               fontSize: 16,
             }}
+            selectedTextStyle={{
+              color: "#000",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
             value={residentForm.siblings?.[i] || null}
             onChange={(item) =>
               handleMultipleDropdownChange(item.value, i, "siblings")
@@ -587,6 +592,11 @@ const ResidentForm = () => {
             placeholder="Select"
             placeholderStyle={{
               color: "#808080",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
+            selectedTextStyle={{
+              color: "#000",
               fontFamily: "QuicksandMedium",
               fontSize: 16,
             }}
@@ -926,8 +936,8 @@ const ResidentForm = () => {
                 {/* ID */}
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                   }}
@@ -1755,8 +1765,8 @@ const ResidentForm = () => {
 
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                     marginTop: 30,
@@ -1814,8 +1824,8 @@ const ResidentForm = () => {
 
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                     marginTop: 30,
@@ -1869,8 +1879,8 @@ const ResidentForm = () => {
 
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                     marginTop: 30,
@@ -1899,6 +1909,11 @@ const ResidentForm = () => {
                       fontFamily: "QuicksandMedium",
                       fontSize: 16,
                     }}
+                    selectedTextStyle={{
+                      color: "#000",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.mother}
                     onChange={(item) => handleInputChange("mother", item.value)}
                   />
@@ -1924,6 +1939,11 @@ const ResidentForm = () => {
                       fontFamily: "QuicksandMedium",
                       fontSize: 16,
                     }}
+                    selectedTextStyle={{
+                      color: "#000",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.father}
                     onChange={(item) => handleInputChange("father", item.value)}
                   />
@@ -1944,6 +1964,11 @@ const ResidentForm = () => {
                     placeholder="Select Spouse"
                     placeholderStyle={{
                       color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
+                    selectedTextStyle={{
+                      color: "#000",
                       fontFamily: "QuicksandMedium",
                       fontSize: 16,
                     }}
@@ -1993,8 +2018,8 @@ const ResidentForm = () => {
                 {/* Address Information */}
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                     marginTop: 30,
@@ -2078,8 +2103,8 @@ const ResidentForm = () => {
                 {/* Household Information */}
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                     marginTop: 30,
@@ -2213,7 +2238,14 @@ const ResidentForm = () => {
                                 <View style={styles.radioDot} />
                               )}
                             </View>
-                            <Text>{option}</Text>
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                            >
+                              {option}
+                            </Text>
                           </Pressable>
                         ))}
                       </View>
@@ -2224,6 +2256,7 @@ const ResidentForm = () => {
                         <View>
                           <Text style={MyStyles.inputLabel}>Tribe</Text>
                           <TextInput
+                            placeholder="Tribe"
                             style={MyStyles.input}
                             value={householdForm.tribe}
                             onChangeText={(text) =>
@@ -2257,7 +2290,14 @@ const ResidentForm = () => {
                                   <View style={styles.radioDot} />
                                 )}
                               </View>
-                              <Text>{option}</Text>
+                              <Text
+                                style={{
+                                  fontFamily: "QuicksandMedium",
+                                  fontSize: 16,
+                                }}
+                              >
+                                {option}
+                              </Text>
                             </Pressable>
                           )
                         )}
@@ -2270,6 +2310,7 @@ const ResidentForm = () => {
                         <View>
                           <Text style={MyStyles.inputLabel}>NHTS No.</Text>
                           <TextInput
+                            placeholder="NHTS No"
                             style={MyStyles.input}
                             value={householdForm.nhtsno}
                             keyboardType="numeric"
@@ -2348,165 +2389,240 @@ const ResidentForm = () => {
                         style={MyStyles.input}
                       ></Dropdown>
                     </View>
-
+                    <Text style={MyStyles.inputLabel}>Members</Text>
                     <View>
-                      <Text style={MyStyles.inputLabel}>Members</Text>
                       {householdForm.members.map((member, index) => (
-                        <View key={index} style={{ marginBottom: 20 }}>
-                          <Text>Resident Name</Text>
-                          <TextInput
-                            value={member.resident}
-                            onChangeText={(text) =>
-                              handleMemberChange(index, "resident", text)
-                            }
-                            placeholder="Enter resident name"
-                            style={{
-                              borderWidth: 1,
-                              padding: 8,
-                              marginBottom: 5,
-                              borderRadius: 5,
-                            }}
-                          />
+                        <View
+                          key={index}
+                          style={{
+                            marginBottom: 20,
+                            flexDirection: "column",
+                            gap: 15,
+                          }}
+                        >
+                          <View>
+                            <Text style={MyStyles.inputLabel}>
+                              Resident Name
+                            </Text>
+                            <TextInput
+                              value={member.resident}
+                              onChangeText={(text) =>
+                                handleMemberChange(index, "resident", text)
+                              }
+                              placeholder="Enter Resident Name"
+                              style={MyStyles.input}
+                            />
 
-                          {memberSuggestions[index]?.length > 0 && (
-                            <View
-                              style={{
-                                backgroundColor: "#fff",
-                                borderWidth: 1,
-                                borderColor: "#ccc",
-                                borderRadius: 5,
-                                marginBottom: 10,
+                            {memberSuggestions[index]?.length > 0 && (
+                              <View
+                                style={{
+                                  backgroundColor: "#fff",
+                                  borderWidth: 1,
+                                  borderColor: "#ccc",
+                                  borderRadius: 5,
+                                  marginBottom: 10,
+                                }}
+                              >
+                                {memberSuggestions[index].map((item) => {
+                                  const fullName = `${item.firstname} ${
+                                    item.middlename ? item.middlename + " " : ""
+                                  }${item.lastname}`;
+
+                                  return (
+                                    <TouchableOpacity
+                                      key={item._id}
+                                      onPress={() =>
+                                        handleMemberSuggestionClick(index, item)
+                                      }
+                                      style={{
+                                        padding: 10,
+                                        borderBottomWidth: 1,
+                                        borderColor: "#eee",
+                                      }}
+                                    >
+                                      <Text>{fullName}</Text>
+                                    </TouchableOpacity>
+                                  );
+                                })}
+                              </View>
+                            )}
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Position</Text>
+                            <Dropdown
+                              data={positionList}
+                              labelField="label"
+                              valueField="value"
+                              placeholder="Select"
+                              placeholderStyle={{
+                                color: "#808080",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
                               }}
+                              selectedTextStyle={{
+                                color: "#000",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                              value={member.position}
+                              onChange={(item) =>
+                                handleMemberChange(
+                                  index,
+                                  "position",
+                                  item.value
+                                )
+                              }
+                              style={MyStyles.input}
+                              containerStyle={styles.dropdownContainer}
+                            />
+
+                            <TouchableOpacity
+                              onPress={() => removeMember(index)}
+                              style={{ marginTop: 8 }}
                             >
-                              {memberSuggestions[index].map((item) => {
-                                const fullName = `${item.firstname} ${
-                                  item.middlename ? item.middlename + " " : ""
-                                }${item.lastname}`;
-
-                                return (
-                                  <TouchableOpacity
-                                    key={item._id}
-                                    onPress={() =>
-                                      handleMemberSuggestionClick(index, item)
-                                    }
-                                    style={{
-                                      padding: 10,
-                                      borderBottomWidth: 1,
-                                      borderColor: "#eee",
-                                    }}
-                                  >
-                                    <Text>{fullName}</Text>
-                                  </TouchableOpacity>
-                                );
-                              })}
-                            </View>
-                          )}
-
-                          <Text style={styles.label}>Position</Text>
-                          <Dropdown
-                            data={positionList}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select"
-                            value={member.position}
-                            onChange={(item) =>
-                              handleMemberChange(index, "position", item.value)
-                            }
-                            style={styles.dropdown}
-                            containerStyle={styles.dropdownContainer}
-                          />
-
-                          <TouchableOpacity
-                            onPress={() => removeMember(index)}
-                            style={{ marginTop: 8 }}
-                          >
-                            <Text style={{ color: "red" }}>Remove Member</Text>
-                          </TouchableOpacity>
+                              <Text
+                                style={{
+                                  color: "red",
+                                  fontFamily: "QuicksandMedium",
+                                  fontSize: 16,
+                                  alignSelf: "flex-end",
+                                }}
+                              >
+                                Remove Member
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       ))}
 
                       <TouchableOpacity
                         onPress={addMember}
-                        style={styles.addButton}
+                        style={MyStyles.button}
                       >
-                        <Text style={styles.addText}>+ Add Member</Text>
+                        <Text style={[MyStyles.buttonText, { fontSize: 18 }]}>
+                          + Add Member
+                        </Text>
                       </TouchableOpacity>
                     </View>
 
-                    <Text style={MyStyles.inputLabel}>Vehicles</Text>
-                    {householdForm.vehicles.map((vehicle, index) => (
-                      <View key={index} style={styles.card}>
-                        <Text style={styles.cardTitle}>
-                          Vehicle {index + 1}
-                        </Text>
-
-                        <Text style={styles.label}>Model</Text>
-                        <TextInput
-                          style={styles.input}
-                          value={vehicle.model}
-                          placeholder="e.g. Toyota Vios"
-                          onChangeText={(text) =>
-                            handleVehicleChange(index, "model", text)
-                          }
-                        />
-
-                        <Text style={styles.label}>Color</Text>
-                        <TextInput
-                          style={styles.input}
-                          value={vehicle.color}
-                          placeholder="e.g. Red"
-                          onChangeText={(text) =>
-                            handleVehicleChange(index, "color", text)
-                          }
-                        />
-
-                        <Text style={styles.label}>Kind</Text>
-                        <Dropdown
-                          data={kindOptions}
-                          labelField="label"
-                          valueField="value"
-                          placeholder="Select kind"
-                          value={vehicle.kind}
-                          onChange={(item) =>
-                            handleVehicleChange(index, "kind", item.value)
-                          }
-                          style={styles.dropdown}
-                          containerStyle={styles.dropdownContainer}
-                        />
-
-                        <Text style={styles.label}>Plate Number</Text>
-                        <TextInput
-                          style={styles.input}
-                          value={vehicle.platenumber}
-                          placeholder="e.g. ABC1234"
-                          onChangeText={(text) =>
-                            handleVehicleChange(index, "platenumber", text)
-                          }
-                        />
-
-                        <TouchableOpacity
-                          onPress={() => removeVehicle(index)}
-                          style={styles.removeButton}
+                    <Text style={[MyStyles.inputLabel, { fontSize: 18 }]}>
+                      Vehicles
+                    </Text>
+                    <View>
+                      {householdForm.vehicles.map((vehicle, index) => (
+                        <View
+                          key={index}
+                          style={{
+                            marginBottom: 20,
+                            flexDirection: "column",
+                            gap: 15,
+                          }}
                         >
-                          <Text style={styles.removeText}>Remove Vehicle</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ))}
+                          <View>
+                            <Text style={MyStyles.inputLabel}>
+                              Vehicle {index + 1}
+                            </Text>
+                          </View>
 
-                    <TouchableOpacity
-                      onPress={addVehicle}
-                      style={styles.addButton}
-                    >
-                      <Text style={styles.addText}>+ Add Vehicle</Text>
-                    </TouchableOpacity>
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Model</Text>
+                            <TextInput
+                              style={MyStyles.input}
+                              value={vehicle.model}
+                              placeholder="e.g. Toyota Vios"
+                              onChangeText={(text) =>
+                                handleVehicleChange(index, "model", text)
+                              }
+                            />
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Color</Text>
+                            <TextInput
+                              style={MyStyles.input}
+                              value={vehicle.color}
+                              placeholder="e.g. Red"
+                              onChangeText={(text) =>
+                                handleVehicleChange(index, "color", text)
+                              }
+                            />
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Kind</Text>
+                            <Dropdown
+                              data={kindOptions}
+                              labelField="label"
+                              valueField="value"
+                              placeholder="Select Kind"
+                              placeholderStyle={{
+                                color: "#808080",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                              selectedTextStyle={{
+                                color: "#000",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                              value={vehicle.kind}
+                              onChange={(item) =>
+                                handleVehicleChange(index, "kind", item.value)
+                              }
+                              style={MyStyles.input}
+                              containerStyle={styles.dropdownContainer}
+                            />
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>
+                              Plate Number
+                            </Text>
+                            <TextInput
+                              style={MyStyles.input}
+                              value={vehicle.platenumber}
+                              placeholder="e.g. ABC1234"
+                              onChangeText={(text) =>
+                                handleVehicleChange(index, "platenumber", text)
+                              }
+                            />
+
+                            <TouchableOpacity
+                              onPress={() => removeVehicle(index)}
+                            >
+                              <Text
+                                style={{
+                                  color: "red",
+                                  fontFamily: "QuicksandMedium",
+                                  fontSize: 16,
+                                  alignSelf: "flex-end",
+                                }}
+                              >
+                                Remove Vehicle
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      ))}
+
+                      <TouchableOpacity
+                        onPress={addVehicle}
+                        style={MyStyles.button}
+                      >
+                        <Text style={[MyStyles.buttonText, { fontSize: 18 }]}>
+                          + Add Vehicle
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </>
                 )}
 
                 {/* Employment Information */}
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                     marginTop: 30,
@@ -2588,8 +2704,8 @@ const ResidentForm = () => {
                 {/* Educational Information */}
                 <Text
                   style={{
-                    color: "red",
-                    fontSize: 16,
+                    color: "#04384E",
+                    fontSize: 20,
                     fontFamily: "REMSemiBold",
                     alignSelf: "flex-start",
                     marginTop: 30,
@@ -2724,6 +2840,7 @@ const styles = StyleSheet.create({
   radioGroup: {
     flexDirection: "row",
     gap: 20,
+    maxWidth: "20%",
   },
   radioOption: {
     flexDirection: "row",
