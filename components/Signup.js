@@ -534,7 +534,7 @@ const Signup = () => {
                   Login
                 </Text>
               </View>
-              <View style={{ marginTop: 10 }}>
+              <View style={{ marginTop: 30 }}>
                 <Text
                   style={{
                     color: "#808080",

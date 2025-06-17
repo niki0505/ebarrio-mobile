@@ -969,13 +969,7 @@ export default function App() {
                     <Stack.Screen
                       name="SuccessfulPage"
                       children={() => (
-                        <PrivateRoute
-                          element={
-                            <InfoProvider>
-                              <SuccessfulPage />
-                            </InfoProvider>
-                          }
-                        />
+                        <PublicRoute element={<SuccessfulPage />} />
                       )}
                     />
                   </>
