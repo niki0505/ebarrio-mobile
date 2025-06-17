@@ -509,6 +509,31 @@ const Signup = () => {
                 </View>
               </View>
 
+              <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>
+                <Text style={MyStyles.buttonText}>Sign up</Text>
+              </TouchableOpacity>
+
+              <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
+                <Text
+                  style={{
+                    color: "#808080",
+                    fontSize: 16,
+                    fontFamily: "QuicksandSemiBold",
+                  }}
+                >
+                  Already have an account?
+                </Text>
+                <Text
+                  onPress={() => navigation.navigate("Login")}
+                  style={{
+                    color: "#006EFF",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                  }}
+                >
+                  Login
+                </Text>
+              </View>
               <View style={{ marginTop: 10 }}>
                 <Text
                   style={{
@@ -529,31 +554,6 @@ const Signup = () => {
                     {" "}
                     Create one
                   </Text>
-                </Text>
-              </View>
-
-              <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>
-                <Text style={MyStyles.buttonText}>Sign up</Text>
-              </TouchableOpacity>
-              <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
-                <Text
-                  style={{
-                    color: "#808080",
-                    fontSize: 16,
-                    fontFamily: "QuicksandSemiBold",
-                  }}
-                >
-                  Already have an account?
-                </Text>
-                <Text
-                  onPress={() => navigation.navigate("Login")}
-                  style={{
-                    color: "#006EFF",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
-                  }}
-                >
-                  Login
                 </Text>
               </View>
             </ScrollView>
