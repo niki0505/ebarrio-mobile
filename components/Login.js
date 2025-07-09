@@ -44,6 +44,7 @@ const Login = () => {
       if (res.status === 200) {
         if (res.data.message === "Credentials verified") {
           await login({ username, password });
+          console.log("Hello");
           // const response = await api.get(`/getmobilenumber/${username}`);
           // sendOTP(username, response.data.mobilenumber);
           // navigation.navigate("OTP", {
