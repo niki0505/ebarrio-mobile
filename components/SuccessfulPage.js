@@ -118,19 +118,57 @@ const SuccessfulPage = () => {
             </View>
           )}
 
-          <TouchableOpacity
-            style={[MyStyles.button, { marginTop: 15 }]}
-            onPress={() => navigation.navigate("Status")}
-          >
-            <Text style={MyStyles.buttonText}>View Status</Text>
-          </TouchableOpacity>
+          {service === "ResidentForm" && (
+            <View style={{ alignItems: "center" }}>
+              <Text style={[MyStyles.header, { textAlign: "center" }]}>
+                Resident Profile Request Submitted
+              </Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 10,
+                  color: "#808080",
+                  fontFamily: "QuicksandSemiBold",
+                  fontSize: 16,
+                }}
+              >
+                Your resident profile request has been submitted to the
+                barangay. You will receive a confirmation message via SMS within
+                3 business days.
+              </Text>
+            </View>
+          )}
 
-          <Text
-            style={[MyStyles.buttonText, { color: "#0E94D3" }]}
-            onPress={() => navigation.navigate("BottomTabs")}
-          >
-            Back to Home
-          </Text>
+          {(service === "Reservation" ||
+            service === "Document" ||
+            service === "Blotter") && (
+            <>
+              <TouchableOpacity
+                style={[MyStyles.button, { marginTop: 15 }]}
+                onPress={() => navigation.navigate("Status")}
+              >
+                <Text style={MyStyles.buttonText}>View Status</Text>
+              </TouchableOpacity>
+
+              <Text
+                style={[MyStyles.buttonText, { color: "#0E94D3" }]}
+                onPress={() => navigation.navigate("BottomTabs")}
+              >
+                Back to Home
+              </Text>
+            </>
+          )}
+
+          {service === "ResidentForm" && (
+            <>
+              <TouchableOpacity
+                style={[MyStyles.button, { marginTop: 15 }]}
+                onPress={() => navigation.navigate("Login")}
+              >
+                <Text style={MyStyles.buttonText}>OK</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

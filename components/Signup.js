@@ -509,32 +509,10 @@ const Signup = () => {
                 </View>
               </View>
 
-              <View style={{ marginTop: 10 }}>
-                <Text
-                  style={{
-                    color: "#808080",
-                    fontSize: 16,
-                    fontFamily: "QuicksandSemiBold",
-                    textAlign: "center",
-                  }}
-                >
-                  Don’t have a resident profile?
-                  <Text
-                    onPress={() => navigation.navigate("ResidentForm")}
-                    style={{
-                      color: "#006EFF",
-                      fontFamily: "QuicksandBold",
-                    }}
-                  >
-                    {" "}
-                    Create one
-                  </Text>
-                </Text>
-              </View>
-
               <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>
                 <Text style={MyStyles.buttonText}>Sign up</Text>
               </TouchableOpacity>
+
               <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
                 <Text
                   style={{
@@ -554,6 +532,28 @@ const Signup = () => {
                   }}
                 >
                   Login
+                </Text>
+              </View>
+              <View style={{ marginTop: 30 }}>
+                <Text
+                  style={{
+                    color: "#808080",
+                    fontSize: 16,
+                    fontFamily: "QuicksandSemiBold",
+                    textAlign: "center",
+                  }}
+                >
+                  Don’t have a resident profile?
+                  <Text
+                    onPress={() => navigation.navigate("ResidentForm")}
+                    style={{
+                      color: "#006EFF",
+                      fontFamily: "QuicksandBold",
+                    }}
+                  >
+                    {" "}
+                    Create one
+                  </Text>
                 </Text>
               </View>
             </ScrollView>

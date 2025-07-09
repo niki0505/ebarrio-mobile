@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { InfoProvider } from "./context/InfoContext";
 import { OtpProvider } from "./context/OtpContext";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { MyStyles } from "./components/stylesheet/MyStyles";
@@ -16,6 +16,8 @@ import Preview from "./components/Preview";
 import * as SecureStore from "expo-secure-store";
 import { useFonts } from "expo-font";
 import NetInfo from "@react-native-community/netinfo";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { InfoContext } from "./context/InfoContext";
 
 //Screens
 import Login from "./components/Login";
@@ -58,6 +60,7 @@ import SOSStatusPage from "./components/SOSStatusPage";
 import Chat from "./components/Chat";
 import TermsConditions from "./components/TermsConditions";
 import ResidentForm from "./components/ResidentForm";
+import UserProfile from "./components/UserProfile";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -68,37 +71,344 @@ import * as Notifications from "expo-notifications";
 import SuccessfulPage from "./components/SuccessfulPage";
 
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
+const CustomTabBar = ({
+  state,
+  descriptors,
+  navigation,
+  unreadNotifications,
+  unreadAnnouncements,
+}) => {
+  return (
+    <View style={MyStyles.tabBarContainer}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const isFocused = state.index === index;
+        const iconColor = isFocused ? "#0E94D3" : "#808080";
+        let iconName;
+        let badgeCount = 0;
+
+        switch (route.name) {
+          case "Home":
+            iconName = isFocused ? "home" : "home-outline";
+            break;
+
+          case "Announcements":
+            iconName = isFocused ? "megaphone" : "megaphone-outline";
+            badgeCount = unreadAnnouncements;
+            break;
+          case "Notification":
+            iconName = isFocused ? "notifications" : "notifications-outline";
+            badgeCount = unreadNotifications;
+            break;
+          case "Profile":
+            iconName = isFocused ? "person" : "person-outline";
+            break;
+        }
+
+        const onPress = () => {
+          navigation.navigate(route.name);
+        };
+
+        if (route.name === "CenterButtonPlaceholder")
+          return <View key={index} style={{ flex: 1 }} />;
+
+        return (
+          <TouchableOpacity
+            key={index}
+            accessibilityRole="button"
+            onPress={onPress}
+            style={MyStyles.tabButton}
+          >
+            <View style={{ position: "relative" }}>
+              <Ionicons name={iconName} size={24} color={iconColor} />
+              {badgeCount > 0 && (
+                <View style={MyStyles.badge}>
+                  <Text style={MyStyles.badgeText}>{badgeCount}</Text>
+                </View>
+              )}
+            </View>
+          </TouchableOpacity>
+        );
+      })}
+
+      <TouchableOpacity
+        style={MyStyles.floatingButton}
+        onPress={() => {
+          console.log("SOS Pressed");
+        }}
+      >
+        <Text
+          style={{ color: "#ffff", fontFamily: "REMSemiBold", fontSize: 18 }}
+        >
+          SOS
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const BottomTabs = () => {
+  const [unreadNotifications] = useState(1);
+  const [unreadAnnouncements] = useState(3);
+
   return (
     <>
       <NotificationSetup />
       <Tab.Navigator
         initialRouteName="Home"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-            if (route.name === "Home") {
-              iconName = focused ? "home" : "home-outline";
-            } else if (route.name === "Announcements") {
-              iconName = focused ? "megaphone" : "megaphone-outline";
-            } else if (route.name === "Notification") {
-              iconName = focused ? "notifications" : "notifications-outline";
-            }
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          headerShown: false,
-          tabBarStyle: MyStyles.tabBar,
-          tabBarLabelStyle: MyStyles.tabBarLabel,
-          tabBarActiveTintColor: "#0E94D3",
-          tabBarInactiveTintColor: "grey",
-        })}
+        tabBar={(props) => (
+          <CustomTabBar
+            {...props}
+            unreadNotifications={unreadNotifications}
+            unreadAnnouncements={unreadAnnouncements}
+          />
+        )}
+        screenOptions={{ headerShown: false }}
       >
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Announcements" component={Announcement} />
+
+        <Tab.Screen
+          name="CenterButtonPlaceholder"
+          options={{ tabBarButton: () => null }}
+        >
+          {() => null}
+        </Tab.Screen>
+
         <Tab.Screen name="Notification" component={Notification} />
+        <Tab.Screen name="Profile" component={UserProfile} />
       </Tab.Navigator>
     </>
+  );
+};
+
+const DrawerContent = ({ navigation }) => {
+  const { user } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
+  const handleConfirm = () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            logout();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        paddingTop: 50,
+        paddingHorizontal: 40,
+        backgroundColor: "#fff",
+      }}
+    >
+      <View
+        style={{
+          marginBottom: 40,
+          marginTop: 20,
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          alignItems: "center",
+        }}
+      >
+        <Image
+          source={{ uri: user?.picture || "" }}
+          style={{
+            width: 50,
+            height: 50,
+            borderRadius: 50,
+          }}
+        />
+        <View style={{ marginLeft: 10 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "600",
+              color: "#04384E",
+              fontFamily: "REMBold",
+            }}
+          >
+            Jennie Kim
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#808080",
+              fontFamily: "REMSemiBold",
+            }}
+          >
+            kimkim
+          </Text>
+        </View>
+      </View>
+
+      {/* <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingVertical: 20,
+        }}
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Ionicons name="home" size={22} color="#04384E" />
+        <Text
+          style={{
+            fontSize: 18,
+            marginLeft: 15,
+            color: "#04384E",
+            fontFamily: "QuicksandBold",
+          }}
+        >
+          Home
+        </Text>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingVertical: 20,
+        }}
+        onPress={() => navigation.navigate("Certificates")}
+      >
+        <Ionicons name="document-text" size={22} color="#04384E" />
+        <Text
+          style={{
+            fontSize: 18,
+            marginLeft: 15,
+            color: "#04384E",
+            fontFamily: "QuicksandBold",
+          }}
+        >
+          Request Document
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingVertical: 20,
+        }}
+        onPress={() => navigation.navigate("Blotter")}
+      >
+        <Ionicons name="file-tray-full" size={22} color="#04384E" />
+        <Text
+          style={{
+            fontSize: 18,
+            marginLeft: 15,
+            color: "#04384E",
+            fontFamily: "QuicksandBold",
+          }}
+        >
+          File a Blotter
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingVertical: 20,
+          fontFamily: "QuicksandBold",
+        }}
+        onPress={() => navigation.navigate("Status")}
+      >
+        <Ionicons name="calendar" size={22} color="#04384E" />
+        <Text
+          style={{
+            fontSize: 18,
+            marginLeft: 15,
+            color: "#04384E",
+            fontFamily: "QuicksandBold",
+          }}
+        >
+          Status
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingVertical: 20,
+          fontFamily: "QuicksandBold",
+        }}
+        onPress={() => navigation.navigate("AccountSettings")}
+      >
+        <Ionicons name="settings" size={22} color="#04384E" />
+        <Text
+          style={{
+            fontSize: 18,
+            marginLeft: 15,
+            color: "#04384E",
+            fontFamily: "QuicksandBold",
+          }}
+        >
+          Account Settings
+        </Text>
+      </TouchableOpacity>
+
+      <View
+        style={{
+          borderBottomWidth: 0.2,
+          backgroundColor: "#04384E",
+          opacity: 0.5,
+        }}
+      ></View>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingVertical: 20,
+          fontFamily: "QuicksandBold",
+          marginTop: 50,
+        }}
+        onPress={() => navigation.navigate("Login")}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            borderRadius: 5,
+            color: "#fff",
+            backgroundColor: "#04384E",
+            width: "100%",
+            fontFamily: "QuicksandBold",
+            paddingVertical: 15,
+            textAlign: "center",
+          }}
+          onPress={() => {
+            handleConfirm();
+          }}
+        >
+          Logout
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const BottomTabsWithDrawer = () => {
+  return (
+    <Drawer.Navigator
+      screenOptions={{ headerShown: false }}
+      drawerContent={(props) => <DrawerContent {...props} />}
+    >
+      <Drawer.Screen name="BottomTabs" component={BottomTabs} />
+    </Drawer.Navigator>
   );
 };
 
@@ -303,7 +613,7 @@ export default function App() {
                         <PrivateRoute
                           element={
                             <InfoProvider>
-                              <BottomTabs />
+                              <BottomTabsWithDrawer />
                             </InfoProvider>
                           }
                         />
@@ -347,6 +657,18 @@ export default function App() {
                           element={
                             <InfoProvider>
                               <Blotter />
+                            </InfoProvider>
+                          }
+                        />
+                      )}
+                    />
+                    <Stack.Screen
+                      name="UserProfile"
+                      children={() => (
+                        <PrivateRoute
+                          element={
+                            <InfoProvider>
+                              <UserProfile />
                             </InfoProvider>
                           }
                         />
@@ -647,13 +969,7 @@ export default function App() {
                     <Stack.Screen
                       name="SuccessfulPage"
                       children={() => (
-                        <PrivateRoute
-                          element={
-                            <InfoProvider>
-                              <SuccessfulPage />
-                            </InfoProvider>
-                          }
-                        />
+                        <PublicRoute element={<SuccessfulPage />} />
                       )}
                     />
                   </>

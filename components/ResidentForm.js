@@ -89,13 +89,18 @@ const ResidentForm = () => {
     householdposition: "",
     head: "",
     course: "",
-    is4Ps: false,
     isSenior: false,
     isInfant: false,
-    isChild: false,
+    isNewborn: false,
+    isUnder5: false,
+    isSchoolAge: false,
+    isAdolescent: false,
+    isAdolescentPregnant: false,
+    isAdult: false,
+    isPostpartum: false,
+    isWomenOfReproductive: false,
     isPregnant: false,
     isPWD: false,
-    isSoloParent: false,
     philhealthid: "",
     philhealthtype: "",
     philhealthcategory: "",
@@ -104,7 +109,7 @@ const ResidentForm = () => {
     haveTubercolosis: false,
     haveSurgery: false,
     lastmenstrual: "",
-    haveFPmethod: false,
+    haveFPmethod: "",
     fpmethod: "",
     fpstatus: "",
   });
@@ -333,7 +338,8 @@ const ResidentForm = () => {
   const positionList = [
     { label: "Select", value: "" },
     { label: "Spouse", value: "Spouse" },
-    { label: "Child", value: "Child" },
+    { label: "Son", value: "Son" },
+    { label: "Daughter", value: "Daughter" },
     { label: "Parent", value: "Parent" },
     { label: "Sibling", value: "Sibling" },
     { label: "Grandparent", value: "Grandparent" },
@@ -539,18 +545,25 @@ const ResidentForm = () => {
     for (let i = 0; i < numberOfSiblings; i++) {
       siblingsDropdowns.push(
         <View key={i} style={{ marginVertical: 8 }}>
-          <Text style={{ marginBottom: 4 }}>Sibling {i + 1}</Text>
+          <Text style={[MyStyles.inputLabel, { marginBottom: 4 }]}>
+            Sibling {i + 1}
+          </Text>
           <Dropdown
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 8,
-              padding: 12,
-            }}
+            style={MyStyles.input}
             data={residentOptions}
             labelField="label"
             valueField="value"
             placeholder="Select"
+            placeholderStyle={{
+              color: "#808080",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
+            selectedTextStyle={{
+              color: "#000",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
             value={residentForm.siblings?.[i] || null}
             onChange={(item) =>
               handleMultipleDropdownChange(item.value, i, "siblings")
@@ -569,18 +582,25 @@ const ResidentForm = () => {
     for (let i = 0; i < numberOfChildren; i++) {
       childrenDropdowns.push(
         <View key={i} style={{ marginVertical: 8 }}>
-          <Text style={{ marginBottom: 4 }}>Child {i + 1}</Text>
+          <Text style={[MyStyles.inputLabel, { marginBottom: 4 }]}>
+            Child {i + 1}
+          </Text>
           <Dropdown
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 8,
-              padding: 12,
-            }}
+            style={MyStyles.input}
             data={residentOptions}
             labelField="label"
             valueField="value"
             placeholder="Select"
+            placeholderStyle={{
+              color: "#808080",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
+            selectedTextStyle={{
+              color: "#000",
+              fontFamily: "QuicksandMedium",
+              fontSize: 16,
+            }}
             value={residentForm.children?.[i] || null}
             onChange={(item) =>
               handleMultipleDropdownChange(item.value, i, "children")
@@ -748,19 +768,27 @@ const ResidentForm = () => {
         age--;
       }
 
-      const isSenior =
-        age > 60 ||
-        (age === 60 && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
+      const isSenior = age >= 60;
 
-      const isInfant = age === 0;
-      const isChild = age >= 1 && age <= 17;
+      const ageInDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+
+      const isNewborn = age === 0 && ageInDays <= 28;
+      const isInfant = (age === 0 && ageInDays > 28) || age === 1;
+      const isUnder5 = age >= 2 && age <= 4;
+      const isAdolescent = age >= 10 && age <= 19;
+      const isAdult = age > 25;
+      const isWomenOfReproductive = age >= 15 && age <= 49;
 
       setResidentForm((prev) => ({
         ...prev,
         age,
         isSenior,
+        isNewborn,
         isInfant,
-        isChild,
+        isUnder5,
+        isAdolescent,
+        isAdult,
+        isWomenOfReproductive,
       }));
     }
   }, [residentForm.birthdate]);
@@ -785,6 +813,26 @@ const ResidentForm = () => {
     const downloadURL = await getDownloadURL(storageRef);
     return downloadURL;
   }
+
+  const handleConfirm = () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to create your resident profile?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSubmit();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   const handleSubmit = async () => {
     try {
@@ -839,7 +887,9 @@ const ResidentForm = () => {
           householdForm,
         }
       );
-      alert("Resident successfully created!");
+      navigation.navigate("SuccessfulPage", {
+        service: "ResidentForm",
+      });
     } catch (error) {
       console.log("Error", error);
     }
@@ -857,15 +907,12 @@ const ResidentForm = () => {
         style={{ flex: 1 }}
       >
         <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-          <View style={{ flex: 1, alignSelf: "center" }}>
-            <Image source={AppLogo} style={{ width: "180", height: "180" }} />
-          </View>
-
           <View
             style={{
               flexDirection: "column",
               alignItems: "center",
               backgroundColor: "#F0F4F7",
+              marginTop: 30,
               borderRadius: 30,
               flex: 3,
               marginBottom: "-10",
@@ -881,87 +928,99 @@ const ResidentForm = () => {
               keyboardShouldPersistTaps="handled"
             >
               <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                Create your Account
+                Resident Profile
               </Text>
 
-              {/* Personal Information */}
-
-              {/* ID */}
-              <Text style={{ color: "red" }}>Personal Information</Text>
-              <View style={styles.uploadBox}>
-                <View style={styles.previewContainer}>
-                  {isIDProcessing ? (
-                    <ActivityIndicator size="small" color="#0000ff" />
-                  ) : residentForm.id ? (
-                    <Image
-                      source={{ uri: residentForm.id }}
-                      style={styles.image}
-                    />
-                  ) : (
-                    <View style={styles.placeholder}>
-                      <Text style={styles.placeholderText}>
-                        Attach ID Picture
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                <View style={styles.buttons}>
-                  <TouchableOpacity
-                    onPress={toggleIDCamera}
-                    style={styles.button}
-                  >
-                    <Text>📷</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={pickIDImage} style={styles.button}>
-                    <Text>📤</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* Signature */}
-              <View style={styles.uploadBox}>
-                <View style={styles.previewContainer}>
-                  {isSignProcessing ? (
-                    <ActivityIndicator size="small" color="#0000ff" />
-                  ) : residentForm.signature ? (
-                    <Image
-                      source={{ uri: residentForm.signature }}
-                      style={styles.image}
-                    />
-                  ) : (
-                    <View style={styles.placeholder}>
-                      <Text style={styles.placeholderText}>
-                        Attach Signature
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                <View style={styles.buttons}>
-                  <TouchableOpacity
-                    onPress={toggleSigCamera}
-                    style={styles.button}
-                  >
-                    <Text>📷</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={pickSigImage}
-                    style={styles.button}
-                  >
-                    <Text>📤</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
               <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
+                {/* Personal Information */}
+
+                {/* ID */}
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  Personal Information
+                </Text>
+                <View style={styles.uploadBox}>
+                  <View style={styles.previewContainer}>
+                    {isIDProcessing ? (
+                      <ActivityIndicator size="small" color="#0000ff" />
+                    ) : residentForm.id ? (
+                      <Image
+                        source={{ uri: residentForm.id }}
+                        style={styles.image}
+                      />
+                    ) : (
+                      <View style={styles.placeholder}>
+                        <Text style={styles.placeholderText}>
+                          Attach ID Picture
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={styles.buttons}>
+                    <TouchableOpacity
+                      onPress={toggleIDCamera}
+                      style={styles.button}
+                    >
+                      <Text>📷</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={pickIDImage}
+                      style={styles.button}
+                    >
+                      <Text>📤</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Signature */}
+                <View style={styles.uploadBox}>
+                  <View style={styles.previewContainer}>
+                    {isSignProcessing ? (
+                      <ActivityIndicator size="small" color="#0000ff" />
+                    ) : residentForm.signature ? (
+                      <Image
+                        source={{ uri: residentForm.signature }}
+                        style={styles.image}
+                      />
+                    ) : (
+                      <View style={styles.placeholder}>
+                        <Text style={styles.placeholderText}>
+                          Attach Signature
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={styles.buttons}>
+                    <TouchableOpacity
+                      onPress={toggleSigCamera}
+                      style={styles.button}
+                    >
+                      <Text>📷</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={pickSigImage}
+                      style={styles.button}
+                    >
+                      <Text>📤</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     First Name<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
                     style={MyStyles.input}
-                    placeholder="First name"
+                    placeholder="First Name"
                     value={residentForm.firstname}
                     onChangeText={(text) =>
                       handleInputChange("firstname", text)
@@ -973,7 +1032,7 @@ const ResidentForm = () => {
                   <Text style={MyStyles.inputLabel}>Middle Name</Text>
                   <TextInput
                     style={MyStyles.input}
-                    placeholder="Last name"
+                    placeholder="Middle Name"
                     value={residentForm.middlename}
                     onChangeText={(text) =>
                       handleInputChange("middlename", text)
@@ -987,7 +1046,7 @@ const ResidentForm = () => {
                   </Text>
                   <TextInput
                     style={MyStyles.input}
-                    placeholder="Last name"
+                    placeholder="Last Name"
                     value={residentForm.lastname}
                     onChangeText={(text) => handleInputChange("lastname", text)}
                   />
@@ -1025,6 +1084,7 @@ const ResidentForm = () => {
                   <Text style={MyStyles.inputLabel}>Alias</Text>
                   <TextInput
                     style={MyStyles.input}
+                    placeholder="Alias"
                     value={residentForm.alias}
                     onChangeText={(text) => handleInputChange("alias", text)}
                   />
@@ -1136,7 +1196,13 @@ const ResidentForm = () => {
                   </Text>
 
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                    <Text>
+                    <Text
+                      style={{
+                        color: residentForm.birthdate ? "black" : "#808080",
+                        fontFamily: "QuicksandMedium",
+                        fontSize: 16,
+                      }}
+                    >
                       {residentForm.birthdate
                         ? new Date(residentForm.birthdate).toLocaleDateString()
                         : "Select date"}
@@ -1170,6 +1236,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Age</Text>
                   <TextInput
+                    placeholder="Age"
                     value={residentForm.age?.toString() || ""}
                     style={MyStyles.input}
                     editable={false}
@@ -1179,6 +1246,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Birthplace</Text>
                   <TextInput
+                    placeholder="Birthplace"
                     style={MyStyles.input}
                     value={residentForm.birthplace}
                     onChangeText={(text) =>
@@ -1220,6 +1288,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>PhilHealth ID</Text>
                   <TextInput
+                    placeholder="Philhealth ID"
                     style={MyStyles.input}
                     keyboardType="numeric"
                     value={residentForm.philhealthid}
@@ -1265,7 +1334,15 @@ const ResidentForm = () => {
                       </Text>
 
                       <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                        <Text>
+                        <Text
+                          style={{
+                            color: residentForm.lastmenstrual
+                              ? "black"
+                              : "#808080",
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
                           {residentForm.lastmenstrual
                             ? new Date(
                                 residentForm.lastmenstrual
@@ -1320,7 +1397,14 @@ const ResidentForm = () => {
                                 <View style={styles.radioDot} />
                               )}
                             </View>
-                            <Text>{option}</Text>
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                            >
+                              {option}
+                            </Text>
                           </Pressable>
                         ))}
                       </View>
@@ -1487,7 +1571,14 @@ const ResidentForm = () => {
                             <View style={styles.radioDot} />
                           )}
                         </View>
-                        <Text>{option}</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {option}
+                        </Text>
                       </Pressable>
                     ))}
                   </View>
@@ -1497,27 +1588,18 @@ const ResidentForm = () => {
                   <Text style={MyStyles.inputLabel}>Precinct</Text>
                   <TextInput
                     style={MyStyles.input}
-                    keyboardType="numeric"
+                    placeholder="Precinct"
                     value={residentForm.precinct}
                     onChangeText={(text) => handleInputChange("precinct", text)}
                   />
                 </View>
 
-                <View style={{ marginVertical: 10 }}>
-                  <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-                    Classification
-                  </Text>
-
+                <View>
+                  <Text style={MyStyles.inputLabel}>Classification</Text>
                   <CheckBox
-                    label="4Ps Beneficiary"
-                    value={residentForm.is4Ps}
-                    onValueChange={() => handleCheckboxChange("is4Ps")}
-                  />
-
-                  <CheckBox
-                    label="Senior Citizen"
-                    value={residentForm.isSenior}
-                    onValueChange={() => handleCheckboxChange("isSenior")}
+                    label="Newborn"
+                    value={residentForm.isNewborn}
+                    onValueChange={() => handleCheckboxChange("isNewborn")}
                     disabled
                   />
 
@@ -1529,17 +1611,87 @@ const ResidentForm = () => {
                   />
 
                   <CheckBox
-                    label="Child"
-                    value={residentForm.isChild}
-                    onValueChange={() => handleCheckboxChange("isChild")}
+                    label="Under 5 y.o"
+                    value={residentForm.isUnder5}
+                    onValueChange={() => handleCheckboxChange("isUnder5")}
+                    disabled
+                  />
+
+                  <CheckBox
+                    label="Adolescent"
+                    value={residentForm.isAdolescent}
+                    onValueChange={() => handleCheckboxChange("isAdolescent")}
+                    disabled
+                  />
+
+                  <CheckBox
+                    label="Adult"
+                    value={residentForm.isAdult}
+                    onValueChange={() => handleCheckboxChange("isAdult")}
+                    disabled
+                  />
+
+                  <CheckBox
+                    label="Senior Citizen"
+                    value={residentForm.isSenior}
+                    onValueChange={() => handleCheckboxChange("isSenior")}
                     disabled
                   />
 
                   {residentForm.sex === "Female" && (
                     <CheckBox
+                      label="Women of Reproductive Age"
+                      value={residentForm.isWomenOfReproductive}
+                      onValueChange={() =>
+                        handleCheckboxChange("isWomenOfReproductive")
+                      }
+                    />
+                  )}
+
+                  {Boolean(
+                    residentForm.age &&
+                      residentForm.age >= 0 &&
+                      residentForm.age <= 5
+                  ) && (
+                    <CheckBox
+                      label="School of Age"
+                      value={residentForm.isSchoolAge}
+                      onValueChange={() => handleCheckboxChange("isSchoolAge")}
+                    />
+                  )}
+
+                  {Boolean(
+                    residentForm.age &&
+                      residentForm.sex === "Female" &&
+                      residentForm.age > 19
+                  ) && (
+                    <CheckBox
                       label="Pregnant"
                       value={residentForm.isPregnant}
                       onValueChange={() => handleCheckboxChange("isPregnant")}
+                    />
+                  )}
+
+                  {Boolean(
+                    residentForm.age &&
+                      residentForm.sex === "Female" &&
+                      residentForm.age >= 10 &&
+                      residentForm.age <= 19
+                  ) && (
+                    <CheckBox
+                      label="Adolescent Pregnant"
+                      value={residentForm.isAdolescentPregnant}
+                      onValueChange={() =>
+                        handleCheckboxChange("isAdolescentPregnant")
+                      }
+                    />
+                  )}
+
+                  {residentForm.sex === "Female" && (
+                    <CheckBox
+                      label="Postpartum"
+                      value={residentForm.isPostpartum}
+                      onValueChange={() => handleCheckboxChange("isPostpartum")}
                     />
                   )}
 
@@ -1548,18 +1700,10 @@ const ResidentForm = () => {
                     value={residentForm.isPWD}
                     onValueChange={() => handleCheckboxChange("isPWD")}
                   />
-
-                  <CheckBox
-                    label="Solo Parent"
-                    value={residentForm.isSoloParent}
-                    onValueChange={() => handleCheckboxChange("isSoloParent")}
-                  />
                 </View>
 
-                <View style={{ marginVertical: 10 }}>
-                  <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-                    Medical History
-                  </Text>
+                <View>
+                  <Text style={MyStyles.inputLabel}>Medical History</Text>
 
                   <CheckBox
                     label="Hypertension"
@@ -1604,7 +1748,14 @@ const ResidentForm = () => {
                             <View style={styles.radioDot} />
                           )}
                         </View>
-                        <Text>{option}</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {option}
+                        </Text>
                       </Pressable>
                     ))}
                   </View>
@@ -1612,10 +1763,21 @@ const ResidentForm = () => {
 
                 {/* Contact Information */}
 
-                <Text style={{ color: "red" }}>Contact Information</Text>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Contact Information
+                </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>Email</Text>
                   <TextInput
+                    placeholder="Email"
                     style={MyStyles.input}
                     value={residentForm.email}
                     onChangeText={(text) => handleInputChange("email", text)}
@@ -1651,6 +1813,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Facebook</Text>
                   <TextInput
+                    placeholder="Facebook"
                     style={MyStyles.input}
                     value={residentForm.facebook}
                     onChangeText={(text) => handleInputChange("facebook", text)}
@@ -1659,14 +1822,23 @@ const ResidentForm = () => {
 
                 {/* In Case Of Emergency Situation */}
 
-                <Text style={{ color: "red" }}>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
                   In Case Of Emergency Situation
                 </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>
-                    Name<Text style={{ color: "red" }}>*</Text>
+                    Name of Guardian<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
+                    placeholder="Full Name"
                     style={MyStyles.input}
                     value={residentForm.emergencyname}
                     onChangeText={(text) =>
@@ -1694,6 +1866,7 @@ const ResidentForm = () => {
                     Address<Text style={{ color: "red" }}>*</Text>
                   </Text>
                   <TextInput
+                    placeholder="Address"
                     style={MyStyles.input}
                     value={residentForm.emergencyaddress}
                     onChangeText={(text) =>
@@ -1704,7 +1877,17 @@ const ResidentForm = () => {
 
                 {/* Family Information */}
 
-                <Text style={{ color: "red" }}>Family Information</Text>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Family Information
+                </Text>
 
                 <View>
                   <Text style={MyStyles.inputLabel}>Mother</Text>
@@ -1721,6 +1904,16 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Mother"
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
+                    selectedTextStyle={{
+                      color: "#000",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.mother}
                     onChange={(item) => handleInputChange("mother", item.value)}
                   />
@@ -1741,6 +1934,16 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Father"
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
+                    selectedTextStyle={{
+                      color: "#000",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.father}
                     onChange={(item) => handleInputChange("father", item.value)}
                   />
@@ -1759,14 +1962,25 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Spouse"
+                    placeholderStyle={{
+                      color: "#808080",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
+                    selectedTextStyle={{
+                      color: "#000",
+                      fontFamily: "QuicksandMedium",
+                      fontSize: 16,
+                    }}
                     value={residentForm.spouse}
                     onChange={(item) => handleInputChange("spouse", item.value)}
                   />
                 </View>
 
-                <View style={{ marginVertical: 8 }}>
-                  <Text>Number of Siblings</Text>
+                <View>
+                  <Text style={MyStyles.inputLabel}>Number of Siblings</Text>
                   <TextInput
+                    placeholder="Number of Siblings"
                     value={residentForm.numberofsiblings}
                     onChangeText={(text) =>
                       setResidentForm({
@@ -1776,21 +1990,16 @@ const ResidentForm = () => {
                     }
                     keyboardType="numeric"
                     maxLength={1}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "#ccc",
-                      borderRadius: 8,
-                      padding: 10,
-                      marginBottom: 10,
-                    }}
+                    style={MyStyles.input}
                   />
                 </View>
                 {parseInt(residentForm.numberofsiblings, 10) > 0 &&
                   renderSiblingsDropdown()}
 
-                <View style={{ marginVertical: 8 }}>
-                  <Text>Number of Children</Text>
+                <View>
+                  <Text style={MyStyles.inputLabel}>Number of Children</Text>
                   <TextInput
+                    placeholder="Number of Children"
                     value={residentForm.numberofchildren}
                     onChangeText={(text) =>
                       setResidentForm({
@@ -1800,23 +2009,28 @@ const ResidentForm = () => {
                     }
                     keyboardType="numeric"
                     maxLength={1}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "#ccc",
-                      borderRadius: 8,
-                      padding: 10,
-                      marginBottom: 10,
-                    }}
+                    style={MyStyles.input}
                   />
                 </View>
                 {parseInt(residentForm.numberofchildren, 10) > 0 &&
                   renderChildrenDropdown()}
 
                 {/* Address Information */}
-                <Text style={{ color: "red" }}>Address Information</Text>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Address Information
+                </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>House Number</Text>
                   <TextInput
+                    placeholder="House Number"
                     style={MyStyles.input}
                     keyboardType="numeric"
                     value={residentForm.housenumber}
@@ -1887,7 +2101,17 @@ const ResidentForm = () => {
                 </View>
 
                 {/* Household Information */}
-                <Text style={{ color: "red" }}>Household Information</Text>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Household Information
+                </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     Head of the Household?
@@ -1904,7 +2128,14 @@ const ResidentForm = () => {
                             <View style={styles.radioDot} />
                           )}
                         </View>
-                        <Text>{option}</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandMedium",
+                            fontSize: 16,
+                          }}
+                        >
+                          {option}
+                        </Text>
                       </Pressable>
                     ))}
                   </View>
@@ -1956,7 +2187,8 @@ const ResidentForm = () => {
                         value={residentForm.householdposition}
                         data={[
                           "Spouse",
-                          "Child",
+                          "Son",
+                          "Daughter",
                           "Parent",
                           "Sibling",
                           "Grandparent",
@@ -2007,7 +2239,14 @@ const ResidentForm = () => {
                                 <View style={styles.radioDot} />
                               )}
                             </View>
-                            <Text>{option}</Text>
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                            >
+                              {option}
+                            </Text>
                           </Pressable>
                         ))}
                       </View>
@@ -2018,6 +2257,7 @@ const ResidentForm = () => {
                         <View>
                           <Text style={MyStyles.inputLabel}>Tribe</Text>
                           <TextInput
+                            placeholder="Tribe"
                             style={MyStyles.input}
                             value={householdForm.tribe}
                             onChangeText={(text) =>
@@ -2051,7 +2291,14 @@ const ResidentForm = () => {
                                   <View style={styles.radioDot} />
                                 )}
                               </View>
-                              <Text>{option}</Text>
+                              <Text
+                                style={{
+                                  fontFamily: "QuicksandMedium",
+                                  fontSize: 16,
+                                }}
+                              >
+                                {option}
+                              </Text>
                             </Pressable>
                           )
                         )}
@@ -2064,6 +2311,7 @@ const ResidentForm = () => {
                         <View>
                           <Text style={MyStyles.inputLabel}>NHTS No.</Text>
                           <TextInput
+                            placeholder="NHTS No"
                             style={MyStyles.input}
                             value={householdForm.nhtsno}
                             keyboardType="numeric"
@@ -2142,162 +2390,247 @@ const ResidentForm = () => {
                         style={MyStyles.input}
                       ></Dropdown>
                     </View>
-
+                    <Text style={MyStyles.inputLabel}>Members</Text>
                     <View>
-                      <Text style={MyStyles.inputLabel}>Members</Text>
                       {householdForm.members.map((member, index) => (
-                        <View key={index} style={{ marginBottom: 20 }}>
-                          <Text>Resident Name</Text>
-                          <TextInput
-                            value={member.resident}
-                            onChangeText={(text) =>
-                              handleMemberChange(index, "resident", text)
-                            }
-                            placeholder="Enter resident name"
-                            style={{
-                              borderWidth: 1,
-                              padding: 8,
-                              marginBottom: 5,
-                              borderRadius: 5,
-                            }}
-                          />
+                        <View
+                          key={index}
+                          style={{
+                            marginBottom: 20,
+                            flexDirection: "column",
+                            gap: 15,
+                          }}
+                        >
+                          <View>
+                            <Text style={MyStyles.inputLabel}>
+                              Resident Name
+                            </Text>
+                            <TextInput
+                              value={member.resident}
+                              onChangeText={(text) =>
+                                handleMemberChange(index, "resident", text)
+                              }
+                              placeholder="Enter Resident Name"
+                              style={MyStyles.input}
+                            />
 
-                          {memberSuggestions[index]?.length > 0 && (
-                            <View
-                              style={{
-                                backgroundColor: "#fff",
-                                borderWidth: 1,
-                                borderColor: "#ccc",
-                                borderRadius: 5,
-                                marginBottom: 10,
+                            {memberSuggestions[index]?.length > 0 && (
+                              <View
+                                style={{
+                                  backgroundColor: "#fff",
+                                  borderWidth: 1,
+                                  borderColor: "#ccc",
+                                  borderRadius: 5,
+                                  marginBottom: 10,
+                                }}
+                              >
+                                {memberSuggestions[index].map((item) => {
+                                  const fullName = `${item.firstname} ${
+                                    item.middlename ? item.middlename + " " : ""
+                                  }${item.lastname}`;
+
+                                  return (
+                                    <TouchableOpacity
+                                      key={item._id}
+                                      onPress={() =>
+                                        handleMemberSuggestionClick(index, item)
+                                      }
+                                      style={{
+                                        padding: 10,
+                                        borderBottomWidth: 1,
+                                        borderColor: "#eee",
+                                      }}
+                                    >
+                                      <Text>{fullName}</Text>
+                                    </TouchableOpacity>
+                                  );
+                                })}
+                              </View>
+                            )}
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Position</Text>
+                            <Dropdown
+                              data={positionList}
+                              labelField="label"
+                              valueField="value"
+                              placeholder="Select"
+                              placeholderStyle={{
+                                color: "#808080",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
                               }}
+                              selectedTextStyle={{
+                                color: "#000",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                              value={member.position}
+                              onChange={(item) =>
+                                handleMemberChange(
+                                  index,
+                                  "position",
+                                  item.value
+                                )
+                              }
+                              style={MyStyles.input}
+                              containerStyle={styles.dropdownContainer}
+                            />
+
+                            <TouchableOpacity
+                              onPress={() => removeMember(index)}
+                              style={{ marginTop: 8 }}
                             >
-                              {memberSuggestions[index].map((item) => {
-                                const fullName = `${item.firstname} ${
-                                  item.middlename ? item.middlename + " " : ""
-                                }${item.lastname}`;
-
-                                return (
-                                  <TouchableOpacity
-                                    key={item._id}
-                                    onPress={() =>
-                                      handleMemberSuggestionClick(index, item)
-                                    }
-                                    style={{
-                                      padding: 10,
-                                      borderBottomWidth: 1,
-                                      borderColor: "#eee",
-                                    }}
-                                  >
-                                    <Text>{fullName}</Text>
-                                  </TouchableOpacity>
-                                );
-                              })}
-                            </View>
-                          )}
-
-                          <Text style={styles.label}>Position</Text>
-                          <Dropdown
-                            data={positionList}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select"
-                            value={member.position}
-                            onChange={(item) =>
-                              handleMemberChange(index, "position", item.value)
-                            }
-                            style={styles.dropdown}
-                            containerStyle={styles.dropdownContainer}
-                          />
-
-                          <TouchableOpacity
-                            onPress={() => removeMember(index)}
-                            style={{ marginTop: 8 }}
-                          >
-                            <Text style={{ color: "red" }}>Remove Member</Text>
-                          </TouchableOpacity>
+                              <Text
+                                style={{
+                                  color: "red",
+                                  fontFamily: "QuicksandMedium",
+                                  fontSize: 16,
+                                  alignSelf: "flex-end",
+                                }}
+                              >
+                                Remove Member
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       ))}
 
                       <TouchableOpacity
                         onPress={addMember}
-                        style={styles.addButton}
+                        style={MyStyles.button}
                       >
-                        <Text style={styles.addText}>+ Add Member</Text>
+                        <Text style={[MyStyles.buttonText, { fontSize: 18 }]}>
+                          + Add Member
+                        </Text>
                       </TouchableOpacity>
                     </View>
 
-                    <Text style={MyStyles.inputLabel}>Vehicles</Text>
-                    {householdForm.vehicles.map((vehicle, index) => (
-                      <View key={index} style={styles.card}>
-                        <Text style={styles.cardTitle}>
-                          Vehicle {index + 1}
-                        </Text>
-
-                        <Text style={styles.label}>Model</Text>
-                        <TextInput
-                          style={styles.input}
-                          value={vehicle.model}
-                          placeholder="e.g. Toyota Vios"
-                          onChangeText={(text) =>
-                            handleVehicleChange(index, "model", text)
-                          }
-                        />
-
-                        <Text style={styles.label}>Color</Text>
-                        <TextInput
-                          style={styles.input}
-                          value={vehicle.color}
-                          placeholder="e.g. Red"
-                          onChangeText={(text) =>
-                            handleVehicleChange(index, "color", text)
-                          }
-                        />
-
-                        <Text style={styles.label}>Kind</Text>
-                        <Dropdown
-                          data={kindOptions}
-                          labelField="label"
-                          valueField="value"
-                          placeholder="Select kind"
-                          value={vehicle.kind}
-                          onChange={(item) =>
-                            handleVehicleChange(index, "kind", item.value)
-                          }
-                          style={styles.dropdown}
-                          containerStyle={styles.dropdownContainer}
-                        />
-
-                        <Text style={styles.label}>Plate Number</Text>
-                        <TextInput
-                          style={styles.input}
-                          value={vehicle.platenumber}
-                          placeholder="e.g. ABC1234"
-                          onChangeText={(text) =>
-                            handleVehicleChange(index, "platenumber", text)
-                          }
-                        />
-
-                        <TouchableOpacity
-                          onPress={() => removeVehicle(index)}
-                          style={styles.removeButton}
+                    <Text style={[MyStyles.inputLabel, { fontSize: 18 }]}>
+                      Vehicles
+                    </Text>
+                    <View>
+                      {householdForm.vehicles.map((vehicle, index) => (
+                        <View
+                          key={index}
+                          style={{
+                            marginBottom: 20,
+                            flexDirection: "column",
+                            gap: 15,
+                          }}
                         >
-                          <Text style={styles.removeText}>Remove Vehicle</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ))}
+                          <View>
+                            <Text style={MyStyles.inputLabel}>
+                              Vehicle {index + 1}
+                            </Text>
+                          </View>
 
-                    <TouchableOpacity
-                      onPress={addVehicle}
-                      style={styles.addButton}
-                    >
-                      <Text style={styles.addText}>+ Add Vehicle</Text>
-                    </TouchableOpacity>
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Model</Text>
+                            <TextInput
+                              style={MyStyles.input}
+                              value={vehicle.model}
+                              placeholder="e.g. Toyota Vios"
+                              onChangeText={(text) =>
+                                handleVehicleChange(index, "model", text)
+                              }
+                            />
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Color</Text>
+                            <TextInput
+                              style={MyStyles.input}
+                              value={vehicle.color}
+                              placeholder="e.g. Red"
+                              onChangeText={(text) =>
+                                handleVehicleChange(index, "color", text)
+                              }
+                            />
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>Kind</Text>
+                            <Dropdown
+                              data={kindOptions}
+                              labelField="label"
+                              valueField="value"
+                              placeholder="Select Kind"
+                              placeholderStyle={{
+                                color: "#808080",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                              selectedTextStyle={{
+                                color: "#000",
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 16,
+                              }}
+                              value={vehicle.kind}
+                              onChange={(item) =>
+                                handleVehicleChange(index, "kind", item.value)
+                              }
+                              style={MyStyles.input}
+                              containerStyle={styles.dropdownContainer}
+                            />
+                          </View>
+
+                          <View>
+                            <Text style={MyStyles.inputLabel}>
+                              Plate Number
+                            </Text>
+                            <TextInput
+                              style={MyStyles.input}
+                              value={vehicle.platenumber}
+                              placeholder="e.g. ABC1234"
+                              onChangeText={(text) =>
+                                handleVehicleChange(index, "platenumber", text)
+                              }
+                            />
+
+                            <TouchableOpacity
+                              onPress={() => removeVehicle(index)}
+                            >
+                              <Text
+                                style={{
+                                  color: "red",
+                                  fontFamily: "QuicksandMedium",
+                                  fontSize: 16,
+                                  alignSelf: "flex-end",
+                                }}
+                              >
+                                Remove Vehicle
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      ))}
+
+                      <TouchableOpacity
+                        onPress={addVehicle}
+                        style={MyStyles.button}
+                      >
+                        <Text style={[MyStyles.buttonText, { fontSize: 18 }]}>
+                          + Add Vehicle
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </>
                 )}
 
                 {/* Employment Information */}
-                <Text style={{ color: "red" }}>Employment Information</Text>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Employment Information
+                </Text>
 
                 <View>
                   <Text style={MyStyles.inputLabel}>
@@ -2332,6 +2665,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Occupation</Text>
                   <TextInput
+                    placeholder="Occupation"
                     style={MyStyles.input}
                     value={residentForm.occupation}
                     onChangeText={(text) =>
@@ -2369,7 +2703,17 @@ const ResidentForm = () => {
                 </View>
 
                 {/* Educational Information */}
-                <Text style={{ color: "red" }}>Educational Information</Text>
+                <Text
+                  style={{
+                    color: "#04384E",
+                    fontSize: 20,
+                    fontFamily: "REMSemiBold",
+                    alignSelf: "flex-start",
+                    marginTop: 30,
+                  }}
+                >
+                  Educational Information
+                </Text>
 
                 <View>
                   <Text style={MyStyles.inputLabel}>
@@ -2432,6 +2776,7 @@ const ResidentForm = () => {
                 <View>
                   <Text style={MyStyles.inputLabel}>Course</Text>
                   <TextInput
+                    placeholder="Course"
                     style={MyStyles.input}
                     value={residentForm.course}
                     onChangeText={(text) => handleInputChange("course", text)}
@@ -2439,7 +2784,7 @@ const ResidentForm = () => {
                 </View>
               </View>
 
-              <TouchableOpacity style={MyStyles.button} onPress={handleSubmit}>
+              <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
                 <Text style={MyStyles.buttonText}>Submit</Text>
               </TouchableOpacity>
             </ScrollView>
@@ -2472,7 +2817,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   placeholderText: {
-    color: "#999",
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
   },
   image: {
     width: "100%",
@@ -2495,6 +2841,7 @@ const styles = StyleSheet.create({
   radioGroup: {
     flexDirection: "row",
     gap: 20,
+    maxWidth: "20%",
   },
   radioOption: {
     flexDirection: "row",
