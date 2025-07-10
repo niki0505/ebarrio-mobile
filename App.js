@@ -294,7 +294,28 @@ const DrawerContent = ({ navigation }) => {
             fontFamily: "QuicksandBold",
           }}
         >
-          Request Document
+          Request a document
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingVertical: 20,
+        }}
+        onPress={() => navigation.navigate("CourtReservations")}
+      >
+        <Ionicons name="calendar" size={22} color="#04384E" />
+        <Text
+          style={{
+            fontSize: 18,
+            marginLeft: 15,
+            color: "#04384E",
+            fontFamily: "QuicksandBold",
+          }}
+        >
+          Reserve a court
         </Text>
       </TouchableOpacity>
 
@@ -315,7 +336,7 @@ const DrawerContent = ({ navigation }) => {
             fontFamily: "QuicksandBold",
           }}
         >
-          File a Blotter
+          File a blotter
         </Text>
       </TouchableOpacity>
 
@@ -358,7 +379,7 @@ const DrawerContent = ({ navigation }) => {
             fontFamily: "QuicksandBold",
           }}
         >
-          Account Settings
+          Account settings
         </Text>
       </TouchableOpacity>
 
