@@ -26,7 +26,7 @@ const QuickTips = () => {
 
   const quickTipsData = [
     {
-      image: require("../assets/quick-tips/fire-extinguisher.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How To Use a Fire Extinguisher",
       steps: [
         "Pull the pin to unlock it.",
@@ -36,7 +36,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/leaking-gas.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Turn Off a Leaking or Burning Gas Tank",
       steps: [
         "Leave the area immediately.",
@@ -46,7 +46,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/grease-fire.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Stop a Grease Fire with Baking Soda",
       steps: [
         "Turn off the stove.",
@@ -56,7 +56,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/breaker.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Safely Turn Off the Breaker (Power Box)",
       steps: [
         "Stand on a dry place.",
@@ -65,7 +65,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/sandbags.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Block Flood Water Using Sandbags",
       steps: [
         "Fill sandbags halfway with sand or soil.",
@@ -74,7 +74,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/float-bottle.jpg"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Make a DIY Floating Device with Water Gallons",
       steps: [
         "Use empty, tightly sealed water gallons.",
@@ -83,7 +83,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/roof.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Tie Down Your Roof",
       steps: [
         "Use strong ropes, straps, or wires.",
@@ -92,7 +92,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/window.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Cover Windows",
       steps: [
         "Cut wood (plywood) to fit over your windows.",
@@ -101,7 +101,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/unplug.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "How to Unplug Devices If Outlet Is Wet",
       steps: [
         "Do not touch anything with wet hands or near water!",
@@ -110,7 +110,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/drop-cover.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "Drop, Cover, and Hold",
       steps: [
         "Drop to your hands and knees to the ground.",
@@ -119,7 +119,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/triangle-life.png"),
+      image: require("../assets/quick-tips/safe-spot.jpg"),
       title: "Triangle of Life",
       steps: [
         "Find a strong, large object like a couch, bed, or desk.",
