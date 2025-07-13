@@ -2,7 +2,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 const api = axios.create({
-  baseURL: "https://ebarrio-mobile-backend.onrender.com/api",
+  baseURL: "https://ebarrio-mobile-backend.fly.dev/api",
 });
 
 api.interceptors.request.use(
@@ -29,7 +29,7 @@ export const setupInterceptors = (logout) => {
 
         try {
           const res = await axios.get(
-            "https://ebarrio-mobile-backend.onrender.com/api/refreshtoken",
+            "https://ebarrio-mobile-backend.fly.dev/api/refreshtoken",
             {
               headers: {
                 Authorization: `Bearer ${refreshToken}`,
