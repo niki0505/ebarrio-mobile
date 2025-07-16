@@ -12,23 +12,22 @@ import {
   ActivityIndicator,
   StyleSheet,
   Pressable,
-  FlatList,
+  Modal,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
-import AppLogo from "../assets/applogo-darkbg.png";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
 import { storage } from "../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { MaterialIcons } from "@expo/vector-icons";
+import Signature from "react-native-signature-canvas";
 
 //ICONS
-import { useState, useEffect, useContext } from "react";
-import { InfoContext } from "../context/InfoContext";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const ResidentForm = () => {
@@ -355,7 +354,7 @@ const ResidentForm = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.onrender.com/api/getresidents"
+          "https://ebarrio-mobile-backend.fly.dev/api/getresidents"
         );
         setResidents(response.data);
       } catch (error) {
@@ -369,7 +368,7 @@ const ResidentForm = () => {
     const fetchHouseholds = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.onrender.com/api/gethouseholds"
+          "https://ebarrio-mobile-backend.fly.dev/api/gethouseholds"
         );
         setHouseholds(response.data);
       } catch (error) {
@@ -896,8 +895,19 @@ const ResidentForm = () => {
   };
 
   console.log(residentForm);
-  // console.log(householdForm);
 
+  const [showSignModal, setShowSignModal] = useState(false);
+
+  const handleSignatureOK = (signature) => {
+    setIsSignProcessing(true);
+    setResidentForm({ ...residentForm, signature });
+    setShowSignModal(false);
+    setIsSignProcessing(false);
+  };
+
+  const handleClear = () => {
+    setResidentForm({ ...residentForm, signature: null });
+  };
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
@@ -979,7 +989,64 @@ const ResidentForm = () => {
                   </View>
                 </View>
 
-                {/* Signature */}
+                {/* New Signature */}
+                <View style={styles.uploadBox}>
+                  <View style={styles.previewContainer}>
+                    {isSignProcessing ? (
+                      <ActivityIndicator size="small" color="#0000ff" />
+                    ) : residentForm.signature ? (
+                      <Image
+                        source={{ uri: residentForm.signature }}
+                        style={styles.image}
+                      />
+                    ) : (
+                      <View style={styles.placeholder}>
+                        <Text style={styles.placeholderText}>
+                          Attach Signature
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={styles.buttons}>
+                    <TouchableOpacity
+                      onPress={() => setShowSignModal(true)}
+                      style={styles.button}
+                    >
+                      <Text>✍️</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleClear}
+                      style={styles.button}
+                    >
+                      <Text>🗑️</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Signature Modal */}
+                  <Modal visible={showSignModal} animationType="slide">
+                    <View style={{ flex: 1 }}>
+                      <Signature
+                        onOK={handleSignatureOK}
+                        onEmpty={() => setShowSignModal(false)}
+                        descriptionText="Sign Below"
+                        clearText="Clear"
+                        confirmText="Save"
+                        webStyle={`.m-signature-pad--footer { display: flex; justify-content: space-between; }`}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowSignModal(false)}
+                        style={styles.closeButton}
+                      >
+                        <Text style={{ color: "#fff", fontSize: 18 }}>
+                          Close
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </Modal>
+                </View>
+
+                {/* Signature
                 <View style={styles.uploadBox}>
                   <View style={styles.previewContainer}>
                     {isSignProcessing ? (
@@ -1012,7 +1079,7 @@ const ResidentForm = () => {
                       <Text>📤</Text>
                     </TouchableOpacity>
                   </View>
-                </View>
+                </View> */}
 
                 <View>
                   <Text style={MyStyles.inputLabel}>
@@ -2914,5 +2981,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     borderRadius: 6,
+  },
+  //SIGNATURE
+  uploadBox: { margin: 20 },
+  previewContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  image: { width: "100%", height: "100%" },
+  placeholder: { justifyContent: "center", alignItems: "center" },
+  placeholderText: { color: "#aaa" },
+  buttons: { flexDirection: "row", justifyContent: "center" },
+  button: {
+    marginHorizontal: 10,
+    padding: 10,
+    backgroundColor: "#eee",
+    borderRadius: 5,
+  },
+  closeButton: {
+    backgroundColor: "#000",
+    padding: 15,
+    alignItems: "center",
   },
 });
