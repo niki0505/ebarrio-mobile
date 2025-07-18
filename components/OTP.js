@@ -111,11 +111,16 @@ const OTP = ({}) => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
-      <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-        <View style={{ flex: 1, alignSelf: "center" }}>
-          <Image source={AppLogo} style={{ width: "180", height: "180" }} />
+      <View style={MyStyles.loginWrapper}>
+        <View style={MyStyles.loginTopWrapper}>
+          <Image source={AppLogo} style={MyStyles.loginLogo} />
         </View>
         <View
           style={{

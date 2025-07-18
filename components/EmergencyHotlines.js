@@ -1,8 +1,6 @@
 import {
-  StyleSheet,
   Text,
   View,
-  Alert,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
@@ -73,7 +71,12 @@ const EmergencyHotlines = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -145,7 +148,6 @@ const EmergencyHotlines = () => {
                       MyStyles.input,
                       {
                         flexDirection: "row",
-                        backgroundColor: "#fff",
                         alignItems: "center",
                       },
                     ]}

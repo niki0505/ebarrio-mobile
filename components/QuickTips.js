@@ -9,8 +9,6 @@ import {
   Platform,
   ScrollView,
   Modal,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -26,7 +24,7 @@ const QuickTips = () => {
 
   const quickTipsData = [
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/fire-extinguisher.jpg"),
       title: "How To Use a Fire Extinguisher",
       steps: [
         "Pull the pin to unlock it.",
@@ -36,7 +34,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/leaking-gas.jpg"),
       title: "How to Turn Off a Leaking or Burning Gas Tank",
       steps: [
         "Leave the area immediately.",
@@ -46,7 +44,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/grease-fire.jpg"),
       title: "How to Stop a Grease Fire with Baking Soda",
       steps: [
         "Turn off the stove.",
@@ -56,7 +54,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/breaker.jpg"),
       title: "How to Safely Turn Off the Breaker (Power Box)",
       steps: [
         "Stand on a dry place.",
@@ -65,7 +63,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/sandbags.jpg"),
       title: "How to Block Flood Water Using Sandbags",
       steps: [
         "Fill sandbags halfway with sand or soil.",
@@ -74,7 +72,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/float-bottle.jpg"),
       title: "How to Make a DIY Floating Device with Water Gallons",
       steps: [
         "Use empty, tightly sealed water gallons.",
@@ -83,7 +81,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/roof.jpg"),
       title: "How to Tie Down Your Roof",
       steps: [
         "Use strong ropes, straps, or wires.",
@@ -92,7 +90,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/wood-window.jpg"),
       title: "How to Cover Windows",
       steps: [
         "Cut wood (plywood) to fit over your windows.",
@@ -101,7 +99,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/outlet.jpg"),
       title: "How to Unplug Devices If Outlet Is Wet",
       steps: [
         "Do not touch anything with wet hands or near water!",
@@ -110,7 +108,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/drop-cover.jpg"),
       title: "Drop, Cover, and Hold",
       steps: [
         "Drop to your hands and knees to the ground.",
@@ -119,7 +117,7 @@ const QuickTips = () => {
       ],
     },
     {
-      image: require("../assets/quick-tips/safe-spot.jpg"),
+      image: require("../assets/quick-tips/triangle-life.jpg"),
       title: "Triangle of Life",
       steps: [
         "Find a strong, large object like a couch, bed, or desk.",
@@ -151,7 +149,12 @@ const QuickTips = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -160,7 +163,10 @@ const QuickTips = () => {
         <ScrollView
           contentContainerStyle={[
             MyStyles.scrollContainer,
-            { backgroundColor: "#BC0F0F" },
+            {
+              gap: 10,
+              backgroundColor: "#BC0F0F",
+            },
           ]}
         >
           <MaterialIcons
@@ -169,37 +175,15 @@ const QuickTips = () => {
             color="#fff"
             onPress={() => navigation.navigate("Readiness")}
           />
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "center",
-                color: "#fff",
-              },
-            ]}
-          >
+          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
             Quick Safety Tips
           </Text>
 
-          <View
-            style={{
-              flexDirection: "column",
-              gap: 30,
-              alignItems: "center",
-              marginTop: 20,
-            }}
-          >
+          <View style={MyStyles.quickImgWrapper}>
             {quickTipsData.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={{
-                  width: "100%",
-                  height: 150,
-                  borderRadius: 15,
-                  overflow: "hidden",
-                }}
+                style={MyStyles.quickBtnWrapper}
                 onPress={() => handleItemClick(item)}
               >
                 <View
@@ -209,20 +193,9 @@ const QuickTips = () => {
                     height: "100%",
                   }}
                 >
-                  <Image
-                    source={item.image}
-                    style={{ width: "100%", height: "100%" }}
-                  />
+                  <Image source={item.image} style={MyStyles.quickImg} />
                   <View style={MyStyles.quickTipsCard}>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 20,
-                        fontFamily: "REMBold",
-                        width: "90%",
-                      }}
-                      numberOfLines={1}
-                    >
+                    <Text style={MyStyles.quickTitle} numberOfLines={1}>
                       {item.title}
                     </Text>
                     <MaterialIcons

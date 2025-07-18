@@ -1,4 +1,5 @@
 import "react-native-gesture-handler";
+import Svg, { Path } from "react-native-svg";
 import React, { useContext, useEffect, useState } from "react";
 import {
   NavigationContainer,
@@ -19,6 +20,7 @@ import { useFonts } from "expo-font";
 import NetInfo from "@react-native-community/netinfo";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { InfoContext } from "./context/InfoContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 //Screens
 import Login from "./components/Login";
@@ -81,70 +83,106 @@ const CustomTabBar = ({
   unreadNotifications,
   unreadAnnouncements,
 }) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={MyStyles.tabBarContainer}>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const isFocused = state.index === index;
-        const iconColor = isFocused ? "#0E94D3" : "#808080";
-        let iconName;
-        let badgeCount = 0;
-
-        switch (route.name) {
-          case "Home":
-            iconName = isFocused ? "home" : "home-outline";
-            break;
-
-          case "Announcements":
-            iconName = isFocused ? "megaphone" : "megaphone-outline";
-            badgeCount = unreadAnnouncements;
-            break;
-          case "Notification":
-            iconName = isFocused ? "notifications" : "notifications-outline";
-            badgeCount = unreadNotifications;
-            break;
-          case "Profile":
-            iconName = isFocused ? "person" : "person-outline";
-            break;
-        }
-
-        const onPress = () => {
-          navigation.navigate(route.name);
-        };
-
-        if (route.name === "CenterButtonPlaceholder")
-          return <View key={index} style={{ flex: 1 }} />;
-
-        return (
-          <TouchableOpacity
-            key={index}
-            accessibilityRole="button"
-            onPress={onPress}
-            style={MyStyles.tabButton}
-          >
-            <View style={{ position: "relative" }}>
-              <Ionicons name={iconName} size={24} color={iconColor} />
-              {badgeCount > 0 && (
-                <View style={MyStyles.badge}>
-                  <Text style={MyStyles.badgeText}>{badgeCount}</Text>
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-        );
-      })}
-
-      <TouchableOpacity
-        style={MyStyles.floatingButton}
-        onPress={() => {
-          console.log("SOS Pressed");
-        }}
+    <View style={[MyStyles.bottomTabContainer, { bottom: insets.bottom }]}>
+      {/* SVG Background with Notch */}
+      <View
+        style={[
+          MyStyles.svgContainer,
+          {
+            height: 60,
+          },
+        ]}
       >
-        <Text
-          style={{ color: "#ffff", fontFamily: "REMSemiBold", fontSize: 18 }}
+        <Svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
         >
-          SOS
-        </Text>
+          <Path
+            d="
+              M0,0 
+              H38
+              C42,4 38,20 47,36
+              C49,40 51,40 53,36
+              C62,20 58,4 62,0
+              H100
+              V100 
+              H0
+              Z
+            "
+            fill="#fff"
+          />
+        </Svg>
+      </View>
+
+      {/* Tab Icons */}
+      <View
+        style={[
+          MyStyles.bottomTabIcons,
+          {
+            height: 60,
+          },
+        ]}
+      >
+        {state.routes.map((route, index) => {
+          if (route.name === "CenterButtonPlaceholder")
+            return <View key={index} style={{ flex: 1 }} />;
+
+          const { options } = descriptors[route.key];
+          const isFocused = state.index === index;
+          const iconColor = isFocused ? "#0E94D3" : "#808080";
+          let iconName;
+          let badgeCount = 0;
+
+          switch (route.name) {
+            case "Home":
+              iconName = isFocused ? "home" : "home-outline";
+              break;
+            case "Announcements":
+              iconName = isFocused ? "megaphone" : "megaphone-outline";
+              badgeCount = unreadAnnouncements;
+              break;
+            case "Notification":
+              iconName = isFocused ? "notifications" : "notifications-outline";
+              badgeCount = unreadNotifications;
+              break;
+            case "Profile":
+              iconName = isFocused ? "person" : "person-outline";
+              break;
+          }
+
+          const onPress = () => navigation.navigate(route.name);
+
+          return (
+            <TouchableOpacity
+              key={index}
+              accessibilityRole="button"
+              onPress={onPress}
+              style={MyStyles.bottomTabButtons}
+            >
+              <View style={{ position: "relative" }}>
+                <Ionicons name={iconName} size={24} color={iconColor} />
+                {badgeCount > 0 && (
+                  <View style={MyStyles.badge}>
+                    <Text style={MyStyles.badgeText}>{badgeCount}</Text>
+                  </View>
+                )}
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Floating SOS Button in Center */}
+      <TouchableOpacity
+        style={[MyStyles.fab, { bottom: 45 }]}
+        onPress={() => console.log("SOS Pressed")}
+      >
+        <Text style={MyStyles.fabText}>SOS</Text>
       </TouchableOpacity>
     </View>
   );
@@ -234,6 +272,8 @@ const DrawerContent = ({ navigation }) => {
             borderRadius: 50,
           }}
         />
+
+        {/*pa-change nalang ng name at username based sa context hindi q ma-fetch */}
         <View style={{ marginLeft: 10 }}>
           <Text
             style={{

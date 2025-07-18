@@ -1,8 +1,6 @@
 import {
-  StyleSheet,
   Text,
   View,
-  Alert,
   TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
@@ -16,7 +14,6 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import Fire from "../assets/SOS/firefire.png";
@@ -26,7 +23,6 @@ import Typhoon from "../assets/SOS/typhoon.png";
 import Medical from "../assets/SOS/medical.png";
 import Suspicious from "../assets/SOS/suspicious.png";
 import Location from "../assets/SOS/location.png";
-import LottieView from "lottie-react-native";
 
 const SOS = () => {
   const insets = useSafeAreaInsets();
@@ -34,7 +30,12 @@ const SOS = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -52,16 +53,7 @@ const SOS = () => {
             size={30}
             color="#fff"
           />
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                textAlign: "center",
-                color: "#fff",
-              },
-            ]}
-          >
+          <Text style={[MyStyles.header, MyStyles.readinessHeader]}>
             Emergency
           </Text>
           <Text
@@ -123,8 +115,7 @@ const SOS = () => {
                 },
               ]}
             >
-              
-             Press on hold for 5 seconds to activate
+              Press on hold for 5 seconds to activate
             </Text>
 
             <Text
