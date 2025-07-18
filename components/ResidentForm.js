@@ -30,11 +30,6 @@ import Signature from "react-native-signature-canvas";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import api from "../api";
-import { InfoContext } from "../context/InfoContext";
-import axios from "axios";
-
-//ICONS
-import { useState, useEffect, useContext } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ResidentForm = () => {

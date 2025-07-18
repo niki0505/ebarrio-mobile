@@ -357,10 +357,18 @@ const Home = () => {
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const importantAnnouncements = announcements.filter(
+    (element) => element.status === "Pinned"
+  );
+
   useEffect(() => {
+    if (importantAnnouncements.length === 0) return;
+
     const interval = setInterval(() => {
       const nextIndex =
-        currentIndex === announcements.length - 1 ? 0 : currentIndex + 1;
+        currentIndex === importantAnnouncements.length - 1
+          ? 0
+          : currentIndex + 1;
 
       flatListRef.current?.scrollToIndex({
         index: nextIndex,
@@ -371,7 +379,7 @@ const Home = () => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [currentIndex, announcements.length]);
+  }, [currentIndex, importantAnnouncements.length]);
 
   return (
     // To allow detection of taps anywhere outside the dropdown
@@ -563,7 +571,7 @@ const Home = () => {
               </View>
 
               <View style={MyStyles.rowAlignment}>
-                <Text style={MyStyles.subHeader}>Announcements</Text>
+                <Text style={MyStyles.subHeader}>Important Announcements</Text>
 
                 <Text
                   onPress={() => navigation.navigate("Announcements")}
@@ -576,72 +584,76 @@ const Home = () => {
                 </Text>
               </View>
 
-              <FlatList
-                ref={flatListRef}
-                data={announcements}
-                keyExtractor={(item) => item._id}
-                horizontal
-                pagingEnabled
-                snapToInterval={width}
-                decelerationRate="fast"
-                showsHorizontalScrollIndicator={false}
-                onMomentumScrollEnd={(event) => {
-                  const index = Math.round(
-                    event.nativeEvent.contentOffset.x / width
-                  );
-                  setCurrentIndex(index);
-                }}
-                renderItem={({ item }) => (
-                  <View style={MyStyles.carouselWrapper}>
-                    <View style={MyStyles.carouselCard}>
-                      {/* Top Header Row */}
-                      <View style={MyStyles.rowAlignment}>
+              {importantAnnouncements.length === 0 ? (
+                <Text>No announcements yet.</Text>
+              ) : (
+                <FlatList
+                  ref={flatListRef}
+                  data={importantAnnouncements}
+                  keyExtractor={(item) => item._id}
+                  horizontal
+                  pagingEnabled
+                  snapToInterval={width}
+                  decelerationRate="fast"
+                  showsHorizontalScrollIndicator={false}
+                  onMomentumScrollEnd={(event) => {
+                    const index = Math.round(
+                      event.nativeEvent.contentOffset.x / width
+                    );
+                    setCurrentIndex(index);
+                  }}
+                  renderItem={({ item }) => (
+                    <View style={MyStyles.carouselWrapper}>
+                      <View style={MyStyles.carouselCard}>
+                        {/* Top Header Row */}
                         <View style={MyStyles.rowAlignment}>
-                          <Image
-                            source={Aniban2Logo}
-                            style={MyStyles.announcementLogo}
-                          />
-                          <View style={{ marginLeft: 5 }}>
-                            <Text style={MyStyles.announcementUploader}>
-                              Barangay Aniban 2
-                            </Text>
-                            <Text style={MyStyles.announcementCreatedAt}>
-                              {dayjs(item.createdAt).fromNow()}
-                            </Text>
+                          <View style={MyStyles.rowAlignment}>
+                            <Image
+                              source={Aniban2Logo}
+                              style={MyStyles.announcementLogo}
+                            />
+                            <View style={{ marginLeft: 5 }}>
+                              <Text style={MyStyles.announcementUploader}>
+                                Barangay Aniban 2
+                              </Text>
+                              <Text style={MyStyles.announcementCreatedAt}>
+                                {dayjs(item.createdAt).fromNow()}
+                              </Text>
+                            </View>
                           </View>
                         </View>
-                      </View>
 
-                      {/* Body */}
-                      <View style={{ marginVertical: 10 }}>
-                        <Text style={MyStyles.announcementCategory}>
-                          {item.category}
-                        </Text>
-                        <Text style={MyStyles.announcementTitle}>
-                          {item.title}
-                        </Text>
+                        {/* Body */}
+                        <View style={{ marginVertical: 10 }}>
+                          <Text style={MyStyles.announcementCategory}>
+                            {item.category}
+                          </Text>
+                          <Text style={MyStyles.announcementTitle}>
+                            {item.title}
+                          </Text>
 
-                        {item.picture && item.picture.trim() !== "" && (
-                          <TouchableOpacity
-                            onPress={() => {
-                              setSelectedImage([{ uri: item.picture }]);
-                              setIsVisible(true);
-                            }}
-                          >
-                            <Image
-                              source={{ uri: item.picture }}
-                              style={MyStyles.homeAnnouncementImg}
-                              resizeMode="cover"
-                            />
-                          </TouchableOpacity>
-                        )}
+                          {item.picture && item.picture.trim() !== "" && (
+                            <TouchableOpacity
+                              onPress={() => {
+                                setSelectedImage([{ uri: item.picture }]);
+                                setIsVisible(true);
+                              }}
+                            >
+                              <Image
+                                source={{ uri: item.picture }}
+                                style={MyStyles.homeAnnouncementImg}
+                                resizeMode="cover"
+                              />
+                            </TouchableOpacity>
+                          )}
 
-                        {renderContent(item)}
+                          {renderContent(item)}
+                        </View>
                       </View>
                     </View>
-                  </View>
-                )}
-              />
+                  )}
+                />
+              )}
               {/* 
             {user.role === "Resident" && (
               <>
