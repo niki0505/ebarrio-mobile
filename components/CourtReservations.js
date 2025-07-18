@@ -327,21 +327,20 @@ const CourtReservations = () => {
         starttime: combineDateAndTime(date, times.starttime),
         endtime: combineDateAndTime(date, times.endtime),
       };
-
-      try {
-        await api.post("/sendreservationrequest", {
-          reservationForm: {
-            ...reservationForm,
-            times: preparedTimes,
-          },
-        });
-        navigation.navigate("SuccessfulPage", {
-          service: "Reservation",
-        });
-      } catch (error) {
-        console.log("Reservation submission error:", error);
-        Alert.alert("Error", "Failed to submit reservation. Please try again.");
-      }
+    }
+    try {
+      await api.post("/sendreservationrequest", {
+        reservationForm: {
+          ...reservationForm,
+          times: preparedTimes,
+        },
+      });
+      navigation.navigate("SuccessfulPage", {
+        service: "Reservation",
+      });
+    } catch (error) {
+      console.log("Reservation submission error:", error);
+      Alert.alert("Error", "Failed to submit reservation. Please try again.");
     }
   };
 

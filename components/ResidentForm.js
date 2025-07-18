@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Pressable,
+  Modal,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -22,6 +23,13 @@ import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
 import { storage } from "../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+
+import Signature from "react-native-signature-canvas";
+
+//ICONS
+import { useState, useEffect } from "react";
+import axios from "axios";
+import api from "../api";
 import { InfoContext } from "../context/InfoContext";
 import axios from "axios";
 
@@ -353,7 +361,7 @@ const ResidentForm = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.onrender.com/api/getresidents"
+          "https://ebarrio-mobile-backend.fly.dev/api/getresidents"
         );
         setResidents(response.data);
       } catch (error) {
@@ -367,7 +375,7 @@ const ResidentForm = () => {
     const fetchHouseholds = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.onrender.com/api/gethouseholds"
+          "https://ebarrio-mobile-backend.fly.dev/api/gethouseholds"
         );
         setHouseholds(response.data);
       } catch (error) {
@@ -876,16 +884,13 @@ const ResidentForm = () => {
         lastmenstrual: formattedLastMenstrual,
       };
 
-      const response = await axios.post(
-        "https://ebarrio-mobile-backend.onrender.com/api/createresident",
-        {
-          picture: idPicture,
-          signature: signaturePicture,
-          ...updatedResidentForm,
-          householdForm,
-        }
-      );
-      navigation.navigate("SuccessfulPage", {
+      await api.post("/createresident", {
+        picture: idPicture,
+        signature: signaturePicture,
+        ...updatedResidentForm,
+        householdForm,
+      });
+      navigation.navigate("SuccessfulPage2", {
         service: "ResidentForm",
       });
     } catch (error) {
@@ -893,9 +898,18 @@ const ResidentForm = () => {
     }
   };
 
-  console.log(residentForm);
-  // console.log(householdForm);
+  const [showSignModal, setShowSignModal] = useState(false);
 
+  const handleSignatureOK = (signature) => {
+    setIsSignProcessing(true);
+    setResidentForm({ ...residentForm, signature });
+    setShowSignModal(false);
+    setIsSignProcessing(false);
+  };
+
+  const handleClear = () => {
+    setResidentForm({ ...residentForm, signature: null });
+  };
   return (
     <SafeAreaView
       style={{
@@ -964,39 +978,61 @@ const ResidentForm = () => {
                   </View>
                 </View>
 
-                {/* Signature */}
-                <View style={MyStyles.uploadBox}>
-                  <View style={MyStyles.previewContainer}>
+                {/* New Signature */}
+                <View style={styles.uploadBox}>
+                  <View style={styles.previewContainer}>
                     {isSignProcessing ? (
                       <ActivityIndicator size="small" color="#0000ff" />
                     ) : residentForm.signature ? (
                       <Image
                         source={{ uri: residentForm.signature }}
-                        style={MyStyles.image}
+                        style={styles.image}
                       />
                     ) : (
-                      <View style={MyStyles.placeholder}>
-                        <Text style={MyStyles.placeholderText}>
+                      <View style={styles.placeholder}>
+                        <Text style={styles.placeholderText}>
                           Attach Signature
                         </Text>
                       </View>
                     )}
                   </View>
 
-                  <View style={MyStyles.personalInfobuttons}>
+                  <View style={styles.buttons}>
                     <TouchableOpacity
-                      onPress={toggleSigCamera}
-                      style={MyStyles.personalInfoButton}
+                      onPress={() => setShowSignModal(true)}
+                      style={styles.button}
                     >
-                      <Text>📷</Text>
+                      <Text>✍️</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      onPress={pickSigImage}
-                      style={MyStyles.personalInfoButton}
+                      onPress={handleClear}
+                      style={styles.button}
                     >
-                      <Text>📤</Text>
+                      <Text>🗑️</Text>
                     </TouchableOpacity>
                   </View>
+
+                  {/* Signature Modal */}
+                  <Modal visible={showSignModal} animationType="slide">
+                    <View style={{ flex: 1 }}>
+                      <Signature
+                        onOK={handleSignatureOK}
+                        onEmpty={() => setShowSignModal(false)}
+                        descriptionText="Sign Below"
+                        clearText="Clear"
+                        confirmText="Save"
+                        webStyle={`.m-signature-pad--footer { display: flex; justify-content: space-between; }`}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowSignModal(false)}
+                        style={styles.closeButton}
+                      >
+                        <Text style={{ color: "#fff", fontSize: 18 }}>
+                          Close
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </Modal>
                 </View>
 
                 <View>
@@ -2519,3 +2555,149 @@ const ResidentForm = () => {
   );
 };
 export default ResidentForm;
+
+const styles = StyleSheet.create({
+  container: { margin: 20 },
+  label: { fontSize: 16, marginBottom: 5 },
+  required: { color: "red" },
+  uploadBox: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 10,
+  },
+  previewContainer: {
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  placeholder: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  button: {
+    backgroundColor: "#eee",
+    padding: 10,
+    borderRadius: 8,
+  },
+  label: {
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  radioGroup: {
+    flexDirection: "row",
+    gap: 20,
+    maxWidth: "20%",
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#444",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  radioDot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: "#444",
+  },
+  container: {
+    padding: 10,
+  },
+  headerRow: {
+    flexDirection: "row",
+    backgroundColor: "#ddd",
+    padding: 5,
+  },
+  headerCell: {
+    flex: 1,
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 12,
+  },
+  dataRow: {
+    flexDirection: "row",
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    padding: 4,
+    marginHorizontal: 2,
+    fontSize: 12,
+    borderRadius: 5,
+  },
+  dropdown: {
+    flex: 1,
+    marginHorizontal: 2,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    height: 40,
+    justifyContent: "center",
+  },
+  dropdownContainer: {
+    zIndex: 1000,
+  },
+  removeButton: {
+    backgroundColor: "red",
+    padding: 6,
+    borderRadius: 4,
+    marginLeft: 2,
+  },
+  addButton: {
+    backgroundColor: "green",
+    padding: 10,
+    alignItems: "center",
+    marginTop: 20,
+    borderRadius: 6,
+  },
+  //SIGNATURE
+  uploadBox: { margin: 20 },
+  previewContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  image: { width: "100%", height: "100%" },
+  placeholder: { justifyContent: "center", alignItems: "center" },
+  placeholderText: { color: "#aaa" },
+  buttons: { flexDirection: "row", justifyContent: "center" },
+  button: {
+    marginHorizontal: 10,
+    padding: 10,
+    backgroundColor: "#eee",
+    borderRadius: 5,
+  },
+  closeButton: {
+    backgroundColor: "#000",
+    padding: 15,
+    alignItems: "center",
+  },
+});

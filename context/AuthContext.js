@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       }
       try {
         const response = await axios.post(
-          "https://ebarrio-mobile-backend.onrender.com/api/checkrefreshtoken",
+          "https://ebarrio-mobile-backend.fly.dev/api/checkrefreshtoken",
           {
             refreshToken,
           }
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const res = await axios.post(
-        "https://ebarrio-mobile-backend.onrender.com/api/login",
+        "https://ebarrio-mobile-backend.fly.dev/api/login",
         credentials
       );
 
