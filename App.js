@@ -70,6 +70,7 @@ import { SocketProvider } from "./context/SocketContext";
 import NotificationSetup from "./components/NotificationSetUp";
 import * as Notifications from "expo-notifications";
 import SuccessfulPage from "./components/SuccessfulPage";
+import SuccessfulPage2 from "./components/SuccessfulPage2";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -991,7 +992,14 @@ export default function App() {
                     <Stack.Screen
                       name="SuccessfulPage"
                       children={() => (
-                        <PublicRoute element={<SuccessfulPage />} />
+                        <PrivateRoute element={<SuccessfulPage />} />
+                      )}
+                    />
+
+                    <Stack.Screen
+                      name="SuccessfulPage2"
+                      children={() => (
+                        <PublicRoute element={<SuccessfulPage2 />} />
                       )}
                     />
                   </>

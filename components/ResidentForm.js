@@ -29,6 +29,7 @@ import Signature from "react-native-signature-canvas";
 //ICONS
 import { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../api";
 
 const ResidentForm = () => {
   const insets = useSafeAreaInsets();
@@ -877,24 +878,19 @@ const ResidentForm = () => {
         lastmenstrual: formattedLastMenstrual,
       };
 
-      const response = await axios.post(
-        "https://ebarrio-mobile-backend.onrender.com/api/createresident",
-        {
-          picture: idPicture,
-          signature: signaturePicture,
-          ...updatedResidentForm,
-          householdForm,
-        }
-      );
-      navigation.navigate("SuccessfulPage", {
+      await api.post("/createresident", {
+        picture: idPicture,
+        signature: signaturePicture,
+        ...updatedResidentForm,
+        householdForm,
+      });
+      navigation.navigate("SuccessfulPage2", {
         service: "ResidentForm",
       });
     } catch (error) {
       console.log("Error", error);
     }
   };
-
-  console.log(residentForm);
 
   const [showSignModal, setShowSignModal] = useState(false);
 
