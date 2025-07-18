@@ -1,17 +1,12 @@
-import React from "react";
 import {
-  StyleSheet,
   Text,
   View,
-  Alert,
   TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   Image,
   ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -19,12 +14,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 //ICONS & IMAGES
 import { MaterialIcons } from "@expo/vector-icons";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import QuickTips from "../assets/disasters/quick-tips.png";
-import Disaster from "../assets/disasters/disaster.png";
-import Hazard from "../assets/disasters/hazard.png";
-import Evacuation from "../assets/disasters/evacuation.png";
 
 const Readiness = () => {
   const insets = useSafeAreaInsets();
@@ -59,7 +48,12 @@ const Readiness = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -69,7 +63,6 @@ const Readiness = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20,
               gap: 10,
               backgroundColor: "#BC0F0F",
             },
@@ -81,21 +74,11 @@ const Readiness = () => {
             size={30}
             color="#fff"
           />
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "center",
-                color: "#fff",
-              },
-            ]}
-          >
+          <Text style={[MyStyles.header, MyStyles.readinessHeader]}>
             Readiness
           </Text>
 
-          <View style={{ flexDirection: "column", gap: 30 }}>
+          <View style={MyStyles.readinessColWrapper}>
             {readinessData.map((item, index) => (
               <TouchableOpacity
                 key={index}

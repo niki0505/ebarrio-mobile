@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   View,
   Text,
   SafeAreaView,
@@ -13,7 +12,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useState } from "react";
-import { Dropdown } from "react-native-element-dropdown";
 import api from "../api";
 import AppLogo from "../assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
@@ -153,36 +151,21 @@ const SetPassword = () => {
       </Svg>
 
       {/* Logo */}
-      <Image
-        source={AppLogo}
-        style={{
-          width: 320,
-          height: 320,
-          position: "absolute",
-          bottom: -75,
-          left: -80,
-        }}
-      />
+      <Image source={AppLogo} style={MyStyles.overlayLogo} />
 
       {/* Black Overlay */}
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "black",
-          opacity: 0.3,
-          zIndex: 1,
-        }}
-      />
+      <View style={MyStyles.overlayBlack} />
     </View>
   );
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <BackgroundOverlay />
       {/* Card container with transparency */}
@@ -226,7 +209,7 @@ const SetPassword = () => {
             </Text>
 
             {/* Form fields */}
-            <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
+            <View style={MyStyles.loginFormWrapper}>
               <View>
                 <Text style={MyStyles.inputLabel}>Password</Text>
                 <View style={{ position: "relative" }}>
@@ -238,12 +221,7 @@ const SetPassword = () => {
                     style={[MyStyles.input, { paddingRight: 40 }]}
                   />
                   <TouchableOpacity
-                    style={{
-                      position: "absolute",
-                      right: 10,
-                      top: "50%",
-                      transform: [{ translateY: -12 }],
-                    }}
+                    style={MyStyles.eyeToggle}
                     onPress={togglesecurePass}
                   >
                     <Ionicons
@@ -256,14 +234,7 @@ const SetPassword = () => {
                 {passwordErrors.length > 0 && (
                   <View style={{ marginTop: 5, width: 300 }}>
                     {passwordErrors.map((error, index) => (
-                      <Text
-                        key={index}
-                        style={{
-                          color: "red",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                      >
+                      <Text key={index} style={MyStyles.errorMsg}>
                         {error}
                       </Text>
                     ))}
@@ -282,12 +253,7 @@ const SetPassword = () => {
                     style={[MyStyles.input, { paddingRight: 40 }]}
                   />
                   <TouchableOpacity
-                    style={{
-                      position: "absolute",
-                      right: 10,
-                      top: "50%",
-                      transform: [{ translateY: -12 }],
-                    }}
+                    style={MyStyles.eyeToggle}
                     onPress={togglesecureConfirmPass}
                   >
                     <Ionicons
@@ -300,14 +266,7 @@ const SetPassword = () => {
                 {repasswordErrors.length > 0 && (
                   <View style={{ marginTop: 5, width: 300 }}>
                     {repasswordErrors.map((error, index) => (
-                      <Text
-                        key={index}
-                        style={{
-                          color: "red",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                      >
+                      <Text key={index} style={MyStyles.errorMsg}>
                         {error}
                       </Text>
                     ))}

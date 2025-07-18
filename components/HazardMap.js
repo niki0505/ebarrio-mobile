@@ -39,7 +39,12 @@ const HazardMap = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -49,7 +54,6 @@ const HazardMap = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20,
               gap: 10,
               backgroundColor: "#BC0F0F",
             },
@@ -61,43 +65,18 @@ const HazardMap = () => {
             size={30}
             color="#fff"
           />
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "center",
-                color: "#fff",
-              },
-            ]}
-          >
+          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
             HAZARD MAPS
           </Text>
 
           {/* Fire Map */}
           <View>
-            <Text
-              style={{
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "left",
-                color: "#fff",
-                fontSize: 24,
-                fontFamily: "REMSemiBold",
-              }}
-            >
-              Fire
-            </Text>
+            <Text style={MyStyles.hazardTitle}>Fire</Text>
 
             <TouchableOpacity onPress={() => setVisibleFire(true)}>
               <Image
                 source={require("../assets/hazard-map/fire-hazard-map.jpg")}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 15,
-                }}
+                style={MyStyles.evacuationImg}
                 resizeMode="cover"
               />
               <View style={MyStyles.mapOverlay}>
@@ -115,27 +94,12 @@ const HazardMap = () => {
 
           {/* Flood Map */}
           <View>
-            <Text
-              style={{
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "left",
-                color: "#fff",
-                fontSize: 24,
-                fontFamily: "REMSemiBold",
-              }}
-            >
-              Flood
-            </Text>
+            <Text style={MyStyles.hazardTitle}>Flood</Text>
 
             <TouchableOpacity onPress={() => setVisibleFlood(true)}>
               <Image
                 source={require("../assets/hazard-map/flood-hazard-map.png")}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 15,
-                }}
+                style={MyStyles.evacuationImg}
                 resizeMode="cover"
               />
               <View style={MyStyles.mapOverlay}>
@@ -153,27 +117,12 @@ const HazardMap = () => {
 
           {/* Earthquake Map */}
           <View>
-            <Text
-              style={{
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "left",
-                color: "#fff",
-                fontSize: 24,
-                fontFamily: "REMSemiBold",
-              }}
-            >
-              Earthquake
-            </Text>
+            <Text style={MyStyles.hazardTitle}>Earthquake</Text>
 
             <TouchableOpacity onPress={() => setVisibleEarthquake(true)}>
               <Image
                 source={require("../assets/hazard-map/earthquake-hazard-map.png")}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 15,
-                }}
+                style={MyStyles.evacuationImg}
                 resizeMode="cover"
               />
               <View style={MyStyles.mapOverlay}>

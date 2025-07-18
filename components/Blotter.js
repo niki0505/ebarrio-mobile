@@ -177,7 +177,12 @@ const Blotter = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -187,7 +192,6 @@ const Blotter = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20,
               gap: 10,
             },
           ]}
@@ -199,13 +203,11 @@ const Blotter = () => {
             color="#04384E"
           />
 
-          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
-            File a Blotter
-          </Text>
+          <Text style={MyStyles.servicesHeader}>File a Blotter</Text>
           <Text style={MyStyles.formMessage}>
             Please select the required information for filing a blotter
           </Text>
-          <View style={{ gap: 15, marginVertical: 30 }}>
+          <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>
                 Type of the Incident<Text style={{ color: "red" }}>*</Text>
@@ -219,16 +221,8 @@ const Blotter = () => {
                   value: type,
                 }))}
                 placeholder="Select"
-                placeholderStyle={{
-                  color: "#808080",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
-                selectedTextStyle={{
-                  color: "#000",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
+                placeholderStyle={MyStyles.placeholderText}
+                selectedTextStyle={MyStyles.selectedText}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "typeofthecomplaint", value: itemValue },
@@ -237,15 +231,7 @@ const Blotter = () => {
                 style={MyStyles.input}
               ></Dropdown>
               {typeErrors ? (
-                <Text
-                  style={{
-                    color: "red",
-                    fontFamily: "QuicksandMedium",
-                    fontSize: 16,
-                  }}
-                >
-                  {typeErrors}
-                </Text>
+                <Text style={MyStyles.errorMsg}>{typeErrors}</Text>
               ) : null}
             </View>
 
@@ -281,15 +267,7 @@ const Blotter = () => {
                   </View>
                 )}
               {subjectError ? (
-                <Text
-                  style={{
-                    color: "red",
-                    fontFamily: "QuicksandMedium",
-                    fontSize: 16,
-                  }}
-                >
-                  {subjectError}
-                </Text>
+                <Text style={MyStyles.errorMsg}>{subjectError}</Text>
               ) : null}
             </View>
 
@@ -325,36 +303,14 @@ const Blotter = () => {
                 onChangeText={(text) => handleInputChange("details", text)}
               />
 
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  marginTop: 8,
-                  justifyContent: "space-between",
-                }}
-              >
+              <View style={MyStyles.errorDetailsWrapper}>
                 {detailsError ? (
-                  <Text
-                    style={{
-                      color: "red",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                  >
-                    {detailsError}
-                  </Text>
+                  <Text style={MyStyles.errorMsg}>{detailsError}</Text>
                 ) : (
                   <View style={{ flex: 1 }} />
                 )}
 
-                <Text
-                  style={{
-                    color: "#808080",
-                    fontFamily: "QuicksandSemiBold",
-                    fontSize: 16,
-                    textAlign: "right",
-                  }}
-                >
+                <Text style={MyStyles.detailsLength}>
                   {blotterForm.details.length}/3000
                 </Text>
               </View>

@@ -8,7 +8,12 @@ const LoadingScreen = () => {
   const insets = useSafeAreaInsets();
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <View style={MyStyles.container}>
         <LottieView

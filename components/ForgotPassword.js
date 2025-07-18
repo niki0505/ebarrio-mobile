@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   View,
   Text,
   SafeAreaView,
@@ -239,71 +238,39 @@ const ForgotPassword = () => {
       </Svg>
 
       {/* Logo */}
-      <Image
-        source={AppLogo}
-        style={{
-          width: 320,
-          height: 320,
-          position: "absolute",
-          bottom: -75,
-          left: -80,
-        }}
-      />
+      <Image source={AppLogo} style={MyStyles.overlayLogo} />
 
       {/* Black Overlay */}
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "black",
-          opacity: 0.3,
-          zIndex: 1,
-        }}
-      />
+      <View style={MyStyles.overlayBlack} />
     </View>
   );
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#04384E",
+      }}
     >
       {/* 1st Design */}
       {!isExisting && (
         <View style={{ flex: 4, backgroundColor: "#04384E" }}>
           <View style={{ flex: 1, alignSelf: "center" }}>
-            <Image source={AppLogo} style={{ width: "180", height: "180" }} />
+            <Image source={AppLogo} style={MyStyles.loginLogo} />
           </View>
 
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              backgroundColor: "#F0F4F7",
-              borderRadius: 30,
-              flex: 3,
-              padding: 30,
-            }}
-          >
+          <View style={MyStyles.loginBottomWrapper}>
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Forgot Password
             </Text>
 
-            <Text
-              style={{
-                fontSize: 16,
-                color: "#808080",
-                alignSelf: "flex-start",
-                marginTop: 10,
-                fontFamily: "QuicksandSemiBold",
-              }}
-            >
+            <Text style={MyStyles.forgotMsg}>
               Enter your username to reset your password
             </Text>
 
-            <View style={{ marginVertical: 30, gap: 10, width: "100%" }}>
+            <View style={MyStyles.loginFormWrapper}>
               <View>
                 <Text style={MyStyles.inputLabel}>
                   Username<Text style={{ color: "red" }}>*</Text>
@@ -342,32 +309,9 @@ const ForgotPassword = () => {
           {isVerified ? (
             <>
               <BackgroundOverlay />
-              <View
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 2,
-                }}
-              >
-                <View
-                  style={{
-                    width: "80%",
-                    height: "55%",
-                    backgroundColor: "#fff",
-                    borderRadius: 20,
-                    overflow: "hidden",
-                  }}
-                >
-                  <ScrollView
-                    contentContainerStyle={{
-                      padding: 30,
-                      alignItems: "center",
-                    }}
-                    showsVerticalScrollIndicator={true}
-                  >
+              <View style={MyStyles.forgotCardWrapper}>
+                <View style={[MyStyles.forgotCard, { height: "60%" }]}>
+                  <ScrollView showsVerticalScrollIndicator={true}>
                     <MaterialIcons
                       onPress={() => setOTPClicked(false)}
                       name="arrow-back-ios"
@@ -376,35 +320,14 @@ const ForgotPassword = () => {
                       style={{ alignSelf: "flex-start" }}
                     />
 
-                    <Text
-                      style={[
-                        MyStyles.header,
-                        {
-                          alignSelf: "flex-start",
-                          marginTop: 10,
-                          fontSize: 24,
-                        },
-                      ]}
-                    >
-                      Reset Password
-                    </Text>
+                    <Text style={MyStyles.header}>Reset Password</Text>
 
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "#808080",
-                        alignSelf: "flex-start",
-                        marginTop: 10,
-                        fontFamily: "QuicksandSemiBold",
-                      }}
-                    >
+                    <Text style={MyStyles.forgotMsg}>
                       To ensure the security of your account, please create a
                       new password.
                     </Text>
 
-                    <View
-                      style={{ marginVertical: 30, gap: 10, width: "100%" }}
-                    >
+                    <View style={MyStyles.loginFormWrapper}>
                       <View>
                         <Text style={MyStyles.inputLabel}>
                           New Password<Text style={{ color: "red" }}>*</Text>
@@ -417,12 +340,7 @@ const ForgotPassword = () => {
                             style={[MyStyles.input, { paddingRight: 40 }]}
                           />
                           <TouchableOpacity
-                            style={{
-                              position: "absolute",
-                              right: 10,
-                              top: "50%",
-                              transform: [{ translateY: -12 }],
-                            }}
+                            style={MyStyles.eyeToggle}
                             onPress={togglesecureNewPass}
                           >
                             <Ionicons
@@ -448,12 +366,7 @@ const ForgotPassword = () => {
                             style={[MyStyles.input, { paddingRight: 40 }]}
                           />
                           <TouchableOpacity
-                            style={{
-                              position: "absolute",
-                              right: 10,
-                              top: "50%",
-                              transform: [{ translateY: -12 }],
-                            }}
+                            style={MyStyles.eyeToggle}
                             onPress={togglesecureConfirmPass}
                           >
                             <Ionicons
@@ -479,27 +392,8 @@ const ForgotPassword = () => {
           ) : /* One-Time Password */ isOTPClicked ? (
             <>
               <BackgroundOverlay />
-              <View
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 2,
-                }}
-              >
-                <View
-                  style={{
-                    width: "80%",
-                    height: "45%",
-                    backgroundColor: "#fff",
-                    borderRadius: 20,
-                    padding: 30,
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
+              <View style={MyStyles.forgotCardWrapper}>
+                <View style={MyStyles.forgotCard}>
                   <MaterialIcons
                     onPress={() => setOTPClicked(false)}
                     name="arrow-back-ios"
@@ -507,34 +401,18 @@ const ForgotPassword = () => {
                     color="#04384E"
                     style={{ alignSelf: "flex-start" }}
                   />
-                  <Text
-                    style={[
-                      MyStyles.header,
-                      { alignSelf: "flex-start", marginTop: 10, fontSize: 24 },
-                    ]}
-                  >
-                    Account Verification
-                  </Text>
+                  <Text style={MyStyles.header}>Account Verification</Text>
 
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#808080",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
-                      fontFamily: "QuicksandSemiBold",
-                    }}
-                  >
+                  <Text style={MyStyles.forgotMsg}>
                     Enter the 6-digit code sent to
                   </Text>
                   <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#04384E",
-                      alignSelf: "flex-start",
-                      marginTop: 5,
-                      fontFamily: "QuicksandSemiBold",
-                    }}
+                    style={[
+                      MyStyles.forgotMsg,
+                      {
+                        marginTop: 5,
+                      },
+                    ]}
                   >
                     {user.resID?.mobilenumber || user.empID?.resID.mobilenumber}
                   </Text>
@@ -549,15 +427,7 @@ const ForgotPassword = () => {
                   </View>
 
                   {isResendDisabled ? (
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "#808080",
-                        alignSelf: "flex-start",
-                        marginTop: 10,
-                        fontFamily: "QuicksandSemiBold",
-                      }}
-                    >
+                    <Text style={MyStyles.forgotMsg}>
                       Resend OTP in{" "}
                       <Text style={{ color: "red" }}>{resendTimer} </Text>second
                       {resendTimer !== 1 ? "s" : ""}
@@ -600,32 +470,9 @@ const ForgotPassword = () => {
             <>
               <BackgroundOverlay />
 
-              <View
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 2,
-                }}
-              >
-                <View
-                  style={{
-                    width: "80%",
-                    height: "55%",
-                    backgroundColor: "#fff",
-                    borderRadius: 20,
-                    overflow: "hidden",
-                  }}
-                >
-                  <ScrollView
-                    contentContainerStyle={{
-                      padding: 30,
-                      alignItems: "center",
-                    }}
-                    showsVerticalScrollIndicator={true}
-                  >
+              <View style={MyStyles.forgotCardWrapper}>
+                <View style={[MyStyles.forgotCard, { height: "60%" }]}>
+                  <ScrollView showsVerticalScrollIndicator={true}>
                     <MaterialIcons
                       name="arrow-back-ios"
                       size={30}
@@ -633,34 +480,13 @@ const ForgotPassword = () => {
                       style={{ alignSelf: "flex-start" }}
                     />
 
-                    <Text
-                      style={[
-                        MyStyles.header,
-                        {
-                          alignSelf: "flex-start",
-                          marginTop: 10,
-                          fontSize: 24,
-                        },
-                      ]}
-                    >
-                      Security Question
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "#808080",
-                        alignSelf: "flex-start",
-                        marginTop: 10,
-                        fontFamily: "QuicksandSemiBold",
-                      }}
-                    >
+                    <Text style={MyStyles.header}>Security Question</Text>
+                    <Text style={MyStyles.forgotMsg}>
                       To verify your identity, please answer your chosen
                       security question below.
                     </Text>
 
-                    <View
-                      style={{ marginVertical: 30, gap: 10, width: "100%" }}
-                    >
+                    <View style={MyStyles.loginFormWrapper}>
                       <View>
                         <Text style={MyStyles.inputLabel}>
                           Security Question
@@ -712,27 +538,8 @@ const ForgotPassword = () => {
             <>
               <BackgroundOverlay />
               {/* Card container with transparency */}
-              <View
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 2,
-                }}
-              >
-                <View
-                  style={{
-                    width: "80%",
-                    height: "45%",
-                    backgroundColor: "#fff",
-                    borderRadius: 20,
-                    padding: 30,
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
+              <View style={MyStyles.forgotCardWrapper}>
+                <View style={MyStyles.forgotCard}>
                   <MaterialIcons
                     onPress={() => setIsExisting(false)}
                     name="arrow-back-ios"
@@ -740,48 +547,14 @@ const ForgotPassword = () => {
                     color="#04384E"
                     style={{ alignSelf: "flex-start" }}
                   />
-                  <Text
-                    style={[
-                      MyStyles.header,
-                      { alignSelf: "flex-start", marginTop: 10, fontSize: 24 },
-                    ]}
-                  >
-                    Verification Method
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: "#808080",
-                      alignSelf: "flex-start",
-                      marginTop: 10,
-                      fontFamily: "QuicksandSemiBold",
-                    }}
-                  >
+                  <Text style={MyStyles.header}>Verification Method</Text>
+                  <Text style={MyStyles.forgotMsg}>
                     Please choose a method to verify your identity and continue
                     resetting your password
                   </Text>
 
-                  <View
-                    style={{
-                      gap: 20,
-                      width: "100%",
-                      marginTop: 30,
-                      height: "100%",
-                    }}
-                  >
-                    <View
-                      style={{
-                        height: "15%",
-                        backgroundColor: "#F7F5F5",
-                        borderColor: "#ACACAC",
-                        borderWidth: 1,
-                        borderRadius: 20,
-                        paddingHorizontal: 20,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 15,
-                      }}
-                    >
+                  <View style={MyStyles.methodOptionsWrapper}>
+                    <View style={MyStyles.methodOptions}>
                       <MaterialIcons
                         name="password"
                         size={24}
@@ -792,26 +565,14 @@ const ForgotPassword = () => {
                         style={{
                           color: "#04384E",
                           fontSize: 18,
-                          fontFamily: "QuicksandSemiBold",
+                          fontFamily: "QuicksandBold",
                         }}
                       >
                         One Time Password
                       </Text>
                     </View>
 
-                    <View
-                      style={{
-                        height: "15%",
-                        backgroundColor: "#F7F5F5",
-                        borderColor: "#ACACAC",
-                        borderWidth: 1,
-                        borderRadius: 20,
-                        paddingHorizontal: 20,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 15,
-                      }}
-                    >
+                    <View style={MyStyles.methodOptions}>
                       <MaterialCommunityIcons
                         name="comment-question"
                         size={24}

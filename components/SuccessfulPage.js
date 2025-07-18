@@ -1,8 +1,6 @@
 import {
-  StyleSheet,
   Text,
   View,
-  Alert,
   TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
@@ -10,11 +8,8 @@ import {
   ScrollView,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { useContext, useState, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 
 const SuccessfulPage = () => {
@@ -28,7 +23,8 @@ const SuccessfulPage = () => {
       style={{
         flex: 1,
         paddingTop: insets.top,
-        backgroundColor: "#F0F4F7",
+        paddingBottom: insets.bottom,
+        backgroundColor: "#fff",
         justifyContent: "center", // Center vertically
         alignItems: "center", // Center horizontally
       }}
@@ -40,37 +36,22 @@ const SuccessfulPage = () => {
         <ScrollView
           contentContainerStyle={[
             MyStyles.scrollContainer,
-            {
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 10,
-              padding: 50,
-            },
+            MyStyles.successScrollWrapper,
           ]}
         >
           <LottieView
             source={require("../assets/successful.json")}
             autoPlay
             loop
-            style={{ width: "100%", height: 200 }}
+            style={MyStyles.successLottie}
           />
 
           {service === "Document" && (
-            <View
-              style={{ alignItems: "center", flexDirection: "column", gap: 15 }}
-            >
+            <View style={MyStyles.serviceContentWrapper}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
                 Document Request Successful
               </Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 10,
-                  color: "#808080",
-                  fontFamily: "QuicksandSemiBold",
-                  fontSize: 16,
-                }}
-              >
+              <Text style={MyStyles.serviceDesc}>
                 Your document request has been received by the barangay. We'll
                 get back to you soon. Tap the button below to view the status.
               </Text>
@@ -82,15 +63,7 @@ const SuccessfulPage = () => {
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
                 Blotter Report Successful
               </Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 10,
-                  color: "#808080",
-                  fontFamily: "QuicksandSemiBold",
-                  fontSize: 16,
-                }}
-              >
+              <Text style={MyStyles.serviceDesc}>
                 Your blotter report has been received by the barangay. We'll get
                 back to you soon. Tap the button below to view the status.
               </Text>
@@ -102,15 +75,7 @@ const SuccessfulPage = () => {
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
                 Court Reservation Request Successful
               </Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 10,
-                  color: "#808080",
-                  fontFamily: "QuicksandSemiBold",
-                  fontSize: 16,
-                }}
-              >
+              <Text style={MyStyles.serviceDesc}>
                 Your court reservation request has been received by the
                 barangay. We'll get back to you soon. Tap the button below to
                 view the status.
@@ -123,15 +88,7 @@ const SuccessfulPage = () => {
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
                 Resident Profile Request Submitted
               </Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  marginTop: 10,
-                  color: "#808080",
-                  fontFamily: "QuicksandSemiBold",
-                  fontSize: 16,
-                }}
-              >
+              <Text style={MyStyles.serviceDesc}>
                 Your resident profile request has been submitted to the
                 barangay. You will receive a confirmation message via SMS within
                 3 business days.

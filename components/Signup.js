@@ -251,31 +251,26 @@ const Signup = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#04384E",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-          <View style={{ flex: 1, alignSelf: "center" }}>
-            <Image source={AppLogo} style={{ width: "180", height: "180" }} />
+        <View style={MyStyles.loginWrapper}>
+          <View style={MyStyles.loginTopWrapper}>
+            <Image source={AppLogo} style={MyStyles.loginLogo} />
           </View>
 
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              backgroundColor: "#F0F4F7",
-              borderRadius: 30,
-              flex: 3,
-              marginBottom: "-10",
-            }}
-          >
+          <View style={MyStyles.loginBottomWrapper}>
             <ScrollView
               style={{ width: "100%" }}
               contentContainerStyle={{
-                padding: 30,
                 alignItems: "center",
               }}
               showsVerticalScrollIndicator={false}
@@ -285,7 +280,7 @@ const Signup = () => {
                 Create your Account
               </Text>
 
-              <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
+              <View style={MyStyles.loginFormWrapper}>
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     First Name<Text style={{ color: "red" }}>*</Text>
@@ -297,15 +292,7 @@ const Signup = () => {
                     onChangeText={firstnameValidation}
                   />
                   {fnameError ? (
-                    <Text
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
-                      {fnameError}
-                    </Text>
+                    <Text style={MyStyles.errorMsg}>{fnameError}</Text>
                   ) : null}
                 </View>
 
@@ -320,15 +307,7 @@ const Signup = () => {
                     onChangeText={lastnameValidation}
                   />
                   {lnameError ? (
-                    <Text
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
-                      {lnameError}
-                    </Text>
+                    <Text style={MyStyles.errorMsg}>{lnameError}</Text>
                   ) : null}
                 </View>
 
@@ -346,14 +325,7 @@ const Signup = () => {
                   {mobilenumErrors.length > 0 && (
                     <View style={{ marginTop: 5, width: 300 }}>
                       {mobilenumErrors.map((error, index) => (
-                        <Text
-                          key={index}
-                          style={{
-                            color: "red",
-                            fontFamily: "QuicksandMedium",
-                            fontSize: 16,
-                          }}
-                        >
+                        <Text key={index} style={MyStyles.errorMsg}>
                           {error}
                         </Text>
                       ))}
@@ -376,14 +348,7 @@ const Signup = () => {
                   {usernameErrors.length > 0 && (
                     <View style={{ marginTop: 5, width: 300 }}>
                       {usernameErrors.map((error, index) => (
-                        <Text
-                          key={index}
-                          style={{
-                            color: "red",
-                            fontFamily: "QuicksandMedium",
-                            fontSize: 16,
-                          }}
-                        >
+                        <Text key={index} style={MyStyles.errorMsg}>
                           {error}
                         </Text>
                       ))}
@@ -404,12 +369,7 @@ const Signup = () => {
                       style={[MyStyles.input, { paddingRight: 40 }]}
                     />
                     <TouchableOpacity
-                      style={{
-                        position: "absolute",
-                        right: 10,
-                        top: "50%",
-                        transform: [{ translateY: -12 }],
-                      }}
+                      style={MyStyles.eyeToggle}
                       onPress={togglesecureNewPass}
                     >
                       <Ionicons
@@ -423,14 +383,7 @@ const Signup = () => {
                   {passwordErrors.length > 0 && (
                     <View style={{ marginTop: 5, width: 300 }}>
                       {passwordErrors.map((error, index) => (
-                        <Text
-                          key={index}
-                          style={{
-                            color: "red",
-                            fontFamily: "QuicksandMedium",
-                            fontSize: 16,
-                          }}
-                        >
+                        <Text key={index} style={MyStyles.errorMsg}>
                           {error}
                         </Text>
                       ))}
@@ -451,12 +404,7 @@ const Signup = () => {
                       style={[MyStyles.input, { paddingRight: 40 }]}
                     />
                     <TouchableOpacity
-                      style={{
-                        position: "absolute",
-                        right: 10,
-                        top: "50%",
-                        transform: [{ translateY: -12 }],
-                      }}
+                      style={MyStyles.eyeToggle}
                       onPress={togglesecureConfirmPass}
                     >
                       <Ionicons
@@ -469,14 +417,7 @@ const Signup = () => {
                   {repasswordErrors.length > 0 && (
                     <View style={{ marginTop: 5, width: 300 }}>
                       {repasswordErrors.map((error, index) => (
-                        <Text
-                          key={index}
-                          style={{
-                            color: "red",
-                            fontFamily: "QuicksandMedium",
-                            fontSize: 16,
-                          }}
-                        >
+                        <Text key={index} style={MyStyles.errorMsg}>
                           {error}
                         </Text>
                       ))}
@@ -485,24 +426,12 @@ const Signup = () => {
                 </View>
 
                 <View style={{ flexDirection: "column" }}>
-                  <Text
-                    style={{
-                      color: "#808080",
-                      alignSelf: "flex-start",
-                      fontSize: 16,
-                      fontFamily: "QuicksandBold",
-                    }}
-                  >
+                  <Text style={MyStyles.byClickingText}>
                     By clicking Sign Up, you agree to eBarrio’s{" "}
                   </Text>
                   <Text
                     onPress={() => navigation.navigate("TermsConditions")}
-                    style={{
-                      color: "#006EFF",
-                      alignSelf: "flex-start",
-                      fontSize: 16,
-                      fontFamily: "QuicksandBold",
-                    }}
+                    style={MyStyles.signUpText}
                   >
                     Terms and Conditions
                   </Text>
@@ -525,33 +454,18 @@ const Signup = () => {
                 </Text>
                 <Text
                   onPress={() => navigation.navigate("Login")}
-                  style={{
-                    color: "#006EFF",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
-                  }}
+                  style={MyStyles.signUpText}
                 >
                   Login
                 </Text>
               </View>
-              <View style={{ marginTop: 30 }}>
-                <Text
-                  style={{
-                    color: "#808080",
-                    fontSize: 16,
-                    fontFamily: "QuicksandSemiBold",
-                    textAlign: "center",
-                  }}
-                >
+              <View style={{ marginTop: 10 }}>
+                <Text style={MyStyles.byClickingText}>
                   Don’t have a resident profile?
                   <Text
                     onPress={() => navigation.navigate("ResidentForm")}
-                    style={{
-                      color: "#006EFF",
-                      fontFamily: "QuicksandBold",
-                    }}
+                    style={MyStyles.signUpText}
                   >
-                    {" "}
                     Create one
                   </Text>
                 </Text>
