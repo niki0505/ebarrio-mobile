@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -23,18 +22,18 @@ const RiverSnapshots = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={[
-            MyStyles.scrollContainer,
-            { backgroundColor: "#F0F4F7" },
-          ]}
-        >
+        <ScrollView contentContainerStyle={[MyStyles.scrollContainer]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialIcons
               name="arrow-back-ios"
@@ -72,7 +71,7 @@ const RiverSnapshots = () => {
                 {
                   flex: 1,
                   backgroundColor:
-                    viewMode === "current" ? "#D9D9D9" : "#F0F4F7",
+                    viewMode === "current" ? "#D3D3D3" : "#DCE5EB",
                   marginHorizontal: 10,
                 },
               ]}
@@ -98,7 +97,7 @@ const RiverSnapshots = () => {
                 {
                   flex: 1,
                   backgroundColor:
-                    viewMode === "history" ? "#D9D9D9" : "#F0F4F7",
+                    viewMode === "history" ? "#D9D9D9" : "#DCE5EB",
                   marginHorizontal: 10,
                 },
               ]}

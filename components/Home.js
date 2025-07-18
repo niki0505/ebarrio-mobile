@@ -1,20 +1,18 @@
 import {
-  StyleSheet,
   Text,
   View,
   Alert,
   TouchableOpacity,
   SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
   Image,
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   FlatList,
+  Dimensions,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -32,10 +30,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 
 //SERVICES ICONS
-import CourtReservation from "../assets/home/basketball.png";
-import Blotter from "../assets/home/letter.png";
-import Certificate from "../assets/home/stamp.png";
-import Status from "../assets/home/status.png";
 import Check from "../assets/home/check.png";
 import SOS from "../assets/home/sos.png";
 
@@ -73,6 +67,9 @@ const Home = () => {
   const [currentEvents, setCurrentEvents] = useState([]);
   dayjs.extend(relativeTime);
   const { fetchAnnouncements, announcements } = useContext(InfoContext);
+  const [expandedAnnouncements, setExpandedAnnouncements] = useState([]);
+  const [visible, setIsVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -327,6 +324,55 @@ const Home = () => {
     );
   };
 
+  const renderContent = (announcement) => {
+    const words = announcement.content.split(" ");
+    const isLong = words.length > 100;
+    const isExpanded = expandedAnnouncements.includes(announcement._id);
+    const displayText = isExpanded
+      ? announcement.content
+      : words.slice(0, 25).join(" ") + (isLong ? "..." : "");
+
+    return (
+      <View style={{ marginVertical: 10 }}>
+        {announcement.eventdetails !== "" && (
+          <Text style={MyStyles.eventDateTime}>
+            {announcement.eventdetails}
+          </Text>
+        )}
+        <Text style={MyStyles.eventText}>{displayText}</Text>
+        {isLong && (
+          <Text
+            style={MyStyles.seeMoreText}
+            onPress={() => navigation.navigate("Announcements")}
+          >
+            {isExpanded ? "" : "See more"}
+          </Text>
+        )}
+      </View>
+    );
+  };
+
+  //Announcements Carousel
+  const { width } = Dimensions.get("window");
+  const flatListRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const nextIndex =
+        currentIndex === announcements.length - 1 ? 0 : currentIndex + 1;
+
+      flatListRef.current?.scrollToIndex({
+        index: nextIndex,
+        animated: true,
+      });
+
+      setCurrentIndex(nextIndex);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex, announcements.length]);
+
   return (
     // To allow detection of taps anywhere outside the dropdown
     <TouchableWithoutFeedback
@@ -336,40 +382,28 @@ const Home = () => {
       }}
     >
       <SafeAreaView
-        style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: "#DCE5EB",
+        }}
       >
         <>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled={true}
-            contentContainerStyle={[
-              MyStyles.scrollContainer,
-              {
-                paddingBottom: insets.bottom + 70,
-                gap: 10,
-              },
-            ]}
-          >
+          <View style={MyStyles.notScrollWrapper}>
             <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
+              style={[
+                MyStyles.rowAlignment,
+                { paddingHorizontal: 20, paddingVertical: 10 },
+              ]}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+              <View style={MyStyles.rowAlignment}>
                 <Entypo
                   name="menu"
                   size={35}
                   color="#04384E"
                   onPress={() => navigation.openDrawer()}
-                  style={{ marginTop: 5, marginRight: 10 }}
+                  style={MyStyles.burgerIcon}
                 />
                 <View>
                   <Text style={MyStyles.header}>Home</Text>
@@ -383,17 +417,23 @@ const Home = () => {
                 onPress={() => navigation.navigate("Chat")}
               ></Ionicons>
             </View>
-            <Text
-              style={{
-                fontSize: 20,
-                color: "#585252",
-                fontFamily: "QuicksandSemiBold",
-              }}
-            >
+
+            <Text style={[MyStyles.greetingsText, { paddingHorizontal: 20 }]}>
               Welcome, {user.name}
             </Text>
 
-            {/* <View style={{ position: "relative" }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              nestedScrollEnabled={true}
+              contentContainerStyle={[
+                MyStyles.scrollContainer,
+                {
+                  paddingBottom: insets.bottom + 70,
+                  gap: 10,
+                },
+              ]}
+            >
+              {/* <View style={{ position: "relative" }}>
                 <TouchableOpacity onPress={toggleProfile}>
                   <Image
                     source={{ uri: user.picture }}
@@ -477,213 +517,132 @@ const Home = () => {
                 )}
               </View> */}
 
-            <View style={[MyStyles.rowAlignment, { gap: 10, marginTop: 20 }]}>
-              <TouchableOpacity
-                onPress={viewCalendar}
-                style={[
-                  MyStyles.card,
-                  {
-                    padding: 10,
-                    flex: 0,
-                    width: 180,
-                  },
-                ]}
-              >
-                <ScrollView horizontal={false} style={{ marginTop: 5 }}>
-                  <Text
-                    style={{
-                      color: "#BC0F0F",
-                      fontSize: 20,
-                      fontFamily: "REMSemiBold",
-                    }}
-                  >
-                    {currentDate.toLocaleString("en-US", { month: "long" })}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 35,
-                      fontWeight: "bold",
-                      color: "#04384E",
-                      fontFamily: "REMRegular",
-                    }}
-                  >
-                    {currentDate.getDate()}
-                  </Text>
-
-                  {currentEvents?.map((event, index) => (
-                    <Text
-                      key={index}
-                      style={{
-                        fontSize: 14,
-                        color: "#ACACAC",
-                        marginRight: 10,
-                      }}
-                    >
-                      {event.title}
-                      {index !== currentEvents.length - 1 ? "," : ""}{" "}
-                    </Text>
-                  ))}
-                </ScrollView>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
-                <LinearGradient
-                  colors={getGradientColors(weather.currentcondition)}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={[MyStyles.gradientBackground]}
+              <View style={[MyStyles.rowAlignment, { gap: 10, padding: 10 }]}>
+                <TouchableOpacity
+                  onPress={viewCalendar}
+                  style={[MyStyles.card, MyStyles.calendarCard]}
                 >
-                  <Text
-                    style={{
-                      fontFamily: "REMRegular",
-                      fontSize: 16,
-                      color: "#fff",
-                    }}
-                  >
-                    Bacoor
-                  </Text>
-                  <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
-                    {getWeatherIcon(weather.currentcondition, 70, 70)}
-                    <Text
-                      style={{
-                        fontFamily: "REMRegular",
-                        fontSize: 35,
-                        color: "#fff",
-                      }}
-                    >
-                      {weather.currenttemp}°
+                  <ScrollView horizontal={false} style={{ marginTop: 5 }}>
+                    <Text style={MyStyles.calendarMonth}>
+                      {currentDate.toLocaleString("en-US", { month: "long" })}
                     </Text>
-                  </View>
+                    <Text style={MyStyles.calendarDay}>
+                      {currentDate.getDate()}
+                    </Text>
 
-                  <Text
-                    style={{
-                      fontFamily: "QuicksandSemiBold",
-                      fontSize: 16,
-                      color: "#fff",
-                    }}
+                    {currentEvents?.map((event, index) => (
+                      <Text key={index} style={MyStyles.calendarEventTitle}>
+                        {event.title}
+                        {index !== currentEvents.length - 1 ? "," : ""}{" "}
+                      </Text>
+                    ))}
+                  </ScrollView>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
+                  <LinearGradient
+                    colors={getGradientColors(weather.currentcondition)}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                    style={[MyStyles.gradientBackground]}
                   >
-                    High:{Math.round(weather.currenthigh)}° Low:
-                    {Math.round(weather.currentlow)}°
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
+                    <Text style={MyStyles.weatherHeaderText}>Bacoor</Text>
+                    <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
+                      {getWeatherIcon(weather.currentcondition, 70, 70)}
+                      <Text style={MyStyles.weatherCurrTemp}>
+                        {weather.currenttemp}°
+                      </Text>
+                    </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 20,
-                  fontFamily: "REMMedium",
-                  marginTop: 15,
-                }}
-              >
-                Announcements
-              </Text>
+                    <Text style={MyStyles.weatherHighLow}>
+                      High:{Math.round(weather.currenthigh)}° Low:
+                      {Math.round(weather.currentlow)}°
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
 
-              <Text
-                onPress={() => navigation.navigate("Announcements")}
-                style={{
-                  color: "#04384E",
-                  fontSize: 16,
-                  fontFamily: "REMMedium",
-                  marginTop: 15,
-                  textDecorationLine: "underline",
-                }}
-              >
-                View All
-              </Text>
-            </View>
+              <View style={MyStyles.rowAlignment}>
+                <Text style={MyStyles.subHeader}>Announcements</Text>
 
-            <FlatList
-              pagingEnabled={true}
-              data={announcements}
-              keyExtractor={(item) => item._id}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ gap: 10 }}
-              nestedScrollEnabled={true}
-              scrollEnabled={true}
-              renderItem={({ item }) => (
-                <View
-                  style={{
-                    backgroundColor: "#fff",
-                    borderRadius: 10,
-                    padding: 15,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    elevation: 3,
-                    margin: 5,
-                  }}
+                <Text
+                  onPress={() => navigation.navigate("Announcements")}
+                  style={[
+                    MyStyles.subHeader,
+                    { textDecorationLine: "underline", fontSize: 16 },
+                  ]}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Image
-                        source={Aniban2Logo}
-                        style={{ width: 50, height: 50 }}
-                      />
-                      <View style={{ marginLeft: 5 }}>
-                        <Text
-                          style={{
-                            color: "#04384E",
-                            fontSize: 16,
-                            fontFamily: "QuicksandBold",
-                          }}
-                        >
-                          Barangay Aniban 2
+                  View All
+                </Text>
+              </View>
+
+              <FlatList
+                ref={flatListRef}
+                data={announcements}
+                keyExtractor={(item) => item._id}
+                horizontal
+                pagingEnabled
+                snapToInterval={width}
+                decelerationRate="fast"
+                showsHorizontalScrollIndicator={false}
+                onMomentumScrollEnd={(event) => {
+                  const index = Math.round(
+                    event.nativeEvent.contentOffset.x / width
+                  );
+                  setCurrentIndex(index);
+                }}
+                renderItem={({ item }) => (
+                  <View style={MyStyles.carouselWrapper}>
+                    <View style={MyStyles.carouselCard}>
+                      {/* Top Header Row */}
+                      <View style={MyStyles.rowAlignment}>
+                        <View style={MyStyles.rowAlignment}>
+                          <Image
+                            source={Aniban2Logo}
+                            style={MyStyles.announcementLogo}
+                          />
+                          <View style={{ marginLeft: 5 }}>
+                            <Text style={MyStyles.announcementUploader}>
+                              Barangay Aniban 2
+                            </Text>
+                            <Text style={MyStyles.announcementCreatedAt}>
+                              {dayjs(item.createdAt).fromNow()}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      {/* Body */}
+                      <View style={{ marginVertical: 10 }}>
+                        <Text style={MyStyles.announcementCategory}>
+                          {item.category}
                         </Text>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            color: "#808080",
-                            fontFamily: "QuicksandSemiBold",
-                          }}
-                        >
-                          {dayjs(item.createdAt).fromNow()}
+                        <Text style={MyStyles.announcementTitle}>
+                          {item.title}
                         </Text>
+
+                        {item.picture && item.picture.trim() !== "" && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              setSelectedImage([{ uri: item.picture }]);
+                              setIsVisible(true);
+                            }}
+                          >
+                            <Image
+                              source={{ uri: item.picture }}
+                              style={MyStyles.homeAnnouncementImg}
+                              resizeMode="cover"
+                            />
+                          </TouchableOpacity>
+                        )}
+
+                        {renderContent(item)}
                       </View>
                     </View>
                   </View>
-
-                  <View style={{ marginVertical: 10 }}>
-                    <Text
-                      style={{
-                        color: "#04384E",
-                        fontSize: 16,
-                        fontFamily: "QuicksandSemiBold",
-                      }}
-                    >
-                      {item.category}
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#808080",
-                        fontSize: 16,
-                        fontFamily: "QuicksandMedium",
-                      }}
-                    >
-                      {item.title}
-                    </Text>
-                  </View>
-                </View>
-              )}
-            />
-            {/* 
+                )}
+              />
+              {/* 
             {user.role === "Resident" && (
               <>
                 <Text
@@ -757,68 +716,43 @@ const Home = () => {
               </>
             )} */}
 
-            <Text
-              style={{
-                color: "#04384E",
-                fontSize: 20,
-                fontFamily: "REMMedium",
-                marginTop: 15,
-              }}
-            >
-              Emergency Tools
-            </Text>
-            <View style={{ flexDirection: "column", gap: 10 }}>
-              <View>
-                {user.role !== "Resident" && (
-                  <View style={{ flexDirection: "column", gap: 10 }}>
-                    <TouchableOpacity style={MyStyles.sosContainer}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          width: "80%",
-                          marginLeft: 30,
-                        }}
-                      >
-                        <Image source={SOS} style={MyStyles.servicesImg} />
-                        <Text
-                          style={[
-                            MyStyles.emergencyTitle,
-                            { fontSize: 25, marginLeft: 15 },
-                          ]}
-                        >
-                          SOS REQUESTS
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
+              <Text style={MyStyles.subHeader}>Emergency Tools</Text>
+              <View style={MyStyles.emergencyToolsCol}>
+                <View>
+                  {user.role !== "Resident" && (
+                    <View style={{ flexDirection: "column", gap: 10 }}>
+                      <TouchableOpacity style={MyStyles.sosContainer}>
+                        <View style={MyStyles.sosRowWrapper}>
+                          <Image source={SOS} style={MyStyles.servicesImg} />
+                          <Text
+                            style={[
+                              MyStyles.emergencyTitle,
+                              { fontSize: 25, marginLeft: 15 },
+                            ]}
+                          >
+                            SOS REQUESTS
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
 
-                    <TouchableOpacity style={MyStyles.sosContainer}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          width: "80%",
-                          marginLeft: 30,
-                        }}
-                      >
-                        <Image source={Check} style={MyStyles.servicesImg} />
-                        <Text
-                          style={[
-                            MyStyles.emergencyTitle,
-                            { fontSize: 25, marginLeft: 15 },
-                          ]}
-                        >
-                          RESPONDED SOS
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
+                      <TouchableOpacity style={MyStyles.sosContainer}>
+                        <View style={MyStyles.sosRowWrapper}>
+                          <Image source={Check} style={MyStyles.servicesImg} />
+                          <Text
+                            style={[
+                              MyStyles.emergencyTitle,
+                              { fontSize: 25, marginLeft: 15 },
+                            ]}
+                          >
+                            RESPONDED SOS
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
 
-              {/* {user.role === "Resident" && (
+                {/* {user.role === "Resident" && (
                 <TouchableOpacity
                   style={MyStyles.sosContainer}
                   onPress={() => navigation.navigate("SOS")}
@@ -829,75 +763,76 @@ const Home = () => {
                 </TouchableOpacity> 
               )} */}
 
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <TouchableOpacity
-                  style={[
-                    MyStyles.sosContainer,
-                    {
-                      flex: 1,
-                      flexDirection: "column",
-                      alignItems: "center",
-                    },
-                  ]}
-                  onPress={viewReadiness}
-                >
-                  <MaterialCommunityIcons
-                    name="lightbulb-on"
-                    size={50}
-                    color="#fff"
-                  />
-                  <Text style={MyStyles.emergencyTitle}>READINESS</Text>
-                  <Text style={MyStyles.emergencyMessage}>
-                    Stay Smart, Stay Safe
-                  </Text>
-                </TouchableOpacity>
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <TouchableOpacity
+                    style={[
+                      MyStyles.sosContainer,
+                      {
+                        flex: 1,
+                        flexDirection: "column",
+                        alignItems: "center",
+                      },
+                    ]}
+                    onPress={viewReadiness}
+                  >
+                    <MaterialCommunityIcons
+                      name="lightbulb-on"
+                      size={50}
+                      color="#fff"
+                    />
+                    <Text style={MyStyles.emergencyTitle}>READINESS</Text>
+                    <Text style={MyStyles.emergencyMessage}>
+                      Stay Smart, Stay Safe
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={viewEmergencyHotlines}
+                    style={[
+                      MyStyles.sosContainer,
+                      {
+                        flex: 1,
+                        flexDirection: "column",
+                        alignItems: "center",
+                      },
+                    ]}
+                  >
+                    <MaterialIcons name="call" size={50} color="#fff" />
+                    <Text style={MyStyles.emergencyTitle}>HOTLINES</Text>
+                    <Text style={MyStyles.emergencyMessage}>
+                      Call for Assistance
+                    </Text>
+                  </TouchableOpacity>
+                </View>
 
                 <TouchableOpacity
-                  onPress={viewEmergencyHotlines}
-                  style={[
-                    MyStyles.sosContainer,
-                    {
-                      flex: 1,
-                      flexDirection: "column",
-                      alignItems: "center",
-                    },
-                  ]}
+                  style={MyStyles.sosContainer}
+                  onPress={() => navigation.navigate("RiverSnapshots")}
                 >
-                  <MaterialIcons name="call" size={50} color="#fff" />
-                  <Text style={MyStyles.emergencyTitle}>HOTLINES</Text>
-                  <Text style={MyStyles.emergencyMessage}>
-                    Call for Assistance
-                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="cctv"
+                      size={50}
+                      color="#fff"
+                      style={{ transform: [{ rotateY: "180deg" }] }}
+                    />
+                    <View style={{ textAlign: "start" }}>
+                      <Text style={MyStyles.emergencyTitle}>MONITOR RIVER</Text>
+                      <Text style={MyStyles.emergencyMessage}>
+                        Observe Water-Level
+                      </Text>
+                    </View>
+                  </View>
                 </TouchableOpacity>
               </View>
-
-              <TouchableOpacity
-                style={MyStyles.sosContainer}
-                onPress={() => navigation.navigate("RiverSnapshots")}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="cctv"
-                    size={50}
-                    color="#fff"
-                    style={{ transform: [{ rotateY: "180deg" }] }}
-                  />
-                  <View style={{ textAlign: "start" }}>
-                    <Text style={MyStyles.emergencyTitle}>MONITOR RIVER</Text>
-                    <Text style={MyStyles.emergencyMessage}>
-                      Observe Water-Level
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
 
           {user.role === "Resident" && (
             <>

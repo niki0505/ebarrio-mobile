@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   Alert,
@@ -233,7 +232,12 @@ const Certificates = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -243,7 +247,7 @@ const Certificates = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20, // pinalitan ko ng 20 para may margin when scrolled
+              gap: 10,
             },
           ]}
         >
@@ -254,15 +258,13 @@ const Certificates = () => {
             color="#04384E"
           />
 
-          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
-            Request Document
-          </Text>
+          <Text style={MyStyles.servicesHeader}>Request Document</Text>
 
           <Text style={MyStyles.formMessage}>
             Please select the required information for requesting a document
           </Text>
 
-          <View style={{ gap: 15, marginVertical: 30 }}>
+          <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>
                 Type of Document<Text style={{ color: "red" }}>*</Text>
@@ -276,16 +278,8 @@ const Certificates = () => {
                   value: cert.name,
                 }))}
                 placeholder="Select"
-                placeholderStyle={{
-                  color: "#808080",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
-                selectedTextStyle={{
-                  color: "#000",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
+                placeholderStyle={MyStyles.placeholderText}
+                selectedTextStyle={MyStyles.selectedText}
                 onChange={(itemValue) =>
                   handleDropdownChange({
                     target: { name: "typeofcertificate", value: itemValue },
@@ -294,15 +288,7 @@ const Certificates = () => {
                 style={MyStyles.input}
               ></Dropdown>
               {typeErrors ? (
-                <Text
-                  style={{
-                    color: "red",
-                    fontFamily: "QuicksandMedium",
-                    fontSize: 16,
-                  }}
-                >
-                  {typeErrors}
-                </Text>
+                <Text style={MyStyles.errorMsg}>{typeErrors}</Text>
               ) : null}
             </View>
 
@@ -323,16 +309,8 @@ const Certificates = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(itemValue) =>
                       handleDropdownChange({
                         target: { name: "purpose", value: itemValue },
@@ -341,15 +319,7 @@ const Certificates = () => {
                     style={MyStyles.input}
                   ></Dropdown>
                   {purposeError ? (
-                    <Text
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
-                      {purposeError}
-                    </Text>
+                    <Text style={MyStyles.errorMsg}>{purposeError}</Text>
                   ) : null}
                 </View>
               </>
@@ -371,16 +341,8 @@ const Certificates = () => {
                       value: street,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(itemValue) =>
                       handleDropdownChange({
                         target: { name: "street", value: itemValue },
@@ -389,15 +351,7 @@ const Certificates = () => {
                     style={MyStyles.input}
                   ></Dropdown>
                   {streetError ? (
-                    <Text
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
-                      {streetError}
-                    </Text>
+                    <Text style={MyStyles.errorMsg}>{streetError}</Text>
                   ) : null}
                 </View>
 
@@ -408,7 +362,8 @@ const Certificates = () => {
                         <Text style={MyStyles.inputLabel}>Address Number</Text>
                         <TextInput
                           placeholder="Address Number"
-                          placeholderStyle={{ color: "#808080" }}
+                          placeholderStyle={MyStyles.placeholderText}
+                          selectedTextStyle={MyStyles.selectedText}
                           onChangeText={(text) =>
                             handleInputChange("addressnumber", text)
                           }
@@ -423,6 +378,8 @@ const Certificates = () => {
                   </Text>
                   <TextInput
                     placeholder="Business Name"
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChangeText={(text) =>
                       handleInputChange("businessname", text)
                     }
@@ -430,15 +387,7 @@ const Certificates = () => {
                     value={certificateForm.businessname}
                   />
                   {busNameError ? (
-                    <Text
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
-                      {busNameError}
-                    </Text>
+                    <Text style={MyStyles.errorMsg}>{busNameError}</Text>
                   ) : null}
                 </View>
                 <View>
@@ -447,6 +396,8 @@ const Certificates = () => {
                   </Text>
                   <TextInput
                     placeholder="Line of Business"
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChangeText={(text) =>
                       handleInputChange("lineofbusiness", text)
                     }
@@ -454,15 +405,7 @@ const Certificates = () => {
                     value={certificateForm.lineofbusinesss}
                   />
                   {lineBusError ? (
-                    <Text
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
-                      {lineBusError}
-                    </Text>
+                    <Text style={MyStyles.errorMsg}>{lineBusError}</Text>
                   ) : null}
                 </View>
               </>

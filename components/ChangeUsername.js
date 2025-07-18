@@ -158,13 +158,18 @@ const ChangeUsername = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <ScrollView
         contentContainerStyle={[
           MyStyles.scrollContainer,
           {
-            paddingBottom: insets.bottom + 70,
+            gap: 10,
           },
         ]}
       >
@@ -174,22 +179,12 @@ const ChangeUsername = () => {
           size={24}
           color="#04384E"
         />
-        <Text style={[MyStyles.header, { marginTop: 10 }]}>
-          Change Username
-        </Text>
+        <Text style={MyStyles.servicesHeader}>Change Username</Text>
 
-        <View style={{ gap: 10, marginVertical: 30 }}>
+        <View style={MyStyles.servicesContentWrapper}>
           <View>
             <Text style={MyStyles.inputLabel}>Current Username</Text>
-            <Text
-              style={{
-                fontSize: 16,
-                color: "black",
-                fontFamily: "QuicksandSemiBold",
-              }}
-            >
-              {userDetails.username}
-            </Text>
+            <Text style={MyStyles.inputLabel}>{userDetails.username}</Text>
           </View>
           <View>
             <Text style={MyStyles.inputLabel}>New Username</Text>
@@ -202,14 +197,7 @@ const ChangeUsername = () => {
             {usernameErrors.length > 0 && (
               <View style={{ marginTop: 5, width: 300 }}>
                 {usernameErrors.map((error, index) => (
-                  <Text
-                    key={index}
-                    style={{
-                      color: "red",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                  >
+                  <Text key={index} style={MyStyles.errorMsg}>
                     {error}
                   </Text>
                 ))}
@@ -228,12 +216,7 @@ const ChangeUsername = () => {
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  right: 10,
-                  top: "50%",
-                  transform: [{ translateY: -12 }],
-                }}
+                style={MyStyles.eyeToggle}
                 onPress={togglesecurePass}
               >
                 <Ionicons
@@ -243,15 +226,7 @@ const ChangeUsername = () => {
                 />
               </TouchableOpacity>
               {passError ? (
-                <Text
-                  style={{
-                    color: "red",
-                    fontFamily: "QuicksandMedium",
-                    fontSize: 16,
-                  }}
-                >
-                  {passError}
-                </Text>
+                <Text style={MyStyles.errorMsg}>{passError}</Text>
               ) : null}
             </View>
           </View>

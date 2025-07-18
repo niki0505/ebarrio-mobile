@@ -27,7 +27,12 @@ const EvacuationMap = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -37,7 +42,6 @@ const EvacuationMap = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20,
               gap: 10,
               backgroundColor: "#BC0F0F",
             },
@@ -49,42 +53,19 @@ const EvacuationMap = () => {
             size={30}
             color="#fff"
           />
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "center",
-                color: "#fff",
-              },
-            ]}
-          >
+          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
             EVACUATION MAP
           </Text>
 
           <View style={{ flexDirection: "column", gap: 20 }}>
-            <Text
-              style={{
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "left",
-                color: "#fff",
-                fontSize: 24,
-                fontFamily: "REMSemiBold",
-              }}
-            >
+            <Text style={MyStyles.evacuationSubHeader}>
               Barangay Aniban 2 School
             </Text>
 
             <TouchableOpacity onPress={() => setIsVisible(true)}>
               <Image
                 source={require("../assets/hazard-map/evacuation-map.png")}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 15,
-                }}
+                style={MyStyles.evacuationImg}
                 resizeMode="cover"
               />
               <View style={MyStyles.mapOverlay}>

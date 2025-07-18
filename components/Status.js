@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   Alert,
@@ -13,15 +12,16 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
-import { MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import api from "../api";
 import Dialog from "react-native-dialog";
+
+//ICONS
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Status = () => {
   const { fetchServices, services } = useContext(InfoContext);
@@ -114,23 +114,19 @@ const Status = () => {
   const getStatusStyle = (status) => {
     switch (status) {
       case "Pending":
-        return { color: "#E5DE48", label: "Pending" };
+        return { color: "#E5DE48", label: "Pending" }; // Yellow
       case "Issued":
-        return { color: "#00BA00", label: "Issued" };
-      case "Rejected":
-        return { color: "#BC0F0F", label: "Rejected" };
       case "Resolved":
-        return { color: "#00BA00", label: "Resolved" };
-      case "Cancelled":
-        return { color: "#BC0F0F", label: "Cancelled" };
       case "Approved":
-        return { color: "#00BA00", label: "Approved" };
       case "Settled":
-        return { color: "#00BA00", label: "Settled" };
       case "Scheduled":
-        return { color: "#00BA00", label: "Scheduled" };
+      case "Collected":
+        return { color: "#00BA00", label: status }; // Green
+      case "Rejected":
+      case "Cancelled":
+        return { color: "#BC0F0F", label: status }; // Red
       default:
-        return { color: "#aaa", label: status };
+        return { color: "#aaa", label: status }; // Gray
     }
   };
 
@@ -149,7 +145,12 @@ const Status = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -160,7 +161,6 @@ const Status = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: 20,
               gap: 10,
             },
           ]}
@@ -185,43 +185,60 @@ const Status = () => {
             value={sortOption}
             placeholder={sortOption}
             onChange={(item) => setSortOption(item.value)}
-            style={{
-              backgroundColor: "#fff",
-              width: "50%",
-              height: 50,
-              borderWidth: 1,
-              borderColor: "#ACACAC",
-              borderRadius: 5,
-              alignSelf: "flex-end",
-              paddingHorizontal: 4,
-            }}
-            selectedTextStyle={{
-              color: "#04384E",
-              fontFamily: "QuicksandSemiBold",
-              fontSize: 15,
-            }}
+            style={[MyStyles.dropdownWrapper, { width: "50%", height: 50 }]}
+            selectedTextStyle={MyStyles.selectedText}
           />
+
+          <View style={{ marginVertical: 10 }}>
+            {/* Green Box (Issued, Resolved, Approved, Settled, Scheduled, Collected) */}
+            <View style={MyStyles.legendRow}>
+              <View
+                style={[
+                  MyStyles.statusColorBox,
+                  { backgroundColor: "#00BA00" },
+                ]}
+              />
+              <Text style={MyStyles.legendLabel}>
+                Issued, Resolved, Approved, Settled, Scheduled, Collected
+              </Text>
+            </View>
+
+            {/* Yellow Box (Pending) */}
+            <View style={MyStyles.legendRow}>
+              <View
+                style={[
+                  MyStyles.statusColorBox,
+                  { backgroundColor: "#E5DE48" },
+                ]}
+              />
+              <Text style={MyStyles.legendLabel}>Pending</Text>
+            </View>
+
+            {/* Red Box (Rejected, Cancelled) */}
+            <View style={MyStyles.legendRow}>
+              <View
+                style={[
+                  MyStyles.statusColorBox,
+                  { backgroundColor: "#BC0F0F" },
+                ]}
+              />
+              <Text style={MyStyles.legendLabel}>Rejected, Cancelled</Text>
+            </View>
+
+            {/* Gray Box (Others) */}
+            <View style={MyStyles.legendRow}>
+              <View
+                style={[MyStyles.statusColorBox, { backgroundColor: "#aaa" }]}
+              />
+              <Text style={MyStyles.legendLabel}>Others</Text>
+            </View>
+          </View>
 
           <Dialog.Container
             visible={certVisible}
-            contentStyle={{
-              backgroundColor: "#fff",
-              borderRadius: 10,
-              padding: 20,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
+            contentStyle={MyStyles.statusDialogWrapper}
           >
-            <Dialog.Title
-              style={{
-                fontFamily: "REMBold",
-                fontSize: 20,
-                color: "#04384E",
-              }}
-            >
+            <Dialog.Title style={MyStyles.cancelCert}>
               Cancel Certificate
             </Dialog.Title>
 
@@ -250,25 +267,9 @@ const Status = () => {
 
           <Dialog.Container
             visible={reservationVisible}
-            contentStyle={{
-              backgroundColor: "#fff",
-              borderRadius: 10,
-              padding: 20,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
+            contentStyle={MyStyles.statusDialogWrapper}
           >
-            <Dialog.Title
-              style={{
-                fontFamily: "QuicksandBold",
-                fontSize: 20,
-                color: "#04384E",
-                marginBottom: 10,
-              }}
-            >
+            <Dialog.Title style={MyStyles.cancelReserve}>
               Cancel Court Reservation
             </Dialog.Title>
 
@@ -301,21 +302,7 @@ const Status = () => {
             const status = getStatusStyle(service.status);
 
             return (
-              <View
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  overflow: "hidden",
-                  backgroundColor: "#fff",
-                  borderRadius: 10,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 3,
-                  marginBottom: 10,
-                }}
-              >
+              <View key={index} style={MyStyles.statusCardWrapper}>
                 {/* Left status bar */}
                 <View
                   style={{
@@ -325,53 +312,23 @@ const Status = () => {
                 />
                 {/* Right content */}
                 <View style={{ flex: 1, padding: 15 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#04384E",
-                        fontSize: 15,
-                        fontFamily: "REMMedium",
-                      }}
-                    >
-                      {status.label}
-                    </Text>
+                  <View style={MyStyles.rowAlignment}>
+                    <Text style={MyStyles.statusLabel}>{status.label}</Text>
 
                     <Text style={{ fontSize: 15, color: "#808080" }}>
                       {dayjs(service.createdAt).fromNow()}
                     </Text>
                   </View>
 
-                  <View
-                    style={{
-                      borderBottomColor: "#ccc",
-                      borderBottomWidth: 1,
-                      marginVertical: 10,
-                    }}
-                  />
+                  <View style={MyStyles.statusLine} />
 
                   {/* Title + Chevron */}
                   <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
+                    style={MyStyles.rowAlignment}
                     onPress={() => toggleExpand(index)}
                     activeOpacity={0.7}
                   >
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        fontFamily: "REMSemiBold",
-                        color: "#04384E",
-                      }}
-                    >
+                    <Text style={MyStyles.statusServiceType}>
                       {service.type}
                     </Text>
                     <MaterialIcons
@@ -386,13 +343,7 @@ const Status = () => {
                   {/* Default visible summary based on type */}
                   <View style={{ marginTop: 5 }}>
                     {service.type === "Certificate" && (
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          fontFamily: "QuicksandMedium",
-                          color: "#808080",
-                        }}
-                      >
+                      <Text style={MyStyles.statusTypeofCert}>
                         {service.typeofcertificate}
                       </Text>
                     )}
@@ -403,14 +354,7 @@ const Status = () => {
                         const end = new Date(timeData.endtime);
 
                         return (
-                          <Text
-                            key={date}
-                            style={{
-                              fontSize: 15,
-                              fontFamily: "QuicksandMedium",
-                              color: "#808080",
-                            }}
-                          >
+                          <Text key={date} style={MyStyles.statusTypeofCert}>
                             {new Date(date).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "long",
@@ -429,13 +373,7 @@ const Status = () => {
                         );
                       })}
                     {service.type === "Blotter" && (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          flexWrap: "wrap",
-                          alignItems: "flex-start",
-                        }}
-                      >
+                      <View style={MyStyles.statusBlotterWrapper}>
                         <Text
                           style={{
                             fontSize: 15,
@@ -445,16 +383,7 @@ const Status = () => {
                         >
                           Details:
                         </Text>
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontFamily: "QuicksandMedium",
-                            color: "#808080",
-                            marginLeft: 5,
-                            flexShrink: 1,
-                            textAlign: "justify",
-                          }}
-                        >
+                        <Text style={MyStyles.statusServiceDetails}>
                           {!isExpanded
                             ? truncateDetails(service.details)
                             : service.details}
@@ -473,62 +402,30 @@ const Status = () => {
                             service.typeofcertificate ===
                               "Barangay Clearance") && (
                             <>
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  flexWrap: "wrap",
-                                  alignItems: "flex-start",
-                                }}
-                              >
+                              <View style={MyStyles.statusBlotterWrapper}>
                                 <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandBold",
-                                    color: "#04384E",
-                                  }}
+                                  style={[
+                                    MyStyles.statusLabel,
+                                    { fontFamily: "QuicksandBold" },
+                                  ]}
                                 >
                                   Purpose:
                                 </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandMedium",
-                                    color: "#04384E",
-                                    marginLeft: 5,
-                                    flexShrink: 1,
-                                    textAlign: "justify",
-                                  }}
-                                >
+                                <Text style={MyStyles.statusServiceDetails}>
                                   {service.purpose}
                                 </Text>
                               </View>
 
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  flexWrap: "wrap",
-                                  alignItems: "flex-start",
-                                }}
-                              >
+                              <View style={MyStyles.statusBlotterWrapper}>
                                 <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandBold",
-                                    color: "#04384E",
-                                  }}
+                                  style={[
+                                    MyStyles.statusLabel,
+                                    { fontFamily: "QuicksandBold" },
+                                  ]}
                                 >
                                   Amount:
                                 </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandMedium",
-                                    color: "#04384E",
-                                    marginLeft: 5,
-                                    flexShrink: 1,
-                                    textAlign: "justify",
-                                  }}
-                                >
+                                <Text style={MyStyles.statusServiceDetails}>
                                   {service.amount}
                                 </Text>
                               </View>
@@ -538,92 +435,44 @@ const Status = () => {
                           {service.typeofcertificate ===
                             "Barangay Business Clearance" && (
                             <>
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  flexWrap: "wrap",
-                                  alignItems: "flex-start",
-                                }}
-                              >
+                              <View style={MyStyles.statusBlotterWrapper}>
                                 <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandBold",
-                                    color: "#04384E",
-                                  }}
+                                  style={[
+                                    MyStyles.statusLabel,
+                                    { fontFamily: "QuicksandBold" },
+                                  ]}
                                 >
                                   Business Name:
                                 </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandMedium",
-                                    color: "#04384E",
-                                    marginLeft: 5,
-                                    flexShrink: 1,
-                                    textAlign: "justify",
-                                  }}
-                                >
+                                <Text style={MyStyles.statusServiceDetails}>
                                   {service.businessname}
                                 </Text>
                               </View>
 
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  flexWrap: "wrap",
-                                  alignItems: "flex-start",
-                                }}
-                              >
+                              <View style={MyStyles.statusBlotterWrapper}>
                                 <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandBold",
-                                    color: "#04384E",
-                                  }}
+                                  style={[
+                                    MyStyles.statusLabel,
+                                    { fontFamily: "QuicksandBold" },
+                                  ]}
                                 >
                                   Line of Business:
                                 </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandMedium",
-                                    color: "#04384E",
-                                    marginLeft: 5,
-                                    flexShrink: 1,
-                                    textAlign: "justify",
-                                  }}
-                                >
+                                <Text style={MyStyles.statusServiceDetails}>
                                   {service.lineofbusiness}
                                 </Text>
                               </View>
 
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  flexWrap: "wrap",
-                                  alignItems: "flex-start",
-                                }}
-                              >
+                              <View style={MyStyles.statusBlotterWrapper}>
                                 <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandBold",
-                                    color: "#04384E",
-                                  }}
+                                  style={[
+                                    MyStyles.statusLabel,
+                                    { fontFamily: "QuicksandBold" },
+                                  ]}
                                 >
                                   Location of Business:
                                 </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandMedium",
-                                    color: "#04384E",
-                                    marginLeft: 5,
-                                    flexShrink: 1,
-                                    textAlign: "justify",
-                                  }}
-                                >
+                                <Text style={MyStyles.statusServiceDetails}>
                                   {service.locationofbusiness ===
                                   "Resident's Address"
                                     ? userDetails.resID.address
@@ -655,32 +504,16 @@ const Status = () => {
                             )}
 
                           {service.status === "Rejected" && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
+                            <View style={MyStyles.statusBlotterWrapper}>
                               <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
+                                style={[
+                                  MyStyles.statusLabel,
+                                  { fontFamily: "QuicksandBold" },
+                                ]}
                               >
                                 Remarks:
                               </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
+                              <Text style={MyStyles.statusRemarksText}>
                                 {service.remarks}
                               </Text>
                             </View>
@@ -711,32 +544,16 @@ const Status = () => {
                               </TouchableOpacity>
                             )}
                           {service.status === "Rejected" && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
+                            <View style={MyStyles.statusBlotterWrapper}>
                               <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
+                                style={[
+                                  MyStyles.statusLabel,
+                                  { fontFamily: "QuicksandBold" },
+                                ]}
                               >
                                 Remarks:
                               </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
+                              <Text style={MyStyles.statusRemarksText}>
                                 {service.remarks}
                               </Text>
                             </View>
@@ -746,62 +563,30 @@ const Status = () => {
 
                       {service.type === "Blotter" && (
                         <>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              flexWrap: "wrap",
-                              alignItems: "flex-start",
-                            }}
-                          >
+                          <View style={MyStyles.statusBlotterWrapper}>
                             <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandBold",
-                                color: "#04384E",
-                              }}
+                              style={[
+                                MyStyles.statusLabel,
+                                { fontFamily: "QuicksandBold" },
+                              ]}
                             >
                               Type of the Complaint:
                             </Text>
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandMedium",
-                                color: "#04384E",
-                                marginLeft: 5,
-                                flexShrink: 1,
-                                textAlign: "justify",
-                              }}
-                            >
+                            <Text style={MyStyles.statusServiceDetails}>
                               {service.typeofthecomplaint}
                             </Text>
                           </View>
 
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              flexWrap: "wrap",
-                              alignItems: "flex-start",
-                            }}
-                          >
+                          <View style={MyStyles.statusBlotterWrapper}>
                             <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandBold",
-                                color: "#04384E",
-                              }}
+                              style={[
+                                MyStyles.statusLabel,
+                                { fontFamily: "QuicksandBold" },
+                              ]}
                             >
                               Subject:
                             </Text>
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontFamily: "QuicksandMedium",
-                                color: "#04384E",
-                                marginLeft: 5,
-                                flexShrink: 1,
-                                textAlign: "justify",
-                              }}
-                            >
+                            <Text style={MyStyles.statusServiceDetails}>
                               {service.subjectID
                                 ? `${service.subjectID.firstname} ${service.subjectID.lastname}`
                                 : service.subjectname}
@@ -810,32 +595,16 @@ const Status = () => {
 
                           {(service.status === "Scheduled" ||
                             service.status === "Settled") && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
+                            <View style={MyStyles.statusBlotterWrapper}>
                               <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
+                                style={[
+                                  MyStyles.statusLabel,
+                                  { fontFamily: "QuicksandBold" },
+                                ]}
                               >
                                 Meeting:
                               </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
+                              <Text style={MyStyles.statusRemarksText}>
                                 {new Date(service.starttime).toLocaleDateString(
                                   "en-US",
                                   {
@@ -865,64 +634,32 @@ const Status = () => {
 
                           {service.status === "Settled" && (
                             <>
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  flexWrap: "wrap",
-                                  alignItems: "flex-start",
-                                }}
-                              >
+                              <View style={MyStyles.statusBlotterWrapper}>
                                 <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandBold",
-                                    color: "#04384E",
-                                  }}
+                                  style={[
+                                    MyStyles.statusLabel,
+                                    { fontFamily: "QuicksandBold" },
+                                  ]}
                                 >
                                   Witness:
                                 </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandMedium",
-                                    color: "#04384E",
-                                    marginLeft: 5,
-                                    flexShrink: 1,
-                                    textAlign: "justify",
-                                  }}
-                                >
+                                <Text style={MyStyles.statusServiceDetails}>
                                   {service.witnessID
                                     ? `${service.witnessID.firstname} ${service.witnessID.lastname}`
                                     : service.witnessname}
                                 </Text>
                               </View>
 
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  flexWrap: "wrap",
-                                  alignItems: "flex-start",
-                                }}
-                              >
+                              <View style={MyStyles.statusBlotterWrapper}>
                                 <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandBold",
-                                    color: "#04384E",
-                                  }}
+                                  style={[
+                                    MyStyles.statusLabel,
+                                    { fontFamily: "QuicksandBold" },
+                                  ]}
                                 >
                                   Agreement:
                                 </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontFamily: "QuicksandMedium",
-                                    color: "#04384E",
-                                    marginLeft: 5,
-                                    flexShrink: 1,
-                                    textAlign: "justify",
-                                  }}
-                                >
+                                <Text style={MyStyles.statusServiceDetails}>
                                   {!isExpanded
                                     ? truncateWords(service.agreementdetails)
                                     : service.agreementdetails}
@@ -932,32 +669,16 @@ const Status = () => {
                           )}
 
                           {service.status === "Rejected" && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                alignItems: "flex-start",
-                              }}
-                            >
+                            <View style={MyStyles.statusBlotterWrapper}>
                               <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandBold",
-                                  color: "#04384E",
-                                }}
+                                style={[
+                                  MyStyles.statusLabel,
+                                  { fontFamily: "QuicksandBold" },
+                                ]}
                               >
                                 Remarks:
                               </Text>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontFamily: "QuicksandMedium",
-                                  color: "#04384E",
-                                  marginLeft: 5,
-                                  flexShrink: 1,
-                                  textAlign: "justify",
-                                }}
-                              >
+                              <Text style={MyStyles.statusRemarksText}>
                                 {service.remarks}
                               </Text>
                             </View>
