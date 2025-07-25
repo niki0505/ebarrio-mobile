@@ -1,12 +1,7 @@
 import {
-  StyleSheet,
   Text,
   View,
-  TextInput,
-  TouchableOpacity,
-  Alert,
   SafeAreaView,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -14,7 +9,6 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AppLogo from "../assets/applogo-darkbg.png";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const TermsConditions = () => {
@@ -23,13 +17,18 @@ const TermsConditions = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <View style={{ flex: 4, backgroundColor: "#04384E" }}>
+        <View style={MyStyles.loginWrapper}>
           <View style={{ flex: 0.2, alignSelf: "start", padding: 20 }}>
             <MaterialIcons
               onPress={() => navigation.navigate("Signup")}
@@ -40,15 +39,12 @@ const TermsConditions = () => {
           </View>
 
           <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              backgroundColor: "#F0F4F7",
-              borderRadius: 30,
-              flex: 3.8,
-              padding: 30,
-              bottom: "-10",
-            }}
+            style={[
+              MyStyles.loginBottomWrapper,
+              {
+                flex: 3.8,
+              },
+            ]}
           >
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Terms and Conditions
@@ -63,14 +59,7 @@ const TermsConditions = () => {
               showsVerticalScrollIndicator={true}
               keyboardShouldPersistTaps="handled"
             >
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   1. Eligibility:
                 </Text>
@@ -82,14 +71,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   2. Account Registration:
                 </Text>
@@ -104,14 +86,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   3. Session Duration:
                 </Text>
@@ -127,14 +102,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   4. User Conduct:
                 </Text>
@@ -151,14 +119,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   5. Privacy and Data Protection:
                 </Text>
@@ -172,14 +133,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   6. Notifications:
                 </Text>
@@ -194,14 +148,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   7. Location Access:
                 </Text>
@@ -215,14 +162,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   8. Disaster Response Features:
                 </Text>
@@ -238,14 +178,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   9. Intellectual Property:
                 </Text>
@@ -258,14 +191,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   10. Third-Party Services:
                 </Text>
@@ -278,14 +204,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   11. Disclaimer of Liability:
                 </Text>
@@ -300,14 +219,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   12. App Availability:
                 </Text>
@@ -319,14 +231,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   13. Updates and Modifications:
                 </Text>
@@ -339,14 +244,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   14. Governing Law:
                 </Text>
@@ -358,14 +256,7 @@ const TermsConditions = () => {
                 </Text>
               </Text>
 
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 15,
-                }}
-              >
+              <Text style={MyStyles.termsTitle}>
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   15. Termination:
                 </Text>
@@ -378,12 +269,12 @@ const TermsConditions = () => {
               </Text>
 
               <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 20,
-                  color: "#04384E",
-                  marginBottom: 40,
-                }}
+                style={[
+                  MyStyles.termsTitle,
+                  {
+                    marginBottom: 40,
+                  },
+                ]}
               >
                 <Text style={{ fontFamily: "REMSemiBold" }}>
                   16. Contact Information:
@@ -392,23 +283,11 @@ const TermsConditions = () => {
                   {"\n"}For questions or concerns regarding these terms and
                   conditions, or if you need support related to the App, please
                   contact us at:{"\n"} {"\n"}{" "}
-                  <Text
-                    style={{
-                      fontFamily: "QuicksandSemiBold",
-                      fontSize: 16,
-                      color: "#04384E",
-                    }}
-                  >
+                  <Text style={MyStyles.termsEmailContact}>
                     Email: brgyaniban2bacoorcity@gmail.com
                   </Text>
                   {"\n"}{" "}
-                  <Text
-                    style={{
-                      fontFamily: "QuicksandSemiBold",
-                      fontSize: 16,
-                      color: "#04384E",
-                    }}
-                  >
+                  <Text style={MyStyles.termsEmailContact}>
                     Telephone: 476-9397
                   </Text>
                 </Text>

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 export const MyStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F4F7",
+    backgroundColor: "#DCE5EB",
     padding: 20,
     justifyContent: "space-between",
     alignItems: "center",
@@ -12,20 +12,25 @@ export const MyStyles = StyleSheet.create({
     color: "#04384E",
     fontFamily: "REMBold",
   },
+  subHeader: {
+    color: "#04384E",
+    fontSize: 20,
+    fontFamily: "REMMedium",
+    marginTop: 15,
+  },
   textMedium: {
     fontSize: 16,
     color: "#808080",
     fontFamily: "QuicksandMedium",
   },
-
-  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#F0F4F7" },
+  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#DCE5EB" },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
 
-  //Alignment - row and column
+  /*---------------------------------------ROW & COLUMN---------------------------------------*/
   rowAlignment: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -35,40 +40,6 @@ export const MyStyles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
   },
-
-  //Bottom Nav
-  tabBarContainer: {
-    flexDirection: "row",
-    height: 60,
-    backgroundColor: "white",
-    borderTopColor: "#ccc",
-    borderTopWidth: 1,
-    alignItems: "center",
-    justifyContent: "space-around",
-    paddingBottom: 10,
-  },
-  tabButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  floatingButton: {
-    position: "absolute",
-    bottom: 30,
-    alignSelf: "center",
-    width: 40,
-    height: 40,
-    borderRadius: 30,
-    backgroundColor: "#BC0F0F",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 6,
-  },
   // tabBarLabel: {
   //   paddingBottom: 5,
   //   fontSize: 16,
@@ -77,7 +48,7 @@ export const MyStyles = StyleSheet.create({
   //   marginBottom: 5,
   // },
 
-  //Picker, Input
+  /*---------------------------------------PICKER, INPUT---------------------------------------*/
   picker: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -105,7 +76,7 @@ export const MyStyles = StyleSheet.create({
     alignItems: "center",
   },
 
-  //Button
+  /*---------------------------------------BUTTONS---------------------------------------*/
   button: {
     backgroundColor: "#0E94D3",
     padding: 12,
@@ -119,14 +90,13 @@ export const MyStyles = StyleSheet.create({
     fontSize: 24,
   },
 
-  //Form message
   formMessage: {
     fontSize: 16,
     color: "#808080",
     fontFamily: "QuicksandSemiBold",
   },
 
-  //Suggestion
+  /*---------------------------------------SUGGESTION---------------------------------------*/
   suggestionContainer: {
     backgroundColor: "white",
     borderColor: "#ccc",
@@ -142,7 +112,7 @@ export const MyStyles = StyleSheet.create({
     borderBottomWidth: 1,
   },
 
-  //Card
+  /*---------------------------------------CARD---------------------------------------*/
   card: {
     flex: 1,
     height: 120,
@@ -169,7 +139,7 @@ export const MyStyles = StyleSheet.create({
     alignItems: "center",
   },
 
-  //Weather
+  /*---------------------------------------WEATHER---------------------------------------*/
   weatherHeaderText: {
     fontSize: 30,
     color: "#fff",
@@ -197,72 +167,9 @@ export const MyStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 10,
     backgroundColor: "rgba(255, 255, 255, 0.4)",
-  },
-
-  //Home
-  profilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    resizeMode: "cover",
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#04384E",
-  },
-  servicesImgContainer: {
-    backgroundColor: "#DBDEE8",
-    padding: 15,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  servicesImg: {
-    width: 50,
-    height: 50,
-    borderRadius: 60,
-    resizeMode: "cover",
-  },
-  servicesTitle: {
-    fontSize: 16,
-    color: "#04384E",
-    fontFamily: "QuicksandBold",
-    marginTop: 10,
-    textAlign: "center",
-  },
-  sosContainer: {
-    backgroundColor: "#BC0F0F",
-    padding: 20,
-    borderRadius: 10,
-    height: "auto",
-    padding: 20,
-
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-
-    // Android shadow
-    elevation: 10,
-  },
-  emergencyTitle: {
-    color: "#fff",
-    fontSize: 20,
-    fontFamily: "REMSemiBold",
-    textAlign: "center",
-  },
-  emergencyMessage: {
-    color: "#FAFAFA",
-    fontSize: 12,
-    textAlign: "center",
-    opacity: 0.7,
-    fontFamily: "QuicksandBold",
   },
 
   //Emergency Hotlines
@@ -309,7 +216,7 @@ export const MyStyles = StyleSheet.create({
     elevation: 10,
   },
 
-  //READINESS
+  /*---------------------------------------READINESS---------------------------------------*/
   readinessCard: {
     backgroundColor: "#fff",
     borderRadius: 15,
@@ -366,8 +273,18 @@ export const MyStyles = StyleSheet.create({
     height: 200,
     maxWidth: "48%",
   },
+  readinessHeader: {
+    marginTop: 20,
+    marginBottom: 0,
+    textAlign: "center",
+    color: "#fff",
+  },
+  readinessColWrapper: {
+    flexDirection: "column",
+    gap: 30,
+  },
 
-  //QuickTips
+  /*---------------------------------------QUICK TIPS---------------------------------------*/
   quickTipsCard: {
     position: "absolute",
     top: 0,
@@ -439,8 +356,30 @@ export const MyStyles = StyleSheet.create({
     flex: 1,
     fontFamily: "QuicksandSemiBold",
   },
+  quickImgWrapper: {
+    flexDirection: "column",
+    gap: 30,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  quickBtnWrapper: {
+    width: "100%",
+    height: 150,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  quickImg: {
+    width: "100%",
+    height: "100%",
+  },
+  quickTitle: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: "REMBold",
+    width: "90%",
+  },
 
-  //Hazard Map and Evacuation Map
+  /*---------------------------------------HAZARD & EVACUATION MAP---------------------------------------*/
   mapOverlay: {
     position: "absolute",
     top: 0,
@@ -457,7 +396,663 @@ export const MyStyles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "REMSemiBold",
   },
-  //Notification
+
+  //BOTTOM BAR STYLES
+  bottomTabContainer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+  },
+  svgContainer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+  },
+  fab: {
+    position: "absolute",
+    left: "50%",
+    transform: [{ translateX: -35 }],
+    width: 70,
+    height: 70,
+    backgroundColor: "#BC0F0F",
+    borderRadius: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 10,
+  },
+  fabText: {
+    color: "#fff",
+    fontFamily: "REMSemiBold",
+    fontSize: 18,
+  },
+  bottomTabButtons: {
+    flex: 1,
+    alignItems: "center",
+  },
+  bottomTabIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  badge: {
+    position: "absolute",
+    top: -5,
+    right: -5,
+    backgroundColor: "red",
+    width: 18,
+    height: 18,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: "bold",
+  },
+  /*---------------------------------------ACCOUNT SETTINGS---------------------------------------*/
+  securityText: {
+    fontSize: 18,
+    color: "#808080",
+    fontFamily: "QuicksandBold",
+    marginTop: 15,
+  },
+  menuWrapper: {
+    gap: 35,
+    paddingVertical: 20,
+  },
+  menuIcons: {
+    backgroundColor: "#E5E4E2B3",
+    borderRadius: 10,
+    padding: 5,
+    color: "#808080",
+  },
+  menuText: {
+    color: "#04384E",
+    fontSize: 18,
+    fontFamily: "QuicksandBold",
+    marginLeft: 15,
+  },
+  /*---------------------------------------ANNOUNCEMENTS---------------------------------------*/
+  eventDateTime: {
+    marginBottom: 5,
+    fontSize: 16,
+    color: "#04384E",
+    fontFamily: "QuicksandSemiBold",
+  },
+  eventText: {
+    fontSize: 16,
+    color: "#04384E",
+    fontFamily: "QuicksandMedium",
+  },
+  seeMoreText: {
+    color: "#006EFF",
+    marginTop: 5,
+    fontFamily: "QuicksandMedium",
+  },
+  dropdownWrapper: {
+    backgroundColor: "#fff",
+    width: "30%",
+    height: 30,
+    borderWidth: 1,
+    borderColor: "#ACACAC",
+    borderRadius: 5,
+    alignSelf: "flex-end",
+    paddingHorizontal: 4,
+    marginTop: 20,
+  },
+  dropdownText: {
+    color: "#04384E",
+    fontFamily: "QuicksandSemiBold",
+    fontSize: 16,
+  },
+  announcementCard: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 10,
+  },
+  announcementLogo: {
+    width: 50,
+    height: 50,
+  },
+  announcementHeaderWrapper: {
+    marginLeft: 5,
+  },
+  announcementUploader: {
+    color: "#04384E",
+    fontSize: 16,
+    fontFamily: "QuicksandBold",
+  },
+  announcementCreatedAt: {
+    fontSize: 14,
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
+  },
+  announcementCategory: {
+    color: "#04384E",
+    fontSize: 16,
+    fontFamily: "QuicksandSemiBold",
+  },
+  announcementTitle: {
+    color: "#808080",
+    fontSize: 16,
+    fontFamily: "QuicksandMedium",
+  },
+  announcementImg: {
+    width: "100%",
+    height: 200,
+    borderRadius: 15,
+    marginTop: 10,
+    resizeMode: "cover",
+  },
+  pin: {
+    transform: [{ rotate: "30deg" }],
+    marginRight: 15,
+    marginTop: 5,
+  },
+  heartWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+  },
+
+  /*---------------------------------------MAIN---------------------------------------*/
+  burgerWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  burgerIcon: {
+    marginTop: 5,
+    marginRight: 10,
+  },
+  /*---------------------------------------SERVICES---------------------------------------*/
+  servicesHeader: {
+    fontSize: 30,
+    color: "#04384E",
+    fontFamily: "REMBold",
+    marginTop: 20,
+    marginBottom: 0,
+  },
+  servicesContentWrapper: {
+    gap: 30,
+    marginVertical: 30,
+  },
+  placeholderText: {
+    color: "#808080",
+    fontFamily: "QuicksandMedium",
+    fontSize: 16,
+  },
+  selectedText: {
+    color: "#000",
+    fontFamily: "QuicksandMedium",
+    fontSize: 16,
+  },
+  errorMsg: {
+    color: "red",
+    fontFamily: "QuicksandMedium",
+    fontSize: 16,
+  },
+  errorDetailsWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 8,
+    justifyContent: "space-between",
+  },
+  detailsLength: {
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
+    fontSize: 16,
+    textAlign: "right",
+  },
+  /*---------------------------------------CALENDAR---------------------------------------*/
+  categoriesColors: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+  },
+  categoriesText: {
+    ontSize: 13,
+    fontFamily: "REMRegular",
+  },
+  dateText: {
+    fontSize: 24,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#04384E",
+    fontFamily: "QuicksandBold",
+  },
+  calendarEventWrapper: {
+    borderRadius: 10,
+    padding: 5,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+  calendarEventTitle: {
+    color: "#fff",
+    fontSize: 10,
+    fontFamily: "QuicksandBold",
+  },
+  calendarEventTime: {
+    color: "#fff",
+    fontSize: 10,
+    fontFamily: "QuicksandMedium",
+  },
+  legendsRowWrapper: {
+    flexDirection: "row",
+    gap: 10,
+    width: "100%",
+  },
+  legendsColWrapper: {
+    flexDirection: "column",
+    gap: 10,
+  },
+  importantEventsWrapper: {
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+    gap: 5,
+  },
+  importantEventsDate: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "QuicksandBold",
+  },
+  importantEventsTitle: {
+    color: "#fff",
+    fontSize: 16,
+    marginTop: 10,
+    fontFamily: "QuicksandMedium",
+  },
+
+  eyeToggle: {
+    position: "absolute",
+    right: 10,
+    top: "50%",
+    transform: [{ translateY: -12 }],
+  },
+
+  /*---------------------------------------CALENDAR---------------------------------------*/
+  reserveDateWrapper: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 10,
+  },
+  reserveDateBtn: {
+    padding: 8,
+    borderRadius: 5,
+  },
+
+  /*---------------------------------------DISASTER SAFETY TIPS---------------------------------------*/
+  disasterSafetyImg: {
+    width: 160,
+    height: 160,
+  },
+  disasterSafetyCard: {
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 20,
+    width: "100%",
+    overflow: "hidden",
+  },
+  sectionPhase: {
+    fontSize: 22,
+    fontFamily: "REMBold",
+    marginBottom: 10,
+    color: "#BC0F0F",
+  },
+  sectionStepsWrapper: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
+  steps: {
+    width: 30,
+    height: 30,
+    backgroundColor: "#BC0F0F",
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+    marginTop: 4,
+  },
+  stepsNo: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  stepsDesc: {
+    fontSize: 16,
+    fontFamily: "QuicksandMedium",
+    color: "#333",
+    flex: 1,
+    flexWrap: "wrap",
+  },
+  /*---------------------------------------DISASTER SAFETY TIPS---------------------------------------*/
+  evacuationHeader: {
+    marginTop: 20,
+    marginBottom: 0,
+    textAlign: "center",
+    color: "#fff",
+  },
+  evacuationSubHeader: {
+    marginTop: 20,
+    marginBottom: 0,
+    textAlign: "left",
+    color: "#fff",
+    fontSize: 24,
+    fontFamily: "REMSemiBold",
+  },
+  evacuationImg: {
+    width: "100%",
+    height: 200,
+    borderRadius: 15,
+  },
+
+  /*---------------------------------------HAZARD MAPS---------------------------------------*/
+  hazardTitle: {
+    marginTop: 20,
+    marginBottom: 0,
+    textAlign: "left",
+    color: "#fff",
+    fontSize: 24,
+    fontFamily: "REMSemiBold",
+  },
+
+  /*---------------------------------------BACKGROUND OVERLAY---------------------------------------*/
+  overlayLogo: {
+    width: 320,
+    height: 320,
+    position: "absolute",
+    bottom: -75,
+    left: -80,
+  },
+  overlayBlack: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "black",
+    opacity: 0.3,
+    zIndex: 1,
+  },
+
+  /*---------------------------------------HOME---------------------------------------*/
+  greetingsText: {
+    fontSize: 20,
+    color: "#585252",
+    fontFamily: "QuicksandSemiBold",
+  },
+  calendarCard: {
+    padding: 10,
+    flex: 0,
+    width: 180,
+  },
+  calendarMonth: {
+    color: "#BC0F0F",
+    fontSize: 20,
+    fontFamily: "REMSemiBold",
+  },
+  calendarDay: {
+    fontSize: 35,
+    fontWeight: "bold",
+    color: "#04384E",
+    fontFamily: "REMRegular",
+  },
+  calendarEventTitle: {
+    fontSize: 14,
+    color: "#ACACAC",
+    marginRight: 10,
+  },
+  weatherHeaderText: {
+    fontFamily: "REMRegular",
+    fontSize: 16,
+    color: "#fff",
+  },
+  weatherCurrTemp: {
+    fontFamily: "REMRegular",
+    fontSize: 35,
+    color: "#fff",
+  },
+  weatherHighLow: {
+    fontFamily: "QuicksandSemiBold",
+    fontSize: 16,
+    color: "#fff",
+  },
+  carouselWrapper: {
+    width: 370,
+    padding: 10,
+  },
+  carouselCard: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  homeAnnouncementImg: {
+    width: "100%",
+    height: 160,
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  emergencyToolsCol: {
+    flexDirection: "column",
+    gap: 10,
+    padding: 10,
+  },
+  profilePic: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    resizeMode: "cover",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#04384E",
+  },
+  // servicesImgContainer: {
+  //   backgroundColor: "#DBDEE8",
+  //   padding: 15,
+  //   width: 60,
+  //   height: 60,
+  //   borderRadius: 30,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // },
+  // servicesImg: {
+  //   width: 50,
+  //   height: 50,
+  //   borderRadius: 60,
+  //   resizeMode: "cover",
+  // },
+  // servicesTitle: {
+  //   fontSize: 16,
+  //   color: "#04384E",
+  //   fontFamily: "QuicksandBold",
+  //   marginTop: 10,
+  //   textAlign: "center",
+  // },
+  sosContainer: {
+    backgroundColor: "#BC0F0F",
+    padding: 20,
+    borderRadius: 10,
+    height: "auto",
+    padding: 20,
+
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+
+    // Android shadow
+    elevation: 10,
+  },
+  sosRowWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "80%",
+    marginLeft: 30,
+  },
+  emergencyTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontFamily: "REMSemiBold",
+    textAlign: "center",
+  },
+  emergencyMessage: {
+    color: "#FAFAFA",
+    fontSize: 12,
+    textAlign: "center",
+    opacity: 0.7,
+    fontFamily: "QuicksandBold",
+  },
+
+  /*---------------------------------------LOGIN, SIGN UP, FORGOT PASS---------------------------------------*/
+  loginWrapper: {
+    flex: 4,
+    backgroundColor: "#04384E",
+  },
+  loginTopWrapper: {
+    flex: 1,
+    alignSelf: "center",
+  },
+  loginLogo: {
+    width: "180",
+    height: "180",
+  },
+  loginBottomWrapper: {
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#DCE5EB",
+    borderRadius: 30,
+    flex: 3,
+    padding: 30,
+    bottom: "-10",
+  },
+  loginFormWrapper: {
+    marginVertical: 30,
+    gap: 15,
+    width: "100%",
+  },
+  forgotPassText: {
+    color: "#006EFF",
+    alignSelf: "flex-end",
+    fontSize: 16,
+    fontFamily: "QuicksandBold",
+    marginTop: "-10",
+  },
+  signUpText: {
+    color: "#006EFF",
+    fontSize: 16,
+    fontFamily: "QuicksandBold",
+  },
+  byClickingText: {
+    color: "#808080",
+    alignSelf: "flex-start",
+    fontSize: 16,
+    fontFamily: "QuicksandBold",
+  },
+  forgotMsg: {
+    fontSize: 16,
+    color: "#808080",
+    alignSelf: "flex-start",
+    marginTop: 10,
+    fontFamily: "QuicksandSemiBold",
+  },
+  forgotCardWrapper: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2,
+  },
+  forgotCard: {
+    width: "80%",
+    height: "50%",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 30,
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  methodOptionsWrapper: {
+    gap: 20,
+    width: "100%",
+    marginTop: 30,
+    height: "100%",
+  },
+  methodOptions: {
+    height: "15%",
+    backgroundColor: "#F7F5F5",
+    borderColor: "#ACACAC",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+  },
+  /*---------------------------------------NOTIFICATION---------------------------------------*/
+  notScrollWrapper: {
+    flex: 1,
+    position: "relative",
+    backgroundColor: "#DCE5EB",
+  },
+
+  markAllText: {
+    paddingHorizontal: 20,
+    color: "#04384E",
+    fontSize: 16,
+    fontFamily: "REMSemiBold",
+    textAlign: "right",
+  },
+  notifLine: {
+    flexDirection: "column",
+    borderBottomWidth: 1,
+    borderBottomColor: "#C1C0C0",
+    padding: 1,
+    position: "relative",
+  },
+  notifRowSpacing: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+    paddingRight: 20,
+  },
+  notifTitleMessage: {
+    color: "#04384E",
+    fontSize: 16,
+    fontFamily: "QuicksandBold",
+  },
+  notifCircle: {
+    position: "absolute",
+    top: "50%",
+    right: 10,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    transform: [{ translateY: -4 }],
+  },
   filterDropdown: {
     position: "absolute",
     top: 50,
@@ -481,45 +1076,322 @@ export const MyStyles = StyleSheet.create({
     color: "#04384E",
     fontFamily: "QuicksandSemiBold",
   },
-  tabBarContainer: {
-    flexDirection: "row",
-    height: 60,
-    backgroundColor: "#fff",
-    justifyContent: "space-around",
-    alignItems: "center",
+  /*---------------------------------------OFFLINE---------------------------------------*/
+  offHeader: {
+    color: "#fff",
+    fontSize: 20,
+    textAlign: "center",
+    fontWeight: "QuicksandBold",
   },
-  tabButton: {
+  offCenteredView: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  offBtnCardContainer: {
+    width: "80%",
+    height: "90%",
+    flexDirection: "column",
+    gap: 20,
+  },
+  offBtnCard: {
+    backgroundColor: "#fff",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 15,
   },
-  floatingButton: {
-    position: "absolute",
-    bottom: 15,
-    left: "50%",
-    marginLeft: -30,
-    width: 60,
-    height: 60,
-    backgroundColor: "#BC0F0F",
-    borderRadius: 30,
+  offBtnContent: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  offHotlineItem: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    padding: 10,
+  },
+  offHotlineName: {
+    color: "#04384E",
+    fontFamily: "REMSemiBold",
+    fontSize: 16,
+  },
+  /*---------------------------------------PREVIEW---------------------------------------*/
+  slideContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 50,
+  },
+  slideImg: {
+    width: 240,
+    height: 240,
+    resizeMode: "contain",
+    marginVertical: 70,
+  },
+  paginationDotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 70,
+  },
+  paginationDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  bottomButons: {
     justifyContent: "center",
     alignItems: "center",
-    elevation: 5,
+    padding: 30,
   },
-  badge: {
-    position: "absolute",
-    top: -5,
-    right: -5,
-    backgroundColor: "red",
-    width: 18,
-    height: 18,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  badgeText: {
+  buttonsText: {
     color: "white",
-    fontSize: 10,
     fontWeight: "bold",
+    fontSize: 24,
+  },
+
+  /*---------------------------------------RESIDENT FORM---------------------------------------*/
+  FormSectionTitle: {
+    color: "#04384E",
+    fontSize: 20,
+    fontFamily: "REMSemiBold",
+    alignSelf: "flex-start",
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  required: { color: "red" },
+  uploadBox: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 10,
+  },
+  previewContainer: {
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  placeholder: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  personalInfobuttons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  personalInfoButton: {
+    backgroundColor: "#0E94D3",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  radioGroup: {
+    flexDirection: "row",
+    gap: 20,
+    maxWidth: "20%",
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#444",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  radioDot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: "#444",
+  },
+  headerRow: {
+    flexDirection: "row",
+    backgroundColor: "#ddd",
+    padding: 5,
+  },
+  headerCell: {
+    flex: 1,
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 12,
+  },
+  dataRow: {
+    flexDirection: "row",
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  dropdown: {
+    flex: 1,
+    marginHorizontal: 2,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    height: 40,
+    justifyContent: "center",
+  },
+  dropdownContainer: {
+    zIndex: 1000,
+  },
+  residentAddBtn: {
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "#0E94D3",
+    width: "50%",
+    padding: 8,
+    alignSelf: "flex-end",
+  },
+  residentAddText: {
+    fontSize: 16,
+    color: "#0E94D3",
+  },
+  membersWrapper: {
+    marginBottom: 20,
+    flexDirection: "column",
+    gap: 15,
+  },
+  /*---------------------------------------STATUS---------------------------------------*/
+  statusDialogWrapper: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  cancelCert: {
+    fontFamily: "REMBold",
+    fontSize: 20,
+    color: "#04384E",
+  },
+  cancelReserve: {
+    fontFamily: "QuicksandBold",
+    fontSize: 20,
+    color: "#04384E",
+    marginBottom: 10,
+  },
+  statusCardWrapper: {
+    flexDirection: "row",
+    overflow: "hidden",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 10,
+  },
+  statusLabel: {
+    color: "#04384E",
+    fontSize: 15,
+    fontFamily: "REMMedium",
+  },
+  statusLine: {
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
+    marginVertical: 10,
+  },
+  statusServiceType: {
+    fontSize: 24,
+    fontFamily: "REMSemiBold",
+    color: "#04384E",
+  },
+  statusTypeofCert: {
+    fontSize: 15,
+    fontFamily: "QuicksandMedium",
+    color: "#808080",
+  },
+  statusBlotterWrapper: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+  },
+  statusServiceDetails: {
+    fontSize: 15,
+    fontFamily: "QuicksandMedium",
+    color: "#808080",
+    marginLeft: 5,
+    flexShrink: 1,
+    textAlign: "justify",
+  },
+  statusRemarksText: {
+    fontSize: 15,
+    fontFamily: "QuicksandMedium",
+    color: "#04384E",
+    marginLeft: 5,
+    flexShrink: 1,
+    textAlign: "justify",
+  },
+  legendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginVertical: 5,
+  },
+  statusColorBox: {
+    width: 15,
+    height: 15,
+    borderRadius: 10,
+  },
+  legendLabel: {
+    fontSize: 16,
+    fontFamily: "QuicksandBold",
+    color: "#000",
+    width: "90%",
+  },
+
+  /*---------------------------------------SUCCESSFUL PAGE---------------------------------------*/
+  successScrollWrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    padding: 50,
+  },
+  successLottie: {
+    width: "100%",
+    height: 200,
+  },
+  serviceContentWrapper: {
+    alignItems: "center",
+    flexDirection: "column",
+    gap: 15,
+  },
+  serviceDesc: {
+    textAlign: "center",
+    marginTop: 10,
+    color: "#808080",
+    fontFamily: "QuicksandSemiBold",
+    fontSize: 16,
+  },
+  /*---------------------------------------TERMS & CONDITIONS---------------------------------------*/
+  termsTitle: {
+    fontSize: 16,
+    lineHeight: 20,
+    color: "#04384E",
+    marginBottom: 15,
+  },
+  termsEmailContact: {
+    fontFamily: "QuicksandSemiBold",
+    fontSize: 16,
+    color: "#04384E",
   },
 });

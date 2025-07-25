@@ -12,24 +12,25 @@ import {
   ActivityIndicator,
   StyleSheet,
   Pressable,
-  FlatList,
+  Modal,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
-import AppLogo from "../assets/applogo-darkbg.png";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
 import { storage } from "../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-import { MaterialIcons } from "@expo/vector-icons";
+
+import Signature from "react-native-signature-canvas";
 
 //ICONS
-import { useState, useEffect, useContext } from "react";
-import { InfoContext } from "../context/InfoContext";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../api";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const ResidentForm = () => {
   const insets = useSafeAreaInsets();
@@ -355,7 +356,7 @@ const ResidentForm = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.onrender.com/api/getresidents"
+          "https://ebarrio-mobile-backend.fly.dev/api/getresidents"
         );
         setResidents(response.data);
       } catch (error) {
@@ -369,7 +370,7 @@ const ResidentForm = () => {
     const fetchHouseholds = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.onrender.com/api/gethouseholds"
+          "https://ebarrio-mobile-backend.fly.dev/api/gethouseholds"
         );
         setHouseholds(response.data);
       } catch (error) {
@@ -878,16 +879,13 @@ const ResidentForm = () => {
         lastmenstrual: formattedLastMenstrual,
       };
 
-      const response = await axios.post(
-        "https://ebarrio-mobile-backend.onrender.com/api/createresident",
-        {
-          picture: idPicture,
-          signature: signaturePicture,
-          ...updatedResidentForm,
-          householdForm,
-        }
-      );
-      navigation.navigate("SuccessfulPage", {
+      await api.post("/createresident", {
+        picture: idPicture,
+        signature: signaturePicture,
+        ...updatedResidentForm,
+        householdForm,
+      });
+      navigation.navigate("SuccessfulPage2", {
         service: "ResidentForm",
       });
     } catch (error) {
@@ -895,33 +893,36 @@ const ResidentForm = () => {
     }
   };
 
-  console.log(residentForm);
-  // console.log(householdForm);
+  const [showSignModal, setShowSignModal] = useState(false);
 
+  const handleSignatureOK = (signature) => {
+    setIsSignProcessing(true);
+    setResidentForm({ ...residentForm, signature });
+    setShowSignModal(false);
+    setIsSignProcessing(false);
+  };
+
+  const handleClear = () => {
+    setResidentForm({ ...residentForm, signature: null });
+  };
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#04384E" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#04384E",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              backgroundColor: "#F0F4F7",
-              marginTop: 30,
-              borderRadius: 30,
-              flex: 3,
-              marginBottom: "-10",
-            }}
-          >
+        <View style={MyStyles.loginWrapper}>
+          <View style={MyStyles.loginBottomWrapper}>
             <ScrollView
               style={{ width: "100%" }}
               contentContainerStyle={{
-                padding: 30,
                 alignItems: "center",
               }}
               showsVerticalScrollIndicator={false}
@@ -931,55 +932,48 @@ const ResidentForm = () => {
                 Resident Profile
               </Text>
 
-              <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
+              <View style={MyStyles.loginFormWrapper}>
                 {/* Personal Information */}
 
                 {/* ID */}
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                  }}
-                >
+                <Text style={MyStyles.FormSectionTitle}>
                   Personal Information
                 </Text>
-                <View style={styles.uploadBox}>
-                  <View style={styles.previewContainer}>
+                <View style={MyStyles.uploadBox}>
+                  <View style={MyStyles.previewContainer}>
                     {isIDProcessing ? (
                       <ActivityIndicator size="small" color="#0000ff" />
                     ) : residentForm.id ? (
                       <Image
                         source={{ uri: residentForm.id }}
-                        style={styles.image}
+                        style={MyStyles.image}
                       />
                     ) : (
-                      <View style={styles.placeholder}>
-                        <Text style={styles.placeholderText}>
+                      <View style={MyStyles.placeholder}>
+                        <Text style={MyStyles.placeholderText}>
                           Attach ID Picture
                         </Text>
                       </View>
                     )}
                   </View>
 
-                  <View style={styles.buttons}>
+                  <View style={MyStyles.personalInfobuttons}>
                     <TouchableOpacity
                       onPress={toggleIDCamera}
-                      style={styles.button}
+                      style={MyStyles.personalInfoButton}
                     >
                       <Text>📷</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={pickIDImage}
-                      style={styles.button}
+                      style={MyStyles.personalInfoButton}
                     >
                       <Text>📤</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
 
-                {/* Signature */}
+                {/* New Signature */}
                 <View style={styles.uploadBox}>
                   <View style={styles.previewContainer}>
                     {isSignProcessing ? (
@@ -1000,18 +994,40 @@ const ResidentForm = () => {
 
                   <View style={styles.buttons}>
                     <TouchableOpacity
-                      onPress={toggleSigCamera}
+                      onPress={() => setShowSignModal(true)}
                       style={styles.button}
                     >
-                      <Text>📷</Text>
+                      <Text>✍️</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      onPress={pickSigImage}
+                      onPress={handleClear}
                       style={styles.button}
                     >
-                      <Text>📤</Text>
+                      <Text>🗑️</Text>
                     </TouchableOpacity>
                   </View>
+
+                  {/* Signature Modal */}
+                  <Modal visible={showSignModal} animationType="slide">
+                    <View style={{ flex: 1 }}>
+                      <Signature
+                        onOK={handleSignatureOK}
+                        onEmpty={() => setShowSignModal(false)}
+                        descriptionText="Sign Below"
+                        clearText="Clear"
+                        confirmText="Save"
+                        webStyle={`.m-signature-pad--footer { display: flex; justify-content: space-between; }`}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowSignModal(false)}
+                        style={styles.closeButton}
+                      >
+                        <Text style={{ color: "#fff", fontSize: 18 }}>
+                          Close
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </Modal>
                 </View>
 
                 <View>
@@ -1063,16 +1079,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("suffix", item.value)
                     }
@@ -1101,16 +1109,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("salutation", item.value)
                     }
@@ -1131,16 +1131,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) => handleDropdownChange("sex", item.value)}
                     style={MyStyles.input}
                   ></Dropdown>
@@ -1157,16 +1149,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("gender", item.value)
                     }
@@ -1268,16 +1252,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("civilstatus", item.value)
                     }
@@ -1309,16 +1285,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("philhealthcategory", item.value)
                     }
@@ -1383,18 +1351,18 @@ const ResidentForm = () => {
                       <Text style={MyStyles.inputLabel}>
                         Using any FP method?
                       </Text>
-                      <View style={styles.radioGroup}>
+                      <View style={MyStyles.radioGroup}>
                         {["Yes", "No"].map((option) => (
                           <Pressable
                             key={option}
-                            style={styles.radioOption}
+                            style={MyStyles.radioOption}
                             onPress={() =>
                               handleRadioChange("fpmethod", option)
                             }
                           >
-                            <View style={styles.radioCircle}>
+                            <View style={MyStyles.radioCircle}>
                               {residentForm.fpmethod === option && (
-                                <View style={styles.radioDot} />
+                                <View style={MyStyles.radioDot} />
                               )}
                             </View>
                             <Text
@@ -1423,16 +1391,8 @@ const ResidentForm = () => {
                           value: purp,
                         }))}
                         placeholder="Select"
-                        placeholderStyle={{
-                          color: "#808080",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                        selectedTextStyle={{
-                          color: "#000",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
                           handleDropdownChange("fpmethod", item.value)
                         }
@@ -1453,16 +1413,8 @@ const ResidentForm = () => {
                           value: purp,
                         }))}
                         placeholder="Select"
-                        placeholderStyle={{
-                          color: "#808080",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                        selectedTextStyle={{
-                          color: "#000",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
                           handleDropdownChange("fpstatus", item.value)
                         }
@@ -1482,16 +1434,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("bloodtype", item.value)
                     }
@@ -1510,16 +1454,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("religion", item.value)
                     }
@@ -1540,16 +1476,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("nationality", item.value)
                     }
@@ -1559,16 +1487,16 @@ const ResidentForm = () => {
 
                 <View>
                   <Text style={MyStyles.inputLabel}>Registered Voter?</Text>
-                  <View style={styles.radioGroup}>
+                  <View style={MyStyles.radioGroup}>
                     {["Yes", "No"].map((option) => (
                       <Pressable
                         key={option}
-                        style={styles.radioOption}
+                        style={MyStyles.radioOption}
                         onPress={() => handleRadioChange("voter", option)}
                       >
-                        <View style={styles.radioCircle}>
+                        <View style={MyStyles.radioCircle}>
                           {residentForm.voter === option && (
-                            <View style={styles.radioDot} />
+                            <View style={MyStyles.radioDot} />
                           )}
                         </View>
                         <Text
@@ -1736,16 +1664,16 @@ const ResidentForm = () => {
 
                 <View>
                   <Text style={MyStyles.inputLabel}>Deceased</Text>
-                  <View style={styles.radioGroup}>
+                  <View style={MyStyles.radioGroup}>
                     {["Yes", "No"].map((option) => (
                       <Pressable
                         key={option}
-                        style={styles.radioOption}
+                        style={MyStyles.radioOption}
                         onPress={() => handleRadioChange("deceased", option)}
                       >
-                        <View style={styles.radioCircle}>
+                        <View style={MyStyles.radioCircle}>
                           {residentForm.deceased === option && (
-                            <View style={styles.radioDot} />
+                            <View style={MyStyles.radioDot} />
                           )}
                         </View>
                         <Text
@@ -1763,15 +1691,7 @@ const ResidentForm = () => {
 
                 {/* Contact Information */}
 
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                    marginTop: 30,
-                  }}
-                >
+                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   Contact Information
                 </Text>
                 <View>
@@ -1822,15 +1742,7 @@ const ResidentForm = () => {
 
                 {/* In Case Of Emergency Situation */}
 
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                    marginTop: 30,
-                  }}
-                >
+                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   In Case Of Emergency Situation
                 </Text>
                 <View>
@@ -1877,15 +1789,7 @@ const ResidentForm = () => {
 
                 {/* Family Information */}
 
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                    marginTop: 30,
-                  }}
-                >
+                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   Family Information
                 </Text>
 
@@ -1904,16 +1808,8 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Mother"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     value={residentForm.mother}
                     onChange={(item) => handleInputChange("mother", item.value)}
                   />
@@ -1934,16 +1830,8 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Father"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     value={residentForm.father}
                     onChange={(item) => handleInputChange("father", item.value)}
                   />
@@ -1962,16 +1850,8 @@ const ResidentForm = () => {
                     labelField="label"
                     valueField="value"
                     placeholder="Select Spouse"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     value={residentForm.spouse}
                     onChange={(item) => handleInputChange("spouse", item.value)}
                   />
@@ -2016,15 +1896,7 @@ const ResidentForm = () => {
                   renderChildrenDropdown()}
 
                 {/* Address Information */}
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                    marginTop: 30,
-                  }}
-                >
+                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   Address Information
                 </Text>
                 <View>
@@ -2053,16 +1925,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("street", item.value)
                     }
@@ -2083,16 +1947,8 @@ const ResidentForm = () => {
                       },
                     ]}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("street", item.value)
                     }
@@ -2101,31 +1957,23 @@ const ResidentForm = () => {
                 </View>
 
                 {/* Household Information */}
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                    marginTop: 30,
-                  }}
-                >
+                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   Household Information
                 </Text>
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     Head of the Household?
                   </Text>
-                  <View style={styles.radioGroup}>
+                  <View style={MyStyles.radioGroup}>
                     {["Yes", "No"].map((option) => (
                       <Pressable
                         key={option}
-                        style={styles.radioOption}
+                        style={MyStyles.radioOption}
                         onPress={() => handleRadioChange("head", option)}
                       >
-                        <View style={styles.radioCircle}>
+                        <View style={MyStyles.radioCircle}>
                           {residentForm.head === option && (
-                            <View style={styles.radioDot} />
+                            <View style={MyStyles.radioDot} />
                           )}
                         </View>
                         <Text
@@ -2162,16 +2010,8 @@ const ResidentForm = () => {
                           };
                         })}
                         placeholder="Select"
-                        placeholderStyle={{
-                          color: "#808080",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                        selectedTextStyle={{
-                          color: "#000",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
                           handleDropdownChange("householdno", item.value)
                         }
@@ -2200,16 +2040,8 @@ const ResidentForm = () => {
                           "Other",
                         ].map((item) => ({ label: item, value: item }))}
                         placeholder="Select Position"
-                        placeholderStyle={{
-                          color: "#808080",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                        selectedTextStyle={{
-                          color: "#000",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
                           handleDropdownChange("householdposition", item.value)
                         }
@@ -2225,18 +2057,18 @@ const ResidentForm = () => {
                       <Text style={MyStyles.inputLabel}>
                         Ethnicity<Text style={{ color: "red" }}>*</Text>
                       </Text>
-                      <View style={styles.radioGroup}>
+                      <View style={MyStyles.radioGroup}>
                         {["IP Household", "Non-IP Household"].map((option) => (
                           <Pressable
                             key={option}
-                            style={styles.radioOption}
+                            style={MyStyles.radioOption}
                             onPress={() =>
                               handleHouseholdRadioChange("ethnicity", option)
                             }
                           >
-                            <View style={styles.radioCircle}>
+                            <View style={MyStyles.radioCircle}>
                               {householdForm.ethnicity === option && (
-                                <View style={styles.radioDot} />
+                                <View style={MyStyles.radioDot} />
                               )}
                             </View>
                             <Text
@@ -2273,12 +2105,12 @@ const ResidentForm = () => {
                         Socioeconomic Status
                         <Text style={{ color: "red" }}>*</Text>
                       </Text>
-                      <View style={styles.radioGroup}>
+                      <View style={MyStyles.radioGroup}>
                         {["NHTS 4Ps", "NHTS Non-4Ps", "Non-NHTS"].map(
                           (option) => (
                             <Pressable
                               key={option}
-                              style={styles.radioOption}
+                              style={MyStyles.radioOption}
                               onPress={() =>
                                 handleHouseholdRadioChange(
                                   "sociostatus",
@@ -2286,9 +2118,9 @@ const ResidentForm = () => {
                                 )
                               }
                             >
-                              <View style={styles.radioCircle}>
+                              <View style={MyStyles.radioCircle}>
                                 {householdForm.sociostatus === option && (
-                                  <View style={styles.radioDot} />
+                                  <View style={MyStyles.radioDot} />
                                 )}
                               </View>
                               <Text
@@ -2337,16 +2169,8 @@ const ResidentForm = () => {
                           value: purp,
                         }))}
                         placeholder="Select"
-                        placeholderStyle={{
-                          color: "#808080",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                        selectedTextStyle={{
-                          color: "#000",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
                           handleHouseholdDropdownChange(
                             "watersource",
@@ -2371,16 +2195,8 @@ const ResidentForm = () => {
                           value: purp,
                         }))}
                         placeholder="Select"
-                        placeholderStyle={{
-                          color: "#808080",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
-                        selectedTextStyle={{
-                          color: "#000",
-                          fontFamily: "QuicksandMedium",
-                          fontSize: 16,
-                        }}
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
                           handleHouseholdDropdownChange(
                             "toiletfacility",
@@ -2393,14 +2209,7 @@ const ResidentForm = () => {
                     <Text style={MyStyles.inputLabel}>Members</Text>
                     <View>
                       {householdForm.members.map((member, index) => (
-                        <View
-                          key={index}
-                          style={{
-                            marginBottom: 20,
-                            flexDirection: "column",
-                            gap: 15,
-                          }}
-                        >
+                        <View key={index} style={MyStyles.membersWrapper}>
                           <View>
                             <Text style={MyStyles.inputLabel}>
                               Resident Name
@@ -2456,16 +2265,8 @@ const ResidentForm = () => {
                               labelField="label"
                               valueField="value"
                               placeholder="Select"
-                              placeholderStyle={{
-                                color: "#808080",
-                                fontFamily: "QuicksandMedium",
-                                fontSize: 16,
-                              }}
-                              selectedTextStyle={{
-                                color: "#000",
-                                fontFamily: "QuicksandMedium",
-                                fontSize: 16,
-                              }}
+                              placeholderStyle={MyStyles.placeholderText}
+                              selectedTextStyle={MyStyles.selectedText}
                               value={member.position}
                               onChange={(item) =>
                                 handleMemberChange(
@@ -2475,22 +2276,25 @@ const ResidentForm = () => {
                                 )
                               }
                               style={MyStyles.input}
-                              containerStyle={styles.dropdownContainer}
+                              containerStyle={MyStyles.dropdownContainer}
                             />
 
                             <TouchableOpacity
                               onPress={() => removeMember(index)}
-                              style={{ marginTop: 8 }}
+                              style={[
+                                MyStyles.button,
+                                MyStyles.residentAddBtn,
+                                { borderColor: "red", marginTop: 10 },
+                              ]}
                             >
                               <Text
-                                style={{
-                                  color: "red",
-                                  fontFamily: "QuicksandMedium",
-                                  fontSize: 16,
-                                  alignSelf: "flex-end",
-                                }}
+                                style={[
+                                  MyStyles.buttonText,
+                                  MyStyles.residentAddText,
+                                  { color: "red" },
+                                ]}
                               >
-                                Remove Member
+                                - Remove Member
                               </Text>
                             </TouchableOpacity>
                           </View>
@@ -2499,9 +2303,14 @@ const ResidentForm = () => {
 
                       <TouchableOpacity
                         onPress={addMember}
-                        style={MyStyles.button}
+                        style={[MyStyles.button, MyStyles.residentAddBtn]}
                       >
-                        <Text style={[MyStyles.buttonText, { fontSize: 18 }]}>
+                        <Text
+                          style={[
+                            MyStyles.buttonText,
+                            MyStyles.residentAddText,
+                          ]}
+                        >
                           + Add Member
                         </Text>
                       </TouchableOpacity>
@@ -2512,14 +2321,7 @@ const ResidentForm = () => {
                     </Text>
                     <View>
                       {householdForm.vehicles.map((vehicle, index) => (
-                        <View
-                          key={index}
-                          style={{
-                            marginBottom: 20,
-                            flexDirection: "column",
-                            gap: 15,
-                          }}
-                        >
+                        <View key={index} style={MyStyles.membersWrapper}>
                           <View>
                             <Text style={MyStyles.inputLabel}>
                               Vehicle {index + 1}
@@ -2557,22 +2359,14 @@ const ResidentForm = () => {
                               labelField="label"
                               valueField="value"
                               placeholder="Select Kind"
-                              placeholderStyle={{
-                                color: "#808080",
-                                fontFamily: "QuicksandMedium",
-                                fontSize: 16,
-                              }}
-                              selectedTextStyle={{
-                                color: "#000",
-                                fontFamily: "QuicksandMedium",
-                                fontSize: 16,
-                              }}
+                              placeholderStyle={MyStyles.placeholderText}
+                              selectedTextStyle={MyStyles.selectedText}
                               value={vehicle.kind}
                               onChange={(item) =>
                                 handleVehicleChange(index, "kind", item.value)
                               }
                               style={MyStyles.input}
-                              containerStyle={styles.dropdownContainer}
+                              containerStyle={MyStyles.dropdownContainer}
                             />
                           </View>
 
@@ -2591,14 +2385,18 @@ const ResidentForm = () => {
 
                             <TouchableOpacity
                               onPress={() => removeVehicle(index)}
+                              style={[
+                                MyStyles.button,
+                                MyStyles.residentAddBtn,
+                                { borderColor: "red", marginTop: 10 },
+                              ]}
                             >
                               <Text
-                                style={{
-                                  color: "red",
-                                  fontFamily: "QuicksandMedium",
-                                  fontSize: 16,
-                                  alignSelf: "flex-end",
-                                }}
+                                style={[
+                                  MyStyles.buttonText,
+                                  MyStyles.residentAddText,
+                                  { color: "red" },
+                                ]}
                               >
                                 Remove Vehicle
                               </Text>
@@ -2609,9 +2407,14 @@ const ResidentForm = () => {
 
                       <TouchableOpacity
                         onPress={addVehicle}
-                        style={MyStyles.button}
+                        style={[MyStyles.button, MyStyles.residentAddBtn]}
                       >
-                        <Text style={[MyStyles.buttonText, { fontSize: 18 }]}>
+                        <Text
+                          style={[
+                            MyStyles.buttonText,
+                            MyStyles.residentAddText,
+                          ]}
+                        >
                           + Add Vehicle
                         </Text>
                       </TouchableOpacity>
@@ -2620,15 +2423,7 @@ const ResidentForm = () => {
                 )}
 
                 {/* Employment Information */}
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                    marginTop: 30,
-                  }}
-                >
+                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   Employment Information
                 </Text>
 
@@ -2645,16 +2440,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("employmentstatus", item.value)
                     }
@@ -2685,16 +2472,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("monthlyincome", item.value)
                     }
@@ -2703,15 +2482,7 @@ const ResidentForm = () => {
                 </View>
 
                 {/* Educational Information */}
-                <Text
-                  style={{
-                    color: "#04384E",
-                    fontSize: 20,
-                    fontFamily: "REMSemiBold",
-                    alignSelf: "flex-start",
-                    marginTop: 30,
-                  }}
-                >
+                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   Educational Information
                 </Text>
 
@@ -2728,16 +2499,8 @@ const ResidentForm = () => {
                       value: purp,
                     }))}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("educationalattainment", item.value)
                     }
@@ -2756,16 +2519,8 @@ const ResidentForm = () => {
                       { label: "Private", value: "Private" },
                     ]}
                     placeholder="Select"
-                    placeholderStyle={{
-                      color: "#808080",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                    selectedTextStyle={{
-                      color: "#000",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
+                    placeholderStyle={MyStyles.placeholderText}
+                    selectedTextStyle={MyStyles.selectedText}
                     onChange={(item) =>
                       handleDropdownChange("typeofschool", item.value)
                     }
@@ -2914,5 +2669,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     borderRadius: 6,
+  },
+  //SIGNATURE
+  uploadBox: { margin: 20 },
+  previewContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  image: { width: "100%", height: "100%" },
+  placeholder: { justifyContent: "center", alignItems: "center" },
+  placeholderText: { color: "#aaa" },
+  buttons: { flexDirection: "row", justifyContent: "center" },
+  button: {
+    marginHorizontal: 10,
+    padding: 10,
+    backgroundColor: "#eee",
+    borderRadius: 5,
+  },
+  closeButton: {
+    backgroundColor: "#000",
+    padding: 15,
+    alignItems: "center",
   },
 });

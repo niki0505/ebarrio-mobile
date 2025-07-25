@@ -1,6 +1,4 @@
-import React from "react";
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -13,11 +11,8 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Typhoon from "../assets/disasters/typhoon.png";
-import Flood from "../assets/disasters/flood.png";
-import Earthquake from "../assets/disasters/earthquake.png";
-import Fire from "../assets/disasters/fire.png";
 
+//ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 
 const SafetyTips = () => {
@@ -53,7 +48,12 @@ const SafetyTips = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -74,17 +74,7 @@ const SafetyTips = () => {
             color="#fff"
           />
 
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "center",
-                color: "#fff",
-              },
-            ]}
-          >
+          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
             Disaster Safety
           </Text>
 

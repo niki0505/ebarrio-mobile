@@ -1,27 +1,14 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Alert,
-  TouchableOpacity,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-  FlatList,
-  ScrollView,
-} from "react-native";
+import { Text, View, FlatList, ScrollView } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { InfoContext } from "../context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-//WEATHER ICONS
+//ICONS
+import { MaterialIcons } from "@expo/vector-icons";
 import ClearDay from "../assets/weather-svg/clear-day";
 import ClearNight from "../assets/weather-svg/clear-night";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
@@ -250,7 +237,7 @@ const Weather = () => {
       end={{ x: 0.5, y: 1 }}
       style={[
         MyStyles.container,
-        { paddingTop: insets.top, paddingBottom: 20 },
+        { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
       <ScrollView>

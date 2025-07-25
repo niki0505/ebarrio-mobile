@@ -1,17 +1,9 @@
 import {
-  StyleSheet,
   Text,
   View,
-  Alert,
-  TextInput,
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Linking,
-  Switch,
-  Image,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,11 +14,10 @@ import { InfoContext } from "../context/InfoContext";
 import LoadingScreen from "./LoadingScreen";
 
 //ICONS
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const AccountSettings = () => {
   const insets = useSafeAreaInsets();
@@ -55,16 +46,14 @@ const AccountSettings = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
-      <ScrollView
-        contentContainerStyle={[
-          MyStyles.scrollContainer,
-          {
-            paddingBottom: insets.bottom + 70,
-          },
-        ]}
-      >
+      <ScrollView contentContainerStyle={[MyStyles.scrollContainer]}>
         <MaterialIcons
           onPress={() => navigation.navigate("BottomTabs")}
           name="arrow-back-ios"
@@ -72,7 +61,7 @@ const AccountSettings = () => {
           color="#04384E"
         />
 
-        <Text style={[MyStyles.header, { marginTop: 20 }]}>
+        <Text style={[MyStyles.header, { marginTop: 18 }]}>
           Account Settings
         </Text>
 
@@ -94,7 +83,7 @@ const AccountSettings = () => {
           />
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 18,
               color: "#04384E",
               fontFamily: "REMSemiBold",
             }}
@@ -111,48 +100,16 @@ const AccountSettings = () => {
             {userDetails.username}
           </Text>
         </View> */}
+        <Text style={MyStyles.securityText}>Security</Text>
 
-        <View style={{ gap: 20, marginTop: 20 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: "#808080",
-              fontFamily: "QuicksandBold",
-            }}
-          >
-            Security
-          </Text>
-
+        <View style={MyStyles.menuWrapper}>
           <TouchableOpacity
             onPress={() => navigation.navigate("EditMobileNumber")}
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={MyStyles.rowAlignment}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <AntDesign
-                name="mobile1"
-                size={20}
-                color="#808080"
-                style={{
-                  backgroundColor: "#E5E4E2B3",
-                  borderRadius: 10,
-                  padding: 5,
-                }}
-              />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                  marginLeft: 15,
-                }}
-              >
-                Mobile Number
-              </Text>
+            <View style={MyStyles.rowAlignment}>
+              <AntDesign name="mobile1" size={18} style={MyStyles.menuIcons} />
+              <Text style={MyStyles.menuText}>Mobile Number</Text>
             </View>
 
             <MaterialIcons name="navigate-next" size={24} color="gray" />
@@ -168,26 +125,8 @@ const AccountSettings = () => {
                 alignItems: "center",
               }}
             >
-              <FontAwesome5
-                name="user"
-                size={20}
-                color="#808080"
-                style={{
-                  backgroundColor: "#E5E4E2B3",
-                  borderRadius: 10,
-                  padding: 5,
-                }}
-              />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                  marginLeft: 15,
-                }}
-              >
-                Username
-              </Text>
+              <FontAwesome5 name="user" size={18} style={MyStyles.menuIcons} />
+              <Text style={MyStyles.menuText}>Username</Text>
             </View>
 
             <MaterialIcons name="navigate-next" size={24} color="gray" />
@@ -195,34 +134,15 @@ const AccountSettings = () => {
 
           <TouchableOpacity
             onPress={() => navigation.navigate("ChangePassword")}
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={MyStyles.rowAlignment}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View style={MyStyles.rowAlignment}>
               <MaterialIcons
                 name="password"
-                size={20}
-                color="#808080"
-                style={{
-                  backgroundColor: "#E5E4E2B3",
-                  borderRadius: 10,
-                  padding: 5,
-                }}
+                size={18}
+                style={MyStyles.menuIcons}
               />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                  marginLeft: 15,
-                }}
-              >
-                Password
-              </Text>
+              <Text style={MyStyles.menuText}>Password</Text>
             </View>
 
             <MaterialIcons name="navigate-next" size={24} color="gray" />
@@ -230,34 +150,15 @@ const AccountSettings = () => {
 
           <TouchableOpacity
             onPress={() => navigation.navigate("EditSecurityQuestions")}
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={MyStyles.rowAlignment}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View style={MyStyles.rowAlignment}>
               <MaterialCommunityIcons
                 name="comment-question-outline"
-                size={20}
-                color="#808080"
-                style={{
-                  backgroundColor: "#E5E4E2B3",
-                  borderRadius: 10,
-                  padding: 5,
-                }}
+                size={18}
+                style={MyStyles.menuIcons}
               />
-              <Text
-                style={{
-                  color: "#04384E",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                  marginLeft: 15,
-                }}
-              >
-                Security Questions
-              </Text>
+              <Text style={MyStyles.menuText}>Security Questions</Text>
             </View>
 
             <MaterialIcons name="navigate-next" size={24} color="gray" />
