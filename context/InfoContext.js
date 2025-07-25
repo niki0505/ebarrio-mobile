@@ -20,6 +20,7 @@ export const InfoProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
   const [users, setUsers] = useState([]);
+  const [FAQs, setFAQs] = useState([]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -152,6 +153,15 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchFAQs = async () => {
+    try {
+      const response = await api.get("/getfaqs");
+      setFAQs(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch reservations:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -185,6 +195,7 @@ export const InfoProvider = ({ children }) => {
         userDetails,
         events,
         services,
+        FAQs,
         fetchServices,
         fetchUserDetails,
         fetchEmergencyHotlines,
@@ -192,6 +203,7 @@ export const InfoProvider = ({ children }) => {
         fetchResidents,
         fetchReservations,
         fetchAnnouncements,
+        fetchFAQs,
       }}
     >
       {children}

@@ -12,39 +12,83 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import Aniban2Logo from "../assets/aniban2logo.png";
+import { InfoContext } from "../context/InfoContext";
+import * as SecureStore from "expo-secure-store";
 
 const Chat = () => {
+  const { fetchFAQs, FAQs } = useContext(InfoContext);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(true);
   const scrollViewRef = useRef();
 
-  const defaultMessages = [
-    "What types of documents do you provide?",
-    "What are the office hours?",
-    "Where is the barangay hall located?",
-  ];
+  useEffect(() => {
+    fetchFAQs();
+  }, []);
 
-  // Send a message and add to chat list
-  const handleSendMessage = (text) => {
-    if (text.trim() === "") return;
-    setChatMessages((prev) => [...prev, { from: "user", text }]);
-    setMessage("");
-  };
+  useEffect(() => {
+    const loadMessages = async () => {
+      try {
+        const saved = await SecureStore.getItemAsync("chatMessages");
+        if (saved) {
+          setChatMessages(JSON.parse(saved));
+        }
+      } catch (e) {
+        console.error("Failed to load chat messages:", e);
+      } finally {
+        setLoadingMessages(false);
+      }
+    };
+    loadMessages();
+  }, []);
+
+  useEffect(() => {
+    const saveMessages = async () => {
+      try {
+        await SecureStore.setItemAsync(
+          "chatMessages",
+          JSON.stringify(chatMessages)
+        );
+      } catch (e) {
+        console.error("Failed to save chat messages:", e);
+      }
+    };
+
+    if (!loadingMessages) {
+      saveMessages();
+    }
+  }, [chatMessages]);
+
+  // // Send a message and add to chat list
+  // const handleSendMessage = (text) => {
+  //   if (text.trim() === "") return;
+  //   setChatMessages((prev) => [...prev, { from: "user", text }]);
+  //   setMessage("");
+  // };
 
   // When a default message is picked
-  const handleDefaultMessage = (msg) => {
+  const handleDefaultMessage = (question) => {
     setModalVisible(false);
-    handleSendMessage(msg);
+    const selectedFAQ = FAQs.find((faq) => faq.question === question);
+
+    if (!selectedFAQ) return;
+    setChatMessages((prev) => [
+      ...prev,
+      { from: "user", text: question },
+      { from: "admin", text: selectedFAQ.answer },
+    ]);
   };
+
+  console.log(chatMessages);
 
   return (
     <SafeAreaView
@@ -131,7 +175,7 @@ const Chat = () => {
               key={index}
               style={{
                 alignSelf: msg.from === "user" ? "flex-end" : "flex-start",
-                backgroundColor: msg.from === "user" ? "#0E94D3" : "#E5E5EA",
+                backgroundColor: msg.from === "user" ? "#0E94D3" : "#b3b3b3",
                 borderRadius: 15,
                 padding: 10,
                 marginBottom: 10,
@@ -221,18 +265,17 @@ const Chat = () => {
               >
                 Choose a quick question:
               </Text>
-              {defaultMessages.map((msg, index) => (
+              {FAQs.map((msg, index) => (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => handleDefaultMessage(msg)}
+                  onPress={() => handleDefaultMessage(msg.question)}
                   style={{
                     paddingVertical: 10,
-                    borderBottomWidth:
-                      index !== defaultMessages.length - 1 ? 1 : 0,
+                    borderBottomWidth: index !== msg.length - 1 ? 1 : 0,
                     borderBottomColor: "#ddd",
                   }}
                 >
-                  <Text style={{ fontSize: 15 }}>{msg}</Text>
+                  <Text style={{ fontSize: 15 }}>{msg.question}</Text>
                 </TouchableOpacity>
               ))}
             </View>
