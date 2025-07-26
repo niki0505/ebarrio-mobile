@@ -20,6 +20,7 @@ export const InfoProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
   const [users, setUsers] = useState([]);
+  const [active, setActive] = useState([]);
   const [FAQs, setFAQs] = useState([]);
 
   useEffect(() => {
@@ -162,6 +163,16 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchActive = async () => {
+    try {
+      const response = await api.get("/getactive");
+      setActive(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("❌ Failed to fetch reservations:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -196,6 +207,7 @@ export const InfoProvider = ({ children }) => {
         events,
         services,
         FAQs,
+        active,
         fetchServices,
         fetchUserDetails,
         fetchEmergencyHotlines,
@@ -204,6 +216,7 @@ export const InfoProvider = ({ children }) => {
         fetchReservations,
         fetchAnnouncements,
         fetchFAQs,
+        fetchActive,
       }}
     >
       {children}
