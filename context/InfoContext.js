@@ -22,6 +22,7 @@ export const InfoProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [active, setActive] = useState([]);
   const [FAQs, setFAQs] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -173,6 +174,16 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchChats = async () => {
+    try {
+      const response = await api.get("/getchat");
+      setChatMessages(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("❌ Failed to fetch reservations:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -208,6 +219,8 @@ export const InfoProvider = ({ children }) => {
         services,
         FAQs,
         active,
+        chatMessages,
+        setChatMessages,
         fetchServices,
         fetchUserDetails,
         fetchEmergencyHotlines,
@@ -217,6 +230,7 @@ export const InfoProvider = ({ children }) => {
         fetchAnnouncements,
         fetchFAQs,
         fetchActive,
+        fetchChats,
       }}
     >
       {children}
