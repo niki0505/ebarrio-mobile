@@ -32,6 +32,7 @@ export const SocketProvider = ({ children }) => {
     if (!user?.userID || socketRef.current) return;
 
     const socket = io("https://api.ebarrio.online", {
+      transports: ["websocket", "polling"],
       withCredentials: true,
     });
 
@@ -41,6 +42,11 @@ export const SocketProvider = ({ children }) => {
       console.log("✅ Socket connected:", socket.id);
       socket.emit("register", user.userID, user.role);
       socket.emit("join_announcements");
+    });
+
+    socket.on("connect_error", (err) => {
+      console.log("❌ Socket connection failed:", err.message);
+      console.log(err);
     });
 
     socket.on("announcement", (announcement) => {

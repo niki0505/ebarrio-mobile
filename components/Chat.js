@@ -35,21 +35,6 @@ const Chat = () => {
   const [assignedAdmin, setAssignedAdmin] = useState(null);
   const [isChat, setIsChat] = useState(false);
   const [isEnded, setIsEnded] = useState(false);
-  const [botMessages, setBotMessages] = useState([
-    {
-      from: "admin",
-      text: "Hi! How can I help you today? 😊",
-    },
-    {
-      id: 2,
-      from: "admin",
-      type: "button",
-      options: [
-        { id: "faq", label: "Ask a Question" },
-        { id: "chat", label: "Chat with the Barangay" },
-      ],
-    },
-  ]);
   // const [chatMessages, setChatMessages] = useState([]);
   const { fetchChats, chatMessages, setChatMessages } = useContext(InfoContext);
   const [loadingMessages, setLoadingMessages] = useState(true);
@@ -60,27 +45,60 @@ const Chat = () => {
     fetchChats();
   }, []);
 
-  useEffect(() => {
-    if (chatMessages.length !== 0) {
-      setIsChat(true);
-    }
-  }, [chatMessages]);
-
   console.log(JSON.stringify(chatMessages, null, 2));
 
+  //ASSIGNING CHAT (SUCCESS)
   useEffect(() => {
-    if (!socket || !isChat) return;
+    if (!socket) return;
 
     const handleConnectAndRequest = () => {
       console.log("📡 Socket connected:", socket.id);
-      socket.emit("request_chat");
+      socket.emit("request_bot_chat", { userID: user.userID });
     };
 
-    const handleChatAssigned = ({ userID, roomId }) => {
-      console.log("✅ Assigned admin ID received:", userID);
-      console.log("📦 Room ID received:", roomId);
-      setAssignedAdmin(userID);
-      setRoomId(roomId);
+    const handleChatAssigned = (chatData) => {
+      console.log("✅ Chat assigned:", chatData);
+      const {
+        _id,
+        participants,
+        responder,
+        messages,
+        status,
+        isCleared,
+        isBot,
+        createdAt,
+        updatedAt,
+      } = chatData;
+
+      setAssignedAdmin(participants.find((p) => p !== user.userID) || null);
+
+      setRoomId(_id);
+      if (isBot) {
+        setIsChat(false);
+      } else {
+        setIsChat(true);
+      }
+      setIsEnded(false);
+
+      setChatMessages((prev) => {
+        const chatExists = prev.some((chat) => chat._id === _id);
+        if (chatExists) return prev;
+
+        return [
+          ...prev,
+          {
+            _id,
+            participants,
+            responder,
+            messages,
+            status,
+            isCleared,
+            isBot,
+            createdAt,
+            updatedAt,
+          },
+        ];
+      });
     };
 
     if (socket.connected) {
@@ -94,9 +112,14 @@ const Chat = () => {
     return () => {
       socket.off("connect", handleConnectAndRequest);
       socket.off("chat_assigned", handleChatAssigned);
+      socket.off("request_bot_chat");
     };
-  }, [socket, isChat]);
+  }, [socket]);
+  console.log(isEnded);
+  console.log(isChat);
+  console.log(roomId);
 
+  //RECEIVING CHAT (SUCCESS)
   useEffect(() => {
     if (!socket) {
       console.log("🚫 Socket not ready");
@@ -109,28 +132,35 @@ const Chat = () => {
       setChatMessages((prevChats) => {
         const chatIndex = prevChats.findIndex((chat) => chat._id === roomId);
 
+        const newMessage = {
+          from,
+          to,
+          message,
+          timestamp,
+        };
+
         if (chatIndex !== -1) {
+          // Existing chat, append message
           const updatedChats = [...prevChats];
           updatedChats[chatIndex] = {
             ...updatedChats[chatIndex],
-            messages: [
-              ...updatedChats[chatIndex].messages,
-              { from, to, message, timestamp, _id: Date.now().toString() },
-            ],
+            messages: [...updatedChats[chatIndex].messages, newMessage],
           };
           return updatedChats;
         } else {
-          // New chat, placeholder with only this message
-          return [
-            ...prevChats,
-            {
-              _id: roomId,
-              participants: [from, to],
-              messages: [
-                { from, to, message, timestamp, _id: Date.now().toString() },
-              ],
-            },
-          ];
+          // New chat, create full structure
+          const newChat = {
+            _id: roomId,
+            participants: [from, to],
+            responder: null,
+            messages: [newMessage],
+            status: "Active",
+            isCleared: false,
+            isBot: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          return [...prevChats, newChat];
         }
       });
     };
@@ -138,6 +168,7 @@ const Chat = () => {
     const handleChatEnded = ({ chatID, timestamp }) => {
       console.log("📴 Chat ended detected:", chatID);
       setIsEnded(true);
+      setIsChat(false);
     };
 
     socket.on("receive_message", handleReceive);
@@ -148,14 +179,13 @@ const Chat = () => {
       socket.off("chat_ended", handleChatEnded);
     };
   }, [socket]);
-
   // Send a message and add to chat list
   const handleSendMessage = (text) => {
     if (!assignedAdmin || text.trim() === "") return;
     console.log("Sending to:", assignedAdmin);
 
     const newMessage = {
-      from: { _id: user.userID },
+      from: user.userID,
       to: assignedAdmin,
       message: text,
       timestamp: new Date(),
@@ -164,31 +194,110 @@ const Chat = () => {
 
     socket.emit("send_message", newMessage);
 
-    setChatMessages((prevChats) =>
-      prevChats.map((chat) => {
-        if (chat._id === roomId) {
-          return {
-            ...chat,
-            messages: [...chat.messages, newMessage],
-          };
-        }
-        return chat;
-      })
-    );
+    setChatMessages((prevChats) => {
+      const existingChat = prevChats.find((chat) => chat._id === roomId);
+
+      if (existingChat) {
+        return prevChats.map((chat) => {
+          if (chat._id === roomId) {
+            return {
+              ...chat,
+              messages: [...chat.messages, newMessage],
+            };
+          }
+          return chat;
+        });
+      } else {
+        return [
+          ...prevChats,
+          {
+            _id: roomId,
+            participants: [user.userID, assignedAdmin],
+            messages: [newMessage],
+          },
+        ];
+      }
+    });
     setMessage("");
   };
 
-  // When a default message is picked
+  const getBotReply = (question) => {
+    const found = FAQs.find((faq) => faq.question === question);
+    return found ? found.answer : "Let me get someone to assist you with that.";
+  };
+
   const handleDefaultMessage = (question) => {
     setModalVisible(false);
-    const selectedFAQ = FAQs.find((faq) => faq.question === question);
 
-    if (!selectedFAQ) return;
-    setBotMessages((prev) => [
-      ...prev,
-      { from: "user", text: question },
-      { from: "admin", text: selectedFAQ.answer },
-    ]);
+    const userMessage = {
+      from: { _id: user.userID },
+      to: "000000000000000000000000",
+      message: question,
+      timestamp: new Date(),
+      roomId,
+    };
+
+    socket.emit("send_message", userMessage);
+
+    // Auto-response from bot
+    const botReply = {
+      from: "000000000000000000000000",
+      to: user.userID,
+      message: getBotReply(question),
+      timestamp: new Date(),
+      roomId,
+    };
+
+    setTimeout(() => {
+      socket.emit("send_message", botReply);
+
+      // Append bot reply to UI
+      setChatMessages((prevChats) =>
+        prevChats.map((chat) => {
+          if (chat._id === roomId) {
+            return {
+              ...chat,
+              messages: [...chat.messages, botReply],
+            };
+          }
+          return chat;
+        })
+      );
+    }, 1000);
+
+    // Append user message to UI
+    setChatMessages((prevChats) => {
+      const existingChat = prevChats.find((chat) => chat._id === roomId);
+      if (existingChat) {
+        return prevChats.map((chat) => {
+          if (chat._id === roomId) {
+            return {
+              ...chat,
+              messages: [...chat.messages, userMessage],
+            };
+          }
+          return chat;
+        });
+      } else {
+        return [
+          ...prevChats,
+          {
+            _id: roomId,
+            participants: [user.userID, assignedAdmin],
+            messages: [userMessage],
+          },
+        ];
+      }
+    });
+  };
+
+  const handleOptionClick = async (id) => {
+    if (id === "faq") {
+      setModalVisible(true);
+    } else if (id === "chat") {
+      setIsChat(true);
+      socket.emit("request_chat");
+    }
   };
 
   return (
@@ -271,175 +380,117 @@ const Chat = () => {
             scrollViewRef.current?.scrollToEnd({ animated: true })
           }
         >
-          {!isChat ? (
-            <>
-              {botMessages.map((msg, index) => {
-                if (msg.type === "button") {
+          {chatMessages.map((chat) => {
+            return (
+              <View
+                key={chat._id}
+                style={{
+                  borderRadius: 15,
+                  padding: 15,
+                  marginBottom: 20,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 5,
+                  elevation: 3,
+                }}
+              >
+                {chat.messages.map((msg) => {
+                  const senderID = msg.from?._id || msg.from;
+                  const isEndedMsg = msg.message === "This chat has ended.";
+                  const isUser = senderID === user.userID;
+                  const isBot = senderID === "000000000000000000000000";
+
+                  let parsedMessage = null;
+                  try {
+                    parsedMessage = JSON.parse(msg.message);
+                  } catch (err) {
+                    parsedMessage = null;
+                  }
+
+                  const isButtonMessage =
+                    parsedMessage && parsedMessage.type === "button";
+
                   return (
                     <View
-                      key={index}
+                      key={msg._id}
                       style={{
-                        alignSelf: "flex-start",
-                        marginBottom: 10,
-                        flexDirection: "column",
-                        gap: 10,
-                        flexWrap: "wrap",
+                        alignSelf: isEndedMsg
+                          ? "center"
+                          : isUser
+                          ? "flex-end"
+                          : "flex-start",
+                        backgroundColor: isEndedMsg
+                          ? "transparent"
+                          : isUser
+                          ? "#0E94D3"
+                          : "#b3b3b3",
+                        borderRadius: isEndedMsg ? 0 : 12,
+                        padding: isEndedMsg ? 4 : 10,
+                        marginBottom: 8,
+                        maxWidth: "80%",
                       }}
                     >
-                      {msg.options.map((opt) => (
-                        <TouchableOpacity
-                          key={opt.id}
-                          onPress={async () => {
-                            if (opt.id === "faq") {
-                              setModalVisible(true);
-                            }
-                            if (opt.id === "chat") {
-                              setIsChat(true);
-                              const active = await fetchActive();
-
-                              // if (active?.Secretary || active?.Clerk) {
-                              //   setChatMessages([
-                              //     {
-                              //       id: Date.now(),
-                              //       from: "admin",
-                              //       text: "You're now chatting with a Barangay Personnel. How can we help you?",
-                              //     },
-                              //   ]);
-                              // } else {
-                              //   setChatMessages([
-                              //     {
-                              //       id: Date.now(),
-                              //       from: "admin",
-                              //       text: "No Barangay Personnel is currently online. Please leave a message and we’ll get back to you.",
-                              //     },
-                              //   ]);
-                              // }
-                            }
-                          }}
-                          style={{
-                            backgroundColor: "#04384E",
-                            borderRadius: 10,
-                            paddingVertical: 8,
-                            paddingHorizontal: 15,
-                            marginRight: 8,
-                            marginBottom: 5,
-                          }}
-                        >
-                          <Text style={{ color: "#fff", fontSize: 14 }}>
-                            {opt.label}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  );
-                }
-
-                // Default text message rendering
-                return (
-                  <View
-                    key={index}
-                    style={{
-                      alignSelf:
-                        msg.from === "user" ? "flex-end" : "flex-start",
-                      backgroundColor:
-                        msg.from === "user" ? "#0E94D3" : "#b3b3b3",
-                      borderRadius: 15,
-                      padding: 10,
-                      marginBottom: 10,
-                      maxWidth: "80%",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "#fff",
-                        fontFamily: "QuicksandSemiBold",
-                      }}
-                    >
-                      {msg.text}
-                    </Text>
-                  </View>
-                );
-              })}
-            </>
-          ) : (
-            <>
-              {chatMessages.map((chat) => {
-                return (
-                  <View
-                    key={chat._id}
-                    style={{
-                      borderRadius: 15,
-                      padding: 15,
-                      marginBottom: 20,
-                      shadowColor: "#000",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.1,
-                      shadowRadius: 5,
-                      elevation: 3,
-                    }}
-                  >
-                    {chat.messages.map((msg) => (
-                      <View
-                        key={msg._id}
-                        style={{
-                          alignSelf:
-                            msg.message === "This chat has ended."
-                              ? "center"
-                              : msg.from._id === user.userID
-                              ? "flex-end"
-                              : "flex-start",
-                          backgroundColor:
-                            msg.message === "This chat has ended."
-                              ? "transparent"
-                              : msg.from._id === user.userID
-                              ? "#0E94D3"
-                              : "#b3b3b3",
-                          borderRadius:
-                            msg.message === "This chat has ended." ? 0 : 12,
-                          padding:
-                            msg.message === "This chat has ended." ? 4 : 10,
-                          marginBottom: 8,
-                          maxWidth: "80%",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            color: "#fff",
-                            fontFamily: "QuicksandSemiBold",
-                            fontStyle:
-                              msg.from._id === "system" ? "italic" : "normal",
-                            color: msg.from._id === "system" ? "#666" : "#fff",
-                          }}
-                        >
-                          {msg.message}
-                        </Text>
-                        {msg.message !== "This chat has ended." && (
+                      {isButtonMessage ? (
+                        <View style={{ gap: 10 }}>
+                          {parsedMessage.options.map((option) => (
+                            <TouchableOpacity
+                              key={option.id}
+                              onPress={() => handleOptionClick(option.id)}
+                              style={{
+                                backgroundColor: "#fff",
+                                paddingVertical: 10,
+                                paddingHorizontal: 15,
+                                borderRadius: 8,
+                                marginTop: 5,
+                              }}
+                            >
+                              <Text
+                                style={{ color: "#333", fontWeight: "bold" }}
+                              >
+                                {option.label}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      ) : (
+                        <>
                           <Text
                             style={{
-                              fontSize: 10,
-                              color: "#eee",
-                              marginTop: 5,
+                              fontSize: 15,
+                              fontFamily: "QuicksandSemiBold",
+                              fontStyle: isEndedMsg ? "italic" : "normal",
+                              color: isEndedMsg ? "#666" : "#fff",
                             }}
                           >
-                            {new Date(msg.timestamp).toLocaleTimeString(
-                              undefined,
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              }
-                            )}
+                            {msg.message}
                           </Text>
-                        )}
-                      </View>
-                    ))}
-                  </View>
-                );
-              })}
-            </>
-          )}
+                          {!isEndedMsg && (
+                            <Text
+                              style={{
+                                fontSize: 10,
+                                color: "#eee",
+                                marginTop: 5,
+                              }}
+                            >
+                              {new Date(msg.timestamp).toLocaleTimeString(
+                                undefined,
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </Text>
+                          )}
+                        </>
+                      )}
+                    </View>
+                  );
+                })}
+              </View>
+            );
+          })}
         </ScrollView>
 
         {/* Bottom Chat Bar */}
@@ -474,13 +525,6 @@ const Chat = () => {
             >
               <MaterialIcons name="send" size={24} color="#04384E" />
             </TouchableOpacity>
-
-            {/* <TouchableOpacity
-              onPress={() => setModalVisible(true)}
-              style={{ marginLeft: 10 }}
-            >
-              <MaterialIcons name="more-vert" size={24} color="#04384E" />
-            </TouchableOpacity> */}
           </View>
         )}
 
