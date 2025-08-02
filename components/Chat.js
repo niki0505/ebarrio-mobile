@@ -128,6 +128,9 @@ const Chat = () => {
 
     const handleReceive = async ({ from, to, message, timestamp, roomId }) => {
       console.log("📥 Message received:", { from, to, message, roomId });
+      if (user.userID === from) {
+        return;
+      }
 
       setChatMessages((prevChats) => {
         const chatIndex = prevChats.findIndex((chat) => chat._id === roomId);
@@ -395,7 +398,7 @@ const Chat = () => {
                   elevation: 3,
                 }}
               >
-                {chat.messages.map((msg) => {
+                {chat.messages.map((msg, i) => {
                   const senderID = msg.from?._id || msg.from;
                   const isEndedMsg = msg.message === "This chat has ended.";
                   const isUser = senderID === user.userID;
@@ -413,7 +416,7 @@ const Chat = () => {
 
                   return (
                     <View
-                      key={msg._id}
+                      key={i}
                       style={{
                         alignSelf: isEndedMsg
                           ? "center"
