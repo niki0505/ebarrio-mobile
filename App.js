@@ -284,7 +284,7 @@ const DrawerContent = ({ navigation }) => {
               fontFamily: "REMBold",
             }}
           >
-            Jennie Kim
+            {user.name}
           </Text>
           <Text
             style={{
@@ -293,7 +293,7 @@ const DrawerContent = ({ navigation }) => {
               fontFamily: "REMSemiBold",
             }}
           >
-            kimkim
+            {user.username}
           </Text>
         </View>
       </View>

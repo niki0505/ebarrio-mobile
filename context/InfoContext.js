@@ -8,9 +8,12 @@ import axios from "axios";
 
 export const InfoContext = createContext(undefined);
 
+const socket = io("https://ebarrio-mobile-backend.onrender.com", {
+  withCredentials: true,
+});
+
 export const InfoProvider = ({ children }) => {
   const { isAuthenticated, setUserStatus, user } = useContext(AuthContext);
-  const { socket } = useContext(SocketContext);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
@@ -180,7 +183,7 @@ export const InfoProvider = ({ children }) => {
       setChatMessages(response.data);
       return response.data;
     } catch (error) {
-      console.error("❌ Failed to fetch reservations:", error);
+      console.error("❌ Failed to fetch chat:", error);
     }
   };
 

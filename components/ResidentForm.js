@@ -356,7 +356,7 @@ const ResidentForm = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.fly.dev/api/getresidents"
+          "https://ebarrio-mobile-backend.onrender.com/api/getresidents"
         );
         setResidents(response.data);
       } catch (error) {
@@ -370,7 +370,7 @@ const ResidentForm = () => {
     const fetchHouseholds = async () => {
       try {
         const response = await axios.get(
-          "https://ebarrio-mobile-backend.fly.dev/api/gethouseholds"
+          "https://ebarrio-mobile-backend.onrender.com/api/gethouseholds"
         );
         setHouseholds(response.data);
       } catch (error) {

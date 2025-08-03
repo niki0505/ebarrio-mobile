@@ -426,9 +426,9 @@ const Home = () => {
               ></Ionicons>
             </View>
 
-            <Text style={[MyStyles.greetingsText, { paddingHorizontal: 20 }]}>
+            {/* <Text style={[MyStyles.greetingsText, { paddingHorizontal: 20 }]}>
               Welcome, {user.name}
-            </Text>
+            </Text> */}
 
             <ScrollView
               showsVerticalScrollIndicator={false}
