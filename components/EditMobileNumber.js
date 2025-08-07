@@ -39,6 +39,7 @@ const EditMobileNumber = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [securePass, setsecurePass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const mobnum =
     userDetails.resID?.mobilenumber || userDetails.empID?.resID?.mobilenumber;
@@ -98,6 +99,9 @@ const EditMobileNumber = () => {
   };
 
   const checkPassword = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.post("/checkpassword", { password });
       handleOTP();
@@ -110,6 +114,8 @@ const EditMobileNumber = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
   const handleMobileNumberChange = async () => {
@@ -308,6 +314,14 @@ const EditMobileNumber = () => {
     </View>
   );
 
+  const maskMobileNumber = (number) => {
+    if (!number || number.length < 4) return number;
+    const start = number.slice(0, 2);
+    const end = number.slice(-2);
+    const masked = "*".repeat(number.length - 4);
+    return `${start}${masked}${end}`;
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -332,13 +346,13 @@ const EditMobileNumber = () => {
             size={24}
             color="#04384E"
           />
-          <Text style={MyStyles.servicesHeader}>Edit Mobile Number</Text>
+          <Text style={MyStyles.servicesHeader}>Change Mobile Number</Text>
 
           <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>Current Mobile Number</Text>
               <Text style={[MyStyles.inputLabel, { color: "#000" }]}>
-                {mobnum}
+                {maskMobileNumber(mobnum)}
               </Text>
             </View>
             <View>
@@ -380,8 +394,14 @@ const EditMobileNumber = () => {
               </View>
             </View>
           </View>
-          <TouchableOpacity onPress={handleConfirm} style={MyStyles.button}>
-            <Text style={MyStyles.buttonText}>Save Changes</Text>
+          <TouchableOpacity
+            onPress={handleConfirm}
+            style={MyStyles.button}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Verifying..." : "Verify"}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       ) : (

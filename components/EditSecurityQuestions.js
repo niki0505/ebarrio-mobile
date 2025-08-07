@@ -34,6 +34,7 @@ const EditSecurityQuestions = () => {
     { question: "", answer: "" },
   ]);
   const [securePass, setsecurePass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const togglesecurePass = () => {
     setsecurePass(!securePass);
@@ -139,6 +140,9 @@ const EditSecurityQuestions = () => {
   };
 
   const handleQuestionsChange = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put("/changesecurityquestions", {
         securityquestions: modifiedQuestions,
@@ -162,6 +166,8 @@ const EditSecurityQuestions = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -192,7 +198,7 @@ const EditSecurityQuestions = () => {
             size={24}
             color="#04384E"
           />
-          <Text style={MyStyles.servicesHeader}>Edit Security Questions</Text>
+          <Text style={MyStyles.servicesHeader}>Change Security Questions</Text>
           <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>Security Question #1</Text>
@@ -279,8 +285,14 @@ const EditSecurityQuestions = () => {
               </View>
             </View>
           </View>
-          <TouchableOpacity onPress={handleConfirm} style={MyStyles.button}>
-            <Text style={MyStyles.buttonText}>Save Changes</Text>
+          <TouchableOpacity
+            onPress={handleConfirm}
+            style={MyStyles.button}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Saving..." : "Save"}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

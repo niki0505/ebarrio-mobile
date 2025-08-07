@@ -1,4 +1,10 @@
-import { Text, View, FlatList, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -30,15 +36,23 @@ import FogDay from "../assets/weather-svg/fog-day";
 import FogNight from "../assets/weather-svg/fog-night";
 import ThunderstormsDay from "../assets/weather-svg/thunderstorms-day";
 import ThunderstormsNight from "../assets/weather-svg/thunderstorms-night";
+import LoadingScreen from "./LoadingScreen";
 
 const Weather = () => {
   const insets = useSafeAreaInsets();
   const { user } = useContext(AuthContext);
   const { fetchWeather, weather } = useContext(InfoContext);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWeather();
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchWeather();
+      setLoading(false);
+    };
+
+    fetchData();
 
     const intervalId = setInterval(() => {
       fetchWeather();
@@ -46,6 +60,10 @@ const Weather = () => {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   // Function to format the date
   const formatDate = (date) => {
@@ -250,7 +268,9 @@ const Weather = () => {
         />
 
         <View style={MyStyles.rowAlignment}>
-          <Text style={MyStyles.weatherHeaderText}>Bacoor</Text>
+          <Text style={MyStyles.weatherHeaderText}>
+            Barangay Aniban 2, Bacoor, Cavite
+          </Text>
           <Text
             style={{
               color: "#fff",

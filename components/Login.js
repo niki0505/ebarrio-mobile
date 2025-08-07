@@ -27,6 +27,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [secureLoginPass, setsecureLoginPass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Toggle Password Visibility
   const togglesecureLoginPass = () => {
@@ -34,6 +35,20 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    if (!username && !password) {
+      alert("Username and password are required.");
+      return;
+    } else if (!username) {
+      alert("Username is required.");
+      return;
+    } else if (!password) {
+      alert("Password is required.");
+      return;
+    }
+
+    if (loading) return;
+
+    setLoading(true);
     try {
       const res = await api.post("/checkcredentials", {
         username,
@@ -41,15 +56,15 @@ const Login = () => {
       });
       if (res.status === 200) {
         if (res.data.message === "Credentials verified") {
-          await login({ username, password });
-          // const response = await api.get(`/getmobilenumber/${username}`);
-          // sendOTP(username, response.data.mobilenumber);
-          // navigation.navigate("OTP", {
-          //   navigatelink: "BottomTabs",
-          //   username,
-          //   mobilenumber: response.data.mobilenumber,
-          //   password: password,
-          // });
+          // await login({ username, password });
+          const response = await api.get(`/getmobilenumber/${username}`);
+          sendOTP(username, response.data.mobilenumber);
+          navigation.navigate("OTP", {
+            navigatelink: "BottomTabs",
+            username,
+            mobilenumber: response.data.mobilenumber,
+            password: password,
+          });
         } else if (res.data.message === "Token verified successfully!") {
           navigation.navigate("SetPassword", {
             username,
@@ -65,6 +80,8 @@ const Login = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -167,8 +184,14 @@ const Login = () => {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={handleLogin} style={MyStyles.button}>
-            <Text style={MyStyles.buttonText}>Log In</Text>
+          <TouchableOpacity
+            onPress={handleLogin}
+            style={MyStyles.button}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Logging in..." : "Login"}
+            </Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
             <Text style={MyStyles.byClickingText}>Don't have an account?</Text>

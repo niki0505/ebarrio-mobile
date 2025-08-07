@@ -109,6 +109,14 @@ const OTP = ({}) => {
     }
   };
 
+  const maskMobileNumber = (number) => {
+    if (!number || number.length < 4) return number;
+    const start = number.slice(0, 2);
+    const end = number.slice(-2);
+    const masked = "*".repeat(number.length - 4);
+    return `${start}${masked}${end}`;
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -158,7 +166,7 @@ const OTP = ({}) => {
               marginTop: "-20",
             }}
           >
-            {mobilenumber}
+            {maskMobileNumber(mobilenumber)}
           </Text>
           <OtpInput
             ref={otpRef}

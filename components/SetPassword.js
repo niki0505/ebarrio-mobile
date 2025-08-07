@@ -68,6 +68,10 @@ const SetPassword = () => {
       hasErrors = true;
     }
 
+    if (repasswordErrors.includes("Passwords do not match.")) {
+      hasErrors = true;
+    }
+
     if (hasErrors) {
       return;
     }

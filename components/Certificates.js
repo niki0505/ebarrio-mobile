@@ -40,6 +40,7 @@ const Certificates = () => {
     locationofbusiness: "",
   };
   const [certificateForm, setCertificateForm] = useState(initialForm);
+  const [loading, setLoading] = useState(false);
 
   const certificates = [
     { name: "Barangay Indigency", price: "₱10.00" },
@@ -149,6 +150,9 @@ const Certificates = () => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     const requiredFields =
       certificateFields[certificateForm.typeofcertificate] || [];
 
@@ -192,6 +196,8 @@ const Certificates = () => {
       });
     } catch (error) {
       console.log("Error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -421,8 +427,14 @@ const Certificates = () => {
             </View>
           </View>
 
-          <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
-            <Text style={MyStyles.buttonText}>Submit</Text>
+          <TouchableOpacity
+            style={MyStyles.button}
+            onPress={handleConfirm}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Submitting..." : "Submit"}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

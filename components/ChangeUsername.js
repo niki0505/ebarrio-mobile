@@ -30,6 +30,7 @@ const ChangeUsername = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [securePass, setsecurePass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Toggle Password Visibility in Reset Password
   const togglesecurePass = () => {
@@ -117,6 +118,9 @@ const ChangeUsername = () => {
   };
 
   const handleUsernameChange = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.get(`/checkusername/${username}`);
       try {
@@ -144,6 +148,8 @@ const ChangeUsername = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -156,6 +162,16 @@ const ChangeUsername = () => {
     setPassword(input);
   };
 
+  const maskUsername = (uname) => {
+    if (!uname) return "";
+    if (uname.length <= 2) return uname[0] + "*";
+
+    const firstChar = uname[0];
+    const lastChar = uname[uname.length - 1];
+    const maskedLength = uname.length - 2;
+    const masked = "*".repeat(maskedLength);
+    return `${firstChar}${masked}${lastChar}`;
+  };
   return (
     <SafeAreaView
       style={{
@@ -184,7 +200,9 @@ const ChangeUsername = () => {
         <View style={MyStyles.servicesContentWrapper}>
           <View>
             <Text style={MyStyles.inputLabel}>Current Username</Text>
-            <Text style={MyStyles.inputLabel}>{userDetails.username}</Text>
+            <Text style={MyStyles.inputLabel}>
+              {maskUsername(userDetails?.username)}
+            </Text>
           </View>
           <View>
             <Text style={MyStyles.inputLabel}>New Username</Text>
@@ -231,8 +249,14 @@ const ChangeUsername = () => {
             </View>
           </View>
         </View>
-        <TouchableOpacity onPress={handleConfirm} style={MyStyles.button}>
-          <Text style={MyStyles.buttonText}>Save Changes</Text>
+        <TouchableOpacity
+          onPress={handleConfirm}
+          style={MyStyles.button}
+          disabled={loading}
+        >
+          <Text style={MyStyles.buttonText}>
+            {loading ? "Saving..." : "Save"}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

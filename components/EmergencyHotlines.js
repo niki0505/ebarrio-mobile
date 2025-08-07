@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -28,9 +29,16 @@ const EmergencyHotlines = () => {
   );
   const [search, setSearch] = useState("");
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchEmergencyHotlines();
+    const loadData = async () => {
+      setLoading(true);
+      await fetchEmergencyHotlines();
+      setLoading(false);
+    };
+
+    loadData();
   }, []);
 
   const handleCall = async (contactName, contactNumber) => {
@@ -125,7 +133,12 @@ const EmergencyHotlines = () => {
               directed to your contact.
             </Text>
 
-            {filteredEmergencyHotlines.length === 0 ? (
+            {loading ? (
+              <View style={{ paddingVertical: 30, alignItems: "center" }}>
+                <ActivityIndicator size="large" color="#04384E" />
+              </View>
+            ) : filteredEmergencyHotlines.filter((e) => e.status !== "Archived")
+                .length === 0 ? (
               <Text
                 style={{
                   color: "#fff",
@@ -133,7 +146,7 @@ const EmergencyHotlines = () => {
                   fontSize: 16,
                 }}
               >
-                No results found
+                No hotlines found.
               </Text>
             ) : (
               filteredEmergencyHotlines

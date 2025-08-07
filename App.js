@@ -226,7 +226,7 @@ const BottomTabs = () => {
 
 const DrawerContent = ({ navigation }) => {
   const { user } = useContext(AuthContext);
-  const { logout } = useContext(AuthContext);
+  const { logout, loading } = useContext(AuthContext);
   const handleConfirm = () => {
     Alert.alert(
       "Confirm",
@@ -285,15 +285,6 @@ const DrawerContent = ({ navigation }) => {
             }}
           >
             {user.name}
-          </Text>
-          <Text
-            style={{
-              fontSize: 16,
-              color: "#808080",
-              fontFamily: "REMSemiBold",
-            }}
-          >
-            {user.username}
           </Text>
         </View>
       </View>
@@ -440,7 +431,8 @@ const DrawerContent = ({ navigation }) => {
           fontFamily: "QuicksandBold",
           marginTop: 50,
         }}
-        onPress={() => navigation.navigate("Login")}
+        onPress={handleConfirm}
+        disabled={loading}
       >
         <Text
           style={{
@@ -453,11 +445,8 @@ const DrawerContent = ({ navigation }) => {
             paddingVertical: 15,
             textAlign: "center",
           }}
-          onPress={() => {
-            handleConfirm();
-          }}
         >
-          Logout
+          {loading ? "Logging out..." : "Logout"}
         </Text>
       </TouchableOpacity>
     </View>

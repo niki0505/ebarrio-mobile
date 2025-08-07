@@ -39,6 +39,8 @@ const Blotter = () => {
     details: "",
   };
 
+  const [loading, setLoading] = useState(false);
+
   const [blotterForm, setBlotterForm] = useState(initialForm);
 
   useEffect(() => {
@@ -98,6 +100,9 @@ const Blotter = () => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     let updatedForm = { ...blotterForm };
     if (updatedForm.subjectID) {
       delete updatedForm.subjectname;
@@ -115,6 +120,8 @@ const Blotter = () => {
       });
     } catch (error) {
       console.log("Error", error);
+    } finally {
+      setLoading(false);
     }
   };
   const handleDropdownChange = ({ target }) => {
@@ -317,8 +324,14 @@ const Blotter = () => {
             </View>
           </View>
 
-          <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
-            <Text style={MyStyles.buttonText}>Submit</Text>
+          <TouchableOpacity
+            style={MyStyles.button}
+            onPress={handleConfirm}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Submitting..." : "Submit"}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -8,6 +8,7 @@ import {
   Platform,
   Image,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -22,19 +23,23 @@ const RiverSnapshots = () => {
   const [latest, setLatest] = useState([]);
   const [history, setHistory] = useState([]);
   const [viewMode, setViewMode] = useState("current");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchLatest = async () => {
+      setLoading(true); // 🔵 Start loading
       try {
         const res = await api.get("/latestsnapshot");
         setLatest(res.data.latest);
         setHistory(res.data.history);
       } catch (err) {
         console.error("❌ Could not fetch snapshot:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchLatest();
+    fetchLatest(); // Initial fetch
     const interval = setInterval(fetchLatest, 60000);
 
     return () => clearInterval(interval);
@@ -138,7 +143,11 @@ const RiverSnapshots = () => {
             </TouchableOpacity>
           </View>
 
-          {viewMode === "current" ? (
+          {loading ? (
+            <View style={{ paddingVertical: 30, alignItems: "center" }}>
+              <ActivityIndicator size="large" color="#04384E" />
+            </View>
+          ) : viewMode === "current" ? (
             <View style={{ alignItems: "center" }}>
               {latest.url && (
                 <>

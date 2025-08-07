@@ -32,7 +32,7 @@ export const SocketProvider = ({ children }) => {
     if (!user?.userID || socketRef.current) return;
 
     const socket = io("https://api.ebarrio.online", {
-      transports: ["websocket", "polling"],
+      transports: ["polling"],
       withCredentials: true,
     });
 

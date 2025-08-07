@@ -11,6 +11,7 @@ import {
   Image,
   Modal,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { useState, useRef, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -37,12 +38,18 @@ const Chat = () => {
   const [isEnded, setIsEnded] = useState(false);
   // const [chatMessages, setChatMessages] = useState([]);
   const { fetchChats, chatMessages, setChatMessages } = useContext(InfoContext);
-  const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loading, setLoading] = useState(false);
   const scrollViewRef = useRef();
 
   useEffect(() => {
-    fetchFAQs();
-    fetchChats();
+    const loadData = async () => {
+      setLoading(true);
+      await fetchFAQs();
+      await fetchChats();
+      setLoading(false);
+    };
+
+    loadData();
   }, []);
 
   console.log(JSON.stringify(chatMessages, null, 2));
@@ -233,7 +240,7 @@ const Chat = () => {
     setModalVisible(false);
 
     const userMessage = {
-      from: { _id: user.userID },
+      from: user.userID,
       to: "000000000000000000000000",
       message: question,
       timestamp: new Date(),
@@ -253,19 +260,6 @@ const Chat = () => {
 
     setTimeout(() => {
       socket.emit("send_message", botReply);
-
-      // Append bot reply to UI
-      setChatMessages((prevChats) =>
-        prevChats.map((chat) => {
-          if (chat._id === roomId) {
-            return {
-              ...chat,
-              messages: [...chat.messages, botReply],
-            };
-          }
-          return chat;
-        })
-      );
     }, 1000);
 
     // Append user message to UI
@@ -302,6 +296,15 @@ const Chat = () => {
       socket.emit("request_chat");
     }
   };
+
+  const allMessages = chatMessages
+    .flatMap((chat) =>
+      chat.messages.map((msg) => ({
+        ...msg,
+        chatId: chat._id,
+      }))
+    )
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
   return (
     <SafeAreaView
@@ -383,117 +386,130 @@ const Chat = () => {
             scrollViewRef.current?.scrollToEnd({ animated: true })
           }
         >
-          {chatMessages.map((chat) => {
-            return (
-              <View
-                key={chat._id}
-                style={{
-                  borderRadius: 15,
-                  padding: 15,
-                  marginBottom: 20,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 5,
-                  elevation: 3,
-                }}
-              >
-                {chat.messages.map((msg, i) => {
-                  const senderID = msg.from?._id || msg.from;
-                  const isEndedMsg = msg.message === "This chat has ended.";
-                  const isUser = senderID === user.userID;
-                  const isBot = senderID === "000000000000000000000000";
+          {loading ? (
+            <View style={{ paddingVertical: 30, alignItems: "center" }}>
+              <ActivityIndicator size="large" color="#04384E" />
+            </View>
+          ) : (
+            allMessages.map((msg, i) => {
+              const senderID = msg.from?._id || msg.from;
+              const isEndedMsg = msg.message === "This chat has ended.";
+              const isUser = senderID === user.userID;
+              const isBot = senderID === "000000000000000000000000";
 
-                  let parsedMessage = null;
-                  try {
-                    parsedMessage = JSON.parse(msg.message);
-                  } catch (err) {
-                    parsedMessage = null;
-                  }
+              let parsedMessage = null;
+              try {
+                parsedMessage = JSON.parse(msg.message);
+              } catch (err) {}
 
-                  const isButtonMessage =
-                    parsedMessage && parsedMessage.type === "button";
+              const isButtonMessage = parsedMessage?.type === "button";
 
-                  return (
-                    <View
-                      key={i}
-                      style={{
-                        alignSelf: isEndedMsg
-                          ? "center"
-                          : isUser
-                          ? "flex-end"
-                          : "flex-start",
-                        backgroundColor: isEndedMsg
-                          ? "transparent"
-                          : isUser
-                          ? "#0E94D3"
-                          : "#b3b3b3",
-                        borderRadius: isEndedMsg ? 0 : 12,
-                        padding: isEndedMsg ? 4 : 10,
-                        marginBottom: 8,
-                        maxWidth: "80%",
-                      }}
-                    >
-                      {isButtonMessage ? (
-                        <View style={{ gap: 10 }}>
-                          {parsedMessage.options.map((option) => (
-                            <TouchableOpacity
-                              key={option.id}
-                              onPress={() => handleOptionClick(option.id)}
-                              style={{
-                                backgroundColor: "#fff",
-                                paddingVertical: 10,
-                                paddingHorizontal: 15,
-                                borderRadius: 8,
-                                marginTop: 5,
-                              }}
-                            >
-                              <Text
-                                style={{ color: "#333", fontWeight: "bold" }}
-                              >
-                                {option.label}
-                              </Text>
-                            </TouchableOpacity>
-                          ))}
-                        </View>
-                      ) : (
-                        <>
-                          <Text
+              const currentDate = new Date(msg.timestamp).toDateString();
+              const previousMsg = allMessages[i - 1];
+              const previousDate = previousMsg
+                ? new Date(previousMsg.timestamp).toDateString()
+                : null;
+              const showDateHeader = currentDate !== previousDate;
+
+              return (
+                <View key={`${msg.timestamp}-${i}`}>
+                  {showDateHeader && (
+                    <View style={{ alignSelf: "center", marginBottom: 10 }}>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          color: "#999",
+                          fontWeight: "600",
+                          backgroundColor: "#e5e5e5",
+                          paddingHorizontal: 12,
+                          paddingVertical: 4,
+                          borderRadius: 20,
+                        }}
+                      >
+                        {new Date(msg.timestamp).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </Text>
+                    </View>
+                  )}
+
+                  <View
+                    style={{
+                      alignSelf: isEndedMsg
+                        ? "center"
+                        : isUser
+                        ? "flex-end"
+                        : "flex-start",
+                      backgroundColor: isEndedMsg
+                        ? "transparent"
+                        : isUser
+                        ? "#0E94D3"
+                        : "#b3b3b3",
+                      borderRadius: isEndedMsg ? 0 : 12,
+                      padding: isEndedMsg ? 4 : 10,
+                      marginBottom: 8,
+                      maxWidth: "80%",
+                    }}
+                  >
+                    {isButtonMessage ? (
+                      <View style={{ gap: 10 }}>
+                        {parsedMessage.options.map((option) => (
+                          <TouchableOpacity
+                            key={option.id}
+                            onPress={() => handleOptionClick(option.id)}
                             style={{
-                              fontSize: 15,
-                              fontFamily: "QuicksandSemiBold",
-                              fontStyle: isEndedMsg ? "italic" : "normal",
-                              color: isEndedMsg ? "#666" : "#fff",
+                              backgroundColor: "#fff",
+                              paddingVertical: 10,
+                              paddingHorizontal: 15,
+                              borderRadius: 8,
+                              marginTop: 5,
                             }}
                           >
-                            {msg.message}
-                          </Text>
-                          {!isEndedMsg && (
-                            <Text
-                              style={{
-                                fontSize: 10,
-                                color: "#eee",
-                                marginTop: 5,
-                              }}
-                            >
-                              {new Date(msg.timestamp).toLocaleTimeString(
-                                undefined,
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                }
-                              )}
+                            <Text style={{ color: "#333", fontWeight: "bold" }}>
+                              {option.label}
                             </Text>
-                          )}
-                        </>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-            );
-          })}
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    ) : (
+                      <>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontFamily: "QuicksandSemiBold",
+                            fontStyle: isEndedMsg ? "italic" : "normal",
+                            color: isEndedMsg ? "#666" : "#fff",
+                          }}
+                        >
+                          {msg.message}
+                        </Text>
+                        {!isEndedMsg && (
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              color: "#eee",
+                              marginTop: 5,
+                            }}
+                          >
+                            {new Date(msg.timestamp).toLocaleTimeString(
+                              undefined,
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              }
+                            )}
+                          </Text>
+                        )}
+                      </>
+                    )}
+                  </View>
+                </View>
+              );
+            })
+          )}
         </ScrollView>
 
         {/* Bottom Chat Bar */}

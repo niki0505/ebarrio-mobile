@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -39,11 +40,15 @@ const ForgotPassword = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [renewPassword, setReNewPassword] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState([]);
+  const [repasswordErrors, setRePasswordErrors] = useState([]);
   const [OTP, setOTP] = useState("");
   const [securityquestion, setSecurityQuestion] = useState({
     question: "",
     answer: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const [secureNewPass, setsecureNewPass] = useState(true);
   const [secureConfirmPass, setsecureConfirmPass] = useState(true);
@@ -66,6 +71,9 @@ const ForgotPassword = () => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       const response = await api.get(`/checkuser/${username}`);
       setIsExisting(true);
@@ -79,10 +87,15 @@ const ForgotPassword = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleQuestionVerify = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.post(`/verifyquestion/${username}`, { securityquestion });
       setIsVerified(true);
@@ -95,6 +108,8 @@ const ForgotPassword = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,7 +139,87 @@ const ForgotPassword = () => {
     }
   };
 
+  const passwordValidation = (val) => {
+    let errors = [];
+    let formattedVal = val.replace(/\s+/g, "");
+    setNewPassword(formattedVal);
+
+    if (!formattedVal) {
+      errors.push("Password must not be empty.");
+    }
+    if (
+      (formattedVal && formattedVal.length < 8) ||
+      (formattedVal && formattedVal.length > 64)
+    ) {
+      errors.push("Password must be between 8 and 64 characters only.");
+    }
+    if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
+      errors.push(
+        "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #."
+      );
+    }
+    setPasswordErrors(errors);
+  };
+
+  const repasswordValidation = (val) => {
+    let errors = [];
+    let formattedVal = val.replace(/\s+/g, "");
+    setReNewPassword(formattedVal);
+
+    if (!formattedVal) {
+      errors.push("Password must not be empty.");
+    }
+    if (formattedVal !== newPassword && formattedVal.length > 0) {
+      errors.push("Passwords do not match.");
+    }
+    setRePasswordErrors(errors);
+  };
+
+  const handleConfirm = () => {
+    let hasErrors = false;
+    let perrors = [];
+    let rerrors = [];
+    if (!newPassword) {
+      perrors.push("Password must not be empty.");
+      setPasswordErrors(perrors);
+      hasErrors = true;
+    }
+    if (!renewPassword) {
+      rerrors.push("Password must not be empty.");
+      setRePasswordErrors(rerrors);
+      hasErrors = true;
+    }
+
+    if (repasswordErrors.includes("Passwords do not match.")) {
+      hasErrors = true;
+    }
+    if (hasErrors) {
+      return;
+    }
+
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to reset your password?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => {
+            handleSuccessful();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const handleSuccessful = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.post(`/newpassword/${username}`, { newPassword });
       alert("You have successfully reset your password!");
@@ -138,6 +233,8 @@ const ForgotPassword = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -245,6 +342,14 @@ const ForgotPassword = () => {
     </View>
   );
 
+  const maskMobileNumber = (number) => {
+    if (!number || number.length < 4) return number;
+    const start = number.slice(0, 2);
+    const end = number.slice(-2);
+    const masked = "*".repeat(number.length - 4);
+    return `${start}${masked}${end}`;
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -283,8 +388,14 @@ const ForgotPassword = () => {
               </View>
             </View>
 
-            <TouchableOpacity onPress={handleSubmit} style={MyStyles.button}>
-              <Text style={MyStyles.buttonText}>Submit</Text>
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={MyStyles.button}
+              disabled={loading}
+            >
+              <Text style={MyStyles.buttonText}>
+                {loading ? "Checking..." : "Continue"}
+              </Text>
             </TouchableOpacity>
 
             <Text
@@ -334,7 +445,7 @@ const ForgotPassword = () => {
                         </Text>
                         <View style={{ position: "relative" }}>
                           <TextInput
-                            onChangeText={setNewPassword}
+                            onChangeText={passwordValidation}
                             secureTextEntry={secureNewPass}
                             placeholder="New Password"
                             style={[MyStyles.input, { paddingRight: 40 }]}
@@ -350,6 +461,15 @@ const ForgotPassword = () => {
                             />
                           </TouchableOpacity>
                         </View>
+                        {passwordErrors.length > 0 && (
+                          <View style={{ marginTop: 5, width: 300 }}>
+                            {passwordErrors.map((error, index) => (
+                              <Text key={index} style={MyStyles.errorMsg}>
+                                {error}
+                              </Text>
+                            ))}
+                          </View>
+                        )}
                       </View>
 
                       <View>
@@ -360,7 +480,7 @@ const ForgotPassword = () => {
 
                         <View style={{ position: "relative" }}>
                           <TextInput
-                            onChangeText={setReNewPassword}
+                            onChangeText={repasswordValidation}
                             secureTextEntry={secureConfirmPass}
                             placeholder="Confirm New Password"
                             style={[MyStyles.input, { paddingRight: 40 }]}
@@ -376,14 +496,26 @@ const ForgotPassword = () => {
                             />
                           </TouchableOpacity>
                         </View>
+                        {repasswordErrors.length > 0 && (
+                          <View style={{ marginTop: 5, width: 300 }}>
+                            {repasswordErrors.map((error, index) => (
+                              <Text key={index} style={MyStyles.errorMsg}>
+                                {error}
+                              </Text>
+                            ))}
+                          </View>
+                        )}
                       </View>
                     </View>
 
                     <TouchableOpacity
-                      onPress={handleSuccessful}
+                      onPress={handleConfirm}
                       style={MyStyles.button}
+                      disabled={loading}
                     >
-                      <Text style={MyStyles.buttonText}>Confirm</Text>
+                      <Text style={MyStyles.buttonText}>
+                        {loading ? "Resetting..." : "Reset"}
+                      </Text>
                     </TouchableOpacity>
                   </ScrollView>
                 </View>
@@ -414,7 +546,9 @@ const ForgotPassword = () => {
                       },
                     ]}
                   >
-                    {user.resID?.mobilenumber || user.empID?.resID.mobilenumber}
+                    {maskMobileNumber(
+                      user.resID?.mobilenumber || user.empID?.resID.mobilenumber
+                    )}
                   </Text>
 
                   <View style={{ marginTop: 30 }}>
@@ -526,8 +660,11 @@ const ForgotPassword = () => {
                     <TouchableOpacity
                       onPress={handleQuestionVerify}
                       style={MyStyles.button}
+                      disabled={loading}
                     >
-                      <Text style={[MyStyles.buttonText]}>Continue</Text>
+                      <Text style={[MyStyles.buttonText]}>
+                        {loading ? "Verifying..." : "Continue"}
+                      </Text>
                     </TouchableOpacity>
                   </ScrollView>
                 </View>
@@ -579,7 +716,18 @@ const ForgotPassword = () => {
                         color="#04384E"
                       />
                       <Text
-                        onPress={() => setQuestionsClicked(true)}
+                        onPress={() => {
+                          if (
+                            !user.securityquestions ||
+                            user.securityquestions.length === 0
+                          ) {
+                            alert(
+                              "No security questions found for this account."
+                            );
+                          } else {
+                            setQuestionsClicked(true);
+                          }
+                        }}
                         style={{
                           color: "#04384E",
                           fontSize: 18,

@@ -10,6 +10,7 @@ import {
   Keyboard,
   FlatList,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect, useRef } from "react";
@@ -55,6 +56,7 @@ import FogDay from "../assets/weather-svg/fog-day";
 import FogNight from "../assets/weather-svg/fog-night";
 import ThunderstormsDay from "../assets/weather-svg/thunderstorms-day";
 import ThunderstormsNight from "../assets/weather-svg/thunderstorms-night";
+import LoadingScreen from "./LoadingScreen";
 
 const Home = () => {
   const insets = useSafeAreaInsets();
@@ -70,9 +72,16 @@ const Home = () => {
   const [expandedAnnouncements, setExpandedAnnouncements] = useState([]);
   const [visible, setIsVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingWeather, setLoadingWeather] = useState(true);
 
   useEffect(() => {
-    fetchAnnouncements();
+    const load = async () => {
+      setLoading(true);
+      await fetchAnnouncements();
+      setLoading(false);
+    };
+    load();
   }, []);
 
   useEffect(() => {
@@ -87,8 +96,15 @@ const Home = () => {
 
     setCurrentEvents(currentevents);
   }, [events, currentDate]);
+
   useEffect(() => {
-    fetchWeather();
+    const fetchData = async () => {
+      setLoadingWeather(true);
+      await fetchWeather();
+      setLoadingWeather(false);
+    };
+
+    fetchData();
 
     const intervalId = setInterval(() => {
       fetchWeather();
@@ -547,27 +563,44 @@ const Home = () => {
                   </ScrollView>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
-                  <LinearGradient
-                    colors={getGradientColors(weather.currentcondition)}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                    style={[MyStyles.gradientBackground]}
+                {loadingWeather ? (
+                  <View
+                    style={[
+                      MyStyles.card,
+                      {
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: 150,
+                      },
+                    ]}
                   >
-                    <Text style={MyStyles.weatherHeaderText}>Bacoor</Text>
-                    <View style={[MyStyles.rowAlignment, { marginLeft: -10 }]}>
-                      {getWeatherIcon(weather.currentcondition, 70, 70)}
-                      <Text style={MyStyles.weatherCurrTemp}>
-                        {weather.currenttemp}°
-                      </Text>
-                    </View>
+                    <ActivityIndicator size="large" color="#04384E" />
+                  </View>
+                ) : (
+                  <TouchableOpacity onPress={viewWeather} style={MyStyles.card}>
+                    <LinearGradient
+                      colors={getGradientColors(weather.currentcondition)}
+                      start={{ x: 0.5, y: 0 }}
+                      end={{ x: 0.5, y: 1 }}
+                      style={[MyStyles.gradientBackground]}
+                    >
+                      <Text style={MyStyles.weatherHeaderText}>Bacoor</Text>
+                      <View
+                        style={[MyStyles.rowAlignment, { marginLeft: -10 }]}
+                      >
+                        {getWeatherIcon(weather.currentcondition, 70, 70)}
+                        <Text style={MyStyles.weatherCurrTemp}>
+                          {weather.currenttemp}°
+                        </Text>
+                      </View>
 
-                    <Text style={MyStyles.weatherHighLow}>
-                      High:{Math.round(weather.currenthigh)}° Low:
-                      {Math.round(weather.currentlow)}°
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                      <Text style={MyStyles.weatherHighLow}>
+                        High:{Math.round(weather.currenthigh)}° Low:
+                        {Math.round(weather.currentlow)}°
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
               </View>
 
               <View style={MyStyles.rowAlignment}>
@@ -584,7 +617,11 @@ const Home = () => {
                 </Text>
               </View>
 
-              {importantAnnouncements.length === 0 ? (
+              {loading ? (
+                <View style={{ padding: 20, alignItems: "center" }}>
+                  <ActivityIndicator size="large" color="#04384E" />
+                </View>
+              ) : importantAnnouncements.length === 0 ? (
                 <Text>No announcements yet.</Text>
               ) : (
                 <FlatList

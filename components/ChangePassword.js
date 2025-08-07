@@ -31,6 +31,7 @@ const ChangePassword = () => {
   const [secureCurrPass, setSecureCurrPass] = useState(true);
   const [secureNewPass, setSecureNewPass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const togglesecureCurrPass = () => {
     setSecureCurrPass(!secureCurrPass);
@@ -140,6 +141,9 @@ const ChangePassword = () => {
   };
 
   const handlePasswordChange = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put("/changepassword", {
         newpassword,
@@ -156,6 +160,8 @@ const ChangePassword = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -275,8 +281,14 @@ const ChangePassword = () => {
             </View>
           </View>
         </View>
-        <TouchableOpacity onPress={handleConfirm} style={MyStyles.button}>
-          <Text style={MyStyles.buttonText}>Save Changes</Text>
+        <TouchableOpacity
+          onPress={handleConfirm}
+          style={MyStyles.button}
+          disabled={loading}
+        >
+          <Text style={MyStyles.buttonText}>
+            {loading ? "Saving..." : "Save"}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

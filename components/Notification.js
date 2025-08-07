@@ -154,44 +154,55 @@ const Notification = () => {
             ]}
             showsVerticalScrollIndicator={false}
           >
-            {filteredNotifications
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map((notif, index) => {
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleNotif(notif._id, notif.redirectTo)}
-                    style={MyStyles.notifLine}
-                  >
-                    <View style={MyStyles.notifRowSpacing}>
-                      <View style={{ flexDirection: "column", flex: 1 }}>
-                        <Text style={MyStyles.notifTitleMessage}>
-                          {notif.title}
-                        </Text>
-                        <Text style={MyStyles.notifTitleMessage}>
-                          {truncateNotifMessage(notif.message)}
-                        </Text>
-                        <Text
-                          style={[MyStyles.textMedium, { color: "808080" }]}
-                        >
-                          {dayjs(notif.createdAt).fromNow()}
-                        </Text>
+            {filteredNotifications.length === 0 ? (
+              <Text
+                style={[
+                  MyStyles.textMedium,
+                  { textAlign: "center", marginTop: 20 },
+                ]}
+              >
+                You're all caught up! No new notifications.
+              </Text>
+            ) : (
+              filteredNotifications
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((notif, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => handleNotif(notif._id, notif.redirectTo)}
+                      style={MyStyles.notifLine}
+                    >
+                      <View style={MyStyles.notifRowSpacing}>
+                        <View style={{ flexDirection: "column", flex: 1 }}>
+                          <Text style={MyStyles.notifTitleMessage}>
+                            {notif.title}
+                          </Text>
+                          <Text style={MyStyles.notifTitleMessage}>
+                            {truncateNotifMessage(notif.message)}
+                          </Text>
+                          <Text
+                            style={[MyStyles.textMedium, { color: "808080" }]}
+                          >
+                            {dayjs(notif.createdAt).fromNow()}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
 
-                    <View
-                      style={[
-                        MyStyles.notifCircle,
-                        {
-                          backgroundColor: notif.read
-                            ? "transparent"
-                            : "#3B82F6",
-                        },
-                      ]}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
+                      <View
+                        style={[
+                          MyStyles.notifCircle,
+                          {
+                            backgroundColor: notif.read
+                              ? "transparent"
+                              : "#3B82F6",
+                          },
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  );
+                })
+            )}
           </ScrollView>
         </View>
         {/* Fixed Floating Chat Button */}

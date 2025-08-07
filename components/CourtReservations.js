@@ -28,6 +28,7 @@ const CourtReservations = () => {
   const { fetchReservations, courtreservations } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const [reservationForm, setReservationForm] = useState({
     resID: user.resID || "",
@@ -297,6 +298,9 @@ const CourtReservations = () => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     const combineDateAndTime = (dateStr, timeObj) => {
       const date = new Date(dateStr);
       date.setHours(timeObj.getHours());
@@ -341,6 +345,8 @@ const CourtReservations = () => {
     } catch (error) {
       console.log("Reservation submission error:", error);
       Alert.alert("Error", "Failed to submit reservation. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -509,8 +515,14 @@ const CourtReservations = () => {
               />
             </View>
 
-            <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
-              <Text style={MyStyles.buttonText}>Submit</Text>
+            <TouchableOpacity
+              style={MyStyles.button}
+              onPress={handleConfirm}
+              disabled={loading}
+            >
+              <Text style={MyStyles.buttonText}>
+                {loading ? "Submitting..." : "Submit"}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
