@@ -354,24 +354,6 @@ const Chat = () => {
               >
                 Barangay Aniban II
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 2,
-                }}
-              >
-                <View
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 4,
-                    backgroundColor: "green",
-                    marginRight: 5,
-                  }}
-                />
-                <Text style={{ fontSize: 12, color: "gray" }}>Active</Text>
-              </View>
             </View>
           </View>
         </View>
