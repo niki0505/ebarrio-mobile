@@ -11,44 +11,309 @@ import {
   Image,
   Modal,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import Aniban2Logo from "../assets/aniban2logo.png";
+import { InfoContext } from "../context/InfoContext";
+import * as SecureStore from "expo-secure-store";
+import { SocketContext } from "../context/SocketContext";
+import { AuthContext } from "../context/AuthContext";
 
 const Chat = () => {
+  const { fetchFAQs, FAQs, fetchActive } = useContext(InfoContext);
+  const { user } = useContext(AuthContext);
+  const { socket } = useContext(SocketContext);
   const insets = useSafeAreaInsets();
+  const [roomId, setRoomId] = useState(null);
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [chatMessages, setChatMessages] = useState([]);
+  const [assignedAdmin, setAssignedAdmin] = useState(null);
+  const [isChat, setIsChat] = useState(false);
+  const [isEnded, setIsEnded] = useState(false);
+  // const [chatMessages, setChatMessages] = useState([]);
+  const { fetchChats, chatMessages, setChatMessages } = useContext(InfoContext);
+  const [loading, setLoading] = useState(false);
   const scrollViewRef = useRef();
 
-  const defaultMessages = [
-    "What types of documents do you provide?",
-    "What are the office hours?",
-    "Where is the barangay hall located?",
-  ];
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      await fetchFAQs();
+      await fetchChats();
+      setLoading(false);
+    };
 
+    loadData();
+  }, []);
+
+  console.log(JSON.stringify(chatMessages, null, 2));
+
+  //ASSIGNING CHAT (SUCCESS)
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleConnectAndRequest = () => {
+      console.log("📡 Socket connected:", socket.id);
+      socket.emit("request_bot_chat", { userID: user.userID });
+    };
+
+    const handleChatAssigned = (chatData) => {
+      console.log("✅ Chat assigned:", chatData);
+      const {
+        _id,
+        participants,
+        responder,
+        messages,
+        status,
+        isCleared,
+        isBot,
+        createdAt,
+        updatedAt,
+      } = chatData;
+
+      setAssignedAdmin(participants.find((p) => p !== user.userID) || null);
+
+      setRoomId(_id);
+      if (isBot) {
+        setIsChat(false);
+      } else {
+        setIsChat(true);
+      }
+      setIsEnded(false);
+
+      setChatMessages((prev) => {
+        const chatExists = prev.some((chat) => chat._id === _id);
+        if (chatExists) return prev;
+
+        return [
+          ...prev,
+          {
+            _id,
+            participants,
+            responder,
+            messages,
+            status,
+            isCleared,
+            isBot,
+            createdAt,
+            updatedAt,
+          },
+        ];
+      });
+    };
+
+    if (socket.connected) {
+      handleConnectAndRequest();
+    } else {
+      socket.once("connect", handleConnectAndRequest);
+    }
+
+    socket.on("chat_assigned", handleChatAssigned);
+
+    return () => {
+      socket.off("connect", handleConnectAndRequest);
+      socket.off("chat_assigned", handleChatAssigned);
+      socket.off("request_bot_chat");
+    };
+  }, [socket]);
+  console.log(isEnded);
+  console.log(isChat);
+  console.log(roomId);
+
+  //RECEIVING CHAT (SUCCESS)
+  useEffect(() => {
+    if (!socket) {
+      console.log("🚫 Socket not ready");
+      return;
+    }
+
+    const handleReceive = async ({ from, to, message, timestamp, roomId }) => {
+      console.log("📥 Message received:", { from, to, message, roomId });
+      if (user.userID === from) {
+        return;
+      }
+
+      setChatMessages((prevChats) => {
+        const chatIndex = prevChats.findIndex((chat) => chat._id === roomId);
+
+        const newMessage = {
+          from,
+          to,
+          message,
+          timestamp,
+        };
+
+        if (chatIndex !== -1) {
+          // Existing chat, append message
+          const updatedChats = [...prevChats];
+          updatedChats[chatIndex] = {
+            ...updatedChats[chatIndex],
+            messages: [...updatedChats[chatIndex].messages, newMessage],
+          };
+          return updatedChats;
+        } else {
+          // New chat, create full structure
+          const newChat = {
+            _id: roomId,
+            participants: [from, to],
+            responder: null,
+            messages: [newMessage],
+            status: "Active",
+            isCleared: false,
+            isBot: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          return [...prevChats, newChat];
+        }
+      });
+    };
+
+    const handleChatEnded = ({ chatID, timestamp }) => {
+      console.log("📴 Chat ended detected:", chatID);
+      setIsEnded(true);
+      setIsChat(false);
+    };
+
+    socket.on("receive_message", handleReceive);
+    socket.on("chat_ended", handleChatEnded);
+
+    return () => {
+      socket.off("receive_message", handleReceive);
+      socket.off("chat_ended", handleChatEnded);
+    };
+  }, [socket]);
   // Send a message and add to chat list
   const handleSendMessage = (text) => {
-    if (text.trim() === "") return;
-    setChatMessages((prev) => [...prev, { from: "user", text }]);
+    if (!assignedAdmin || text.trim() === "") return;
+    console.log("Sending to:", assignedAdmin);
+
+    const newMessage = {
+      from: user.userID,
+      to: assignedAdmin,
+      message: text,
+      timestamp: new Date(),
+      roomId,
+    };
+
+    socket.emit("send_message", newMessage);
+
+    setChatMessages((prevChats) => {
+      const existingChat = prevChats.find((chat) => chat._id === roomId);
+
+      if (existingChat) {
+        return prevChats.map((chat) => {
+          if (chat._id === roomId) {
+            return {
+              ...chat,
+              messages: [...chat.messages, newMessage],
+            };
+          }
+          return chat;
+        });
+      } else {
+        return [
+          ...prevChats,
+          {
+            _id: roomId,
+            participants: [user.userID, assignedAdmin],
+            messages: [newMessage],
+          },
+        ];
+      }
+    });
     setMessage("");
   };
 
-  // When a default message is picked
-  const handleDefaultMessage = (msg) => {
-    setModalVisible(false);
-    handleSendMessage(msg);
+  const getBotReply = (question) => {
+    const found = FAQs.find((faq) => faq.question === question);
+    return found ? found.answer : "Let me get someone to assist you with that.";
   };
+
+  const handleDefaultMessage = (question) => {
+    setModalVisible(false);
+
+    const userMessage = {
+      from: user.userID,
+      to: "000000000000000000000000",
+      message: question,
+      timestamp: new Date(),
+      roomId,
+    };
+
+    socket.emit("send_message", userMessage);
+
+    // Auto-response from bot
+    const botReply = {
+      from: "000000000000000000000000",
+      to: user.userID,
+      message: getBotReply(question),
+      timestamp: new Date(),
+      roomId,
+    };
+
+    setTimeout(() => {
+      socket.emit("send_message", botReply);
+    }, 1000);
+
+    // Append user message to UI
+    setChatMessages((prevChats) => {
+      const existingChat = prevChats.find((chat) => chat._id === roomId);
+      if (existingChat) {
+        return prevChats.map((chat) => {
+          if (chat._id === roomId) {
+            return {
+              ...chat,
+              messages: [...chat.messages, userMessage],
+            };
+          }
+          return chat;
+        });
+      } else {
+        return [
+          ...prevChats,
+          {
+            _id: roomId,
+            participants: [user.userID, assignedAdmin],
+            messages: [userMessage],
+          },
+        ];
+      }
+    });
+  };
+
+  const handleOptionClick = async (id) => {
+    if (id === "faq") {
+      setModalVisible(true);
+    } else if (id === "chat") {
+      setIsChat(true);
+      socket.emit("request_chat");
+    }
+  };
+
+  const allMessages = chatMessages
+    .flatMap((chat) =>
+      chat.messages.map((msg) => ({
+        ...msg,
+        chatId: chat._id,
+      }))
+    )
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -121,72 +386,166 @@ const Chat = () => {
             scrollViewRef.current?.scrollToEnd({ animated: true })
           }
         >
-          {chatMessages.map((msg, index) => (
-            <View
-              key={index}
-              style={{
-                alignSelf: msg.from === "user" ? "flex-end" : "flex-start",
-                backgroundColor: msg.from === "user" ? "#0E94D3" : "#E5E5EA",
-                borderRadius: 15,
-                padding: 10,
-                marginBottom: 10,
-                maxWidth: "80%",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "#fff",
-                  fontFamily: "QuicksandSemiBold",
-                }}
-              >
-                {msg.text}
-              </Text>
+          {loading ? (
+            <View style={{ paddingVertical: 30, alignItems: "center" }}>
+              <ActivityIndicator size="large" color="#04384E" />
             </View>
-          ))}
+          ) : (
+            allMessages.map((msg, i) => {
+              const senderID = msg.from?._id || msg.from;
+              const isEndedMsg = msg.message === "This chat has ended.";
+              const isUser = senderID === user.userID;
+              const isBot = senderID === "000000000000000000000000";
+
+              let parsedMessage = null;
+              try {
+                parsedMessage = JSON.parse(msg.message);
+              } catch (err) {}
+
+              const isButtonMessage = parsedMessage?.type === "button";
+
+              const currentDate = new Date(msg.timestamp).toDateString();
+              const previousMsg = allMessages[i - 1];
+              const previousDate = previousMsg
+                ? new Date(previousMsg.timestamp).toDateString()
+                : null;
+              const showDateHeader = currentDate !== previousDate;
+
+              return (
+                <View key={`${msg.timestamp}-${i}`}>
+                  {showDateHeader && (
+                    <View style={{ alignSelf: "center", marginBottom: 10 }}>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          color: "#999",
+                          fontWeight: "600",
+                          backgroundColor: "#e5e5e5",
+                          paddingHorizontal: 12,
+                          paddingVertical: 4,
+                          borderRadius: 20,
+                        }}
+                      >
+                        {new Date(msg.timestamp).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </Text>
+                    </View>
+                  )}
+
+                  <View
+                    style={{
+                      alignSelf: isEndedMsg
+                        ? "center"
+                        : isUser
+                        ? "flex-end"
+                        : "flex-start",
+                      backgroundColor: isEndedMsg
+                        ? "transparent"
+                        : isUser
+                        ? "#0E94D3"
+                        : "#b3b3b3",
+                      borderRadius: isEndedMsg ? 0 : 12,
+                      padding: isEndedMsg ? 4 : 10,
+                      marginBottom: 8,
+                      maxWidth: "80%",
+                    }}
+                  >
+                    {isButtonMessage ? (
+                      <View style={{ gap: 10 }}>
+                        {parsedMessage.options.map((option) => (
+                          <TouchableOpacity
+                            key={option.id}
+                            onPress={() => handleOptionClick(option.id)}
+                            style={{
+                              backgroundColor: "#fff",
+                              paddingVertical: 10,
+                              paddingHorizontal: 15,
+                              borderRadius: 8,
+                              marginTop: 5,
+                            }}
+                          >
+                            <Text style={{ color: "#333", fontWeight: "bold" }}>
+                              {option.label}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    ) : (
+                      <>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontFamily: "QuicksandSemiBold",
+                            fontStyle: isEndedMsg ? "italic" : "normal",
+                            color: isEndedMsg ? "#666" : "#fff",
+                          }}
+                        >
+                          {msg.message}
+                        </Text>
+                        {!isEndedMsg && (
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              color: "#eee",
+                              marginTop: 5,
+                            }}
+                          >
+                            {new Date(msg.timestamp).toLocaleTimeString(
+                              undefined,
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              }
+                            )}
+                          </Text>
+                        )}
+                      </>
+                    )}
+                  </View>
+                </View>
+              );
+            })
+          )}
         </ScrollView>
 
         {/* Bottom Chat Bar */}
-        <View
-          style={{
-            padding: 10,
-            backgroundColor: "#fff",
-            flexDirection: "row",
-            alignItems: "center",
-            borderTopWidth: 1,
-            borderColor: "#ccc",
-            paddingBottom: 30,
-          }}
-        >
-          <TextInput
-            value={message}
-            onChangeText={setMessage}
-            placeholder="Type your message..."
+        {isChat && !isEnded && (
+          <View
             style={{
-              flex: 1,
-              height: 40,
-              backgroundColor: "#f2f2f2",
-              borderRadius: 20,
-              paddingHorizontal: 15,
+              padding: 10,
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              alignItems: "center",
+              borderTopWidth: 1,
+              borderColor: "#ccc",
+              paddingBottom: 30,
             }}
-          />
-
-          {/* Send Button */}
-          <TouchableOpacity
-            style={{ marginLeft: 10 }}
-            onPress={() => handleSendMessage(message)}
           >
-            <MaterialIcons name="send" size={24} color="#04384E" />
-          </TouchableOpacity>
+            <TextInput
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Type your message..."
+              style={{
+                flex: 1,
+                height: 40,
+                backgroundColor: "#f2f2f2",
+                borderRadius: 20,
+                paddingHorizontal: 15,
+              }}
+            />
 
-          {/* Menu Icon */}
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={{ marginLeft: 10 }}
-          >
-            <MaterialIcons name="more-vert" size={24} color="#04384E" />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => handleSendMessage(message)}
+            >
+              <MaterialIcons name="send" size={24} color="#04384E" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Modal for Default Messages */}
         <Modal
@@ -216,18 +575,17 @@ const Chat = () => {
               >
                 Choose a quick question:
               </Text>
-              {defaultMessages.map((msg, index) => (
+              {FAQs.map((msg, index) => (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => handleDefaultMessage(msg)}
+                  onPress={() => handleDefaultMessage(msg.question)}
                   style={{
                     paddingVertical: 10,
-                    borderBottomWidth:
-                      index !== defaultMessages.length - 1 ? 1 : 0,
+                    borderBottomWidth: index !== msg.length - 1 ? 1 : 0,
                     borderBottomColor: "#ddd",
                   }}
                 >
-                  <Text style={{ fontSize: 15 }}>{msg}</Text>
+                  <Text style={{ fontSize: 15 }}>{msg.question}</Text>
                 </TouchableOpacity>
               ))}
             </View>

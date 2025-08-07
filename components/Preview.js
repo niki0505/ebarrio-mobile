@@ -53,22 +53,14 @@ const Preview = () => {
 
   const renderItem = ({ item }) => (
     <View
-      style={{
-        width,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 50,
-      }}
+      style={[
+        MyStyles.slideContainer,
+        {
+          width,
+        },
+      ]}
     >
-      <Image
-        source={item.image}
-        style={{
-          width: 240,
-          height: 240,
-          resizeMode: "contain",
-          marginVertical: 70,
-        }}
-      />
+      <Image source={item.image} style={MyStyles.slideImg} />
       <Text style={[MyStyles.header, { textAlign: "center" }]}>
         {item.title}
       </Text>
@@ -100,7 +92,12 @@ const Preview = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#fff",
+      }}
     >
       {/* <TouchableOpacity
         onPress={handleSignUp}
@@ -138,36 +135,23 @@ const Preview = () => {
         />
 
         {/* Pagination Dots */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginTop: 70,
-          }}
-        >
+        <View style={MyStyles.paginationDotsContainer}>
           {slides.map((_, index) => (
             <View
               key={index}
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 5,
-                marginHorizontal: 5,
-                backgroundColor: currentIndex === index ? "#0E94D3" : "#ccc",
-              }}
+              style={[
+                MyStyles.paginationDot,
+                {
+                  backgroundColor: currentIndex === index ? "#0E94D3" : "#ccc",
+                },
+              ]}
             />
           ))}
         </View>
       </View>
 
       {/* Bottom Buttons */}
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 30,
-        }}
-      >
+      <View style={MyStyles.bottomButons}>
         {isLastSlide ? (
           <>
             {/* Join Us Button */}
@@ -177,15 +161,7 @@ const Preview = () => {
               accessibilityLabel="Join the community"
               activeOpacity={0.8}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: 24,
-                }}
-              >
-                Join Us
-              </Text>
+              <Text style={MyStyles.buttonsText}>Join Us</Text>
             </TouchableOpacity>
 
             {/* Login Button */}

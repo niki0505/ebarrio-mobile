@@ -1,27 +1,20 @@
 import {
-  StyleSheet,
   Text,
   View,
-  Alert,
-  TouchableOpacity,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
   FlatList,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { InfoContext } from "../context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-//WEATHER ICONS
+//ICONS
+import { MaterialIcons } from "@expo/vector-icons";
 import ClearDay from "../assets/weather-svg/clear-day";
 import ClearNight from "../assets/weather-svg/clear-night";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
@@ -43,15 +36,23 @@ import FogDay from "../assets/weather-svg/fog-day";
 import FogNight from "../assets/weather-svg/fog-night";
 import ThunderstormsDay from "../assets/weather-svg/thunderstorms-day";
 import ThunderstormsNight from "../assets/weather-svg/thunderstorms-night";
+import LoadingScreen from "./LoadingScreen";
 
 const Weather = () => {
   const insets = useSafeAreaInsets();
   const { user } = useContext(AuthContext);
   const { fetchWeather, weather } = useContext(InfoContext);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWeather();
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchWeather();
+      setLoading(false);
+    };
+
+    fetchData();
 
     const intervalId = setInterval(() => {
       fetchWeather();
@@ -59,6 +60,10 @@ const Weather = () => {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   // Function to format the date
   const formatDate = (date) => {
@@ -250,7 +255,7 @@ const Weather = () => {
       end={{ x: 0.5, y: 1 }}
       style={[
         MyStyles.container,
-        { paddingTop: insets.top, paddingBottom: 20 },
+        { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
       <ScrollView>
@@ -263,7 +268,9 @@ const Weather = () => {
         />
 
         <View style={MyStyles.rowAlignment}>
-          <Text style={MyStyles.weatherHeaderText}>Bacoor</Text>
+          <Text style={MyStyles.weatherHeaderText}>
+            Barangay Aniban 2, Bacoor, Cavite
+          </Text>
           <Text
             style={{
               color: "#fff",

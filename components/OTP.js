@@ -109,13 +109,26 @@ const OTP = ({}) => {
     }
   };
 
+  const maskMobileNumber = (number) => {
+    if (!number || number.length < 4) return number;
+    const start = number.slice(0, 2);
+    const end = number.slice(-2);
+    const masked = "*".repeat(number.length - 4);
+    return `${start}${masked}${end}`;
+  };
+
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
-      <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-        <View style={{ flex: 1, alignSelf: "center" }}>
-          <Image source={AppLogo} style={{ width: "180", height: "180" }} />
+      <View style={MyStyles.loginWrapper}>
+        <View style={MyStyles.loginTopWrapper}>
+          <Image source={AppLogo} style={MyStyles.loginLogo} />
         </View>
         <View
           style={{
@@ -153,7 +166,7 @@ const OTP = ({}) => {
               marginTop: "-20",
             }}
           >
-            {mobilenumber}
+            {maskMobileNumber(mobilenumber)}
           </Text>
           <OtpInput
             ref={otpRef}

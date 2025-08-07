@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { AuthContext } from "./AuthContext";
 import { io } from "socket.io-client";
 import { Alert } from "react-native";
@@ -11,7 +17,7 @@ export const SocketProvider = ({ children }) => {
   const navigation = useNavigation();
   const { user, isAuthenticated } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
-  const [socket, setSocket] = useState(null);
+  const socketRef = useRef(null); // ✅ Persistent ref
 
   const fetchNotifications = async () => {
     try {
@@ -23,25 +29,32 @@ export const SocketProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!user?.userID) return;
+    if (!user?.userID || socketRef.current) return;
 
-    const newSocket = io("https://ebarrio-mobile-backend.onrender.com");
-
-    newSocket.on("connect", () => {
-      newSocket.emit("register", user.userID);
-      newSocket.emit("join_announcements");
+    const socket = io("https://api.ebarrio.online", {
+      transports: ["polling"],
+      withCredentials: true,
     });
 
-    newSocket.on("announcement", (announcement) => {
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      console.log("✅ Socket connected:", socket.id);
+      socket.emit("register", user.userID, user.role);
+      socket.emit("join_announcements");
+    });
+
+    socket.on("connect_error", (err) => {
+      console.log("❌ Socket connection failed:", err.message);
+      console.log(err);
+    });
+
+    socket.on("announcement", (announcement) => {
       Alert.alert(
         announcement.title,
         announcement.message,
         [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancelled"),
-            style: "cancel",
-          },
+          { text: "Cancel", style: "cancel" },
           {
             text: "View Now",
             onPress: () => navigation.navigate("Announcements"),
@@ -51,85 +64,65 @@ export const SocketProvider = ({ children }) => {
       );
     });
 
-    newSocket.on("certificateUpdate", (certificate) => {
+    socket.on("certificateUpdate", (certificate) => {
       Alert.alert(
         certificate.title,
         certificate.message,
         [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancelled"),
-            style: "cancel",
-          },
-          {
-            text: "View Now",
-            onPress: () => navigation.navigate("Status"),
-          },
+          { text: "Cancel", style: "cancel" },
+          { text: "View Now", onPress: () => navigation.navigate("Status") },
         ],
         { cancelable: true }
       );
     });
 
-    newSocket.on("notificationUpdate", (updatedNotifications) => {
-      setNotifications(updatedNotifications);
-    });
+    socket.on("notificationUpdate", setNotifications);
 
-    newSocket.on("blotterUpdate", (blotter) => {
+    socket.on("blotterUpdate", (blotter) => {
       Alert.alert(
         blotter.title,
         blotter.message,
         [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancelled"),
-            style: "cancel",
-          },
-          {
-            text: "View Now",
-            onPress: () => navigation.navigate("Status"),
-          },
+          { text: "Cancel", style: "cancel" },
+          { text: "View Now", onPress: () => navigation.navigate("Status") },
         ],
         { cancelable: true }
       );
     });
 
-    newSocket.on("reservationUpdate", (res) => {
+    socket.on("reservationUpdate", (res) => {
       Alert.alert(
         res.title,
         res.message,
         [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancelled"),
-            style: "cancel",
-          },
-          {
-            text: "View Now",
-            onPress: () => navigation.navigate("Status"),
-          },
+          { text: "Cancel", style: "cancel" },
+          { text: "View Now", onPress: () => navigation.navigate("Status") },
         ],
         { cancelable: true }
       );
     });
 
-    setSocket(newSocket);
-
     return () => {
-      newSocket.disconnect();
+      socket.disconnect();
+      socketRef.current = null;
     };
   }, [user?.userID, user?.role]);
 
   useEffect(() => {
-    if (!isAuthenticated && socket && user?.userID) {
-      socket.emit("unregister", user.userID);
-      socket.disconnect();
-      setSocket(null);
+    if (!isAuthenticated && socketRef.current && user?.userID) {
+      socketRef.current.emit("unregister", user.userID);
+      socketRef.current.disconnect();
+      socketRef.current = null;
     }
   }, [isAuthenticated]);
 
   return (
     <SocketContext.Provider
-      value={{ socket, fetchNotifications, notifications }}
+      value={{
+        socket: socketRef.current,
+        fetchNotifications,
+        notifications,
+      }}
     >
       {children}
     </SocketContext.Provider>

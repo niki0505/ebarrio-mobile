@@ -75,7 +75,12 @@ const OfflineScreen = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -85,56 +90,20 @@ const OfflineScreen = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: insets.bottom,
               backgroundColor: "#BC0F0F",
             },
           ]}
         >
           {!isEmergencyClicked && (
             <>
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 20,
-                  textAlign: "center",
-                  fontWeight: "QuicksandBold",
-                }}
-              >
-                You are currently offline
-              </Text>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <View
-                  style={{
-                    width: "80%",
-                    height: "90%",
-                    flexDirection: "column",
-                    gap: 20,
-                  }}
-                >
+              <Text style={MyStyles.offHeader}>You are currently offline</Text>
+              <View style={MyStyles.offCenteredView}>
+                <View style={MyStyles.offBtnCardContainer}>
                   <TouchableOpacity
                     onPress={() => navigation.navigate("Readiness")}
-                    style={{
-                      backgroundColor: "#fff",
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRadius: 15,
-                    }}
+                    style={MyStyles.offBtnCard}
                   >
-                    <View
-                      style={{
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 10,
-                      }}
-                    >
+                    <View style={MyStyles.offBtnContent}>
                       <MaterialCommunityIcons
                         name="lightbulb-on"
                         size={120}
@@ -160,22 +129,9 @@ const OfflineScreen = () => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => setEmergencyClicked(true)}
-                    style={{
-                      backgroundColor: "#fff",
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRadius: 15,
-                    }}
+                    style={MyStyles.offBtnCard}
                   >
-                    <View
-                      style={{
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 10,
-                      }}
-                    >
+                    <View style={MyStyles.offBtnContent}>
                       <MaterialIcons name="call" size={120} color="#BC0F0F" />
                       <Text
                         style={[
@@ -243,15 +199,7 @@ const OfflineScreen = () => {
                     <TouchableOpacity
                       key={hotline._id}
                       onPress={() => handleCall(hotline.contactnumber)}
-                      style={[
-                        MyStyles.input,
-                        {
-                          flexDirection: "row",
-                          backgroundColor: "#fff",
-                          alignItems: "center",
-                          padding: 10,
-                        },
-                      ]}
+                      style={[MyStyles.input, MyStyles.offHotlineItem]}
                     >
                       <MaterialIcons
                         name="call"
@@ -260,21 +208,14 @@ const OfflineScreen = () => {
                         style={{ marginRight: 10 }}
                       />
                       <View>
-                        <Text
-                          style={{
-                            color: "#04384E",
-                            fontFamily: "REMSemiBold",
-                            fontSize: 16,
-                          }}
-                        >
+                        <Text style={MyStyles.offHotlineName}>
                           {hotline.name.toUpperCase()}
                         </Text>
                         <Text
-                          style={{
-                            color: "#04384E",
-                            fontFamily: "QuicksandSemiBold",
-                            fontSize: 16,
-                          }}
+                          style={[
+                            MyStyles.offHotlineName,
+                            { fontFamily: "QuicksandSemiBold" },
+                          ]}
                         >
                           {hotline.contactnumber}
                         </Text>

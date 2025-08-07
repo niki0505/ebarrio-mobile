@@ -34,6 +34,7 @@ const EditSecurityQuestions = () => {
     { question: "", answer: "" },
   ]);
   const [securePass, setsecurePass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const togglesecurePass = () => {
     setsecurePass(!securePass);
@@ -139,6 +140,9 @@ const EditSecurityQuestions = () => {
   };
 
   const handleQuestionsChange = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put("/changesecurityquestions", {
         securityquestions: modifiedQuestions,
@@ -162,12 +166,19 @@ const EditSecurityQuestions = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -177,7 +188,7 @@ const EditSecurityQuestions = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: insets.bottom + 70,
+              gap: 10,
             },
           ]}
         >
@@ -187,10 +198,8 @@ const EditSecurityQuestions = () => {
             size={24}
             color="#04384E"
           />
-          <Text style={[MyStyles.header, { marginTop: 20 }]}>
-            Edit Security Questions
-          </Text>
-          <View style={{ gap: 15, marginVertical: 30 }}>
+          <Text style={MyStyles.servicesHeader}>Change Security Questions</Text>
+          <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>Security Question #1</Text>
               <Dropdown
@@ -204,16 +213,6 @@ const EditSecurityQuestions = () => {
                     value: ques,
                   }))}
                 placeholder="Select"
-                placeholderStyle={{
-                  color: "#808080",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
-                selectedTextStyle={{
-                  color: "#000",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
                 onChange={(item) =>
                   handleSecurityChange(0, "question", item.value)
                 }
@@ -243,16 +242,6 @@ const EditSecurityQuestions = () => {
                     value: ques,
                   }))}
                 placeholder="Select"
-                placeholderStyle={{
-                  color: "#808080",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
-                selectedTextStyle={{
-                  color: "#000",
-                  fontFamily: "QuicksandMedium",
-                  fontSize: 16,
-                }}
                 onChange={(item) =>
                   handleSecurityChange(1, "question", item.value)
                 }
@@ -281,12 +270,7 @@ const EditSecurityQuestions = () => {
                   style={[MyStyles.input, { paddingRight: 40 }]}
                 />
                 <TouchableOpacity
-                  style={{
-                    position: "absolute",
-                    right: 10,
-                    top: "50%",
-                    transform: [{ translateY: -12 }],
-                  }}
+                  style={MyStyles.eyeToggle}
                   onPress={togglesecurePass}
                 >
                   <Ionicons
@@ -296,21 +280,19 @@ const EditSecurityQuestions = () => {
                   />
                 </TouchableOpacity>
                 {passError ? (
-                  <Text
-                    style={{
-                      color: "red",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                  >
-                    {passError}
-                  </Text>
+                  <Text style={MyStyles.errorMsg}>{passError}</Text>
                 ) : null}
               </View>
             </View>
           </View>
-          <TouchableOpacity onPress={handleConfirm} style={MyStyles.button}>
-            <Text style={MyStyles.buttonText}>Save Changes</Text>
+          <TouchableOpacity
+            onPress={handleConfirm}
+            style={MyStyles.button}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Saving..." : "Save"}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

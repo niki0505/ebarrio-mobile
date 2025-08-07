@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
@@ -27,60 +27,36 @@ const BrgyCalendar = () => {
   ];
 
   const CategoryItem = ({ color, label }) => (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 5,
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: color,
-          width: 20,
-          height: 20,
-          borderRadius: 5,
-        }}
-      />
-      <Text style={{ fontSize: 13, fontFamily: "REMRegular" }}>{label}</Text>
+    <View style={MyStyles.legendsRowWrapper}>
+      <View style={[MyStyles.categoriesColors, { backgroundColor: color }]} />
+      <Text style={MyStyles.categoriesText}>{label}</Text>
     </View>
   );
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
-      <ScrollView
-        contentContainerStyle={[
-          MyStyles.scrollContainer,
-          {
-            paddingBottom: insets.bottom + 70,
-          },
-        ]}
-      >
+      <ScrollView contentContainerStyle={[MyStyles.scrollContainer]}>
         <MaterialIcons
           onPress={() => navigation.navigate("BottomTabs")}
           name="arrow-back-ios"
           size={24}
           color="#04384E"
         />
-        <Text style={[MyStyles.header, { marginTop: 20 }]}>Calendar</Text>
+        <Text style={MyStyles.servicesHeader}>Calendar</Text>
 
         <View
           style={{
             marginTop: 20,
           }}
         >
-          <Text
-            style={{
-              fontSize: 24,
-              textAlign: "center",
-              marginBottom: 20,
-              color: "#04384E",
-              fontFamily: "QuicksandBold",
-            }}
-          >
+          <Text style={MyStyles.dateText}>
             {currentDate.toLocaleString("en-US", {
               month: "long",
               year: "numeric",
@@ -103,31 +79,13 @@ const BrgyCalendar = () => {
             renderEvent={(event) => {
               return (
                 <View
-                  style={{
-                    backgroundColor: event.backgroundColor || "#3174ad",
-                    borderRadius: 10,
-                    padding: 5,
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                  }}
+                  style={[
+                    MyStyles.calendarEventWrapper,
+                    { backgroundColor: event.backgroundColor || "#3174ad" },
+                  ]}
                 >
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontSize: 10,
-                      fontFamily: "QuicksandBold",
-                    }}
-                  >
-                    {event.title}
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontSize: 10,
-                      fontFamily: "QuicksandMedium",
-                    }}
-                  >
+                  <Text style={MyStyles.calendarEventTitle}>{event.title}</Text>
+                  <Text style={MyStyles.calendarEventTime}>
                     {new Date(event.start).toLocaleTimeString("en-US", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -139,16 +97,9 @@ const BrgyCalendar = () => {
           />
         </View>
 
-        <View style={{ flexDirection: "row", gap: 10, width: "100%" }}>
+        <View style={MyStyles.legendsRowWrapper}>
           {categories.map((column, columnIndex) => (
-            <View
-              key={columnIndex}
-              style={{
-                flexDirection: "column",
-                gap: 10,
-                alignItems: "flex-start",
-              }}
-            >
+            <View key={columnIndex} style={MyStyles.legendsColWrapper}>
               {column.map((item, index) => (
                 <CategoryItem
                   key={index}
@@ -161,14 +112,7 @@ const BrgyCalendar = () => {
         </View>
 
         <View>
-          <Text
-            style={{
-              color: "#04384E",
-              fontSize: 20,
-              fontFamily: "REMMedium",
-              marginTop: 30,
-            }}
-          >
+          <Text style={[MyStyles.subHeader, { marginTop: 30 }]}>
             Important Events
           </Text>
 
@@ -186,20 +130,15 @@ const BrgyCalendar = () => {
                 key={index}
                 style={[
                   MyStyles.shadow,
+                  MyStyles.importantEventsWrapper,
                   {
                     backgroundColor: event.backgroundColor || "#3174ad",
-                    padding: 10,
-                    borderRadius: 10,
-                    marginTop: 10,
-                    gap: 5,
                   },
                 ]}
               >
                 <Text
                   style={{
-                    color: "#fff",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
+                    importantEventsDate,
                   }}
                 >
                   📅{" "}
@@ -212,9 +151,7 @@ const BrgyCalendar = () => {
 
                 <Text
                   style={{
-                    color: "#fff",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
+                    importantEventsDate,
                   }}
                 >
                   🕒{" "}
@@ -229,16 +166,7 @@ const BrgyCalendar = () => {
                   })}
                 </Text>
 
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 16,
-                    marginTop: 10,
-                    fontFamily: "QuicksandMedium",
-                  }}
-                >
-                  {event.title}
-                </Text>
+                <Text style={MyStyles.importantEventsTitle}>{event.title}</Text>
               </View>
             ))}
         </View>

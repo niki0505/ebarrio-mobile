@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   Alert,
@@ -19,14 +18,17 @@ import api from "../api";
 import { InfoContext } from "../context/InfoContext";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Calendar } from "react-native-calendars";
+
+//ICONS
+import { MaterialIcons } from "@expo/vector-icons";
 
 const CourtReservations = () => {
   const insets = useSafeAreaInsets();
   const { fetchReservations, courtreservations } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const [reservationForm, setReservationForm] = useState({
     resID: user.resID || "",
@@ -296,6 +298,9 @@ const CourtReservations = () => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     const combineDateAndTime = (dateStr, timeObj) => {
       const date = new Date(dateStr);
       date.setHours(timeObj.getHours());
@@ -326,45 +331,40 @@ const CourtReservations = () => {
         starttime: combineDateAndTime(date, times.starttime),
         endtime: combineDateAndTime(date, times.endtime),
       };
-
-      try {
-        await api.post("/sendreservationrequest", {
-          reservationForm: {
-            ...reservationForm,
-            times: preparedTimes,
-          },
-        });
-        navigation.navigate("SuccessfulPage", {
-          service: "Reservation",
-        });
-      } catch (error) {
-        console.log("Reservation submission error:", error);
-        Alert.alert("Error", "Failed to submit reservation. Please try again.");
-      }
+    }
+    try {
+      await api.post("/sendreservationrequest", {
+        reservationForm: {
+          ...reservationForm,
+          times: preparedTimes,
+        },
+      });
+      navigation.navigate("SuccessfulPage", {
+        service: "Reservation",
+      });
+    } catch (error) {
+      console.log("Reservation submission error:", error);
+      Alert.alert("Error", "Failed to submit reservation. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const renderDateSelector = () => {
     if (reservationForm.date.length === 0) return null;
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: 10,
-          marginTop: 10,
-        }}
-      >
+      <View style={MyStyles.reserveDateWrapper}>
         {reservationForm.date.map((date) => (
           <TouchableOpacity
             key={date}
             onPress={() => setSelectedDateForTime(date)}
-            style={{
-              padding: 8,
-              borderRadius: 5,
-              backgroundColor:
-                selectedDateForTime === date ? "#00adf5" : "#ddd",
-            }}
+            style={[
+              MyStyles.reserveDateBtn,
+              {
+                backgroundColor:
+                  selectedDateForTime === date ? "#00adf5" : "#ddd",
+              },
+            ]}
           >
             <Text
               style={{ color: selectedDateForTime === date ? "#fff" : "#000" }}
@@ -382,17 +382,19 @@ const CourtReservations = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
         <ScrollView
-          contentContainerStyle={[
-            MyStyles.scrollContainer,
-            { paddingBottom: 20, gap: 10 },
-          ]}
+          contentContainerStyle={[MyStyles.scrollContainer, { gap: 10 }]}
         >
           <MaterialIcons
             onPress={() => navigation.navigate("BottomTabs")}
@@ -400,42 +402,43 @@ const CourtReservations = () => {
             size={30}
             color="#04384E"
           />
-          <Text style={[MyStyles.header, { marginTop: 20, marginBottom: 0 }]}>
-            Court Reservation
-          </Text>
+          <Text style={MyStyles.servicesHeader}>Court Reservation</Text>
           <Text style={MyStyles.formMessage}>
             Please fill out the required information for reserving a court
           </Text>
 
-          <View style={{}}>
-            <Text style={MyStyles.inputLabel}>
-              Purpose <Text style={{ color: "red" }}>*</Text>
-            </Text>
-            <Dropdown
-              labelField="label"
-              valueField="value"
-              value={reservationForm.purpose}
-              data={purpose.map((p) => ({ label: p, value: p }))}
-              onChange={(item) => onPurposeChange(item.value)}
-              placeholder="Select purpose"
-              style={MyStyles.input}
-            />
+          <View style={MyStyles.servicesContentWrapper}>
+            <View>
+              <Text style={MyStyles.inputLabel}>
+                Purpose <Text style={{ color: "red" }}>*</Text>
+              </Text>
+              <Dropdown
+                labelField="label"
+                valueField="value"
+                value={reservationForm.purpose}
+                data={purpose.map((p) => ({ label: p, value: p }))}
+                onChange={(item) => onPurposeChange(item.value)}
+                placeholder="Select purpose"
+                style={MyStyles.input}
+              />
+            </View>
 
-            <Text style={[MyStyles.inputLabel, { marginTop: 15 }]}>
-              Select Date(s) <Text style={{ color: "red" }}>*</Text>
-            </Text>
-            <Calendar
-              markingType={"multi-dot"}
-              markedDates={markedDates}
-              onDayPress={onDayPress}
-              minDate={new Date()}
-            />
-
-            {renderDateSelector()}
+            <View>
+              <Text style={MyStyles.inputLabel}>
+                Select Date(s) <Text style={{ color: "red" }}>*</Text>
+              </Text>
+              <Calendar
+                markingType={"multi-dot"}
+                markedDates={markedDates}
+                onDayPress={onDayPress}
+                minDate={new Date()}
+              />
+              {renderDateSelector()}
+            </View>
 
             {selectedDateForTime && (
               <>
-                <View style={{ marginTop: 15 }}>
+                <View>
                   <Text style={MyStyles.inputLabel}>
                     Start Time for {selectedDateForTime}
                     <Text style={{ color: "red" }}>*</Text>
@@ -468,7 +471,7 @@ const CourtReservations = () => {
                   />
                 )}
 
-                <View style={{ marginTop: 15 }}>
+                <View>
                   <Text style={MyStyles.inputLabel}>
                     End Time for {selectedDateForTime}
                     <Text style={{ color: "red" }}>*</Text>
@@ -503,18 +506,23 @@ const CourtReservations = () => {
               </>
             )}
 
-            <Text style={[MyStyles.inputLabel, { marginTop: 15 }]}>Amount</Text>
-            <TextInput
-              editable={false}
-              value={reservationForm.amount}
-              style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
-            />
+            <View>
+              <Text style={MyStyles.inputLabel}>Amount</Text>
+              <TextInput
+                editable={false}
+                value={reservationForm.amount}
+                style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
+              />
+            </View>
 
             <TouchableOpacity
-              style={[MyStyles.button, { marginTop: 30 }]}
+              style={MyStyles.button}
               onPress={handleConfirm}
+              disabled={loading}
             >
-              <Text style={MyStyles.buttonText}>Submit</Text>
+              <Text style={MyStyles.buttonText}>
+                {loading ? "Submitting..." : "Submit"}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

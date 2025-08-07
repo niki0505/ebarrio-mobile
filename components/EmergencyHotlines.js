@@ -1,8 +1,6 @@
 import {
-  StyleSheet,
   Text,
   View,
-  Alert,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
@@ -10,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -30,9 +29,16 @@ const EmergencyHotlines = () => {
   );
   const [search, setSearch] = useState("");
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchEmergencyHotlines();
+    const loadData = async () => {
+      setLoading(true);
+      await fetchEmergencyHotlines();
+      setLoading(false);
+    };
+
+    loadData();
   }, []);
 
   const handleCall = async (contactName, contactNumber) => {
@@ -73,7 +79,12 @@ const EmergencyHotlines = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }} // para hindi nago-overlap sa status bar when scrolled
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -122,7 +133,12 @@ const EmergencyHotlines = () => {
               directed to your contact.
             </Text>
 
-            {filteredEmergencyHotlines.length === 0 ? (
+            {loading ? (
+              <View style={{ paddingVertical: 30, alignItems: "center" }}>
+                <ActivityIndicator size="large" color="#04384E" />
+              </View>
+            ) : filteredEmergencyHotlines.filter((e) => e.status !== "Archived")
+                .length === 0 ? (
               <Text
                 style={{
                   color: "#fff",
@@ -130,7 +146,7 @@ const EmergencyHotlines = () => {
                   fontSize: 16,
                 }}
               >
-                No results found
+                No hotlines found.
               </Text>
             ) : (
               filteredEmergencyHotlines
@@ -145,7 +161,6 @@ const EmergencyHotlines = () => {
                       MyStyles.input,
                       {
                         flexDirection: "row",
-                        backgroundColor: "#fff",
                         alignItems: "center",
                       },
                     ]}

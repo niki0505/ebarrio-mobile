@@ -76,31 +76,24 @@ const Notification = () => {
         style={{
           flex: 1,
           paddingTop: insets.top,
-          backgroundColor: "#F0F4F7",
+          paddingBottom: insets.bottom,
+          backgroundColor: "#DCE5EB",
         }}
       >
-        <View style={{ flex: 1, position: "relative" }}>
+        <View style={MyStyles.notScrollWrapper}>
           <View
-            style={{
-              paddingHorizontal: 20,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            style={[
+              MyStyles.rowAlignment,
+              { paddingHorizontal: 20, paddingVertical: 10 },
+            ]}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            >
+            <View style={MyStyles.rowAlignment}>
               <Entypo
                 name="menu"
                 size={35}
                 color="#04384E"
                 onPress={() => navigation.openDrawer()}
-                style={{ marginTop: 5, marginRight:10 }}
+                style={MyStyles.burgerIcon}
               />
               <View>
                 <Text style={MyStyles.header}>Notifications</Text>
@@ -148,100 +141,68 @@ const Notification = () => {
             </View>
           )}
           <TouchableOpacity onPress={markAllAsRead}>
-            <Text
-              style={{
-                marginTop: 10,
-                paddingHorizontal: 20,
-                color: "#04384E",
-                fontSize: 16,
-                fontFamily: "REMSemiBold",
-                textAlign: "right",
-              }}
-            >
-              Mark all as read
-            </Text>
+            <Text style={MyStyles.markAllText}>Mark all as read</Text>
           </TouchableOpacity>
 
           <ScrollView
             contentContainerStyle={[
               MyStyles.scrollContainer,
               {
-                paddingHorizontal: 20,
-                paddingTop: 0,
-                paddingBottom: 120,
+                padding: 20,
+                paddingBottom: insets.bottom + 70,
               },
             ]}
             showsVerticalScrollIndicator={false}
           >
-            {filteredNotifications
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map((notif, index) => {
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleNotif(notif._id, notif.redirectTo)}
-                    style={{
-                      flexDirection: "column",
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#C1C0C0",
-                      padding: 1,
-                      position: "relative",
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginVertical: 10,
-                        paddingRight: 20,
-                      }}
+            {filteredNotifications.length === 0 ? (
+              <Text
+                style={[
+                  MyStyles.textMedium,
+                  { textAlign: "center", marginTop: 20 },
+                ]}
+              >
+                You're all caught up! No new notifications.
+              </Text>
+            ) : (
+              filteredNotifications
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((notif, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => handleNotif(notif._id, notif.redirectTo)}
+                      style={MyStyles.notifLine}
                     >
-                      <View style={{ flexDirection: "column", flex: 1 }}>
-                        <Text
-                          style={{
-                            color: "#04384E",
-                            fontSize: 16,
-                            fontFamily: "QuicksandBold",
-                          }}
-                        >
-                          {notif.title}
-                        </Text>
-                        <Text
-                          style={{
-                            color: "#04384E",
-                            fontSize: 16,
-                            fontFamily: "QuicksandSemiBold",
-                          }}
-                        >
-                          {truncateNotifMessage(notif.message)}
-                        </Text>
-                        <Text
-                          style={{
-                            color: "#808080",
-                            fontSize: 16,
-                            fontFamily: "QuicksandSemiBold",
-                          }}
-                        >
-                          {dayjs(notif.createdAt).fromNow()}
-                        </Text>
+                      <View style={MyStyles.notifRowSpacing}>
+                        <View style={{ flexDirection: "column", flex: 1 }}>
+                          <Text style={MyStyles.notifTitleMessage}>
+                            {notif.title}
+                          </Text>
+                          <Text style={MyStyles.notifTitleMessage}>
+                            {truncateNotifMessage(notif.message)}
+                          </Text>
+                          <Text
+                            style={[MyStyles.textMedium, { color: "808080" }]}
+                          >
+                            {dayjs(notif.createdAt).fromNow()}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
 
-                    <View
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: 10,
-                        width: 8,
-                        height: 8,
-                        borderRadius: 4,
-                        backgroundColor: notif.read ? "transparent" : "#3B82F6",
-                        transform: [{ translateY: -4 }],
-                      }}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
+                      <View
+                        style={[
+                          MyStyles.notifCircle,
+                          {
+                            backgroundColor: notif.read
+                              ? "transparent"
+                              : "#3B82F6",
+                          },
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  );
+                })
+            )}
           </ScrollView>
         </View>
         {/* Fixed Floating Chat Button */}

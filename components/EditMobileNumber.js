@@ -1,10 +1,8 @@
 import {
-  StyleSheet,
   View,
   Text,
   SafeAreaView,
   ScrollView,
-  Touchable,
   TouchableOpacity,
   TextInput,
   Alert,
@@ -18,12 +16,12 @@ import { InfoContext } from "../context/InfoContext";
 import { OtpInput } from "react-native-otp-entry";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import api from "../api";
-import AppLogo from "../assets/applogo-darkbg.png";
+import { OtpContext } from "../context/OtpContext";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { OtpContext } from "../context/OtpContext";
+import AppLogo from "../assets/applogo-darkbg.png";
 
 const EditMobileNumber = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
@@ -41,6 +39,7 @@ const EditMobileNumber = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [securePass, setsecurePass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const mobnum =
     userDetails.resID?.mobilenumber || userDetails.empID?.resID?.mobilenumber;
@@ -100,6 +99,9 @@ const EditMobileNumber = () => {
   };
 
   const checkPassword = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.post("/checkpassword", { password });
       handleOTP();
@@ -112,6 +114,8 @@ const EditMobileNumber = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
   const handleMobileNumberChange = async () => {
@@ -310,16 +314,29 @@ const EditMobileNumber = () => {
     </View>
   );
 
+  const maskMobileNumber = (number) => {
+    if (!number || number.length < 4) return number;
+    const start = number.slice(0, 2);
+    const end = number.slice(-2);
+    const masked = "*".repeat(number.length - 4);
+    return `${start}${masked}${end}`;
+  };
+
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       {!isVerified ? (
         <ScrollView
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: insets.bottom + 70,
+              gap: 10,
             },
           ]}
         >
@@ -329,21 +346,13 @@ const EditMobileNumber = () => {
             size={24}
             color="#04384E"
           />
-          <Text style={[MyStyles.header, { marginTop: 10 }]}>
-            Edit Mobile Number
-          </Text>
+          <Text style={MyStyles.servicesHeader}>Change Mobile Number</Text>
 
-          <View style={{ gap: 10, marginVertical: 30 }}>
+          <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>Current Mobile Number</Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "black",
-                  fontFamily: "QuicksandSemiBold",
-                }}
-              >
-                {mobnum}
+              <Text style={[MyStyles.inputLabel, { color: "#000" }]}>
+                {maskMobileNumber(mobnum)}
               </Text>
             </View>
             <View>
@@ -356,15 +365,7 @@ const EditMobileNumber = () => {
                 style={MyStyles.input}
               />
               {mobileError ? (
-                <Text
-                  style={{
-                    color: "red",
-                    fontFamily: "QuicksandMedium",
-                    fontSize: 16,
-                  }}
-                >
-                  {mobileError}
-                </Text>
+                <Text style={MyStyles.errorMsg}>{mobileError}</Text>
               ) : null}
             </View>
 
@@ -378,12 +379,7 @@ const EditMobileNumber = () => {
                   style={[MyStyles.input, { paddingRight: 40 }]}
                 />
                 <TouchableOpacity
-                  style={{
-                    position: "absolute",
-                    right: 10,
-                    top: "50%",
-                    transform: [{ translateY: -12 }],
-                  }}
+                  style={MyStyles.eyeToggle}
                   onPress={togglesecurePass}
                 >
                   <Ionicons
@@ -393,21 +389,19 @@ const EditMobileNumber = () => {
                   />
                 </TouchableOpacity>
                 {passError ? (
-                  <Text
-                    style={{
-                      color: "red",
-                      fontFamily: "QuicksandMedium",
-                      fontSize: 16,
-                    }}
-                  >
-                    {passError}
-                  </Text>
+                  <Text style={MyStyles.errorMsg}>{passError}</Text>
                 ) : null}
               </View>
             </View>
           </View>
-          <TouchableOpacity onPress={handleConfirm} style={MyStyles.button}>
-            <Text style={MyStyles.buttonText}>Save Changes</Text>
+          <TouchableOpacity
+            onPress={handleConfirm}
+            style={MyStyles.button}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Verifying..." : "Verify"}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       ) : (

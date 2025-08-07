@@ -1,10 +1,8 @@
 import {
-  StyleSheet,
   View,
   Text,
   SafeAreaView,
   ScrollView,
-  Touchable,
   TouchableOpacity,
   TextInput,
   Alert,
@@ -33,6 +31,7 @@ const ChangePassword = () => {
   const [secureCurrPass, setSecureCurrPass] = useState(true);
   const [secureNewPass, setSecureNewPass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const togglesecureCurrPass = () => {
     setSecureCurrPass(!secureCurrPass);
@@ -142,6 +141,9 @@ const ChangePassword = () => {
   };
 
   const handlePasswordChange = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put("/changepassword", {
         newpassword,
@@ -158,18 +160,25 @@ const ChangePassword = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#DCE5EB",
+      }}
     >
       <ScrollView
         contentContainerStyle={[
           MyStyles.scrollContainer,
           {
-            paddingBottom: insets.bottom + 70,
+            gap: 10,
           },
         ]}
       >
@@ -179,11 +188,9 @@ const ChangePassword = () => {
           size={24}
           color="#04384E"
         />
-        <Text style={[MyStyles.header, { marginTop: 20 }]}>
-          Change Password
-        </Text>
+        <Text style={MyStyles.servicesHeader}>Change Password</Text>
 
-        <View style={{ gap: 15, marginVertical: 30 }}>
+        <View style={MyStyles.servicesContentWrapper}>
           <View>
             <Text style={MyStyles.inputLabel}>Current Password</Text>
             <View style={{ position: "relative" }}>
@@ -195,12 +202,7 @@ const ChangePassword = () => {
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  right: 10,
-                  top: "50%",
-                  transform: [{ translateY: -12 }],
-                }}
+                style={MyStyles.eyeToggle}
                 onPress={togglesecureCurrPass}
               >
                 <Ionicons
@@ -210,15 +212,7 @@ const ChangePassword = () => {
                 />
               </TouchableOpacity>
               {passError ? (
-                <Text
-                  style={{
-                    color: "red",
-                    fontFamily: "QuicksandMedium",
-                    fontSize: 16,
-                  }}
-                >
-                  {passError}
-                </Text>
+                <Text style={MyStyles.errorMsg}>{passError}</Text>
               ) : null}
             </View>
           </View>
@@ -234,12 +228,7 @@ const ChangePassword = () => {
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  right: 10,
-                  top: "50%",
-                  transform: [{ translateY: -12 }],
-                }}
+                style={MyStyles.eyeToggle}
                 onPress={togglesecureNewPass}
               >
                 <Ionicons
@@ -251,14 +240,7 @@ const ChangePassword = () => {
               {passwordErrors.length > 0 && (
                 <View style={{ marginTop: 5, width: 300 }}>
                   {passwordErrors.map((error, index) => (
-                    <Text
-                      key={index}
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
+                    <Text key={index} style={MyStyles.errorMsg}>
                       {error}
                     </Text>
                   ))}
@@ -278,12 +260,7 @@ const ChangePassword = () => {
                 style={[MyStyles.input, { paddingRight: 40 }]}
               />
               <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  right: 10,
-                  top: "50%",
-                  transform: [{ translateY: -12 }],
-                }}
+                style={MyStyles.eyeToggle}
                 onPress={togglesecureConfirmPass}
               >
                 <Ionicons
@@ -295,14 +272,7 @@ const ChangePassword = () => {
               {repasswordErrors.length > 0 && (
                 <View style={{ marginTop: 5, width: 300 }}>
                   {repasswordErrors.map((error, index) => (
-                    <Text
-                      key={index}
-                      style={{
-                        color: "red",
-                        fontFamily: "QuicksandMedium",
-                        fontSize: 16,
-                      }}
-                    >
+                    <Text key={index} style={MyStyles.errorMsg}>
                       {error}
                     </Text>
                   ))}
@@ -311,8 +281,14 @@ const ChangePassword = () => {
             </View>
           </View>
         </View>
-        <TouchableOpacity onPress={handleConfirm} style={MyStyles.button}>
-          <Text style={MyStyles.buttonText}>Save Changes</Text>
+        <TouchableOpacity
+          onPress={handleConfirm}
+          style={MyStyles.button}
+          disabled={loading}
+        >
+          <Text style={MyStyles.buttonText}>
+            {loading ? "Saving..." : "Save"}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

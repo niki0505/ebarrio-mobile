@@ -1,10 +1,8 @@
 import {
-  StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  Alert,
   SafeAreaView,
   Image,
 } from "react-native";
@@ -29,6 +27,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [secureLoginPass, setsecureLoginPass] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Toggle Password Visibility
   const togglesecureLoginPass = () => {
@@ -36,6 +35,20 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    if (!username && !password) {
+      alert("Username and password are required.");
+      return;
+    } else if (!username) {
+      alert("Username is required.");
+      return;
+    } else if (!password) {
+      alert("Password is required.");
+      return;
+    }
+
+    if (loading) return;
+
+    setLoading(true);
     try {
       const res = await api.post("/checkcredentials", {
         username,
@@ -43,15 +56,15 @@ const Login = () => {
       });
       if (res.status === 200) {
         if (res.data.message === "Credentials verified") {
-          await login({ username, password });
-          // const response = await api.get(`/getmobilenumber/${username}`);
-          // sendOTP(username, response.data.mobilenumber);
-          // navigation.navigate("OTP", {
-          //   navigatelink: "BottomTabs",
-          //   username,
-          //   mobilenumber: response.data.mobilenumber,
-          //   password: password,
-          // });
+          // await login({ username, password });
+          const response = await api.get(`/getmobilenumber/${username}`);
+          sendOTP(username, response.data.mobilenumber);
+          navigation.navigate("OTP", {
+            navigatelink: "BottomTabs",
+            username,
+            mobilenumber: response.data.mobilenumber,
+            password: password,
+          });
         } else if (res.data.message === "Token verified successfully!") {
           navigation.navigate("SetPassword", {
             username,
@@ -67,32 +80,29 @@ const Login = () => {
         console.log("❌ Network or unknown error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#F0F4F7" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#04384E",
+      }}
     >
-      <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-        <View style={{ flex: 1, alignSelf: "center" }}>
-          <Image source={AppLogo} style={{ width: "180", height: "180" }} />
+      <View style={MyStyles.loginWrapper}>
+        <View style={MyStyles.loginTopWrapper}>
+          <Image source={AppLogo} style={MyStyles.loginLogo} />
         </View>
 
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "center",
-            backgroundColor: "#F0F4F7",
-            borderRadius: 30,
-            flex: 3,
-            padding: 30,
-            bottom: "-10",
-          }}
-        >
+        <View style={MyStyles.loginBottomWrapper}>
           <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
             Login to your Account
           </Text>
-          <View style={{ marginVertical: 30, gap: 15, width: "100%" }}>
+          <View style={MyStyles.loginFormWrapper}>
             <View
               style={{
                 position: "relative",
@@ -156,12 +166,7 @@ const Login = () => {
               />
               <TouchableOpacity
                 onPress={togglesecureLoginPass}
-                style={{
-                  position: "absolute",
-                  right: 10,
-                  top: "50%",
-                  transform: [{ translateY: -12 }],
-                }}
+                style={MyStyles.eyeToggle}
               >
                 <Ionicons
                   name={secureLoginPass ? "eye-off" : "eye"}
@@ -173,38 +178,26 @@ const Login = () => {
 
             <Text
               onPress={() => navigation.navigate("ForgotPassword")}
-              style={{
-                color: "#006EFF",
-                alignSelf: "flex-end",
-                fontSize: 16,
-                fontFamily: "QuicksandBold",
-                marginTop: "-10",
-              }}
+              style={MyStyles.forgotPassText}
             >
               Forgot Password?
             </Text>
           </View>
 
-          <TouchableOpacity onPress={handleLogin} style={MyStyles.button}>
-            <Text style={MyStyles.buttonText}>Log In</Text>
+          <TouchableOpacity
+            onPress={handleLogin}
+            style={MyStyles.button}
+            disabled={loading}
+          >
+            <Text style={MyStyles.buttonText}>
+              {loading ? "Logging in..." : "Login"}
+            </Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
-            <Text
-              style={{
-                color: "#808080",
-                fontSize: 16,
-                fontFamily: "QuicksandSemiBold",
-              }}
-            >
-              Don't have an account?
-            </Text>
+            <Text style={MyStyles.byClickingText}>Don't have an account?</Text>
             <Text
               onPress={() => navigation.navigate("Signup")}
-              style={{
-                color: "#006EFF",
-                fontSize: 16,
-                fontFamily: "QuicksandBold",
-              }}
+              style={MyStyles.signUpText}
             >
               Sign up
             </Text>

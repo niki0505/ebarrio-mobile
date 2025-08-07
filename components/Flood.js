@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Text,
   View,
@@ -51,7 +50,12 @@ const Flood = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top, backgroundColor: "#BC0F0F" }}
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        backgroundColor: "#BC0F0F",
+      }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -60,7 +64,10 @@ const Flood = () => {
         <ScrollView
           contentContainerStyle={[
             MyStyles.scrollContainer,
-            { paddingBottom: 20, gap: 20, backgroundColor: "#BC0F0F" },
+            {
+              gap: 20,
+              backgroundColor: "#BC0F0F",
+            },
           ]}
         >
           <MaterialIcons
@@ -71,7 +78,7 @@ const Flood = () => {
           />
 
           <View style={{ alignItems: "center" }}>
-            <Image source={floodImg} style={{ width: 160, height: 160 }} />
+            <Image source={floodImg} style={MyStyles.disasterSafetyImg} />
           </View>
 
           <Text
@@ -83,63 +90,16 @@ const Flood = () => {
           {tipsData.map((section, index) => (
             <View
               key={index}
-              style={{
-                backgroundColor: "#fff",
-                borderRadius: 15,
-                padding: 20,
-                width: "100%",
-              }}
+              style={[MyStyles.shadow, MyStyles.disasterSafetyCard]}
             >
-              <Text
-                style={{
-                  fontSize: 22,
-                  fontFamily: "REMBold",
-                  marginBottom: 10,
-                  color: "#BC0F0F",
-                }}
-              >
-                {section.phase}
-              </Text>
+              <Text style={MyStyles.sectionPhase}>{section.phase}</Text>
 
               {section.steps.map((step, stepIndex) => (
-                <View
-                  key={stepIndex}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "flex-start",
-                    marginBottom: 10,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      backgroundColor: "#BC0F0F",
-                      borderRadius: 15,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginRight: 10,
-                      marginTop: 4,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontWeight: "bold",
-                        fontSize: 16,
-                      }}
-                    >
-                      {stepIndex + 1}
-                    </Text>
+                <View key={stepIndex} style={MyStyles.sectionStepsWrapper}>
+                  <View style={MyStyles.steps}>
+                    <Text style={MyStyles.stepsNo}>{stepIndex + 1}</Text>
                   </View>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontFamily: "QuicksandMedium",
-                      color: "#333",
-                      flex: 1,
-                    }}
-                  >
+                  <Text style={MyStyles.stepsDesc}>
                     <Text style={{ fontFamily: "QuicksandBold" }}>
                       {step.split("\n")[0]}
                     </Text>

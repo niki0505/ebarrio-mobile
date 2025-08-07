@@ -8,9 +8,12 @@ import axios from "axios";
 
 export const InfoContext = createContext(undefined);
 
+const socket = io("https://ebarrio-mobile-backend.onrender.com", {
+  withCredentials: true,
+});
+
 export const InfoProvider = ({ children }) => {
   const { isAuthenticated, setUserStatus, user } = useContext(AuthContext);
-  const { socket } = useContext(SocketContext);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
@@ -20,6 +23,9 @@ export const InfoProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
   const [users, setUsers] = useState([]);
+  const [active, setActive] = useState([]);
+  const [FAQs, setFAQs] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -152,6 +158,35 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchFAQs = async () => {
+    try {
+      const response = await api.get("/getfaqs");
+      setFAQs(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch reservations:", error);
+    }
+  };
+
+  const fetchActive = async () => {
+    try {
+      const response = await api.get("/getactive");
+      setActive(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("❌ Failed to fetch reservations:", error);
+    }
+  };
+
+  const fetchChats = async () => {
+    try {
+      const response = await api.get("/getchat");
+      setChatMessages(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("❌ Failed to fetch chat:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -185,6 +220,10 @@ export const InfoProvider = ({ children }) => {
         userDetails,
         events,
         services,
+        FAQs,
+        active,
+        chatMessages,
+        setChatMessages,
         fetchServices,
         fetchUserDetails,
         fetchEmergencyHotlines,
@@ -192,6 +231,9 @@ export const InfoProvider = ({ children }) => {
         fetchResidents,
         fetchReservations,
         fetchAnnouncements,
+        fetchFAQs,
+        fetchActive,
+        fetchChats,
       }}
     >
       {children}

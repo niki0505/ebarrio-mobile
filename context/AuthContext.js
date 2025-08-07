@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [userStatus, setUserStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (userStatus && userStatus === "Deactivated") {
@@ -124,6 +125,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       await api.post("/logout");
       await SecureStore.deleteItemAsync("refreshToken");
@@ -133,6 +136,8 @@ export const AuthProvider = ({ children }) => {
       navigation.navigate("Login");
     } catch (error) {
       console.log("Error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -149,6 +154,7 @@ export const AuthProvider = ({ children }) => {
         setUserStatus,
         isFirstLaunch,
         logout,
+        loading,
         setIsAuthenticated,
       }}
     >
