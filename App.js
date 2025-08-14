@@ -9,7 +9,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { InfoProvider } from "./context/InfoContext";
 import { OtpProvider } from "./context/OtpContext";
-import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+  Modal,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { MyStyles } from "./components/stylesheet/MyStyles";
@@ -225,26 +232,20 @@ const BottomTabs = () => {
 };
 
 const DrawerContent = ({ navigation }) => {
-  const { user } = useContext(AuthContext);
-  const { logout, loading } = useContext(AuthContext);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const { user, logout, loading } = useContext(AuthContext);
+
   const handleConfirm = () => {
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            logout();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setModalVisible(true);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setModalVisible(false);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -256,6 +257,7 @@ const DrawerContent = ({ navigation }) => {
         backgroundColor: "#fff",
       }}
     >
+      {/* Profile Info */}
       <View
         style={{
           marginBottom: 40,
@@ -273,8 +275,6 @@ const DrawerContent = ({ navigation }) => {
             borderRadius: 50,
           }}
         />
-
-        {/*pa-change nalang ng name at username based sa context hindi q ma-fetch */}
         <View style={{ marginLeft: 10 }}>
           <Text
             style={{
@@ -289,27 +289,7 @@ const DrawerContent = ({ navigation }) => {
         </View>
       </View>
 
-      {/* <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        onPress={() => navigation.navigate("Home")}
-      >
-        <Ionicons name="home" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Home
-        </Text>
-      </TouchableOpacity> */}
-
+      {/* Menu Options */}
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -327,7 +307,7 @@ const DrawerContent = ({ navigation }) => {
             fontFamily: "QuicksandBold",
           }}
         >
-          Request a document
+          Request Document
         </Text>
       </TouchableOpacity>
 
@@ -348,7 +328,7 @@ const DrawerContent = ({ navigation }) => {
             fontFamily: "QuicksandBold",
           }}
         >
-          Reserve a court
+          Reserve Court
         </Text>
       </TouchableOpacity>
 
@@ -369,7 +349,7 @@ const DrawerContent = ({ navigation }) => {
             fontFamily: "QuicksandBold",
           }}
         >
-          File a blotter
+          Report Blotter
         </Text>
       </TouchableOpacity>
 
@@ -394,6 +374,7 @@ const DrawerContent = ({ navigation }) => {
           Status
         </Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -412,7 +393,7 @@ const DrawerContent = ({ navigation }) => {
             fontFamily: "QuicksandBold",
           }}
         >
-          Account settings
+          Account Settings
         </Text>
       </TouchableOpacity>
 
@@ -449,6 +430,119 @@ const DrawerContent = ({ navigation }) => {
           {loading ? "Logging out..." : "Logout"}
         </Text>
       </TouchableOpacity>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={handleCloseModal}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              width: 300,
+              alignItems: "center",
+            }}
+          >
+            <Ionicons name="help-circle-outline" size={70} color="#BC0F0F" />
+            <Text
+              style={{
+                fontSize: 18,
+                fontFamily: "REMBold",
+                marginVertical: 10,
+                color: "#808080",
+              }}
+            >
+              Log out?
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: "#808080",
+                marginBottom: 20,
+                fontFamily: "QuicksandMedium",
+                textAlign: "center",
+              }}
+            >
+              Are you sure you want to log out?
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                gap: 10,
+              }}
+            >
+              <TouchableOpacity
+                onPress={handleCloseModal}
+                style={{
+                  borderWidth: 3,
+                  borderColor: "#BC0F0F",
+                  paddingVertical: 10,
+                  paddingHorizontal: 25,
+                  borderRadius: 10,
+                  marginHorizontal: 10,
+                  width: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#BC0F0F",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                    textAlign: "center",
+                  }}
+                >
+                  NO
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={{
+                  borderWidth: 3,
+                  borderColor: "#BC0F0F",
+                  backgroundColor: "#BC0F0F",
+                  paddingVertical: 10,
+                  paddingHorizontal: 25,
+                  borderRadius: 10,
+                  marginHorizontal: 10,
+                  width: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#BC0F0F",
+                    fontSize: 16,
+                    fontFamily: "QuicksandBold",
+                    textAlign: "center",
+                    color: "#fff",
+                  }}
+                >
+                  YES
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

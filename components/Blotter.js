@@ -1,7 +1,6 @@
 import {
   Text,
   View,
-  Alert,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
@@ -17,9 +16,10 @@ import api from "../api";
 import { InfoContext } from "../context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MyStyles } from "./stylesheet/MyStyles";
+import AlertModal from "./AlertModal";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 const Blotter = () => {
   const insets = useSafeAreaInsets();
@@ -40,8 +40,8 @@ const Blotter = () => {
   };
 
   const [loading, setLoading] = useState(false);
-
   const [blotterForm, setBlotterForm] = useState(initialForm);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
 
   useEffect(() => {
     fetchResidents();
@@ -53,7 +53,7 @@ const Blotter = () => {
     let hasError = false;
 
     if (!blotterForm.typeofthecomplaint) {
-      setTypeErrors("This field is required.");
+      setTypeErrors("This field is required!");
       hasError = true;
     } else {
       setTypeErrors(null);
@@ -61,7 +61,7 @@ const Blotter = () => {
 
     if (!blotterForm.subjectID) {
       if (!blotterForm.subjectname) {
-        setSubjectError("This field is required.");
+        setSubjectError("This field is required!");
         hasError = true;
       } else {
         setSubjectError(null);
@@ -70,7 +70,7 @@ const Blotter = () => {
       setSubjectError(null);
     }
     if (!blotterForm.details) {
-      setDetailsError("This field is required.");
+      setDetailsError("This field is required!");
       hasError = true;
     } else {
       setDetailsError(null);
@@ -80,23 +80,7 @@ const Blotter = () => {
       return;
     }
 
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to file a blotter?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleSubmit();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const handleSubmit = async () => {
@@ -123,7 +107,9 @@ const Blotter = () => {
     } finally {
       setLoading(false);
     }
+    setIsConfirmModalVisible(false);
   };
+
   const handleDropdownChange = ({ target }) => {
     const { name, value } = target;
     setBlotterForm((prev) => ({
@@ -139,10 +125,10 @@ const Blotter = () => {
       [name]: value,
     }));
     if (name === "subjectname") {
-      setSubjectError(!value ? "This field is required." : null);
+      setSubjectError(!value ? "This field is required!" : null);
     }
     if (name === "details") {
-      setDetailsError(!value ? "This field is required." : null);
+      setDetailsError(!value ? "This field is required!" : null);
     }
   };
 
@@ -163,7 +149,7 @@ const Blotter = () => {
     }));
 
     if (blotterForm.subjectname) {
-      setSubjectError(!value ? "This field is required." : null);
+      setSubjectError(!value ? "This field is required!" : null);
     }
   };
 
@@ -203,16 +189,33 @@ const Blotter = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#04384E"
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("BottomTabs")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={MyStyles.backArrow}
+            />
 
-          <Text style={MyStyles.servicesHeader}>File a Blotter</Text>
+            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+              Report Blotter
+            </Text>
+          </View>
           <Text style={MyStyles.formMessage}>
-            Please select the required information for filing a blotter
+            1. Please fill out the required information to file a blotter
+            report.
+            {"\n"}
+            2. Make sure to accurately provide details, including the type of
+            incident, the name of the accused, and a clear description of what
+            happened. {"\n"}
+            3. If you're unsure about any of the information, please
+            double-check the details before submitting.
           </Text>
           <View style={MyStyles.servicesContentWrapper}>
             <View>
@@ -257,22 +260,33 @@ const Blotter = () => {
               {blotterForm.subjectname?.length > 0 &&
                 subjectSuggestions?.length > 0 && (
                   <View style={MyStyles.suggestionContainer}>
-                    {subjectSuggestions.map((res) => {
-                      const fullName = `${res.firstname} ${
-                        res.middlename ? res.middlename + " " : ""
-                      }${res.lastname}`;
-                      return (
-                        <TouchableOpacity
-                          key={res._id}
-                          onPress={() => handleSubjectSuggestionClick(res)}
-                          style={MyStyles.suggestionItem}
-                        >
-                          <Text>{fullName}</Text>
-                        </TouchableOpacity>
-                      );
-                    })}
+                    <ScrollView style={{ maxHeight: 200 }}>
+                      {/* Make this scrollable */}
+                      {subjectSuggestions.map((res) => {
+                        const fullName = `${res.firstname} ${
+                          res.middlename ? res.middlename + " " : ""
+                        }${res.lastname}`;
+                        return (
+                          <TouchableOpacity
+                            key={res._id}
+                            onPress={() => handleSubjectSuggestionClick(res)}
+                            style={MyStyles.suggestionItem}
+                          >
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: 15,
+                              }}
+                            >
+                              {fullName}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
                   </View>
                 )}
+
               {subjectError ? (
                 <Text style={MyStyles.errorMsg}>{subjectError}</Text>
               ) : null}
@@ -307,6 +321,7 @@ const Blotter = () => {
                 multiline={true}
                 numberOfLines={4}
                 maxLength={3000}
+                autoCapitalize="sentences"
                 onChangeText={(text) => handleInputChange("details", text)}
               />
 
@@ -333,6 +348,15 @@ const Blotter = () => {
               {loading ? "Submitting..." : "Submit"}
             </Text>
           </TouchableOpacity>
+
+          <AlertModal
+            isVisible={isConfirmModalVisible}
+            isConfirmationModal={true}
+            title="Report a Blotter?"
+            message="Are you sure you want to file a blotter?"
+            onClose={() => setIsConfirmModalVisible(false)}
+            onConfirm={handleSubmit}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

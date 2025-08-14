@@ -1,0 +1,64 @@
+ <View style={MyStyles.forgotCardWrapper}>
+                <View style={[MyStyles.forgotCard, { height: "60%" }]}>
+                  <ScrollView showsVerticalScrollIndicator={true}>
+                    <MaterialIcons
+                      name="arrow-back-ios"
+                      size={30}
+                      color="#04384E"
+                      style={{ alignSelf: "flex-start" }}
+                    />
+
+                    <Text style={MyStyles.header}>Security Question</Text>
+                    <Text style={MyStyles.forgotMsg}>
+                      To verify your identity, please answer your chosen
+                      security question below.
+                    </Text>
+
+                    <View style={MyStyles.loginFormWrapper}>
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          Security Question
+                          <Text style={{ color: "red" }}>*</Text>
+                        </Text>
+                        <Dropdown
+                          labelField="label"
+                          valueField="value"
+                          value={securityquestion.question}
+                          data={user.securityquestions?.map((q) => ({
+                            label: q.question,
+                            value: q.question,
+                          }))}
+                          placeholder="Select"
+                          placeholderStyle={{ color: "#808080" }}
+                          onChange={(item) =>
+                            handleInputChange("question", item.value)
+                          }
+                          style={MyStyles.input}
+                        ></Dropdown>
+                      </View>
+
+                      <View>
+                        <Text style={MyStyles.inputLabel}>
+                          Answer
+                          <Text style={{ color: "red" }}>*</Text>
+                        </Text>
+                        <TextInput
+                          onChangeText={(e) => handleInputChange("answer", e)}
+                          secureTextEntry={true}
+                          placeholder="Answer"
+                          style={MyStyles.input}
+                        />
+                      </View>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={handleQuestionVerify}
+                      style={MyStyles.button}
+                      disabled={loading}
+                    >
+                      <Text style={[MyStyles.buttonText]}>
+                        {loading ? "Verifying..." : "Verify"}
+                      </Text>
+                    </TouchableOpacity>
+                  </ScrollView>
+                </View>

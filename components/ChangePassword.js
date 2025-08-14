@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -13,10 +12,10 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { AuthContext } from "../context/AuthContext";
 import { useContext, useState } from "react";
 import api from "../api";
+import AlertModal from "./AlertModal";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 const ChangePassword = () => {
   const { logout } = useContext(AuthContext);
@@ -32,6 +31,10 @@ const ChangePassword = () => {
   const [secureNewPass, setSecureNewPass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const togglesecureCurrPass = () => {
     setSecureCurrPass(!secureCurrPass);
@@ -48,20 +51,20 @@ const ChangePassword = () => {
   const passwordValidation = (val) => {
     let errors = [];
     let formattedVal = val.replace(/\s+/g, "");
-    setNewPassword(formattedVal);
 
+    setNewPassword(formattedVal);
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (
       (formattedVal && formattedVal.length < 8) ||
       (formattedVal && formattedVal.length > 64)
     ) {
-      errors.push("Password must be between 8 and 64 characters only.");
+      errors.push("Password must be between 8 and 64 characters only!");
     }
     if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
       errors.push(
-        "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #."
+        "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #"
       );
     }
     setPasswordErrors(errors);
@@ -73,17 +76,17 @@ const ChangePassword = () => {
     setRenewPassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (formattedVal !== newpassword && formattedVal.length > 0) {
-      errors.push("Passwords do not match.");
+      errors.push("Passwords do not match!");
     }
     setRePasswordErrors(errors);
   };
 
   const handlePassChange = (input) => {
     if (input.length === 0) {
-      setPassError("This field is empty.");
+      setPassError("This field is required!");
     } else {
       setPassError("");
     }
@@ -103,7 +106,7 @@ const ChangePassword = () => {
     }
 
     if (!password) {
-      setPassError("This field is required.");
+      setPassError("This field is required!");
       hasErrors = true;
     } else {
       setPassError("");
@@ -121,23 +124,7 @@ const ChangePassword = () => {
       return;
     }
 
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to change your password?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handlePasswordChange();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const handlePasswordChange = async () => {
@@ -149,19 +136,34 @@ const ChangePassword = () => {
         newpassword,
         password,
       });
-      alert("Your password has been updated. Please log in again.");
-      logout();
+      setIsSuccess(true);
+      setAlertMessage("Password updated successfully! Please log in again.");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
+      setIsConfirmModalVisible(false);
+      setIsAlertModalVisible(true);
+      setAlertMessage(message);
+      setIsSuccess(false);
+    }
+  };
+
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    setPassword("");
+    setNewPassword("");
+    setRenewPassword("");
+
+    if (isSuccess) {
+      logout();
     }
   };
 
@@ -182,18 +184,32 @@ const ChangePassword = () => {
           },
         ]}
       >
-        <MaterialIcons
-          onPress={() => navigation.navigate("AccountSettings")}
-          name="arrow-back-ios"
-          size={24}
-          color="#04384E"
-        />
-        <Text style={MyStyles.servicesHeader}>Change Password</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <MaterialIcons
+            onPress={() => navigation.navigate("AccountSettings")}
+            name="arrow-back-ios"
+            color="#04384E"
+            size={35}
+            style={MyStyles.backArrow}
+          />
+
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Change Password
+          </Text>
+        </View>
 
         <View style={MyStyles.servicesContentWrapper}>
           <View>
-            <Text style={MyStyles.inputLabel}>Current Password</Text>
-            <View style={{ position: "relative" }}>
+            <Text style={MyStyles.inputLabel}>
+              Current Password
+              <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+            </Text>
+            <View style={{ position: "relative", height: 45 }}>
               <TextInput
                 onChangeText={handlePassChange}
                 value={password}
@@ -211,15 +227,17 @@ const ChangePassword = () => {
                   color="gray"
                 />
               </TouchableOpacity>
-              {passError ? (
-                <Text style={MyStyles.errorMsg}>{passError}</Text>
-              ) : null}
             </View>
+            {passError ? (
+              <Text style={MyStyles.errorMsg}>{passError}</Text>
+            ) : null}
           </View>
 
           <View>
-            <Text style={MyStyles.inputLabel}>New Password</Text>
-            <View style={{ position: "relative" }}>
+            <Text style={MyStyles.inputLabel}>
+              New Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+            </Text>
+            <View style={{ position: "relative", height: 45 }}>
               <TextInput
                 onChangeText={passwordValidation}
                 value={newpassword}
@@ -237,21 +255,24 @@ const ChangePassword = () => {
                   color="gray"
                 />
               </TouchableOpacity>
-              {passwordErrors.length > 0 && (
-                <View style={{ marginTop: 5, width: 300 }}>
-                  {passwordErrors.map((error, index) => (
-                    <Text key={index} style={MyStyles.errorMsg}>
-                      {error}
-                    </Text>
-                  ))}
-                </View>
-              )}
             </View>
+            {passwordErrors.length > 0 && (
+              <View style={{ marginTop: 5, width: "100%" }}>
+                {passwordErrors.map((error, index) => (
+                  <Text key={index} style={MyStyles.errorMsg}>
+                    {error}
+                  </Text>
+                ))}
+              </View>
+            )}
           </View>
 
           <View>
-            <Text style={MyStyles.inputLabel}>Confirm New Password</Text>
-            <View style={{ position: "relative" }}>
+            <Text style={MyStyles.inputLabel}>
+              Confirm New Password
+              <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+            </Text>
+            <View style={{ position: "relative", height: 45 }}>
               <TextInput
                 onChangeText={repasswordValidation}
                 value={renewpassword}
@@ -269,16 +290,16 @@ const ChangePassword = () => {
                   color="gray"
                 />
               </TouchableOpacity>
-              {repasswordErrors.length > 0 && (
-                <View style={{ marginTop: 5, width: 300 }}>
-                  {repasswordErrors.map((error, index) => (
-                    <Text key={index} style={MyStyles.errorMsg}>
-                      {error}
-                    </Text>
-                  ))}
-                </View>
-              )}
             </View>
+            {repasswordErrors.length > 0 && (
+              <View>
+                {repasswordErrors.map((error, index) => (
+                  <Text key={index} style={MyStyles.errorMsg}>
+                    {error}
+                  </Text>
+                ))}
+              </View>
+            )}
           </View>
         </View>
         <TouchableOpacity
@@ -287,9 +308,25 @@ const ChangePassword = () => {
           disabled={loading}
         >
           <Text style={MyStyles.buttonText}>
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Updating..." : "Update"}
           </Text>
         </TouchableOpacity>
+
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={isSuccess}
+          onClose={handleCloseAlertModal}
+        />
+
+        <AlertModal
+          isVisible={isConfirmModalVisible}
+          isConfirmationModal={true}
+          title="Change Password?"
+          message="Are you sure you want to change your password? This action cannot be undone."
+          onClose={() => setIsConfirmModalVisible(false)}
+          onConfirm={handlePasswordChange}
+        />
       </ScrollView>
     </SafeAreaView>
   );

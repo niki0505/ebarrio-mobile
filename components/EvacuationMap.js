@@ -8,7 +8,6 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  StyleSheet,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -47,15 +46,26 @@ const EvacuationMap = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("Readiness")}
-            name="arrow-back-ios"
-            size={30}
-            color="#fff"
-          />
-          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
-            EVACUATION MAP
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("Readiness")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={[MyStyles.backArrow, { color: "#fff" }]}
+            />
+
+            <Text
+              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+            >
+              Evacuation Map
+            </Text>
+          </View>
 
           <View style={{ flexDirection: "column", gap: 20 }}>
             <Text style={MyStyles.evacuationSubHeader}>

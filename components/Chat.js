@@ -335,6 +335,12 @@ const Chat = () => {
               marginLeft: 10,
             }}
           >
+            <MaterialIcons
+              onPress={() => navigation.navigate("BottomTabs")}
+              name="arrow-back-ios"
+              size={30}
+              style={[MyStyles.backArrow]}
+            />
             <Image
               source={Aniban2Logo}
               style={{
@@ -361,7 +367,7 @@ const Chat = () => {
         {/* Chat Messages ScrollView */}
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ flex: 1, marginHorizontal: 10, marginTop: 10 }}
+          style={{ flex: 1, marginHorizontal: 20, marginTop: 10 }}
           contentContainerStyle={{ paddingBottom: 20 }}
           ref={scrollViewRef}
           onContentSizeChange={() =>
@@ -498,13 +504,12 @@ const Chat = () => {
         {isChat && !isEnded && (
           <View
             style={{
-              padding: 10,
               backgroundColor: "#fff",
               flexDirection: "row",
               alignItems: "center",
               borderTopWidth: 1,
               borderColor: "#ccc",
-              paddingBottom: 30,
+              padding: 15,
             }}
           >
             <TextInput

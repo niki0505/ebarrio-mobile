@@ -18,6 +18,7 @@ import { OtpContext } from "../context/OtpContext";
 import api from "../api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AppLogo from "../assets/applogo-darkbg.png";
+import AlertModal from "./AlertModal";
 
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -40,6 +41,8 @@ const Signup = () => {
   const [repasswordErrors, setRePasswordErrors] = useState([]);
   const [secureNewPass, setSecureNewPass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const togglesecureNewPass = () => {
     setSecureNewPass(!secureNewPass);
@@ -52,7 +55,7 @@ const Signup = () => {
   const firstnameValidation = (val) => {
     setFirstname(val);
     if (!val) {
-      setFnameError("First name must not be empty.");
+      setFnameError("This field is required!");
     } else {
       setFnameError(null);
     }
@@ -61,7 +64,7 @@ const Signup = () => {
   const lastnameValidation = (val) => {
     setLastname(val);
     if (!val) {
-      setLnameError("Last name must not be empty.");
+      setLnameError("This field is required!");
     } else {
       setLnameError(null);
     }
@@ -73,7 +76,7 @@ const Signup = () => {
     setUsername(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Username must not be empty.");
+      errors.push("This field is required!");
     }
     if (
       (formattedVal && formattedVal.length < 3) ||
@@ -102,7 +105,7 @@ const Signup = () => {
     setRePassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (formattedVal !== password && formattedVal.length > 0) {
       errors.push("Passwords do not match.");
@@ -112,20 +115,27 @@ const Signup = () => {
 
   const mobileInputChange = (val) => {
     let errors = [];
-    val.replace(/\D/g, "");
+
+    if (val.startsWith("+")) {
+      val = "+" + val.slice(1).replace(/\D/g, "");
+    } else {
+      val = val.replace(/\D/g, "");
+    }
 
     if (!val.startsWith("+63")) {
       val = "+63" + val.replace(/^0+/, "").slice(2);
     }
+
     if (val.length > 13) {
       val = val.slice(0, 13);
     }
+
     if (val.length >= 4 && val[3] === "0") {
       return;
     }
 
     if (val.length < 13) {
-      errors.push("Invalid mobile number.");
+      errors.push("Invalid mobile number!");
     }
 
     setMobileNumber(val);
@@ -138,13 +148,13 @@ const Signup = () => {
     setPassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (
       (formattedVal && formattedVal.length < 8) ||
       (formattedVal && formattedVal.length > 64)
     ) {
-      errors.push("Password must be between 8 and 64 characters only.");
+      errors.push("Password must be between 8 and 64 characters only!");
     }
     if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
       errors.push(
@@ -207,10 +217,12 @@ const Signup = () => {
           const response = error.response;
           if (response && response.data) {
             console.log("❌ Error status:", response.status);
-            alert(response.data.message || "Something went wrong.");
+            setAlertMessage(response.data.message || "Something went wrong.");
+            setIsAlertModalVisible(true);
           } else {
             console.log("❌ Network or unknown error:", error.message);
-            alert("An unexpected error occurred.");
+            setAlertMessage("An unexpected error occurred.");
+            setIsAlertModalVisible(true);
           }
         }
       } catch (error) {
@@ -221,32 +233,35 @@ const Signup = () => {
             response.status === 404 &&
             response.data.message === "Resident not found"
           ) {
-            Alert.alert(
-              "Resident not found",
-              "Would you like to register your resident profile now?",
-              [
-                {
-                  text: "No",
-                  style: "cancel",
-                },
-                {
-                  text: "Yes",
-                  onPress: () => navigation.navigate("ResidentForm"),
-                },
-              ],
-              { cancelable: true }
+            setAlertMessage(
+              "Would you like to register your resident profile now?"
             );
+            setIsAlertModalVisible(true);
           } else {
-            alert(response.data.message || "Something went wrong.");
+            setAlertMessage(response.data.message || "Something went wrong.");
+            setIsAlertModalVisible(true);
           }
         } else {
           console.log("❌ Network or unknown error:", error.message);
-          alert("An unexpected error occurred.");
+          setAlertMessage("An unexpected error occurred.");
+          setIsAlertModalVisible(true);
         }
       }
     } catch (error) {
-      Alert.alert("Error", error.message);
+      setAlertMessage(error.message);
+      setIsAlertModalVisible(true);
     }
+  };
+
+  const onResidentModalConfirm = () => {
+    setIsAlertModalVisible(false);
+    navigation.navigate("ResidentForm");
+    setFirstname("");
+    setLastname("");
+    setMobileNumber("");
+    setUsername("");
+    setPassword("");
+    setRePassword("");
   };
 
   return (
@@ -277,7 +292,7 @@ const Signup = () => {
               keyboardShouldPersistTaps="handled"
             >
               <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                Create your Account
+                Create Account
               </Text>
 
               <View style={MyStyles.loginFormWrapper}>
@@ -323,7 +338,7 @@ const Signup = () => {
                     onChangeText={mobileInputChange}
                   />
                   {mobilenumErrors.length > 0 && (
-                    <View style={{ marginTop: 5, width: 300 }}>
+                    <View>
                       {mobilenumErrors.map((error, index) => (
                         <Text key={index} style={MyStyles.errorMsg}>
                           {error}
@@ -346,7 +361,7 @@ const Signup = () => {
                     onBlur={() => setUsername(username.toLowerCase())}
                   />
                   {usernameErrors.length > 0 && (
-                    <View style={{ marginTop: 5, width: 300 }}>
+                    <View>
                       {usernameErrors.map((error, index) => (
                         <Text key={index} style={MyStyles.errorMsg}>
                           {error}
@@ -381,7 +396,7 @@ const Signup = () => {
                   </View>
 
                   {passwordErrors.length > 0 && (
-                    <View style={{ marginTop: 5, width: 300 }}>
+                    <View>
                       {passwordErrors.map((error, index) => (
                         <Text key={index} style={MyStyles.errorMsg}>
                           {error}
@@ -415,7 +430,7 @@ const Signup = () => {
                     </TouchableOpacity>
                   </View>
                   {repasswordErrors.length > 0 && (
-                    <View style={{ marginTop: 5, width: 300 }}>
+                    <View>
                       {repasswordErrors.map((error, index) => (
                         <Text key={index} style={MyStyles.errorMsg}>
                           {error}
@@ -425,15 +440,15 @@ const Signup = () => {
                   )}
                 </View>
 
-                <View style={{ flexDirection: "column" }}>
+                <View style={{}}>
                   <Text style={MyStyles.byClickingText}>
-                    By clicking Sign Up, you agree to eBarrio’s{" "}
-                  </Text>
-                  <Text
-                    onPress={() => navigation.navigate("TermsConditions")}
-                    style={MyStyles.signUpText}
-                  >
-                    Terms and Conditions
+                    By clicking Sign Up, you agree to eBarrio’s eBarrio’s{" "}
+                    <Text
+                      onPress={() => navigation.navigate("TermsConditions")}
+                      style={MyStyles.signUpText}
+                    >
+                      Terms and Conditions
+                    </Text>
                   </Text>
                 </View>
               </View>
@@ -459,19 +474,39 @@ const Signup = () => {
                   Login
                 </Text>
               </View>
-              <View style={{ marginTop: 10 }}>
-                <Text style={MyStyles.byClickingText}>
+              <View
+                style={{
+                  marginTop: 10,
+                }}
+              >
+                <Text
+                  style={[MyStyles.byClickingText, { textAlign: "center" }]}
+                >
                   Don’t have a resident profile?
                   <Text
                     onPress={() => navigation.navigate("ResidentForm")}
                     style={MyStyles.signUpText}
                   >
+                    {" "}
                     Create one
                   </Text>
                 </Text>
               </View>
             </ScrollView>
           </View>
+
+          <AlertModal
+            isVisible={isAlertModalVisible}
+            message={alertMessage}
+            title="Resident Not Found"
+            onClose={() => setIsAlertModalVisible(false)}
+            onConfirm={onResidentModalConfirm}
+            isResidentConfirmationModal={
+              alertMessage ===
+              "Would you like to register your resident profile now?"
+            }
+            isSuccess={false}
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

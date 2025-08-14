@@ -14,7 +14,6 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import Snapshot from "../assets/cctv-snapshot.png";
 import api from "../api";
 
 const RiverSnapshots = () => {
@@ -58,12 +57,19 @@ const RiverSnapshots = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={[MyStyles.scrollContainer]}>
+        <ScrollView
+          contentContainerStyle={[
+            MyStyles.scrollContainer,
+            {
+              backgroundColor: "#BC0F0F",
+            },
+          ]}
+        >
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialIcons
               name="arrow-back-ios"
               size={30}
-              color="#04384E"
+              color="white"
               style={{ marginLeft: 20, marginTop: 20 }}
             />
           </TouchableOpacity>
@@ -75,7 +81,7 @@ const RiverSnapshots = () => {
                 marginTop: 20,
                 marginBottom: 0,
                 textAlign: "center",
-                color: "#04384E",
+                color: "white",
               },
             ]}
           >
@@ -95,8 +101,7 @@ const RiverSnapshots = () => {
                 MyStyles.button,
                 {
                   flex: 1,
-                  backgroundColor:
-                    viewMode === "current" ? "#D3D3D3" : "#DCE5EB",
+                  backgroundColor: viewMode === "current" ? "#04384E" : "white",
                   marginHorizontal: 10,
                 },
               ]}
@@ -107,7 +112,7 @@ const RiverSnapshots = () => {
                   MyStyles.buttonText,
                   {
                     fontSize: 16,
-                    color: viewMode === "current" ? "#04384E" : "#04384E",
+                    color: viewMode === "current" ? "white" : "#04384E",
                     textAlign: "center",
                   },
                 ]}
@@ -121,8 +126,7 @@ const RiverSnapshots = () => {
                 MyStyles.button,
                 {
                   flex: 1,
-                  backgroundColor:
-                    viewMode === "history" ? "#D9D9D9" : "#DCE5EB",
+                  backgroundColor: viewMode === "history" ? "#04384E" : "white",
                   marginHorizontal: 10,
                 },
               ]}
@@ -133,7 +137,7 @@ const RiverSnapshots = () => {
                   MyStyles.buttonText,
                   {
                     fontSize: 16,
-                    color: viewMode === "history" ? "#04384E" : "#04384E",
+                    color: viewMode === "history" ? "white" : "#04384E",
                     textAlign: "center",
                   },
                 ]}
@@ -151,6 +155,17 @@ const RiverSnapshots = () => {
             <View style={{ alignItems: "center" }}>
               {latest.url && (
                 <>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 25,
+                      fontFamily: "REMBold",
+                      textAlign: "center",
+                      marginTop: 50,
+                    }}
+                  >
+                    Zapote River
+                  </Text>
                   <Image
                     source={{ uri: latest.url }}
                     style={{
@@ -158,47 +173,48 @@ const RiverSnapshots = () => {
                       height: 250,
                       borderRadius: 15,
                       resizeMode: "cover",
-                      marginTop: 50,
+                      marginTop: 20,
                     }}
                   />
-
+                  <View
+                    style={{
+                      marginTop: 20,
+                      backgroundColor: "white",
+                      padding: 5,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: "#BC0F0F",
+                        paddingHorizontal: 15,
+                        paddingVertical: 10,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "white",
+                          fontFamily: "QuicksandBold",
+                          textAlign: "center",
+                        }}
+                      >
+                        CCTV Snapshot as of{" "}
+                        {latest.datetime?.split(" at ")[1] || "Unknown Time"}
+                      </Text>
+                    </View>
+                  </View>
                   <Text
                     style={{
-                      color: "#04384E",
-                      fontSize: 25,
-                      fontFamily: "REMBold",
+                      fontSize: 16,
+                      color: "#D3D3D3",
                       textAlign: "center",
+                      fontFamily: "QuicksandSemiBold",
                       marginTop: 10,
                     }}
                   >
-                    Zapote River
+                    The next update will be in 10 minutes.
                   </Text>
-
-                  <View style={{ marginTop: 30 }}>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: "#BC0F0F",
-                        fontFamily: "QuicksandBold",
-                        textAlign: "center",
-                      }}
-                    >
-                      CCTV Snapshot as of{" "}
-                      {latest.datetime?.split(" at ")[1] || "Unknown Time"}
-                    </Text>
-
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "#808080",
-                        textAlign: "center",
-                        fontFamily: "QuicksandSemiBold",
-                        marginTop: 10,
-                      }}
-                    >
-                      The next update will be in 10 minutes.
-                    </Text>
-                  </View>
                 </>
               )}
             </View>
@@ -222,7 +238,7 @@ const RiverSnapshots = () => {
                         <Text
                           style={{
                             fontSize: 16,
-                            color: "#04384E",
+                            color: "white",
                             fontFamily: "QuicksandBold",
                             textAlign: "right",
                           }}

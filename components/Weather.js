@@ -13,6 +13,9 @@ import { InfoContext } from "../context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
+//SCREENS
+import LoadingScreen from "./LoadingScreen";
+
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
 import ClearDay from "../assets/weather-svg/clear-day";
@@ -36,7 +39,7 @@ import FogDay from "../assets/weather-svg/fog-day";
 import FogNight from "../assets/weather-svg/fog-night";
 import ThunderstormsDay from "../assets/weather-svg/thunderstorms-day";
 import ThunderstormsNight from "../assets/weather-svg/thunderstorms-night";
-import LoadingScreen from "./LoadingScreen";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
 
 const Weather = () => {
   const insets = useSafeAreaInsets();
@@ -46,24 +49,13 @@ const Weather = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const load = async () => {
+      setLoading(true); // Start loading
       await fetchWeather();
       setLoading(false);
     };
-
-    fetchData();
-
-    const intervalId = setInterval(() => {
-      fetchWeather();
-    }, 300000);
-
-    return () => clearInterval(intervalId);
+    load();
   }, []);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
 
   // Function to format the date
   const formatDate = (date) => {
@@ -71,7 +63,6 @@ const Weather = () => {
     return new Date(date).toLocaleDateString("en-US", options);
   };
 
-  // Date calculations for tomorrow and day after tomorrow - pa-check kung tama or accurate to
   const tomorrowDate = new Date(Date.now() + 86400000);
   const dayAfterTomorrowDate = new Date(Date.now() + 86400000 * 2);
 
@@ -249,158 +240,200 @@ const Weather = () => {
   };
 
   return (
-    <LinearGradient
-      colors={getGradientColors(weather.currentcondition)}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      style={[
-        MyStyles.container,
-        { paddingTop: insets.top, paddingBottom: insets.bottom },
-      ]}
-    >
-      <ScrollView>
-        <MaterialIcons
-          onPress={() => navigation.navigate("BottomTabs")}
-          name="arrow-back-ios"
-          size={24}
-          color="#fff"
-          style={{ marginTop: 20 }}
-        />
-
-        <View style={MyStyles.rowAlignment}>
-          <Text style={MyStyles.weatherHeaderText}>
-            Barangay Aniban 2, Bacoor, Cavite
-          </Text>
+    <>
+      {loading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color="#04384E" />
           <Text
             style={{
-              color: "#fff",
-              fontSize: 16,
+              marginTop: 20,
+              fontSize: 12,
+              color: "#808080",
               fontFamily: "QuicksandSemiBold",
+              textAlign: "center",
+              lineHeight: 20,
+              width: "80%",
             }}
           >
-            {weather.currentcondition}
+            Fetching latest weather updates
+            {"\n"}This may take a few seconds...
           </Text>
         </View>
+      ) : (
+        <LinearGradient
+          colors={getGradientColors(weather.currentcondition)}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={[
+            MyStyles.container,
+            { paddingTop: insets.top, paddingBottom: insets.bottom },
+          ]}
+        >
+          <ScrollView>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {/* Back Arrow */}
+              <MaterialIcons
+                onPress={() => navigation.navigate("BottomTabs")}
+                name="arrow-back-ios"
+                color="#04384E"
+                size={35}
+                style={[MyStyles.backArrow, { color: "#fff" }]}
+              />
+            </View>
 
-        <View>
-          <Text style={MyStyles.weatherSubheaderText}>Now</Text>
-          <Text
-            style={[
-              MyStyles.weatherHeaderText,
-              { fontSize: 50, marginVertical: 0, fontFamily: "REMSemiBold" },
-            ]}
-          >
-            {weather.currenttemp}°
-          </Text>
-        </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <EvilIcons name="location" size={30} color="white" />
+              <Text style={[MyStyles.weatherHeaderText]}>
+                Aniban 2, Bacoor Cavite
+              </Text>
+            </View>
 
-        <View style={MyStyles.rowAlignment}>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <Text style={MyStyles.weatherBodyText}>
-              High: {weather.currenthigh}
-            </Text>
-            <Text style={MyStyles.weatherBodyText}>
-              Low: {weather.currentlow}
-            </Text>
-          </View>
+            <View style={MyStyles.rowAlignment}>
+              <Text style={MyStyles.weatherSubheaderText}>Now</Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  fontFamily: "QuicksandBold",
+                  marginTop: 20,
+                }}
+              >
+                {weather.currentcondition}
+              </Text>
+            </View>
+            <View>
+              <Text
+                style={[
+                  MyStyles.weatherHeaderText,
+                  { fontSize: 60, fontFamily: "QuicksandBold", marginTop: 0 },
+                ]}
+              >
+                {weather.currenttemp}°
+              </Text>
+            </View>
 
-          <Text style={MyStyles.weatherBodyText}>
-            Wind: {weather.currentwind}
-            <Text>km/h</Text>
-          </Text>
-        </View>
-
-        <View style={{ alignItems: "center" }}>
-          {getWeatherIcon(weather.currentcondition, 240, 240)}
-        </View>
-
-        <View style={{ marginBottom: 20 }}>
-          <Text style={[MyStyles.weatherSubheaderText, { marginBottom: 10 }]}>
-            Hourly Forecast
-          </Text>
-
-          <FlatList
-            data={weather.hourlyForecast}
-            keyExtractor={(item, index) => index.toString()}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <View style={MyStyles.hourlyforecastContainer}>
-                <Text
-                  style={[
-                    MyStyles.weatherBodyText,
-                    { fontFamily: "QuicksandMedium" },
-                  ]}
-                >
-                  {Math.round(item.temperature)}°C
+            <View style={MyStyles.rowAlignment}>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Text style={MyStyles.weatherBodyText}>
+                  High: {weather.currenthigh}
                 </Text>
-                {getWeatherIcon(item.condition, 60, 60)}
-                <Text
-                  style={[
-                    MyStyles.weatherBodyText,
-                    { fontFamily: "QuicksandMedium" },
-                  ]}
-                >
-                  {item.time}
+                <Text style={MyStyles.weatherBodyText}>
+                  Low: {weather.currentlow}
                 </Text>
               </View>
-            )}
-          />
-        </View>
 
-        {/* 2 Days Forecast */}
-        <View style={{ gap: 10 }}>
-          <Text style={[MyStyles.weatherSubheaderText]}>2 Days Forecast</Text>
-
-          {/* Tomorrow */}
-          <View style={MyStyles.forecastcontentContainer}>
-            <Text
-              style={[
-                MyStyles.weatherBodyText,
-                { fontFamily: "QuicksandMedium" },
-              ]}
-            >
-              {formatDate(tomorrowDate)}
-            </Text>
-            <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
-              {getWeatherIcon(tomorrow.condition)}
-              <Text
-                style={[
-                  MyStyles.weatherBodyText,
-                  { fontFamily: "QuicksandMedium" },
-                ]}
-              >
-                {Math.round(tomorrow.high)}°C/{Math.round(tomorrow.low)}°C
+              <Text style={MyStyles.weatherBodyText}>
+                Wind: {weather.currentwind}
+                <Text>km/h</Text>
               </Text>
             </View>
-          </View>
 
-          {/* Day After Tomorrow */}
-          <View style={MyStyles.forecastcontentContainer}>
-            <Text
-              style={[
-                MyStyles.weatherBodyText,
-                { fontFamily: "QuicksandMedium" },
-              ]}
-            >
-              {formatDate(dayAfterTomorrowDate)}
-            </Text>
-            <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
-              {getWeatherIcon(dayAfterTomorrow.condition)}
-              <Text
-                style={[
-                  MyStyles.weatherBodyText,
-                  { fontFamily: "QuicksandMedium" },
-                ]}
-              >
-                {Math.round(dayAfterTomorrow.high)}°C/
-                {Math.round(dayAfterTomorrow.low)}°C
-              </Text>
+            <View style={{ alignItems: "center" }}>
+              {getWeatherIcon(weather.currentcondition, 240, 240)}
             </View>
-          </View>
-        </View>
-      </ScrollView>
-    </LinearGradient>
+
+            <View style={{ marginBottom: 20 }}>
+              <Text
+                style={[MyStyles.weatherSubheaderText, { marginBottom: 10 }]}
+              >
+                Hourly Forecast
+              </Text>
+
+              <FlatList
+                data={weather.hourlyForecast}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <View style={MyStyles.hourlyforecastContainer}>
+                    <Text
+                      style={[
+                        MyStyles.weatherBodyText,
+                        { fontFamily: "QuicksandRegular" },
+                      ]}
+                    >
+                      {item.time.replace(/^0/, "").replace(":00 ", "")}
+                    </Text>
+
+                    {getWeatherIcon(item.condition, 60, 60)}
+                    <Text
+                      style={[
+                        MyStyles.weatherBodyText,
+                        { fontFamily: "QuicksandBold" },
+                      ]}
+                    >
+                      {Math.round(item.temperature)}°C
+                    </Text>
+                  </View>
+                )}
+              />
+            </View>
+
+            {/* 2 Days Forecast */}
+            <View style={{ gap: 10 }}>
+              <Text style={[MyStyles.weatherSubheaderText]}>
+                2 Days Forecast
+              </Text>
+
+              {/* Tomorrow */}
+              <View style={MyStyles.forecastcontentContainer}>
+                <Text
+                  style={[
+                    MyStyles.weatherBodyText,
+                    { fontFamily: "QuicksandBold" },
+                  ]}
+                >
+                  {formatDate(tomorrowDate)}
+                </Text>
+                <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
+                  {getWeatherIcon(tomorrow.condition)}
+                  <Text
+                    style={[
+                      MyStyles.weatherBodyText,
+                      { fontFamily: "QuicksandSemiBold" },
+                    ]}
+                  >
+                    {Math.round(tomorrow.high)}°C/{Math.round(tomorrow.low)}°C
+                  </Text>
+                </View>
+              </View>
+
+              {/* Day After Tomorrow */}
+              <View style={MyStyles.forecastcontentContainer}>
+                <Text
+                  style={[
+                    MyStyles.weatherBodyText,
+                    { fontFamily: "QuicksandMedium" },
+                  ]}
+                >
+                  {formatDate(dayAfterTomorrowDate)}
+                </Text>
+                <View style={[MyStyles.rowAlignment, { gap: 10 }]}>
+                  {getWeatherIcon(dayAfterTomorrow.condition)}
+                  <Text
+                    style={[
+                      MyStyles.weatherBodyText,
+                      { fontFamily: "QuicksandMedium" },
+                    ]}
+                  >
+                    {Math.round(dayAfterTomorrow.high)}°C/
+                    {Math.round(dayAfterTomorrow.low)}°C
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+      )}
+    </>
   );
 };
 

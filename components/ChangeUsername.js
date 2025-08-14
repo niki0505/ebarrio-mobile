@@ -1,13 +1,10 @@
 import {
-  StyleSheet,
   View,
   Text,
   SafeAreaView,
   ScrollView,
-  Touchable,
   TouchableOpacity,
   TextInput,
-  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -15,11 +12,10 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useEffect, useState } from "react";
 import { InfoContext } from "../context/InfoContext";
 import api from "../api";
-import { AuthContext } from "../context/AuthContext";
+import AlertModal from "./AlertModal";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 const ChangeUsername = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
@@ -31,6 +27,10 @@ const ChangeUsername = () => {
   const insets = useSafeAreaInsets();
   const [securePass, setsecurePass] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Toggle Password Visibility in Reset Password
   const togglesecurePass = () => {
@@ -44,27 +44,23 @@ const ChangeUsername = () => {
   const usernameValidation = (val) => {
     let errors = [];
     let formattedVal = val.replace(/\s+/g, "");
+
     setUsername(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Username must not be empty.");
-    }
-    if (
-      (formattedVal && formattedVal.length < 3) ||
-      (formattedVal && formattedVal.length > 16)
-    ) {
-      errors.push("Username must be between 3 and 16 characters only.");
-    }
-    if (formattedVal && !/^[a-zA-Z0-9_]+$/.test(formattedVal)) {
+      errors.push("This field is required!");
+    } else if (formattedVal.length < 3 || formattedVal.length > 16) {
+      errors.push("Username must be between 3 and 16 characters only!");
+    } else if (!/^[a-zA-Z0-9_]+$/.test(formattedVal)) {
       errors.push(
-        "Username can only contain letters, numbers, and underscores."
+        "Username can only contain letters, numbers, and underscores!"
       );
-    }
-    if (
-      (formattedVal && formattedVal.startsWith("_")) ||
-      (formattedVal && formattedVal.endsWith("_"))
-    ) {
-      errors.push("Username must not start or end with an underscore.");
+    } else if (formattedVal.startsWith("_") || formattedVal.endsWith("_")) {
+      errors.push("Username must not start or end with an underscore!");
+    } else if (formattedVal === userDetails.username) {
+      errors.push(
+        "The new username must be different from the current username."
+      );
     }
 
     setUsernameErrors(errors);
@@ -73,48 +69,22 @@ const ChangeUsername = () => {
   const handleConfirm = async () => {
     let hasErrors = false;
 
-    if (!username) {
-      usernameValidation(username);
-      hasErrors = true;
-    }
-
-    if (username === userDetails.username) {
-      alert("The new username must be different from the current username.");
+    usernameValidation(username);
+    if (usernameErrors.length !== 0) {
       hasErrors = true;
     }
 
     if (!password) {
-      setPassError("This field is required.");
+      setPassError("This field is required!");
       hasErrors = true;
     } else {
       setPassError("");
     }
 
-    if (usernameErrors.length !== 0) {
-      hasErrors = true;
-    }
-
     if (hasErrors) {
       return;
     }
-
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to change your username?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleUsernameChange();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const handleUsernameChange = async () => {
@@ -125,37 +95,40 @@ const ChangeUsername = () => {
       await api.get(`/checkusername/${username}`);
       try {
         await api.put("/changeusername", { username, password });
-        alert("Username changed successfully!");
-        setUsername("");
-        setPassword("");
+        setIsSuccess(true);
+        setAlertMessage("Username updated successfully!");
         fetchUserDetails();
       } catch (error) {
         const response = error.response;
         if (response && response.data) {
           console.log("❌ Error status:", response.status);
-          alert(response.data.message || "Something went wrong.");
+          setAlertMessage(response.data.message || "Something went wrong.");
         } else {
           console.log("❌ Network or unknown error:", error.message);
-          alert("An unexpected error occurred.");
+          setAlertMessage("An unexpected error occurred.");
         }
       }
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
+      setIsConfirmModalVisible(false);
+      setIsAlertModalVisible(true);
+      setAlertMessage(message);
+      setIsSuccess(false);
     }
   };
 
   const handlePassChange = (input) => {
     if (input.length === 0) {
-      setPassError("This field is empty.");
+      setPassError("This field is required!");
     } else {
       setPassError("");
     }
@@ -172,6 +145,13 @@ const ChangeUsername = () => {
     const masked = "*".repeat(maskedLength);
     return `${firstChar}${masked}${lastChar}`;
   };
+
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    setUsername("");
+    setPassword("");
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -189,13 +169,24 @@ const ChangeUsername = () => {
           },
         ]}
       >
-        <MaterialIcons
-          onPress={() => navigation.navigate("AccountSettings")}
-          name="arrow-back-ios"
-          size={24}
-          color="#04384E"
-        />
-        <Text style={MyStyles.servicesHeader}>Change Username</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <MaterialIcons
+            onPress={() => navigation.navigate("AccountSettings")}
+            name="arrow-back-ios"
+            color="#04384E"
+            size={35}
+            style={MyStyles.backArrow}
+          />
+
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Change Username
+          </Text>
+        </View>
 
         <View style={MyStyles.servicesContentWrapper}>
           <View>
@@ -205,7 +196,9 @@ const ChangeUsername = () => {
             </Text>
           </View>
           <View>
-            <Text style={MyStyles.inputLabel}>New Username</Text>
+            <Text style={MyStyles.inputLabel}>
+              New Username<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+            </Text>
             <TextInput
               onChangeText={usernameValidation}
               placeholder="New Username"
@@ -213,7 +206,7 @@ const ChangeUsername = () => {
               value={username}
             />
             {usernameErrors.length > 0 && (
-              <View style={{ marginTop: 5, width: 300 }}>
+              <View>
                 {usernameErrors.map((error, index) => (
                   <Text key={index} style={MyStyles.errorMsg}>
                     {error}
@@ -224,8 +217,10 @@ const ChangeUsername = () => {
           </View>
 
           <View>
-            <Text style={MyStyles.inputLabel}>Password</Text>
-            <View style={{ position: "relative" }}>
+            <Text style={MyStyles.inputLabel}>
+              Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+            </Text>
+            <View style={{ position: "relative", height: 45 }}>
               <TextInput
                 onChangeText={handlePassChange}
                 secureTextEntry={securePass}
@@ -255,9 +250,25 @@ const ChangeUsername = () => {
           disabled={loading}
         >
           <Text style={MyStyles.buttonText}>
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Upading..." : "Update"}
           </Text>
         </TouchableOpacity>
+
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={isSuccess}
+          onClose={handleCloseAlertModal}
+        />
+
+        <AlertModal
+          isVisible={isConfirmModalVisible}
+          isConfirmationModal={true}
+          title="Change Username?"
+          message="Are you sure you want to change your username? This action cannot be undone, and you can only change it again after 60 days."
+          onClose={() => setIsConfirmModalVisible(false)}
+          onConfirm={handleUsernameChange}
+        />
       </ScrollView>
     </SafeAreaView>
   );

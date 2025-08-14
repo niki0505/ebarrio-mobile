@@ -170,13 +170,26 @@ const Status = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#04384E"
-          />
-          <Text style={MyStyles.header}>Status</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            {/* Back Arrow */}
+            <MaterialIcons
+              onPress={() => navigation.navigate("BottomTabs")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={MyStyles.backArrow}
+            />
+
+            {/* First Calendar Text */}
+            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+              Status
+            </Text>
+          </View>
 
           <Dropdown
             data={[

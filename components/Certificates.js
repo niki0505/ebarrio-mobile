@@ -1,7 +1,6 @@
 import {
   Text,
   View,
-  Alert,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
@@ -16,6 +15,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import api from "../api";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -41,6 +41,7 @@ const Certificates = () => {
   };
   const [certificateForm, setCertificateForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
 
   const certificates = [
     { name: "Barangay Indigency", price: "₱10.00" },
@@ -85,7 +86,7 @@ const Certificates = () => {
 
   const handleConfirm = () => {
     if (!certificateForm.typeofcertificate) {
-      setTypeErrors("This field is required.");
+      setTypeErrors("This field is required!");
       return;
     } else {
       setTypeErrors(null);
@@ -95,7 +96,7 @@ const Certificates = () => {
         certificateForm.typeofcertificate === "Barangay Clearance"
       ) {
         if (!certificateForm.purpose) {
-          setPurposeError("This field is required.");
+          setPurposeError("This field is required!");
           return;
         } else {
           setPurposeError(null);
@@ -106,21 +107,21 @@ const Certificates = () => {
         let hasError = false;
 
         if (!certificateForm.street) {
-          setStreetError("This field is required.");
+          setStreetError("This field is required!");
           hasError = true;
         } else {
           setStreetError(null);
         }
 
         if (!certificateForm.businessname) {
-          setBusNameError("This field is required.");
+          setBusNameError("This field is required!");
           hasError = true;
         } else {
           setBusNameError(null);
         }
 
         if (!certificateForm.lineofbusiness) {
-          setLineBusError("This field is required.");
+          setLineBusError("This field is required!");
           hasError = true;
         } else {
           setLineBusError(null);
@@ -130,23 +131,7 @@ const Certificates = () => {
       }
     }
 
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to request a document?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleSubmit();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const handleSubmit = async () => {
@@ -199,6 +184,7 @@ const Certificates = () => {
     } finally {
       setLoading(false);
     }
+    setIsConfirmModalVisible(false);
   };
 
   const handleDropdownChange = ({ target }) => {
@@ -229,10 +215,10 @@ const Certificates = () => {
       [name]: value,
     }));
     if (name === "businessname") {
-      setBusNameError(!value ? "This field is required." : null);
+      setBusNameError(!value ? "This field is required!" : null);
     }
     if (name === "lineofbusiness") {
-      setLineBusError(!value ? "This field is required." : null);
+      setLineBusError(!value ? "This field is required!" : null);
     }
   };
 
@@ -257,17 +243,30 @@ const Certificates = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#04384E"
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("BottomTabs")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={MyStyles.backArrow}
+            />
 
-          <Text style={MyStyles.servicesHeader}>Request Document</Text>
+            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+              Request Document
+            </Text>
+          </View>
 
           <Text style={MyStyles.formMessage}>
-            Please select the required information for requesting a document
+            1. Please fill out the required information to request a document.
+            {"\n"}
+            2. Make sure to accurately provide details for each type of
+            document. {"\n"}
           </Text>
 
           <View style={MyStyles.servicesContentWrapper}>
@@ -436,6 +435,15 @@ const Certificates = () => {
               {loading ? "Submitting..." : "Submit"}
             </Text>
           </TouchableOpacity>
+
+          <AlertModal
+            isVisible={isConfirmModalVisible}
+            isConfirmationModal={true}
+            title="Request a Document?"
+            message="Are you sure you want to request a document?"
+            onClose={() => setIsConfirmModalVisible(false)}
+            onConfirm={handleSubmit}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
