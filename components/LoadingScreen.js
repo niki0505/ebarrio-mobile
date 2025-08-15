@@ -1,6 +1,5 @@
-import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
+import { View, SafeAreaView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import LottieView from "lottie-react-native";
 

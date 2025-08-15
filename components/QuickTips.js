@@ -169,15 +169,26 @@ const QuickTips = () => {
             },
           ]}
         >
-          <MaterialIcons
-            name="arrow-back-ios"
-            size={30}
-            color="#fff"
-            onPress={() => navigation.navigate("Readiness")}
-          />
-          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
-            Quick Safety Tips
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("Readiness")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={[MyStyles.backArrow, { color: "#fff" }]}
+            />
+
+            <Text
+              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+            >
+              Quick Safety Tips
+            </Text>
+          </View>
 
           <View style={MyStyles.quickImgWrapper}>
             {quickTipsData.map((item, index) => (
@@ -195,7 +206,7 @@ const QuickTips = () => {
                 >
                   <Image source={item.image} style={MyStyles.quickImg} />
                   <View style={MyStyles.quickTipsCard}>
-                    <Text style={MyStyles.quickTitle} numberOfLines={1}>
+                    <Text style={MyStyles.quickTitle} numberOfLines={2}>
                       {item.title}
                     </Text>
                     <MaterialIcons

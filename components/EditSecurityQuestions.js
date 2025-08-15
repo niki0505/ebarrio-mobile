@@ -10,6 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -18,10 +19,10 @@ import { Dropdown } from "react-native-element-dropdown";
 import { useContext, useEffect, useState } from "react";
 import { InfoContext } from "../context/InfoContext";
 import api from "../api";
+import AlertModal from "./AlertModal";
 
 //ICONS
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 const EditSecurityQuestions = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
@@ -34,10 +35,24 @@ const EditSecurityQuestions = () => {
     { question: "", answer: "" },
   ]);
   const [securePass, setsecurePass] = useState(true);
+  const [secureAnswer1, setsecureAnswer1] = useState(true);
+  const [secureAnswer2, setsecureAnswer2] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const togglesecurePass = () => {
     setsecurePass(!securePass);
+  };
+
+  const togglesecureAnswer1 = () => {
+    setsecureAnswer1(!secureAnswer1);
+  };
+
+  const togglesecureAnswer2 = () => {
+    setsecureAnswer2(!secureAnswer2);
   };
 
   useEffect(() => {
@@ -46,7 +61,7 @@ const EditSecurityQuestions = () => {
 
   const handlePassChange = (input) => {
     if (input.length === 0) {
-      setPassError("This field is empty.");
+      setPassError("This field is required!.");
     } else {
       setPassError("");
     }
@@ -90,66 +105,77 @@ const EditSecurityQuestions = () => {
     let hasErrors = false;
 
     if (!password) {
-      setPassError("This field is required.");
+      setPassError("This field is required!");
       hasErrors = true;
     } else {
       setPassError("");
-      modifiedQuestions = securityquestions.map((q, index) => {
-        const current = userDetails.securityquestions?.[index];
-        const isSameQuestion = current?.question === q.question;
-        const hasNewAnswer = q.answer?.trim() !== "";
-
-        if (!isSameQuestion && hasNewAnswer) {
-          return q;
-        } else if (isSameQuestion && hasNewAnswer) {
-          return { question: q.question, answer: q.answer };
-        } else {
-          return null;
-        }
-      });
-
-      const hasChanges = modifiedQuestions.some((q) => q !== null);
-
-      if (!hasChanges) {
-        alert("No changes detected in your security questions.");
-        hasErrors = true;
-      }
     }
 
     if (hasErrors) {
       return;
     }
 
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to change your security questions?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleQuestionsChange();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const handleQuestionsChange = async () => {
     if (loading) return;
-
     setLoading(true);
+
+    let sameAnswerFound = false;
+
+    modifiedQuestions = securityquestions.map((q, index) => {
+      const current = userDetails.securityquestions?.[index];
+      const isSameQuestion = current?.question === q.question;
+      const hasNewAnswer = q.answer?.trim() !== "";
+      const isSameAnswer =
+        q.answer?.trim().toLowerCase() ===
+        current?.answer?.trim().toLowerCase();
+
+      if (hasNewAnswer && isSameAnswer) {
+        sameAnswerFound = true;
+      }
+
+      if (!isSameQuestion && hasNewAnswer) {
+        return q;
+      } else if (isSameQuestion && hasNewAnswer && !isSameAnswer) {
+        return { question: q.question, answer: q.answer };
+      } else {
+        return null;
+      }
+    });
+
+    // if (sameAnswerFound) {
+    //   setAlertMessage("Answers must be different from your old ones.");
+    //   setIsSuccess(false);
+    //   setIsAlertModalVisible(true);
+    //   setLoading(false);
+    //   setIsConfirmModalVisible(false);
+    //   return;
+    // }
+
+    const hasChanges = modifiedQuestions.some((q) => q !== null);
+
+    if (!hasChanges) {
+      setAlertMessage("No changes detected in your security questions.");
+      setIsSuccess(false);
+      setIsAlertModalVisible(true);
+      setLoading(false);
+      setIsConfirmModalVisible(false);
+      return;
+    }
+
     try {
       await api.put("/changesecurityquestions", {
         securityquestions: modifiedQuestions,
         password,
       });
-      alert("Your security questions have been updated successfully.");
+      setIsSuccess(true);
+      setAlertMessage(
+        "Your security questions have been updated successfully!"
+      );
       fetchUserDetails();
+
       setSecurityQuestions((prev) =>
         prev.map((item) => ({
           ...item,
@@ -161,14 +187,24 @@ const EditSecurityQuestions = () => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
       }
+      setIsSuccess(false);
     } finally {
       setLoading(false);
+      setIsConfirmModalVisible(false);
+      setIsAlertModalVisible(true);
+      setAlertMessage(message);
+      setIsSuccess(false);
     }
+  };
+
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    setPassword("");
   };
 
   return (
@@ -192,13 +228,25 @@ const EditSecurityQuestions = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("AccountSettings")}
-            name="arrow-back-ios"
-            size={24}
-            color="#04384E"
-          />
-          <Text style={MyStyles.servicesHeader}>Change Security Questions</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("AccountSettings")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={MyStyles.backArrow}
+            />
+
+            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+              Change Security Questions
+            </Text>
+          </View>
+
           <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>Security Question #1</Text>
@@ -221,13 +269,25 @@ const EditSecurityQuestions = () => {
             </View>
             <View>
               <Text style={MyStyles.inputLabel}>Answer</Text>
-              <TextInput
-                value={securityquestions[0].answer}
-                onChangeText={(e) => handleSecurityChange(0, "answer", e)}
-                secureTextEntry={true}
-                placeholder="Answer"
-                style={MyStyles.input}
-              />
+              <View style={{ position: "relative", height: 45 }}>
+                <TextInput
+                  value={securityquestions[0].answer}
+                  onChangeText={(e) => handleSecurityChange(0, "answer", e)}
+                  secureTextEntry={secureAnswer1}
+                  placeholder="Answer"
+                  style={MyStyles.input}
+                />
+                <TouchableOpacity
+                  style={MyStyles.eyeToggle}
+                  onPress={togglesecureAnswer1}
+                >
+                  <Ionicons
+                    name={secureAnswer1 ? "eye-off" : "eye"}
+                    size={24}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
             <View>
               <Text style={MyStyles.inputLabel}>Security Question #2</Text>
@@ -248,20 +308,35 @@ const EditSecurityQuestions = () => {
                 style={MyStyles.input}
               ></Dropdown>
             </View>
+
             <View>
               <Text style={MyStyles.inputLabel}>Answer</Text>
-              <TextInput
-                value={securityquestions[1].answer}
-                onChangeText={(e) => handleSecurityChange(1, "answer", e)}
-                secureTextEntry={true}
-                placeholder="Answer"
-                style={MyStyles.input}
-              />
+              <View style={{ position: "relative", height: 45 }}>
+                <TextInput
+                  value={securityquestions[1].answer}
+                  onChangeText={(e) => handleSecurityChange(1, "answer", e)}
+                  secureTextEntry={secureAnswer2}
+                  placeholder="Answer"
+                  style={MyStyles.input}
+                />
+                <TouchableOpacity
+                  style={MyStyles.eyeToggle}
+                  onPress={togglesecureAnswer2}
+                >
+                  <Ionicons
+                    name={secureAnswer2 ? "eye-off" : "eye"}
+                    size={24}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View>
-              <Text style={MyStyles.inputLabel}>Password</Text>
-              <View style={{ position: "relative" }}>
+              <Text style={MyStyles.inputLabel}>
+                Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              </Text>
+              <View style={{ position: "relative", height: 45 }}>
                 <TextInput
                   onChangeText={handlePassChange}
                   value={password}
@@ -279,10 +354,10 @@ const EditSecurityQuestions = () => {
                     color="gray"
                   />
                 </TouchableOpacity>
-                {passError ? (
-                  <Text style={MyStyles.errorMsg}>{passError}</Text>
-                ) : null}
               </View>
+              {passError ? (
+                <Text style={MyStyles.errorMsg}>{passError}</Text>
+              ) : null}
             </View>
           </View>
           <TouchableOpacity
@@ -294,6 +369,22 @@ const EditSecurityQuestions = () => {
               {loading ? "Saving..." : "Save"}
             </Text>
           </TouchableOpacity>
+
+          <AlertModal
+            isVisible={isAlertModalVisible}
+            message={alertMessage}
+            isSuccess={isSuccess}
+            onClose={handleCloseAlertModal}
+          />
+
+          <AlertModal
+            isVisible={isConfirmModalVisible}
+            isConfirmationModal={true}
+            title="Change Security Questions?"
+            message="Are you sure you want to change your security questions? This action cannot be undone."
+            onClose={() => setIsConfirmModalVisible(false)}
+            onConfirm={handleQuestionsChange}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

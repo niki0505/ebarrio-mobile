@@ -67,16 +67,26 @@ const SafetyTips = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("Readiness")}
-            name="arrow-back-ios"
-            size={30}
-            color="#fff"
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("Readiness")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={[MyStyles.backArrow, { color: "#fff" }]}
+            />
 
-          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
-            Disaster Safety
-          </Text>
+            <Text
+              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+            >
+              Disaster Safety Tips
+            </Text>
+          </View>
 
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}

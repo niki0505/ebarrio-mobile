@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
   Image,
+  Modal,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -19,8 +20,7 @@ import api from "../api";
 import { OtpContext } from "../context/OtpContext";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import AppLogo from "../assets/applogo-darkbg.png";
 
 const EditMobileNumber = () => {
@@ -40,6 +40,9 @@ const EditMobileNumber = () => {
   const insets = useSafeAreaInsets();
   const [securePass, setsecurePass] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const mobnum =
     userDetails.resID?.mobilenumber || userDetails.empID?.resID?.mobilenumber;
@@ -51,7 +54,7 @@ const EditMobileNumber = () => {
   useEffect(() => {
     fetchUserDetails();
   }, []);
-
+99
   const handleConfirm = () => {
     let hasError = false;
     let formattedNumber = mobilenumber;
@@ -63,14 +66,14 @@ const EditMobileNumber = () => {
     }
 
     if (formattedNumber.length !== 11) {
-      setMobileError("This field is required.");
+      setMobileError("This field is required!");
       hasError = true;
     } else {
       setMobileError("");
     }
 
     if (!password) {
-      setPassError("This field is required.");
+      setPassError("This field is required!");
       hasError = true;
     } else {
       setPassError("");
@@ -79,23 +82,12 @@ const EditMobileNumber = () => {
     if (hasError) {
       return;
     }
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to change your mobile number?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            checkPassword();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
   };
 
   const checkPassword = async () => {
@@ -139,20 +131,24 @@ const EditMobileNumber = () => {
   };
 
   const mobileInputChange = (input) => {
-    input.replace(/\D/g, "");
+    input = input.replace(/(?!^)\+/g, "");
+
+    input = input.replace(/[^\d+]/g, "");
 
     if (!input.startsWith("+63")) {
-      input = "+63" + input.replace(/^0+/, "").slice(2);
+      input = "+63" + input.replace(/^\+?0+/, "").slice(2);
     }
+
     if (input.length > 13) {
       input = input.slice(0, 13);
     }
+
     if (input.length >= 4 && input[3] === "0") {
       return;
     }
 
     if (input.length < 13) {
-      setMobileError("Invalid mobile number.");
+      setMobileError("Invalid mobile number!");
     } else {
       setMobileError("");
     }
@@ -162,7 +158,7 @@ const EditMobileNumber = () => {
 
   const handlePassChange = (input) => {
     if (input.length === 0) {
-      setPassError("This field is empty.");
+      setPassError("This field is required!");
     } else {
       setPassError("");
     }
@@ -340,13 +336,24 @@ const EditMobileNumber = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("AccountSettings")}
-            name="arrow-back-ios"
-            size={24}
-            color="#04384E"
-          />
-          <Text style={MyStyles.servicesHeader}>Change Mobile Number</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("AccountSettings")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={MyStyles.backArrow}
+            />
+
+            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+              Change Mobile Number
+            </Text>
+          </View>
 
           <View style={MyStyles.servicesContentWrapper}>
             <View>
@@ -356,7 +363,10 @@ const EditMobileNumber = () => {
               </Text>
             </View>
             <View>
-              <Text style={MyStyles.inputLabel}>New Mobile Number</Text>
+              <Text style={MyStyles.inputLabel}>
+                New Mobile Number
+                <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              </Text>
               <TextInput
                 onChangeText={mobileInputChange}
                 placeholder="New Mobile Number"
@@ -370,8 +380,11 @@ const EditMobileNumber = () => {
             </View>
 
             <View>
-              <Text style={MyStyles.inputLabel}>Password</Text>
-              <View style={{ position: "relative" }}>
+              <Text style={MyStyles.inputLabel}>
+                Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              </Text>
+
+              <View style={{ position: "relative", height: 45 }}>
                 <TextInput
                   onChangeText={handlePassChange}
                   secureTextEntry={securePass}
@@ -388,10 +401,10 @@ const EditMobileNumber = () => {
                     color="gray"
                   />
                 </TouchableOpacity>
-                {passError ? (
-                  <Text style={MyStyles.errorMsg}>{passError}</Text>
-                ) : null}
               </View>
+              {passError ? (
+                <Text style={MyStyles.errorMsg}>{passError}</Text>
+              ) : null}
             </View>
           </View>
           <TouchableOpacity
@@ -403,6 +416,121 @@ const EditMobileNumber = () => {
               {loading ? "Verifying..." : "Verify"}
             </Text>
           </TouchableOpacity>
+
+          {/* Confirmation Modal */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isModalVisible}
+            onRequestClose={handleCloseModal}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "white",
+                  padding: 20,
+                  borderRadius: 10,
+                  width: 300,
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="help-circle-outline"
+                  size={70}
+                  color="#BC0F0F"
+                />
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontFamily: "REMBold",
+                    marginVertical: 10,
+                    color: "#808080",
+                  }}
+                >
+                  Are you sure?
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "#808080",
+                    marginBottom: 20,
+                    fontFamily: "QuicksandMedium",
+                    textAlign: "center",
+                  }}
+                >
+                  Do you really want to change your mobile number?
+                </Text>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    gap: 10,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={handleCloseModal}
+                    style={{
+                      borderWidth: 3,
+                      borderColor: "#BC0F0F",
+                      padding: 10,
+                      borderRadius: 10,
+                      marginHorizontal: 10,
+                      width: 100,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#BC0F0F",
+                        fontSize: 16,
+                        fontFamily: "QuicksandBold",
+                        textAlign: "center",
+                      }}
+                    >
+                      CANCEL
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={handleVerify}
+                    style={{
+                      borderWidth: 3,
+                      borderColor: "#BC0F0F",
+                      backgroundColor: "#BC0F0F",
+                      padding: 10,
+                      borderRadius: 10,
+                      marginHorizontal: 10,
+                      width: 100,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 16,
+                        fontFamily: "QuicksandBold",
+                        textAlign: "center",
+                      }}
+                    >
+                      CONFIRM
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
         </ScrollView>
       ) : (
         <>

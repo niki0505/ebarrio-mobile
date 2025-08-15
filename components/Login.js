@@ -14,10 +14,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OtpContext } from "../context/OtpContext";
 import api from "../api";
 import AppLogo from "../assets/applogo-darkbg.png";
+import AlertModal from "./AlertModal";
+
+//ICONS
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import * as SecureStore from "expo-secure-store";
 
 const Login = () => {
   const insets = useSafeAreaInsets();
@@ -28,6 +30,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [secureLoginPass, setsecureLoginPass] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   // Toggle Password Visibility
   const togglesecureLoginPass = () => {
@@ -36,13 +40,16 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!username && !password) {
-      alert("Username and password are required.");
+      setAlertMessage("Username and password are required!");
+      setIsAlertModalVisible(true);
       return;
     } else if (!username) {
-      alert("Username is required.");
+      setAlertMessage("Username is required!");
+      setIsAlertModalVisible(true);
       return;
     } else if (!password) {
-      alert("Password is required.");
+      setAlertMessage("Password is required!");
+      setIsAlertModalVisible(true);
       return;
     }
 
@@ -75,10 +82,12 @@ const Login = () => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     } finally {
       setLoading(false);
@@ -100,7 +109,7 @@ const Login = () => {
 
         <View style={MyStyles.loginBottomWrapper}>
           <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-            Login to your Account
+            Login Account
           </Text>
           <View style={MyStyles.loginFormWrapper}>
             <View
@@ -190,7 +199,7 @@ const Login = () => {
             disabled={loading}
           >
             <Text style={MyStyles.buttonText}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Logging in..." : "Log In"}
             </Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
@@ -199,10 +208,16 @@ const Login = () => {
               onPress={() => navigation.navigate("Signup")}
               style={MyStyles.signUpText}
             >
-              Sign up
+              Sign Up
             </Text>
           </View>
         </View>
+
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          onClose={() => setIsAlertModalVisible(false)}
+        />
       </View>
     </SafeAreaView>
   );

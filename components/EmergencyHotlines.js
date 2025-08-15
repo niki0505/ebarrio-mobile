@@ -98,20 +98,27 @@ const EmergencyHotlines = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={24}
-            color="#fff"
-          />
-          <Text
-            style={[
-              MyStyles.header,
-              { marginTop: 20, marginBottom: 30, color: "#fff" },
-            ]}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
-            Hotlines
-          </Text>
+            {/* Back Arrow */}
+            <MaterialIcons
+              onPress={() => navigation.navigate("BottomTabs")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={[MyStyles.backArrow, { color: "#fff" }]}
+            />
+
+            <Text
+              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+            >
+              Hotlines
+            </Text>
+          </View>
 
           <View style={{ gap: 15 }}>
             <View style={{ position: "relative" }}>
@@ -128,9 +135,11 @@ const EmergencyHotlines = () => {
                 style={MyStyles.searchIcon}
               />
             </View>
-            <Text style={[MyStyles.formMessage, { color: "#fff" }]}>
-              Tapping on the designated hotline number will be immediately
-              directed to your contact.
+            <Text
+              style={[MyStyles.formMessage, { color: "#fff", opacity: 0.8 }]}
+            >
+              Tapping a hotline number will instantly open your phone’s dialer
+              to make the call.
             </Text>
 
             {loading ? (
@@ -162,6 +171,7 @@ const EmergencyHotlines = () => {
                       {
                         flexDirection: "row",
                         alignItems: "center",
+                        height: 55,
                       },
                     ]}
                   >

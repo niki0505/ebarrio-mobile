@@ -1,8 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import {
   Text,
   View,
-  Alert,
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
@@ -19,6 +18,7 @@ import { InfoContext } from "../context/InfoContext";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Calendar } from "react-native-calendars";
+import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -29,6 +29,9 @@ const CourtReservations = () => {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const [reservationForm, setReservationForm] = useState({
     resID: user.resID || "",
@@ -41,7 +44,6 @@ const CourtReservations = () => {
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
   const [selectedDateForTime, setSelectedDateForTime] = useState(null);
 
   useEffect(() => {
@@ -162,8 +164,8 @@ const CourtReservations = () => {
       endDateTime.setMinutes(selectedTime.getMinutes());
 
       if (endDateTime <= startDateTime) {
-        Alert.alert("Error", "End time must be after start time.");
-        setErrorMsg("End time must be after start time.");
+        setAlertMessage("End time must be after start time.");
+        setIsAlertModalVisible(true);
         return;
       }
 
@@ -184,15 +186,18 @@ const CourtReservations = () => {
 
   const handleConfirm = () => {
     if (reservationForm.date.length === 0) {
-      Alert.alert("Error", "Please select at least one date.");
+      setAlertMessage("Please select at least one date.");
+      setIsAlertModalVisible(true);
       return;
     }
     if (!reservationForm.purpose) {
-      Alert.alert("Error", "Please select a purpose.");
+      setAlertMessage("Please select a purpose.");
+      setIsAlertModalVisible(true);
       return;
     }
     if (errorMsg) {
-      Alert.alert("Error", errorMsg);
+      setAlertMessage(errorMsg);
+      setIsAlertModalVisible(true);
       return;
     }
 
@@ -212,7 +217,8 @@ const CourtReservations = () => {
     for (const date of reservationForm.date) {
       const times = reservationForm.times[date];
       if (!times) {
-        Alert.alert("Error", `Times not set for ${date}.`);
+        setAlertMessage(`Times not set for ${date}.`);
+        setIsAlertModalVisible(true);
         return;
       }
       const dateStart = new Date(date);
@@ -225,7 +231,7 @@ const CourtReservations = () => {
       endDateTime.setMinutes(times.endtime.getMinutes());
 
       if (endDateTime <= startDateTime) {
-        Alert.alert("Error", `End time must be after start time on ${date}.`);
+        setAlertMessage(`End time must be after start time on ${date}.`);
         return;
       }
 
@@ -272,29 +278,14 @@ const CourtReservations = () => {
         )
         .join("\n");
 
-      Alert.alert(
-        "Error",
+      setAlertMessage(
         `Time slots overlap with existing reservations on:\n${conflictMessages}`
       );
+      setIsAlertModalVisible(true);
       return;
     }
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to submit a court reservation request?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleSubmit();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+
+    setIsConfirmModalVisible(true);
   };
 
   const handleSubmit = async () => {
@@ -315,7 +306,8 @@ const CourtReservations = () => {
     for (const date of reservationForm.date) {
       const times = reservationForm.times[date];
       if (!times) {
-        Alert.alert("Error", `Times not set for ${date}.`);
+        setAlertMessage(`Times not set for ${date}.`);
+        setIsAlertModalVisible(true);
         return;
       }
       const dateStart = new Date(date);
@@ -344,10 +336,12 @@ const CourtReservations = () => {
       });
     } catch (error) {
       console.log("Reservation submission error:", error);
-      Alert.alert("Error", "Failed to submit reservation. Please try again.");
+      setAlertMessage("Failed to submit reservation. Please try again.");
+      setIsAlertModalVisible(true);
     } finally {
       setLoading(false);
     }
+    setIsConfirmModalVisible(false);
   };
 
   const renderDateSelector = () => {
@@ -396,21 +390,35 @@ const CourtReservations = () => {
         <ScrollView
           contentContainerStyle={[MyStyles.scrollContainer, { gap: 10 }]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#04384E"
-          />
-          <Text style={MyStyles.servicesHeader}>Court Reservation</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("BottomTabs")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={MyStyles.backArrow}
+            />
+
+            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+              Reserve Court
+            </Text>
+          </View>
           <Text style={MyStyles.formMessage}>
-            Please fill out the required information for reserving a court
+            1. Please fill out the required information for reserving a court.
+            {"\n"}
+            2. Make sure to fill in both the start and end times if you’re
+            reserving the court for multiple days.
           </Text>
 
           <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>
-                Purpose <Text style={{ color: "red" }}>*</Text>
+                Purpose<Text style={{ color: "red" }}>*</Text>
               </Text>
               <Dropdown
                 labelField="label"
@@ -432,6 +440,7 @@ const CourtReservations = () => {
                 markedDates={markedDates}
                 onDayPress={onDayPress}
                 minDate={new Date()}
+                style={[MyStyles.shadow, { borderRadius: 10 }]}
               />
               {renderDateSelector()}
             </View>
@@ -524,6 +533,21 @@ const CourtReservations = () => {
                 {loading ? "Submitting..." : "Submit"}
               </Text>
             </TouchableOpacity>
+
+            <AlertModal
+              isVisible={isAlertModalVisible}
+              message={alertMessage}
+              onClose={() => setIsAlertModalVisible(false)}
+            />
+
+            <AlertModal
+              isVisible={isConfirmModalVisible}
+              isConfirmationModal={true}
+              title="Reserve a Court?"
+              message="Are you sure you want to reserve a court?"
+              onClose={() => setIsConfirmModalVisible(false)}
+              onConfirm={handleSubmit}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
