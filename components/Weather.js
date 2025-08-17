@@ -246,17 +246,7 @@ const Weather = () => {
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <ActivityIndicator size="large" color="#04384E" />
-          <Text
-            style={{
-              marginTop: 20,
-              fontSize: 12,
-              color: "#808080",
-              fontFamily: "QuicksandSemiBold",
-              textAlign: "center",
-              lineHeight: 20,
-              width: "80%",
-            }}
-          >
+          <Text style={MyStyles.loadingMessage}>
             Fetching latest weather updates
             {"\n"}This may take a few seconds...
           </Text>
@@ -271,7 +261,7 @@ const Weather = () => {
             { paddingTop: insets.top, paddingBottom: insets.bottom },
           ]}
         >
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {/* Back Arrow */}
               <MaterialIcons
@@ -297,15 +287,15 @@ const Weather = () => {
             </View>
 
             <View style={MyStyles.rowAlignment}>
-              <Text style={MyStyles.weatherSubheaderText}>Now</Text>
               <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  fontFamily: "QuicksandBold",
-                  marginTop: 20,
-                }}
+                style={[
+                  MyStyles.weatherSubheaderText,
+                  { fontFamily: "REMRegular" },
+                ]}
               >
+                Now
+              </Text>
+              <Text style={MyStyles.weatherSubheaderText}>
                 {weather.currentcondition}
               </Text>
             </View>

@@ -11,6 +11,7 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import { useContext, useState } from "react";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const BrgyCalendar = () => {
   const { events } = useContext(InfoContext);
@@ -136,11 +137,7 @@ const BrgyCalendar = () => {
             {weekDays.map((d, i) => (
               <Text
                 key={i}
-                style={{
-                  fontFamily: "QuicksandSemiBold",
-                  color: "#999",
-                  fontSize: 12,
-                }}
+                style={[MyStyles.weekDay, { fontSize: RFPercentage(1.8) }]}
               >
                 {d}
               </Text>
@@ -198,7 +195,7 @@ const BrgyCalendar = () => {
                       <Text
                         style={[
                           {
-                            fontSize: 14,
+                            fontSize: RFPercentage(1.6),
                             fontFamily: "QuicksandMedium",
                             color: "#000",
                           },
@@ -308,18 +305,7 @@ const BrgyCalendar = () => {
                 );
               })
             ) : (
-              <Text
-                style={{
-                  marginTop: 10,
-                  fontFamily: "QuicksandMedium",
-                  textAlign: "center",
-                  color: "#888",
-                  fontSize: 14,
-                  fontStyle: "italic",
-                }}
-              >
-                NO IMPORTANT EVENTS.
-              </Text>
+              <Text style={MyStyles.noEvents}>NO IMPORTANT EVENTS.</Text>
             )}
           </View>
         </View>

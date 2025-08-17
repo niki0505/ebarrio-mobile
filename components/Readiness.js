@@ -87,8 +87,6 @@ const Readiness = () => {
                 }
               }}
               name="arrow-back-ios"
-              color="#04384E"
-              size={35}
               style={[MyStyles.backArrow, { color: "#fff" }]}
             />
 
