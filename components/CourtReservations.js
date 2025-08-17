@@ -361,7 +361,10 @@ const CourtReservations = () => {
             ]}
           >
             <Text
-              style={{ color: selectedDateForTime === date ? "#fff" : "#000" }}
+              style={[
+                MyStyles.reserveDateText,
+                { color: selectedDateForTime === date ? "#fff" : "#000" },
+              ]}
             >
               {date}
             </Text>
@@ -426,7 +429,9 @@ const CourtReservations = () => {
                 value={reservationForm.purpose}
                 data={purpose.map((p) => ({ label: p, value: p }))}
                 onChange={(item) => onPurposeChange(item.value)}
-                placeholder="Select purpose"
+                placeholder="Select"
+                placeholderStyle={MyStyles.placeholderText}
+                selectedTextStyle={MyStyles.selectedText}
                 style={MyStyles.input}
               />
             </View>
@@ -454,7 +459,7 @@ const CourtReservations = () => {
                   </Text>
 
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                    <Text>
+                    <Text style={MyStyles.selectedText}>
                       {currentTimes?.starttime.toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -487,7 +492,7 @@ const CourtReservations = () => {
                   </Text>
 
                   <View style={[MyStyles.input, MyStyles.datetimeRow]}>
-                    <Text>
+                    <Text style={MyStyles.selectedText}>
                       {currentTimes?.endtime.toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -520,7 +525,7 @@ const CourtReservations = () => {
               <TextInput
                 editable={false}
                 value={reservationForm.amount}
-                style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
+                style={MyStyles.selectedText}
               />
             </View>
 

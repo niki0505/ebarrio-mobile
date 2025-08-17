@@ -54,7 +54,7 @@ const EditMobileNumber = () => {
   useEffect(() => {
     fetchUserDetails();
   }, []);
-99
+  99;
   const handleConfirm = () => {
     let hasError = false;
     let formattedNumber = mobilenumber;
@@ -384,7 +384,7 @@ const EditMobileNumber = () => {
                 Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
               </Text>
 
-              <View style={{ position: "relative", height: 45 }}>
+              <View style={MyStyles.eyeInputContainer}>
                 <TextInput
                   onChangeText={handlePassChange}
                   secureTextEntry={securePass}

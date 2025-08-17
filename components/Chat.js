@@ -23,6 +23,7 @@ import { InfoContext } from "../context/InfoContext";
 import * as SecureStore from "expo-secure-store";
 import { SocketContext } from "../context/SocketContext";
 import { AuthContext } from "../context/AuthContext";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Chat = () => {
   const { fetchFAQs, FAQs, fetchActive } = useContext(InfoContext);
@@ -306,6 +307,8 @@ const Chat = () => {
     )
     .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
+  const sendIconSize = RFPercentage(3);
+
   return (
     <SafeAreaView
       style={{
@@ -341,23 +344,9 @@ const Chat = () => {
               size={30}
               style={[MyStyles.backArrow]}
             />
-            <Image
-              source={Aniban2Logo}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                marginRight: 10,
-              }}
-            />
+            <Image source={Aniban2Logo} style={MyStyles.announcementLogo} />
             <View>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "#04384E",
-                  fontWeight: "bold",
-                }}
-              >
+              <Text style={[MyStyles.announcementUploader, { marginLeft: 5 }]}>
                 Barangay Aniban II
               </Text>
             </View>
@@ -405,10 +394,10 @@ const Chat = () => {
                     <View style={{ alignSelf: "center", marginBottom: 10 }}>
                       <Text
                         style={{
-                          fontSize: 13,
+                          fontSize: RFPercentage(1.6),
                           color: "#999",
                           fontWeight: "600",
-                          backgroundColor: "#e5e5e5",
+
                           paddingHorizontal: 12,
                           paddingVertical: 4,
                           borderRadius: 20,
@@ -465,7 +454,7 @@ const Chat = () => {
                       <>
                         <Text
                           style={{
-                            fontSize: 15,
+                            fontSize: RFPercentage(1.6),
                             fontFamily: "QuicksandSemiBold",
                             fontStyle: isEndedMsg ? "italic" : "normal",
                             color: isEndedMsg ? "#666" : "#fff",
@@ -476,7 +465,7 @@ const Chat = () => {
                         {!isEndedMsg && (
                           <Text
                             style={{
-                              fontSize: 10,
+                              fontSize: RFPercentage(1),
                               color: "#eee",
                               marginTop: 5,
                             }}
@@ -518,10 +507,11 @@ const Chat = () => {
               placeholder="Type your message..."
               style={{
                 flex: 1,
-                height: 40,
+                height: RFPercentage(4),
                 backgroundColor: "#f2f2f2",
                 borderRadius: 20,
                 paddingHorizontal: 15,
+                fontSize: RFPercentage(1.6),
               }}
             />
 
@@ -529,7 +519,7 @@ const Chat = () => {
               style={{ marginLeft: 10 }}
               onPress={() => handleSendMessage(message)}
             >
-              <MaterialIcons name="send" size={24} color="#04384E" />
+              <MaterialIcons name="send" size={sendIconSize} color="#04384E" />
             </TouchableOpacity>
           </View>
         )}
@@ -558,7 +548,11 @@ const Chat = () => {
               }}
             >
               <Text
-                style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}
+                style={{
+                  fontSize: RFPercentage(1.6),
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                }}
               >
                 Choose a quick question:
               </Text>
@@ -572,7 +566,9 @@ const Chat = () => {
                     borderBottomColor: "#ddd",
                   }}
                 >
-                  <Text style={{ fontSize: 15 }}>{msg.question}</Text>
+                  <Text style={{ fontSize: RFPercentage(1.6) }}>
+                    {msg.question}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
