@@ -3,6 +3,7 @@ import Svg, { Path } from "react-native-svg";
 import React, { useContext, useEffect, useState } from "react";
 import {
   NavigationContainer,
+  useNavigation,
   useNavigationContainerRef,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -83,6 +84,7 @@ import NotificationSetup from "./components/NotificationSetUp";
 import * as Notifications from "expo-notifications";
 import SuccessfulPage from "./components/SuccessfulPage";
 import SuccessfulPage2 from "./components/SuccessfulPage2";
+import LocationSetUp from "./components/LocationSetUp";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -95,6 +97,8 @@ const CustomTabBar = ({
   unreadAnnouncements,
 }) => {
   const insets = useSafeAreaInsets();
+  const { report } = useContext(InfoContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <View style={[MyStyles.bottomTabContainer, { bottom: insets.bottom }]}>
@@ -190,12 +194,14 @@ const CustomTabBar = ({
       </View>
 
       {/* Floating SOS Button in Center */}
-      <TouchableOpacity
-        style={[MyStyles.fab, { bottom: 45 }]}
-        onPress={() => console.log("SOS Pressed")}
-      >
-        <Text style={MyStyles.fabText}>SOS</Text>
-      </TouchableOpacity>
+      {user.role === "Resident" && (
+        <TouchableOpacity
+          style={[MyStyles.fab, { bottom: 45 }]}
+          onPress={() => navigation.navigate(report ? "SOSStatusPage" : "SOS")}
+        >
+          <Text style={MyStyles.fabText}>SOS</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -206,6 +212,7 @@ const BottomTabs = () => {
 
   return (
     <>
+      <LocationSetUp />
       <NotificationSetup />
       <Tab.Navigator
         initialRouteName="Home"
@@ -286,7 +293,9 @@ const DrawerContent = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Menu Options */}
+      {user.role === "Resident" ? (
+        <>
+          {/* Menu Options */}
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -351,6 +360,52 @@ const DrawerContent = ({ navigation }) => {
         />
         <Text style={MyStyles.drawerServicesText}>Status</Text>
       </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("SOSRequests")}
+          >
+            <Ionicons name="document-text" size={22} color="#04384E" />
+            <Text
+              style={{
+                fontSize: 18,
+                marginLeft: 15,
+                color: "#04384E",
+                fontFamily: "QuicksandBold",
+              }}
+            >
+              SOS Requests
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("RespondedSOS")}
+          >
+            <Ionicons name="document-text" size={22} color="#04384E" />
+            <Text
+              style={{
+                fontSize: 18,
+                marginLeft: 15,
+                color: "#04384E",
+                fontFamily: "QuicksandBold",
+              }}
+            >
+              Responded SOS
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
 
       <TouchableOpacity
         style={{
@@ -518,13 +573,37 @@ const DrawerContent = ({ navigation }) => {
 };
 
 const BottomTabsWithDrawer = () => {
+  const navigation = useNavigation();
+  const { report } = useContext(InfoContext);
+  const insets = useSafeAreaInsets();
   return (
-    <Drawer.Navigator
-      screenOptions={{ headerShown: false }}
-      drawerContent={(props) => <DrawerContent {...props} />}
-    >
-      <Drawer.Screen name="BottomTabs" component={BottomTabs} />
-    </Drawer.Navigator>
+    <View style={{ flex: 1 }}>
+      {report && (
+        <TouchableOpacity
+          style={{
+            paddingTop: insets.top,
+            backgroundColor: "red",
+            padding: 10,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => navigation.navigate("SOSStatusPage")}
+        >
+          <Text style={{ color: "white", fontWeight: "bold" }}>
+            {report.status === "Pending"
+              ? "Help is on the way"
+              : "Help has arrived"}
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      <Drawer.Navigator
+        screenOptions={{ headerShown: false }}
+        drawerContent={(props) => <DrawerContent {...props} />}
+      >
+        <Drawer.Screen name="BottomTabs" component={BottomTabs} />
+      </Drawer.Navigator>
+    </View>
   );
 };
 

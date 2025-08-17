@@ -9,6 +9,7 @@ import { AuthContext } from "../context/AuthContext";
 import AppLogo from "../assets/applogo-darkbg.png";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RFPercentage } from "react-native-responsive-fontsize";
+
 import AlertModal from "./AlertModal";
 
 const OTP = ({}) => {
