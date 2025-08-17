@@ -59,15 +59,26 @@ const HazardMap = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("Readiness")}
-            name="arrow-back-ios"
-            size={30}
-            color="#fff"
-          />
-          <Text style={[MyStyles.header, MyStyles.evacuationHeader]}>
-            HAZARD MAPS
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => navigation.navigate("Readiness")}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={[MyStyles.backArrow, { color: "#fff" }]}
+            />
+
+            <Text
+              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+            >
+              Hazard Maps
+            </Text>
+          </View>
 
           {/* Fire Map */}
           <View>

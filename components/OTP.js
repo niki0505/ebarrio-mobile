@@ -1,13 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  Image,
-  SafeAreaView,
-} from "react-native";
+import { Text, View, Image, SafeAreaView } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -37,6 +28,9 @@ const OTP = ({}) => {
   const { login } = useContext(AuthContext);
   const otpRef = useRef(null);
   const insets = useSafeAreaInsets();
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     let interval = null;
@@ -66,17 +60,20 @@ const OTP = ({}) => {
         console.log("New OTP is generated");
       } catch (error) {
         console.error("Error sending OTP:", error);
-        alert("Something went wrong while sending OTP");
+        setAlertMessage("Something went wrong while sending OTP");
+        setIsAlertModalVisible(true);
       }
     } else {
-      Alert.alert("Limit reached", "You can only resend OTP 3 times.");
+      setAlertMessage("You can only resend OTP 3 times.");
+      setIsAlertModalVisible(true);
     }
   };
 
   const handleVerify = async (OTP) => {
     try {
       const result = await verifyOTP(username, OTP);
-      alert(result.message);
+      setIsSuccess(true);
+      setAlertMessage(result.message);
       if (navigatelink === "Login") {
         try {
           await api.post("/register", {
@@ -95,12 +92,15 @@ const OTP = ({}) => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     }
+    setIsSuccess(false);
   };
 
   const handleOTPChange = (text) => {
@@ -211,6 +211,14 @@ const OTP = ({}) => {
             </View>
           )}
         </View>
+
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          title="Limit reached"
+          isSuccess={isSuccess}
+          onClose={() => setIsAlertModalVisible(false)}
+        />
       </View>
     </SafeAreaView>
   );

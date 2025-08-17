@@ -9,8 +9,9 @@ import {
   ScrollView,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useState, useEffect } from "react";
 
 //ICONS & IMAGES
 import { MaterialIcons } from "@expo/vector-icons";
@@ -18,6 +19,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 const Readiness = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const [isEmergencyClicked, setEmergencyClicked] = useState(false);
+  const route = useRoute();
+  const fromOffline = route.params?.fromOffline || false;
 
   const readinessData = [
     {
@@ -68,15 +72,32 @@ const Readiness = () => {
             },
           ]}
         >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#fff"
-          />
-          <Text style={[MyStyles.header, MyStyles.readinessHeader]}>
-            Readiness
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons
+              onPress={() => {
+                if (fromOffline) {
+                  navigation.navigate("Offline");
+                } else {
+                  navigation.navigate("BottomTabs");
+                }
+              }}
+              name="arrow-back-ios"
+              color="#04384E"
+              size={35}
+              style={[MyStyles.backArrow, { color: "#fff" }]}
+            />
+
+            <Text
+              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+            >
+              Readiness
+            </Text>
+          </View>
 
           <View style={MyStyles.readinessColWrapper}>
             {readinessData.map((item, index) => (

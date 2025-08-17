@@ -25,8 +25,8 @@ const SuccessfulPage = () => {
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
         backgroundColor: "#fff",
-        justifyContent: "center", // Center vertically
-        alignItems: "center", // Center horizontally
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <KeyboardAvoidingView
@@ -47,13 +47,14 @@ const SuccessfulPage = () => {
           />
 
           {service === "Document" && (
-            <View style={MyStyles.serviceContentWrapper}>
+            <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Document Request Successful
+                Document Request Submitted Successfully!
               </Text>
-              <Text style={MyStyles.serviceDesc}>
-                Your document request has been received by the barangay. We'll
-                get back to you soon. Tap the button below to view the status.
+              <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
+                Your document request has been received by the barangay. You
+                will be notified once the request is ready for pick up. For the
+                meantime, you may view the status of your request.
               </Text>
             </View>
           )}
@@ -61,11 +62,12 @@ const SuccessfulPage = () => {
           {service === "Blotter" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Blotter Report Successful
+                Blotter Report Submitted Successfully!
               </Text>
-              <Text style={MyStyles.serviceDesc}>
-                Your blotter report has been received by the barangay. We'll get
-                back to you soon. Tap the button below to view the status.
+              <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
+                Your blotter report has been received by the barangay. You will
+                be notified once your report has an update. For the meantime,
+                you may view the status of your request.
               </Text>
             </View>
           )}
@@ -73,12 +75,13 @@ const SuccessfulPage = () => {
           {service === "Reservation" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Court Reservation Request Successful
+                Court Reservation Submitted Successfully!
               </Text>
-              <Text style={MyStyles.serviceDesc}>
+              <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
                 Your court reservation request has been received by the
-                barangay. We'll get back to you soon. Tap the button below to
-                view the status.
+                barangay. You will be notified once your reservation is
+                accepted. For the meantime, you may view the status of your
+                request.
               </Text>
             </View>
           )}
@@ -86,7 +89,7 @@ const SuccessfulPage = () => {
           {service === "ResidentForm" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Resident Profile Request Submitted
+                Resident Profile Submitted Successfully!
               </Text>
               <Text style={MyStyles.serviceDesc}>
                 Your resident profile request has been submitted to the
@@ -99,9 +102,16 @@ const SuccessfulPage = () => {
           {(service === "Reservation" ||
             service === "Document" ||
             service === "Blotter") && (
-            <>
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                flex: 1,
+              }}
+            >
               <TouchableOpacity
-                style={[MyStyles.button, { marginTop: 15 }]}
+                style={[MyStyles.button]}
                 onPress={() => navigation.navigate("Status")}
               >
                 <Text style={MyStyles.buttonText}>View Status</Text>
@@ -113,7 +123,7 @@ const SuccessfulPage = () => {
               >
                 Back to Home
               </Text>
-            </>
+            </View>
           )}
 
           {service === "ResidentForm" && (
@@ -122,7 +132,7 @@ const SuccessfulPage = () => {
                 style={[MyStyles.button, { marginTop: 15 }]}
                 onPress={() => navigation.navigate("Login")}
               >
-                <Text style={MyStyles.buttonText}>OK</Text>
+                <Text style={MyStyles.buttonText}>CONTINUE</Text>
               </TouchableOpacity>
             </>
           )}

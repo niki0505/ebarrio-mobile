@@ -26,12 +26,12 @@ const Preview = () => {
       image: require("../assets/preview/firstprev.png"),
       title: "Request and Track",
       description:
-        "Get barangay clearances, reserve court, file blotters, and track them in real-time — \n all in one place.",
+        "Get barangay clearances, reserve court, file blotters, and track them in real-time — all in one place.",
     },
     {
       id: "2",
       image: require("../assets/preview/secondprev.png"),
-      title: "Always Prepared and Safe",
+      title: "Be Prepared and Safe",
       description:
         "Access SOS, emergency hotlines, river monitoring, and disaster tips anytime.",
     },
@@ -61,7 +61,7 @@ const Preview = () => {
       ]}
     >
       <Image source={item.image} style={MyStyles.slideImg} />
-      <Text style={[MyStyles.header, { textAlign: "center" }]}>
+      <Text style={[MyStyles.header, { textAlign: "center", fontSize: 24 }]}>
         {item.title}
       </Text>
       <Text
@@ -99,23 +99,6 @@ const Preview = () => {
         backgroundColor: "#fff",
       }}
     >
-      {/* <TouchableOpacity
-        onPress={handleSignUp}
-        style={MyStyles.button}
-        accessibilityLabel="Join the community"
-        activeOpacity={0.8}
-      >
-        <Text
-          style={{
-            color: "white",
-            fontWeight: "bold",
-            fontSize: 24,
-          }}
-        >
-          Join Us
-        </Text>
-      </TouchableOpacity> */}
-      {/* Slides Section */}
       <View
         style={{
           justifyContent: "center",
@@ -151,7 +134,15 @@ const Preview = () => {
       </View>
 
       {/* Bottom Buttons */}
-      <View style={MyStyles.bottomButons}>
+      <View
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          flex: 1,
+          padding: 20,
+        }}
+      >
         {isLastSlide ? (
           <>
             {/* Join Us Button */}
@@ -165,32 +156,61 @@ const Preview = () => {
             </TouchableOpacity>
 
             {/* Login Button */}
-            <TouchableOpacity
-              onPress={handleLogin}
-              accessibilityLabel="Go to Login"
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
               <Text
                 style={{
-                  color: "#0E94D3",
-                  fontWeight: "bold",
-                  fontSize: 24,
+                  color: "#808080",
+                  fontFamily: "REMSemiBold",
+                  fontSize: 20,
                   marginTop: 15,
                 }}
               >
-                Login
+                Do you have an account?
               </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleLogin}
+                accessibilityLabel="Go to Login"
+              >
+                <Text
+                  style={{
+                    color: "#0E94D3",
+                    fontFamily: "REMBold",
+                    fontSize: 20,
+                    marginTop: 15,
+                  }}
+                >
+                  {" "}
+                  Login
+                </Text>
+              </TouchableOpacity>
+            </View>
           </>
         ) : (
           /* Next Button */
-          <TouchableOpacity
-            onPress={goToNextSlide}
-            style={MyStyles.button}
-            accessibilityLabel="Go to Next Slide"
-            activeOpacity={0.8}
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              flex: 1,
+              padding: 20,
+            }}
           >
-            <Text style={MyStyles.buttonText}>Next</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={goToNextSlide}
+              style={[MyStyles.button]}
+              accessibilityLabel="Go to Next Slide"
+              activeOpacity={0.8}
+            >
+              <Text style={[MyStyles.buttonText]}>Continue</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </SafeAreaView>

@@ -6,18 +6,14 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Image,
   TextInput,
   Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { InfoContext } from "../context/InfoContext";
-import { useContext, useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import hotlines from "../assets/hotlines-icon.png";
-import safety from "../assets/safety-tips-icon.png";
+import { useState, useEffect } from "react";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -100,7 +96,9 @@ const OfflineScreen = () => {
               <View style={MyStyles.offCenteredView}>
                 <View style={MyStyles.offBtnCardContainer}>
                   <TouchableOpacity
-                    onPress={() => navigation.navigate("Readiness")}
+                    onPress={() =>
+                      navigation.navigate("Readiness", { fromOffline: true })
+                    }
                     style={MyStyles.offBtnCard}
                   >
                     <View style={MyStyles.offBtnContent}>
@@ -127,6 +125,7 @@ const OfflineScreen = () => {
                       </Text>
                     </View>
                   </TouchableOpacity>
+
                   <TouchableOpacity
                     onPress={() => setEmergencyClicked(true)}
                     style={MyStyles.offBtnCard}
@@ -158,28 +157,37 @@ const OfflineScreen = () => {
 
           {isEmergencyClicked && (
             <View>
-              <MaterialIcons
-                onPress={() => setEmergencyClicked(false)}
-                name="arrow-back-ios"
-                size={24}
-                color="#fff"
-              />
-
-              <Text
-                style={[
-                  MyStyles.header,
-                  { marginTop: 20, marginBottom: 30, color: "#fff" },
-                ]}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
               >
-                Hotlines
-              </Text>
+                {/* Back Arrow */}
+                <MaterialIcons
+                  onPress={() => setEmergencyClicked(false)}
+                  name="arrow-back-ios"
+                  color="#04384E"
+                  size={35}
+                  style={[MyStyles.backArrow, { color: "#fff" }]}
+                />
+
+                <Text
+                  style={[
+                    MyStyles.servicesHeader,
+                    { marginTop: 0, color: "#fff" },
+                  ]}
+                >
+                  Hotlines
+                </Text>
+              </View>
 
               <View style={{ gap: 15 }}>
                 <View style={{ position: "relative" }}>
                   <TextInput
                     value={search}
                     onChangeText={handleSearch}
-                    style={[MyStyles.input, { paddingLeft: 40, height: 45 }]}
+                    style={[MyStyles.input, { paddingLeft: 40, height: 55 }]}
                     placeholder="Search..."
                   />
                   <MaterialIcons
@@ -189,6 +197,16 @@ const OfflineScreen = () => {
                     style={MyStyles.searchIcon}
                   />
                 </View>
+
+                <Text
+                  style={[
+                    MyStyles.formMessage,
+                    { color: "#fff", opacity: 0.8 },
+                  ]}
+                >
+                  Tapping a hotline number will instantly open your phone’s
+                  dialer to make the call.
+                </Text>
 
                 {filteredEmergencyHotlines.length === 0 ? (
                   <Text style={{ color: "#fff", marginTop: 20 }}>

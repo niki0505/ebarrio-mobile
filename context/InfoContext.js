@@ -39,6 +39,8 @@ export const InfoProvider = ({ children }) => {
         .flatMap((a) =>
           Object.entries(a.times).map(([dateKey, timeObj]) => ({
             title: a.title,
+            category: a.category,
+            eventdetails: a.eventdetails,
             start: new Date(timeObj.starttime),
             end: new Date(timeObj.endtime),
             backgroundColor:

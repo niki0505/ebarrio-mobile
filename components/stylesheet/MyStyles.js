@@ -8,15 +8,15 @@ export const MyStyles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    fontSize: 30,
+    fontSize: 22,
     color: "#04384E",
     fontFamily: "REMBold",
   },
   subHeader: {
-    color: "#04384E",
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "REMMedium",
-    marginTop: 15,
+    color: "#04384E",
+    marginTop: 20,
   },
   textMedium: {
     fontSize: 16,
@@ -56,18 +56,18 @@ export const MyStyles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    height: 55,
+    height: 45,
     borderWidth: 1,
     borderColor: "#ACACAC",
     borderRadius: 15,
-    fontSize: 16,
+    fontSize: 15,
     paddingHorizontal: 10,
     backgroundColor: "#fff",
     fontFamily: "QuicksandMedium",
   },
   inputLabel: {
     color: "#04384E",
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: "QuicksandBold",
   },
   datetimeRow: {
@@ -87,7 +87,7 @@ export const MyStyles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontFamily: "REMBold",
-    fontSize: 24,
+    fontSize: 22,
   },
 
   formMessage: {
@@ -102,9 +102,11 @@ export const MyStyles = StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
-    maxHeight: 150,
+    maxHeight: 200, // Keeps the max height at 200px
     marginTop: 4,
+    padding: 5, // Optional: Adds padding inside the container for better spacing
   },
+
   suggestionItem: {
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -141,25 +143,25 @@ export const MyStyles = StyleSheet.create({
 
   /*---------------------------------------WEATHER---------------------------------------*/
   weatherHeaderText: {
-    fontSize: 30,
-    color: "#fff",
     fontFamily: "REMBold",
-    marginVertical: 10,
+    fontSize: 18,
+    color: "#fff",
   },
   weatherBodyText: {
     color: "#fff",
     fontWeight: "400",
     fontSize: 16,
-    fontFamily: "QuicksandSemiBold",
+    fontFamily: "QuicksandMedium",
   },
   weatherSubheaderText: {
     fontSize: 18,
-    fontFamily: "QuicksandBold",
+    fontFamily: "REMMedium",
     color: "#fff",
+    marginTop: 20,
   },
   hourlyforecastContainer: {
     alignItems: "center",
-    width: 100,
+    width: 90,
     height: 100,
     justifyContent: "center",
   },
@@ -169,7 +171,7 @@ export const MyStyles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
   },
 
   //Emergency Hotlines
@@ -213,7 +215,7 @@ export const MyStyles = StyleSheet.create({
     shadowRadius: 10,
 
     // Android shadow
-    elevation: 10,
+    elevation: 3,
   },
 
   /*---------------------------------------READINESS---------------------------------------*/
@@ -245,7 +247,7 @@ export const MyStyles = StyleSheet.create({
   },
   readinessTitle: {
     color: "#BC0F0F",
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "REMBold",
     marginBottom: 5,
     flexShrink: 1,
@@ -321,7 +323,7 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 15,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "REMBold",
     color: "#BC0F0F",
     textAlign: "center",
@@ -347,7 +349,7 @@ export const MyStyles = StyleSheet.create({
   },
   stepNumberText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "QuicksandBold",
     fontSize: 16,
   },
   stepText: {
@@ -374,8 +376,8 @@ export const MyStyles = StyleSheet.create({
   },
   quickTitle: {
     color: "white",
-    fontSize: 20,
-    fontFamily: "REMBold",
+    fontSize: 18,
+    fontFamily: "QuicksandBold",
     width: "90%",
   },
 
@@ -394,7 +396,7 @@ export const MyStyles = StyleSheet.create({
   mapOverlayText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "REMSemiBold",
+    fontFamily: "QuicksandMedium",
   },
 
   //BOTTOM BAR STYLES
@@ -452,7 +454,7 @@ export const MyStyles = StyleSheet.create({
   badgeText: {
     color: "white",
     fontSize: 10,
-    fontWeight: "bold",
+    fontFamily: "QuicksandBold",
   },
   /*---------------------------------------ACCOUNT SETTINGS---------------------------------------*/
   securityText: {
@@ -578,11 +580,9 @@ export const MyStyles = StyleSheet.create({
   },
   /*---------------------------------------SERVICES---------------------------------------*/
   servicesHeader: {
-    fontSize: 30,
+    fontSize: 22,
     color: "#04384E",
     fontFamily: "REMBold",
-    marginTop: 20,
-    marginBottom: 0,
   },
   servicesContentWrapper: {
     gap: 30,
@@ -601,7 +601,8 @@ export const MyStyles = StyleSheet.create({
   errorMsg: {
     color: "red",
     fontFamily: "QuicksandMedium",
-    fontSize: 16,
+    fontSize: 14,
+    width: "100%",
   },
   errorDetailsWrapper: {
     display: "flex",
@@ -622,15 +623,15 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 5,
   },
   categoriesText: {
-    ontSize: 13,
-    fontFamily: "REMRegular",
+    fontSize: 12,
+    fontFamily: "QuicksandSemiBold",
   },
   dateText: {
-    fontSize: 24,
+    fontSize: 22,
     textAlign: "center",
-    marginBottom: 20,
     color: "#04384E",
-    fontFamily: "QuicksandBold",
+    fontFamily: "REMBold",
+    marginVertical: 30,
   },
   calendarEventWrapper: {
     borderRadius: 10,
@@ -652,37 +653,36 @@ export const MyStyles = StyleSheet.create({
   legendsRowWrapper: {
     flexDirection: "row",
     gap: 10,
-    width: "100%",
+    width: "90%",
   },
   legendsColWrapper: {
     flexDirection: "column",
     gap: 10,
   },
   importantEventsWrapper: {
-    padding: 10,
     borderRadius: 10,
     marginTop: 10,
-    gap: 5,
+    padding: 10,
   },
   importantEventsDate: {
-    color: "#fff",
+    color: "#04384E",
     fontSize: 16,
     fontFamily: "QuicksandBold",
   },
   importantEventsTitle: {
-    color: "#fff",
+    color: "#04384E",
     fontSize: 16,
-    marginTop: 10,
-    fontFamily: "QuicksandMedium",
+    fontFamily: "QuicksandBold",
   },
 
   eyeToggle: {
     position: "absolute",
     right: 10,
-    top: "50%",
-    transform: [{ translateY: -12 }],
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
-
   /*---------------------------------------CALENDAR---------------------------------------*/
   reserveDateWrapper: {
     flexDirection: "row",
@@ -730,7 +730,7 @@ export const MyStyles = StyleSheet.create({
   },
   stepsNo: {
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "QuicksandBold",
     fontSize: 16,
   },
   stepsDesc: {
@@ -752,8 +752,8 @@ export const MyStyles = StyleSheet.create({
     marginBottom: 0,
     textAlign: "left",
     color: "#fff",
-    fontSize: 24,
-    fontFamily: "REMSemiBold",
+    fontSize: 22,
+    fontFamily: "QuicksandBold",
   },
   evacuationImg: {
     width: "100%",
@@ -767,8 +767,8 @@ export const MyStyles = StyleSheet.create({
     marginBottom: 0,
     textAlign: "left",
     color: "#fff",
-    fontSize: 24,
-    fontFamily: "REMSemiBold",
+    fontSize: 22,
+    fontFamily: "QuicksandBold",
   },
 
   /*---------------------------------------BACKGROUND OVERLAY---------------------------------------*/
@@ -792,38 +792,33 @@ export const MyStyles = StyleSheet.create({
 
   /*---------------------------------------HOME---------------------------------------*/
   greetingsText: {
-    fontSize: 20,
+    fontSize: 22,
     color: "#585252",
     fontFamily: "QuicksandSemiBold",
   },
   calendarCard: {
     padding: 10,
-    flex: 0,
-    width: 180,
+    flex: 1,
   },
   calendarMonth: {
-    color: "#BC0F0F",
-    fontSize: 20,
+    color: "#808080",
+    fontSize: 18,
     fontFamily: "REMSemiBold",
   },
   calendarDay: {
-    fontSize: 35,
-    fontWeight: "bold",
+    fontSize: 45,
     color: "#04384E",
-    fontFamily: "REMRegular",
+
+    fontFamily: "REMBold",
   },
   calendarEventTitle: {
     fontSize: 14,
     color: "#ACACAC",
-    marginRight: 10,
+    marginRight: 20,
   },
-  weatherHeaderText: {
-    fontFamily: "REMRegular",
-    fontSize: 16,
-    color: "#fff",
-  },
+
   weatherCurrTemp: {
-    fontFamily: "REMRegular",
+    fontFamily: "QuicksandMedium",
     fontSize: 35,
     color: "#fff",
   },
@@ -833,11 +828,9 @@ export const MyStyles = StyleSheet.create({
     color: "#fff",
   },
   carouselWrapper: {
-    width: 370,
     padding: 10,
   },
   carouselCard: {
-    flex: 1,
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 15,
@@ -903,7 +896,7 @@ export const MyStyles = StyleSheet.create({
     shadowRadius: 10,
 
     // Android shadow
-    elevation: 10,
+    elevation: 3,
   },
   sosRowWrapper: {
     flexDirection: "row",
@@ -914,7 +907,7 @@ export const MyStyles = StyleSheet.create({
   },
   emergencyTitle: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: "REMSemiBold",
     textAlign: "center",
   },
@@ -969,7 +962,7 @@ export const MyStyles = StyleSheet.create({
     color: "#808080",
     alignSelf: "flex-start",
     fontSize: 16,
-    fontFamily: "QuicksandBold",
+    fontFamily: "QuicksandSemiBold",
   },
   forgotMsg: {
     fontSize: 16,
@@ -987,7 +980,7 @@ export const MyStyles = StyleSheet.create({
     zIndex: 2,
   },
   forgotCard: {
-    width: "80%",
+    width: "90%",
     height: "50%",
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -996,13 +989,11 @@ export const MyStyles = StyleSheet.create({
     alignItems: "center",
   },
   methodOptionsWrapper: {
-    gap: 20,
-    width: "100%",
-    marginTop: 30,
-    height: "100%",
+    marginVertical: 30,
+    gap: 30,
+    
   },
   methodOptions: {
-    height: "15%",
     backgroundColor: "#F7F5F5",
     borderColor: "#ACACAC",
     borderWidth: 1,
@@ -1011,6 +1002,7 @@ export const MyStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 15,
+    height: 45,
   },
   /*---------------------------------------NOTIFICATION---------------------------------------*/
   notScrollWrapper: {
@@ -1079,7 +1071,7 @@ export const MyStyles = StyleSheet.create({
   /*---------------------------------------OFFLINE---------------------------------------*/
   offHeader: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 22,
     textAlign: "center",
     fontWeight: "QuicksandBold",
   },
@@ -1148,20 +1140,20 @@ export const MyStyles = StyleSheet.create({
   },
   buttonsText: {
     color: "white",
-    fontWeight: "bold",
-    fontSize: 24,
+    fontFamily: "REMBold",
+    fontSize: 22,
   },
 
   /*---------------------------------------RESIDENT FORM---------------------------------------*/
   FormSectionTitle: {
     color: "#04384E",
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: "REMSemiBold",
     alignSelf: "flex-start",
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "QuicksandBold",
     marginBottom: 8,
   },
   required: { color: "red" },
@@ -1226,9 +1218,15 @@ export const MyStyles = StyleSheet.create({
     backgroundColor: "#ddd",
     padding: 5,
   },
+  backArrow: {
+    padding: 10,
+    color: "#04384E",
+    marginVertical: 10,
+    width: 40,
+  },
   headerCell: {
     flex: 1,
-    fontWeight: "bold",
+    fontWeight: "REMBold",
     textAlign: "center",
     fontSize: 12,
   },
@@ -1279,12 +1277,12 @@ export const MyStyles = StyleSheet.create({
   },
   cancelCert: {
     fontFamily: "REMBold",
-    fontSize: 20,
+    fontSize: 22,
     color: "#04384E",
   },
   cancelReserve: {
     fontFamily: "QuicksandBold",
-    fontSize: 20,
+    fontSize: 22,
     color: "#04384E",
     marginBottom: 10,
   },
@@ -1311,7 +1309,7 @@ export const MyStyles = StyleSheet.create({
     marginVertical: 10,
   },
   statusServiceType: {
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: "REMSemiBold",
     color: "#04384E",
   },
@@ -1363,17 +1361,18 @@ export const MyStyles = StyleSheet.create({
   successScrollWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    gap: 10,
-    padding: 50,
+    padding: 20,
   },
   successLottie: {
     width: "100%",
     height: 200,
+    marginBottom: -150,
+    justifyContent: "center",
+    flex: 1,
   },
   serviceContentWrapper: {
     alignItems: "center",
     flexDirection: "column",
-    gap: 15,
   },
   serviceDesc: {
     textAlign: "center",

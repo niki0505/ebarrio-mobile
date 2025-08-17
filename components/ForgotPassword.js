@@ -18,6 +18,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import api from "../api";
 import AppLogo from "../assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
+import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -49,9 +50,10 @@ const ForgotPassword = () => {
   });
 
   const [loading, setLoading] = useState(false);
-
   const [secureNewPass, setsecureNewPass] = useState(true);
   const [secureConfirmPass, setsecureConfirmPass] = useState(true);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   // Toggle Password Visibility in Reset Password
   const togglesecureNewPass = () => {
@@ -82,10 +84,12 @@ const ForgotPassword = () => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     } finally {
       setLoading(false);
@@ -103,10 +107,12 @@ const ForgotPassword = () => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     } finally {
       setLoading(false);
@@ -118,7 +124,8 @@ const ForgotPassword = () => {
       await api.get(`/checkotp/${username}`);
       if (resendCount === 3) {
         setIsResendDisabled(true);
-        alert("You can only resend OTP 3 times.");
+        setAlertMessage("You can only resend OTP 3 times.");
+        setIsAlertModalVisible(true);
         setOTPClicked(false);
         await api.get(`/limitotp/${username}`);
         return;
@@ -132,7 +139,10 @@ const ForgotPassword = () => {
       );
     } catch (error) {
       if (error.response && error.response.status === 429) {
-        alert("OTP use is currently disabled. Try again after 30 minutes.");
+        setAlertMessage(
+          "OTP use is currently disabled. Try again after 30 minutes."
+        );
+        setIsAlertModalVisible(true);
       } else {
         console.error("Error checking OTP:", error);
       }
@@ -228,10 +238,12 @@ const ForgotPassword = () => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     } finally {
       setLoading(false);
@@ -270,27 +282,32 @@ const ForgotPassword = () => {
         console.log("New OTP is generated");
       } catch (error) {
         console.error("Error sending OTP:", error);
-        alert("Something went wrong while sending OTP");
+        setAlertMessage("Something went wrong while sending OTP");
+        setIsAlertModalVisible(true);
       }
     } else {
       await api.get(`/limitotp/${username}`);
-      alert("You can only resend OTP 3 times.");
+      setAlertMessage("You can only resend OTP 3 times.");
+      setIsAlertModalVisible(true);
     }
   };
 
   const handleVerify = async (OTP) => {
     try {
       const result = await verifyOTP(username, OTP);
-      alert(result.message);
+      setAlertMessage(result.message);
+      setIsAlertModalVisible(true);
       setIsVerified(true);
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     }
   };
@@ -359,6 +376,11 @@ const ForgotPassword = () => {
         backgroundColor: "#04384E",
       }}
     >
+      <AlertModal
+        isVisible={isAlertModalVisible}
+        message={alertMessage}
+        onClose={() => setIsAlertModalVisible(false)}
+      />
       {/* 1st Design */}
       {!isExisting && (
         <View style={{ flex: 4, backgroundColor: "#04384E" }}>
@@ -369,10 +391,6 @@ const ForgotPassword = () => {
           <View style={MyStyles.loginBottomWrapper}>
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Forgot Password
-            </Text>
-
-            <Text style={MyStyles.forgotMsg}>
-              Enter your username to reset your password
             </Text>
 
             <View style={MyStyles.loginFormWrapper}>
@@ -607,14 +625,22 @@ const ForgotPassword = () => {
               <View style={MyStyles.forgotCardWrapper}>
                 <View style={[MyStyles.forgotCard, { height: "60%" }]}>
                   <ScrollView showsVerticalScrollIndicator={true}>
-                    <MaterialIcons
-                      name="arrow-back-ios"
-                      size={30}
-                      color="#04384E"
-                      style={{ alignSelf: "flex-start" }}
-                    />
+                    <View
+                      style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      <MaterialIcons
+                        name="arrow-back-ios"
+                        size={30}
+                        color="#04384E"
+                        style={{ alignSelf: "flex-start" }}
+                      />
 
-                    <Text style={MyStyles.header}>Security Question</Text>
+                      <Text style={MyStyles.header}>Security Question</Text>
+                    </View>
                     <Text style={MyStyles.forgotMsg}>
                       To verify your identity, please answer your chosen
                       security question below.
@@ -663,7 +689,7 @@ const ForgotPassword = () => {
                       disabled={loading}
                     >
                       <Text style={[MyStyles.buttonText]}>
-                        {loading ? "Verifying..." : "Continue"}
+                        {loading ? "Verifying..." : "Verify"}
                       </Text>
                     </TouchableOpacity>
                   </ScrollView>
@@ -676,46 +702,52 @@ const ForgotPassword = () => {
               <BackgroundOverlay />
               {/* Card container with transparency */}
               <View style={MyStyles.forgotCardWrapper}>
-                <View style={MyStyles.forgotCard}>
-                  <MaterialIcons
-                    onPress={() => setIsExisting(false)}
-                    name="arrow-back-ios"
-                    size={30}
-                    color="#04384E"
-                    style={{ alignSelf: "flex-start" }}
-                  />
-                  <Text style={MyStyles.header}>Verification Method</Text>
-                  <Text style={MyStyles.forgotMsg}>
-                    Please choose a method to verify your identity and continue
-                    resetting your password
-                  </Text>
-
-                  <View style={MyStyles.methodOptionsWrapper}>
-                    <View style={MyStyles.methodOptions}>
+                <View style={[MyStyles.forgotCard, { height: "50%" }]}>
+                  <ScrollView showsVerticalScrollIndicator={true}>
+                    <View
+                      style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                      }}
+                    >
                       <MaterialIcons
-                        name="password"
-                        size={24}
+                        onPress={() => setIsExisting(false)}
+                        name="arrow-back-ios"
+                        size={30}
                         color="#04384E"
+                        style={{ alignSelf: "flex-start" }}
                       />
-                      <Text
-                        onPress={handleOTP}
-                        style={{
-                          color: "#04384E",
-                          fontSize: 18,
-                          fontFamily: "QuicksandBold",
-                        }}
-                      >
-                        One Time Password
-                      </Text>
+                      <Text style={MyStyles.header}>Verification Method</Text>
                     </View>
 
-                    <View style={MyStyles.methodOptions}>
-                      <MaterialCommunityIcons
-                        name="comment-question"
-                        size={24}
-                        color="#04384E"
-                      />
-                      <Text
+                    <Text style={MyStyles.forgotMsg}>
+                      Please choose a method to verify your identity and
+                      continue resetting your password
+                    </Text>
+
+                    <View style={MyStyles.methodOptionsWrapper}>
+                      <TouchableOpacity
+                        onPress={handleOTP}
+                        style={MyStyles.methodOptions}
+                      >
+                        <MaterialIcons
+                          name="password"
+                          size={24}
+                          color="#04384E"
+                        />
+                        <Text
+                          style={{
+                            color: "#04384E",
+                            fontSize: 18,
+                            fontFamily: "QuicksandBold",
+                          }}
+                        >
+                          One Time Password
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
                         onPress={() => {
                           if (
                             !user.securityquestions ||
@@ -728,16 +760,25 @@ const ForgotPassword = () => {
                             setQuestionsClicked(true);
                           }
                         }}
-                        style={{
-                          color: "#04384E",
-                          fontSize: 18,
-                          fontFamily: "QuicksandSemiBold",
-                        }}
+                        style={MyStyles.methodOptions}
                       >
-                        Security Question
-                      </Text>
+                        <MaterialCommunityIcons
+                          name="comment-question"
+                          size={24}
+                          color="#04384E"
+                        />
+                        <Text
+                          style={{
+                            color: "#04384E",
+                            fontSize: 18,
+                            fontFamily: "QuicksandSemiBold",
+                          }}
+                        >
+                          Security Question
+                        </Text>
+                      </TouchableOpacity>
                     </View>
-                  </View>
+                  </ScrollView>
                 </View>
               </View>
             </>

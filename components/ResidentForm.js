@@ -13,6 +13,9 @@ import {
   StyleSheet,
   Pressable,
   Modal,
+  BackHandler,
+  Dimensions,
+  Button,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -23,8 +26,9 @@ import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
 import { storage } from "../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-
 import Signature from "react-native-signature-canvas";
+import * as ScreenOrientation from "expo-screen-orientation";
+import AlertModal from "./AlertModal";
 
 //ICONS
 import { useState, useEffect } from "react";
@@ -33,8 +37,13 @@ import api from "../api";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ResidentForm = () => {
+  const { width, height } = Dimensions.get("window");
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const [isIDProcessing, setIsIDProcessing] = useState(false);
   const [isSignProcessing, setIsSignProcessing] = useState(false);
   const [residents, setResidents] = useState([]);
@@ -408,7 +417,8 @@ const ResidentForm = () => {
       }
     } catch (error) {
       console.error("Error picking image:", error);
-      Alert.alert("Error", "Something went wrong while picking the image.");
+      setAlertMessage("Something went wrong while picking the image.");
+      setIsAlertModalVisible(true);
     } finally {
       setIsIDProcessing(false);
     }
@@ -438,7 +448,8 @@ const ResidentForm = () => {
       }
     } catch (error) {
       console.error("Camera error:", error);
-      Alert.alert("Error", "Failed to open camera.");
+      setAlertMessage("Failed to open camera.");
+      setIsAlertModalVisible(true);
     }
   };
 
@@ -470,7 +481,8 @@ const ResidentForm = () => {
       }
     } catch (error) {
       console.error("Error picking image:", error);
-      Alert.alert("Error", "Something went wrong while picking the image.");
+      setAlertMessage("Something went wrong while picking the image.");
+      setIsAlertModalVisible(true);
     } finally {
       setIsSignProcessing(false);
     }
@@ -500,7 +512,8 @@ const ResidentForm = () => {
       }
     } catch (error) {
       console.error("Camera error:", error);
-      Alert.alert("Error", "Failed to open camera.");
+      setAlertMessage("Failed to open camera.");
+      isAlertModalVisible(true);
     }
   };
 
@@ -757,6 +770,37 @@ const ResidentForm = () => {
     setMemberSuggestions((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleOpenSignature = async () => {
+    await ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.LANDSCAPE
+    );
+    setShowSignModal(true);
+  };
+
+  const handleCloseSignature = async () => {
+    setShowSignModal(false);
+    await ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT_UP
+    );
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (showSignModal) {
+        handleCloseSignature();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [showSignModal]);
+
   useEffect(() => {
     if (residentForm.birthdate) {
       const birthDate = new Date(residentForm.birthdate);
@@ -816,23 +860,7 @@ const ResidentForm = () => {
   }
 
   const handleConfirm = () => {
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to create your resident profile?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleSubmit();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const handleSubmit = async () => {
@@ -891,15 +919,22 @@ const ResidentForm = () => {
     } catch (error) {
       console.log("Error", error);
     }
+
+    setIsConfirmModalVisible(true);
   };
 
   const [showSignModal, setShowSignModal] = useState(false);
-
-  const handleSignatureOK = (signature) => {
+  const handleSignatureOK = async (signature) => {
     setIsSignProcessing(true);
     setResidentForm({ ...residentForm, signature });
     setShowSignModal(false);
-    setIsSignProcessing(false);
+
+    setTimeout(async () => {
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
+      setIsSignProcessing(false);
+    }, 300);
   };
 
   const handleClear = () => {
@@ -929,7 +964,7 @@ const ResidentForm = () => {
               keyboardShouldPersistTaps="handled"
             >
               <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                Resident Profile
+                Register Resident Profile
               </Text>
 
               <View style={MyStyles.loginFormWrapper}>
@@ -974,34 +1009,35 @@ const ResidentForm = () => {
                 </View>
 
                 {/* New Signature */}
-                <View style={styles.uploadBox}>
-                  <View style={styles.previewContainer}>
+                <View style={MyStyles.uploadBox}>
+                  <View style={MyStyles.previewContainer}>
                     {isSignProcessing ? (
                       <ActivityIndicator size="small" color="#0000ff" />
                     ) : residentForm.signature ? (
                       <Image
                         source={{ uri: residentForm.signature }}
-                        style={styles.image}
+                        style={MyStyles.image}
                       />
                     ) : (
-                      <View style={styles.placeholder}>
-                        <Text style={styles.placeholderText}>
+                      <View style={MyStyles.placeholder}>
+                        <Text style={MyStyles.placeholderText}>
                           Attach Signature
                         </Text>
                       </View>
                     )}
                   </View>
 
-                  <View style={styles.buttons}>
+                  <View style={MyStyles.personalInfobuttons}>
                     <TouchableOpacity
-                      onPress={() => setShowSignModal(true)}
-                      style={styles.button}
+                      onPress={handleOpenSignature}
+                      style={MyStyles.personalInfoButton}
                     >
                       <Text>✍️</Text>
                     </TouchableOpacity>
+
                     <TouchableOpacity
                       onPress={handleClear}
-                      style={styles.button}
+                      style={MyStyles.personalInfoButton}
                     >
                       <Text>🗑️</Text>
                     </TouchableOpacity>
@@ -1009,23 +1045,42 @@ const ResidentForm = () => {
 
                   {/* Signature Modal */}
                   <Modal visible={showSignModal} animationType="slide">
-                    <View style={{ flex: 1 }}>
-                      <Signature
-                        onOK={handleSignatureOK}
-                        onEmpty={() => setShowSignModal(false)}
-                        descriptionText="Sign Below"
-                        clearText="Clear"
-                        confirmText="Save"
-                        webStyle={`.m-signature-pad--footer { display: flex; justify-content: space-between; }`}
-                      />
-                      <TouchableOpacity
-                        onPress={() => setShowSignModal(false)}
-                        style={styles.closeButton}
+                    <View
+                      style={{ flex: 1, backgroundColor: "#fff", padding: 10 }}
+                    >
+                      <View
+                        style={{
+                          flex: 1,
+                        }}
                       >
-                        <Text style={{ color: "#fff", fontSize: 18 }}>
-                          Close
-                        </Text>
-                      </TouchableOpacity>
+                        <Signature
+                          onOK={handleSignatureOK}
+                          onEmpty={() => setShowSignModal(false)}
+                          descriptionText="Sign Above"
+                          clearText="Clear"
+                          confirmText="Save"
+                          webStyle={`
+                          .m-signature-pad {
+                            margin: 0;
+                            height: 90%;
+                          }
+
+                          .m-signature-pad--footer {
+                            display: flex;
+                            justify-content: space-between !important;
+                          }
+
+                          .button {
+                            margin-right:35px;
+                          }
+                        `}
+                        />
+                        <Button
+                          title="Close"
+                          onPress={handleCloseSignature}
+                          color="#007BFF"
+                        />
+                      </View>
                     </View>
                   </Modal>
                 </View>
@@ -2542,6 +2597,21 @@ const ResidentForm = () => {
               <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
                 <Text style={MyStyles.buttonText}>Submit</Text>
               </TouchableOpacity>
+
+              <AlertModal
+                isVisible={isAlertModalVisible}
+                message={alertMessage}
+                onClose={() => setIsAlertModalVisible(false)}
+              />
+
+              <AlertModal
+                isVisible={isConfirmModalVisible}
+                isConfirmationModal={true}
+                title="Register Resident Profile?"
+                message="Are you sure you want to register to be a member of barangay?"
+                onClose={() => setIsConfirmModalVisible(false)}
+                onConfirm={handleSubmit}
+              />
             </ScrollView>
           </View>
         </View>
@@ -2552,34 +2622,7 @@ const ResidentForm = () => {
 export default ResidentForm;
 
 const styles = StyleSheet.create({
-  container: { margin: 20 },
-  label: { fontSize: 16, marginBottom: 5 },
   required: { color: "red" },
-  uploadBox: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
-  },
-  previewContainer: {
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  placeholder: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  placeholderText: {
-    color: "#808080",
-    fontFamily: "QuicksandSemiBold",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
-  },
   buttons: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -2593,49 +2636,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 8,
   },
-  radioGroup: {
-    flexDirection: "row",
-    gap: 20,
-    maxWidth: "20%",
-  },
-  radioOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  radioCircle: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "#444",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  radioDot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: "#444",
-  },
   container: {
     padding: 10,
-  },
-  headerRow: {
-    flexDirection: "row",
-    backgroundColor: "#ddd",
-    padding: 5,
-  },
-  headerCell: {
-    flex: 1,
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 12,
-  },
-  dataRow: {
-    flexDirection: "row",
-    marginBottom: 10,
-    alignItems: "center",
   },
   input: {
     flex: 1,
@@ -2644,18 +2646,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
     fontSize: 12,
     borderRadius: 5,
-  },
-  dropdown: {
-    flex: 1,
-    marginHorizontal: 2,
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 8,
-    height: 40,
-    justifyContent: "center",
-  },
-  dropdownContainer: {
-    zIndex: 1000,
   },
   removeButton: {
     backgroundColor: "red",
@@ -2671,7 +2661,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   //SIGNATURE
-  uploadBox: { margin: 20 },
   previewContainer: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -2680,9 +2669,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  image: { width: "100%", height: "100%" },
-  placeholder: { justifyContent: "center", alignItems: "center" },
-  placeholderText: { color: "#aaa" },
   buttons: { flexDirection: "row", justifyContent: "center" },
   button: {
     marginHorizontal: 10,
@@ -2691,8 +2677,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   closeButton: {
+    width: 20,
     backgroundColor: "#000",
     padding: 15,
     alignItems: "center",
+    justifyContent: "center",
   },
 });

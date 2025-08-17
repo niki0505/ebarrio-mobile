@@ -54,16 +54,26 @@ const AccountSettings = () => {
       }}
     >
       <ScrollView contentContainerStyle={[MyStyles.scrollContainer]}>
-        <MaterialIcons
-          onPress={() => navigation.navigate("BottomTabs")}
-          name="arrow-back-ios"
-          size={24}
-          color="#04384E"
-        />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {/* Back Arrow */}
+          <MaterialIcons
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrow-back-ios"
+            color="#04384E"
+            size={35}
+            style={MyStyles.backArrow}
+          />
 
-        <Text style={[MyStyles.header, { marginTop: 18 }]}>
-          Account Settings
-        </Text>
+          {/* First Calendar Text */}
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Account Settings
+          </Text>
+        </View>
 
         {/* <View
           style={{
