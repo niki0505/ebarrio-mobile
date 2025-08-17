@@ -11,6 +11,7 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -76,8 +77,6 @@ const SafetyTips = () => {
             <MaterialIcons
               onPress={() => navigation.navigate("Readiness")}
               name="arrow-back-ios"
-              color="#04384E"
-              size={35}
               style={[MyStyles.backArrow, { color: "#fff" }]}
             />
 
@@ -113,9 +112,17 @@ const SafetyTips = () => {
                     >
                       <Image
                         source={item.image}
-                        style={[MyStyles.readinessImg, { marginRight: 0 }]}
+                        style={[
+                          MyStyles.readinessImg,
+                          { width: RFPercentage(8), height: RFPercentage(8) },
+                        ]}
                       />
-                      <Text style={[MyStyles.readinessTitle, { fontSize: 18 }]}>
+                      <Text
+                        style={[
+                          MyStyles.readinessTitle,
+                          { fontSize: RFPercentage(2) },
+                        ]}
+                      >
                         {item.title}
                       </Text>
                       <Text style={MyStyles.readinessSubTitle}>

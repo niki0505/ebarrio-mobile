@@ -69,8 +69,7 @@ const Typhoon = () => {
         >
           <MaterialIcons
             name="arrow-back-ios"
-            size={30}
-            color="#fff"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
             onPress={() => navigation.navigate("SafetyTips")}
           />
 

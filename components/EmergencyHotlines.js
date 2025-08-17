@@ -17,6 +17,7 @@ import { AuthContext } from "../context/AuthContext";
 import api from "../api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MyStyles } from "./stylesheet/MyStyles";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -148,13 +149,7 @@ const EmergencyHotlines = () => {
               </View>
             ) : filteredEmergencyHotlines.filter((e) => e.status !== "Archived")
                 .length === 0 ? (
-              <Text
-                style={{
-                  color: "#fff",
-                  fontFamily: "QuicksandSemiBold",
-                  fontSize: 16,
-                }}
-              >
+              <Text style={[MyStyles.noEvents, { color: "#fff" }]}>
                 No hotlines found.
               </Text>
             ) : (
@@ -171,22 +166,24 @@ const EmergencyHotlines = () => {
                       {
                         flexDirection: "row",
                         alignItems: "center",
-                        height: 55,
+                        height: RFPercentage(6),
                       },
                     ]}
                   >
                     <MaterialIcons
                       name="call"
-                      size={20}
                       color="#BC0F0F"
-                      style={{ marginRight: 10 }}
+                      style={{
+                        marginRight: 10,
+                        fontSize: RFPercentage(2.5),
+                      }}
                     />
                     <View style={{ marginLeft: 10 }}>
                       <Text
                         style={{
                           color: "#04384E",
                           fontFamily: "REMSemiBold",
-                          fontSize: 16,
+                          fontSize: RFPercentage(2),
                         }}
                       >
                         {element.name.toUpperCase()}
@@ -195,7 +192,7 @@ const EmergencyHotlines = () => {
                         style={{
                           color: "#04384E",
                           fontFamily: "QuicksandSemiBold",
-                          fontSize: 16,
+                          fontSize: RFPercentage(1.8),
                         }}
                       >
                         {element.contactnumber}

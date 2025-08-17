@@ -264,12 +264,14 @@ const EditSecurityQuestions = () => {
                 onChange={(item) =>
                   handleSecurityChange(0, "question", item.value)
                 }
+                placeholderStyle={MyStyles.placeholderText}
+                selectedTextStyle={MyStyles.selectedText}
                 style={MyStyles.input}
               ></Dropdown>
             </View>
             <View>
               <Text style={MyStyles.inputLabel}>Answer</Text>
-              <View style={{ position: "relative", height: 45 }}>
+              <View style={MyStyles.eyeInputContainer}>
                 <TextInput
                   value={securityquestions[0].answer}
                   onChangeText={(e) => handleSecurityChange(0, "answer", e)}
@@ -305,13 +307,15 @@ const EditSecurityQuestions = () => {
                 onChange={(item) =>
                   handleSecurityChange(1, "question", item.value)
                 }
+                placeholderStyle={MyStyles.placeholderText}
+                selectedTextStyle={MyStyles.selectedText}
                 style={MyStyles.input}
               ></Dropdown>
             </View>
 
             <View>
               <Text style={MyStyles.inputLabel}>Answer</Text>
-              <View style={{ position: "relative", height: 45 }}>
+              <View style={MyStyles.eyeInputContainer}>
                 <TextInput
                   value={securityquestions[1].answer}
                   onChangeText={(e) => handleSecurityChange(1, "answer", e)}
@@ -336,7 +340,7 @@ const EditSecurityQuestions = () => {
               <Text style={MyStyles.inputLabel}>
                 Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
               </Text>
-              <View style={{ position: "relative", height: 45 }}>
+              <View style={MyStyles.eyeInputContainer}>
                 <TextInput
                   onChangeText={handlePassChange}
                   value={password}

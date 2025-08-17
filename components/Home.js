@@ -330,13 +330,13 @@ const Home = () => {
 
   const renderContent = (importantAnnouncements) => {
     const words = importantAnnouncements.content.split(" ");
-    const isLong = words.length > 100;
+    const isLong = words.length > 150;
     const isExpanded = expandedAnnouncements.includes(
       importantAnnouncements._id
     );
     const displayText = isExpanded
       ? importantAnnouncements.content
-      : words.slice(0, 100).join(" ") + (isLong ? "..." : "");
+      : words.slice(0, 150).join(" ") + (isLong ? "..." : "");
 
     const contentStyle = importantAnnouncements.picture
       ? { maxHeight: 60, overflow: "hidden" }
@@ -418,17 +418,7 @@ const Home = () => {
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             <ActivityIndicator size="large" color="#04384E" />
-            <Text
-              style={{
-                marginTop: 20,
-                fontSize: 12,
-                color: "#808080",
-                fontFamily: "QuicksandSemiBold",
-                textAlign: "center",
-                lineHeight: 20,
-                width: "80%",
-              }}
-            >
+            <Text style={MyStyles.loadingMessage}>
               Hang in there! We're fetching the latest data for you.
               {"\n"}This may take a few seconds...
             </Text>
@@ -445,24 +435,25 @@ const Home = () => {
                 <View style={MyStyles.rowAlignment}>
                   <Entypo
                     name="menu"
-                    size={35}
                     color="#04384E"
                     onPress={() => navigation.openDrawer()}
-                    style={MyStyles.burgerIcon}
+                    style={MyStyles.burgerChatIcon}
                   />
                   <View>
                     <Text style={MyStyles.header}>Home</Text>
                   </View>
                 </View>
 
+
                 {user.role === "Resident" && (
-                  <Ionicons
-                    name="chatbubble-ellipses"
-                    size={30}
-                    color="#04384E"
-                    onPress={() => navigation.navigate("Chat")}
-                  ></Ionicons>
+<Ionicons
+                  name="chatbubble-ellipses"
+                  color="#04384E"
+                  style={MyStyles.burgerChatIcon}
+                  onPress={() => navigation.navigate("Chat")}
+                ></Ionicons>
                 )}
+
               </View>
 
               <ScrollView
@@ -477,25 +468,28 @@ const Home = () => {
               >
                 <View style={{ width: width - 40, paddingHorizontal: 10 }}>
                   <TouchableOpacity
-                    style={[styles.container]}
+                    style={[MyStyles.calendarContainer, MyStyles.shadow]}
                     onPress={viewCalendar}
                   >
                     {/* Left panel */}
-                    <View style={styles.left}>
+                    <View style={MyStyles.leftCalendar}>
                       <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
                       >
-                        <Text style={styles.bigDate}>
+                        <Text style={MyStyles.bigDate}>
                           {currentDate.getDate()}
                         </Text>
 
                         <View style={{ marginLeft: 10 }}>
-                          <Text style={styles.monthText}>
+                          <Text style={MyStyles.monthText}>
                             {currentDate.toLocaleString("en-US", {
                               month: "long",
                             })}
                           </Text>
-                          <Text style={styles.weekText}>
+                          <Text style={MyStyles.weekText}>
                             {currentDate.toLocaleString("en-US", {
                               weekday: "long",
                             })}
@@ -541,10 +535,10 @@ const Home = () => {
 
                                 return (
                                   <View key={index} style={{ marginBottom: 8 }}>
-                                    <View style={styles.dotAndTitle}>
+                                    <View style={MyStyles.dotAndTitle}>
                                       <View
                                         style={[
-                                          styles.blueDot,
+                                          MyStyles.blueDot,
                                           {
                                             backgroundColor:
                                               event.backgroundColor ||
@@ -553,17 +547,17 @@ const Home = () => {
                                         ]}
                                       />
                                       <Text
-                                        style={styles.eventTitle}
+                                        style={MyStyles.eventTitle}
                                         numberOfLines={1}
                                         ellipsizeMode="tail"
                                       >
                                         {event.title}
                                       </Text>
                                     </View>
-                                    <Text style={styles.eventDate}>
+                                    <Text style={MyStyles.eventDate}>
                                       {dateString}
                                     </Text>
-                                    <Text style={styles.eventTime}>
+                                    <Text style={MyStyles.eventTime}>
                                       {timeString}
                                     </Text>
                                   </View>
@@ -573,18 +567,13 @@ const Home = () => {
                             {events.filter(
                               (event) => new Date(event.end) >= new Date()
                             ).length > 2 && (
-                              <Text
-                                style={{
-                                  fontStyle: "italic",
-                                  color: "#666",
-                                }}
-                              >
-                                More events...
+                              <Text style={MyStyles.noEvents}>
+                                MORE EVENTS...
                               </Text>
                             )}
                           </>
                         ) : (
-                          <Text style={styles.noEvents}>
+                          <Text style={MyStyles.noEvents}>
                             NO EVENTS AT THE MOMENT
                           </Text>
                         )}
@@ -592,43 +581,42 @@ const Home = () => {
                     </View>
 
                     {/* Right panel */}
-                    <View style={styles.right}>
-                      <Text style={styles.monthHeader}>
+                    <View style={MyStyles.rightCalendar}>
+                      <Text style={MyStyles.monthHeader}>
                         {currentDate.toLocaleString("en-US", { month: "long" })}{" "}
                         {year}
                       </Text>
 
-                      <View style={styles.weekRow}>
+                      <View style={MyStyles.weekRow}>
                         {weekDays.map((d, i) => (
-                          <Text key={i} style={styles.weekDay}>
+                          <Text key={i} style={MyStyles.weekDay}>
                             {d}
                           </Text>
                         ))}
                       </View>
 
-                      <View style={styles.calendarContainer}>
+                      <View style={MyStyles.calendarRightContainer}>
                         {calendarDays.map((item, index) => (
-                          <View key={index} style={styles.dayCell}>
+                          <View key={index} style={MyStyles.dayCell}>
                             {item ? (
                               <View
                                 style={[
-                                  styles.dayWrapper,
                                   item === currentDate.getDate() &&
-                                    styles.currentDay,
+                                    MyStyles.currentDay,
                                 ]}
                               >
                                 <Text
                                   style={[
-                                    styles.dayText,
+                                    MyStyles.dayText,
                                     item === currentDate.getDate() &&
-                                      styles.currentDayText,
+                                      MyStyles.currentDayText,
                                   ]}
                                 >
                                   {item}
                                 </Text>
                               </View>
                             ) : (
-                              <Text style={styles.emptyCell}></Text>
+                              <Text style={MyStyles.emptyCell}></Text>
                             )}
                           </View>
                         ))}
@@ -696,27 +684,17 @@ const Home = () => {
                           <View style={{ flexDirection: "row" }}>
                             <EvilIcons
                               name="location"
-                              size={24}
-                              color="white"
+                              style={MyStyles.locationIcon}
                             />
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                color: "white",
-                                fontFamily: "QuicksandSemiBold",
-                              }}
-                            >
-                              Aniban 2
-                            </Text>
+                            <Text style={MyStyles.locationText}>Aniban 2</Text>
                           </View>
 
-                          <View
-                            style={{
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            {getWeatherIcon(weather.currentcondition, 40, 40)}
+                          <View>
+                            {getWeatherIcon(
+                              weather.currentcondition,
+                              MyStyles.weatherIcon.width,
+                              MyStyles.weatherIcon.height
+                            )}
                           </View>
                         </View>
 
@@ -731,41 +709,31 @@ const Home = () => {
                           <Text
                             style={[
                               MyStyles.weatherCurrTemp,
-                              { fontSize: 40, marginLeft: 6 },
+                              { marginLeft: 6 },
                             ]}
                           >
                             {weather.currenttemp}°
                           </Text>
 
                           <Text
-                            style={{
-                              fontFamily: "QuicksandBold",
-                              fontSize: 14,
-                              color: "#fff",
-                              marginTop: 20,
-                            }}
+                            style={MyStyles.weatherCurrentCondition}
+                            numberOfLines={3}
                           >
                             {weather.currentcondition}
                           </Text>
                         </View>
                         <FlatList
-                          data={weather.hourlyForecast.slice(0, 5)}
+                          data={weather.hourlyForecast}
                           keyExtractor={(item, index) => index.toString()}
                           horizontal={true}
                           showsHorizontalScrollIndicator={false}
                           renderItem={({ item }) => (
-                            <View
-                              style={[
-                                MyStyles.hourlyforecastContainer,
-                                { width: 65 },
-                              ]}
-                            >
+                            <View style={[MyStyles.hourlyforecastContainer]}>
                               <Text
                                 style={[
                                   MyStyles.weatherBodyText,
                                   {
                                     fontFamily: "QuicksandRegular",
-                                    fontSize: 14,
                                   },
                                 ]}
                               >
@@ -774,13 +742,16 @@ const Home = () => {
                                   .replace(":00 ", "")}
                               </Text>
 
-                              {getWeatherIcon(item.condition, 30, 30)}
+                              {getWeatherIcon(
+                                item.condition,
+                                MyStyles.weatherIcon.width,
+                                MyStyles.weatherIcon.height
+                              )}
                               <Text
                                 style={[
                                   MyStyles.weatherBodyText,
                                   {
                                     fontFamily: "QuicksandBold",
-                                    fontSize: 14,
                                   },
                                 ]}
                               >
@@ -803,7 +774,7 @@ const Home = () => {
                     onPress={() => navigation.navigate("Announcements")}
                     style={[
                       MyStyles.subHeader,
-                      { textDecorationLine: "underline", fontSize: 16 },
+                      { textDecorationLine: "underline" },
                     ]}
                   >
                     View All
@@ -816,14 +787,7 @@ const Home = () => {
                   </View>
                 ) : importantAnnouncements.length === 0 ? (
                   <View style={[MyStyles.carouselCard, { width: width - 40 }]}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontFamily: "QuicksandMedium",
-                        textAlign: "justify",
-                        color: "#808080",
-                      }}
-                    >
+                    <Text style={[MyStyles.noEvents, { textAlign: "justify" }]}>
                       NO IMPORTANT ANNOUNCEMENTS YET. GO TO ANNOUNCEMENTS PAGE
                       TO VIEW ALL ANNOUNCEMENTS.
                     </Text>
@@ -853,18 +817,7 @@ const Home = () => {
                         ]}
                       >
                         <View
-                          style={{
-                            height: 400,
-                            overflow: "hidden",
-                            backgroundColor: "white",
-                            borderRadius: 10,
-                            padding: 10,
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.1,
-                            shadowRadius: 4,
-                            elevation: 3,
-                          }}
+                          style={[MyStyles.carouselWrapper, MyStyles.shadow]}
                         >
                           {/* Top Header Row */}
                           <View style={MyStyles.rowAlignment}>
@@ -909,6 +862,8 @@ const Home = () => {
                             )}
 
                             {renderContent(item)}
+
+                            
                           </View>
                         </View>
                       </View>
@@ -998,146 +953,3 @@ const Home = () => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 5,
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-
-    // Android shadow
-    elevation: 3,
-  },
-  alignItems: "center",
-  left: {
-    width: "45%",
-    padding: 10,
-    backgroundColor: "#F8F8F8",
-    borderRightWidth: 1,
-    borderRightColor: "#E0E0E0",
-    borderTopLeftRadius: 10, // add this
-    borderBottomLeftRadius: 10, // add this
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-  },
-  bigDate: {
-    fontSize: 50,
-    fontFamily: "QuicksandBold",
-    color: "#04384E",
-    lineHeight: 50,
-    marginTop: 0,
-  },
-  monthText: {
-    fontSize: 16,
-    fontFamily: "QuicksandSemiBold",
-    color: "#04384E",
-    marginTop: 0,
-    marginBottom: 0,
-    lineHeight: 18,
-  },
-  weekText: {
-    fontSize: 12,
-    color: "#888",
-    fontFamily: "QuicksandSemiBold",
-  },
-  dotAndTitle: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 2,
-    fontFamily: "QuicksandBold",
-    alignSelf: "flex-start",
-    fontSize: 18,
-    marginTop: 5,
-  },
-  blueDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 5,
-  },
-  eventTitle: {
-    fontFamily: "QuicksandSemiBold",
-    fontSize: 13,
-    color: "#04384E",
-    marginRight: 3,
-  },
-  eventDate: {
-    fontSize: 12,
-    marginLeft: 15,
-    fontFamily: "QuicksandMedium",
-    color: "#04384E",
-  },
-  eventTime: {
-    fontSize: 12,
-    color: "#666",
-    marginLeft: 15,
-    fontFamily: "QuicksandMedium",
-  },
-  noEvents: {
-    fontStyle: "italic",
-    color: "#888",
-    fontFamily: "QuicksandMedium",
-    textAlign: "center",
-  },
-  right: {
-    width: "55%",
-    padding: 5,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    justifyContent: "center",
-  },
-  monthHeader: {
-    textAlign: "center",
-    fontFamily: "QuicksandBold",
-    marginBottom: 5,
-    color: "#04384E",
-  },
-  weekRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-  weekDay: {
-    fontFamily: "QuicksandSemiBold",
-    color: "#999",
-    fontSize: 12,
-  },
-  calendarContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  dayCell: {
-    width: `${100 / 7}%`, // 7 columns in a row
-    aspectRatio: 1, // make cells square
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dayWrapper: {
-    padding: 3,
-    borderRadius: 0,
-  },
-  currentDay: {
-    width: 24,
-    height: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-  },
-  dayText: {
-    fontSize: 14,
-    fontFamily: "QuicksandMedium",
-    color: "#04384E",
-  },
-  currentDayText: {
-    color: "#0E94D3",
-  },
-  emptyCell: {
-    height: 40,
-  },
-});

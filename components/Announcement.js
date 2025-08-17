@@ -78,11 +78,11 @@ const Announcement = () => {
 
   const renderContent = (announcement) => {
     const words = announcement.content.split(" ");
-    const isLong = words.length > 25;
+    const isLong = words.length > 50;
     const isExpanded = expandedAnnouncements.includes(announcement._id);
     const displayText = isExpanded
       ? announcement.content
-      : words.slice(0, 25).join(" ") + (isLong ? "..." : "");
+      : words.slice(0, 50).join(" ") + (isLong ? "..." : "");
 
     return (
       <View style={{ marginVertical: 10 }}>
@@ -175,7 +175,6 @@ const Announcement = () => {
                 {element.status === "Pinned" && (
                   <MaterialIcons
                     name="push-pin"
-                    size={24}
                     color="#04384E"
                     style={MyStyles.pin}
                   />

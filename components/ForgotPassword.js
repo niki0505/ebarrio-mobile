@@ -52,8 +52,11 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [secureNewPass, setsecureNewPass] = useState(true);
   const [secureConfirmPass, setsecureConfirmPass] = useState(true);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [secureAnswer, setsecureAnswer] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Toggle Password Visibility in Reset Password
   const togglesecureNewPass = () => {
@@ -94,6 +97,7 @@ const ForgotPassword = () => {
     } finally {
       setLoading(false);
     }
+    setIsConfirmModalVisible(false);
   };
 
   const handleQuestionVerify = async () => {
@@ -155,13 +159,13 @@ const ForgotPassword = () => {
     setNewPassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (
       (formattedVal && formattedVal.length < 8) ||
       (formattedVal && formattedVal.length > 64)
     ) {
-      errors.push("Password must be between 8 and 64 characters only.");
+      errors.push("Password must be between 8 and 64 characters only!");
     }
     if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
       errors.push(
@@ -177,10 +181,10 @@ const ForgotPassword = () => {
     setReNewPassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (formattedVal !== newPassword && formattedVal.length > 0) {
-      errors.push("Passwords do not match.");
+      errors.push("Passwords do not match!");
     }
     setRePasswordErrors(errors);
   };
@@ -190,40 +194,24 @@ const ForgotPassword = () => {
     let perrors = [];
     let rerrors = [];
     if (!newPassword) {
-      perrors.push("Password must not be empty.");
+      perrors.push("This field is required!");
       setPasswordErrors(perrors);
       hasErrors = true;
     }
     if (!renewPassword) {
-      rerrors.push("Password must not be empty.");
+      rerrors.push("This field is required!");
       setRePasswordErrors(rerrors);
       hasErrors = true;
     }
 
-    if (repasswordErrors.includes("Passwords do not match.")) {
+    if (repasswordErrors.includes("Passwords do not match!")) {
       hasErrors = true;
     }
     if (hasErrors) {
       return;
     }
 
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to reset your password?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleSuccessful();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const handleSuccessful = async () => {
@@ -232,8 +220,8 @@ const ForgotPassword = () => {
     setLoading(true);
     try {
       await api.post(`/newpassword/${username}`, { newPassword });
-      alert("You have successfully reset your password!");
-      navigation.navigate("Login");
+      setIsSuccess(true);
+      setAlertMessage("You have successfully reset your password!");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
@@ -248,6 +236,11 @@ const ForgotPassword = () => {
     } finally {
       setLoading(false);
     }
+    setLoading(false);
+    setIsConfirmModalVisible(false);
+    setIsAlertModalVisible(true);
+    setAlertMessage(message);
+    setIsSuccess(false);
   };
 
   useEffect(() => {
@@ -367,6 +360,17 @@ const ForgotPassword = () => {
     return `${start}${masked}${end}`;
   };
 
+  const togglesecureAnswer = () => {
+    setsecureAnswer(!secureAnswer);
+  };
+
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    setNewPassword("");
+    setReNewPassword("");
+    navigation.navigate("Login");
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -418,12 +422,7 @@ const ForgotPassword = () => {
 
             <Text
               onPress={() => navigation.navigate("Login")}
-              style={{
-                color: "#006EFF",
-                fontSize: 16,
-                marginTop: 10,
-                fontFamily: "QuicksandBold",
-              }}
+              style={[MyStyles.signUpText, { marginTop: 10 }]}
             >
               Remember your password?
             </Text>
@@ -439,17 +438,24 @@ const ForgotPassword = () => {
             <>
               <BackgroundOverlay />
               <View style={MyStyles.forgotCardWrapper}>
-                <View style={[MyStyles.forgotCard, { height: "60%" }]}>
-                  <ScrollView showsVerticalScrollIndicator={true}>
-                    <MaterialIcons
-                      onPress={() => setOTPClicked(false)}
-                      name="arrow-back-ios"
-                      size={30}
-                      color="#04384E"
-                      style={{ alignSelf: "flex-start" }}
-                    />
+                <View style={MyStyles.forgotCard}>
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <View
+                      style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                      }}
+                    >
+                      <MaterialIcons
+                        onPress={() => setOTPClicked(false)}
+                        name="arrow-back-ios"
+                        style={MyStyles.backArrow}
+                      />
 
-                    <Text style={MyStyles.header}>Reset Password</Text>
+                      <Text style={MyStyles.header}>Reset Password</Text>
+                    </View>
 
                     <Text style={MyStyles.forgotMsg}>
                       To ensure the security of your account, please create a
@@ -461,7 +467,7 @@ const ForgotPassword = () => {
                         <Text style={MyStyles.inputLabel}>
                           New Password<Text style={{ color: "red" }}>*</Text>
                         </Text>
-                        <View style={{ position: "relative" }}>
+                        <View style={MyStyles.eyeInputContainer}>
                           <TextInput
                             onChangeText={passwordValidation}
                             secureTextEntry={secureNewPass}
@@ -480,7 +486,7 @@ const ForgotPassword = () => {
                           </TouchableOpacity>
                         </View>
                         {passwordErrors.length > 0 && (
-                          <View style={{ marginTop: 5, width: 300 }}>
+                          <View>
                             {passwordErrors.map((error, index) => (
                               <Text key={index} style={MyStyles.errorMsg}>
                                 {error}
@@ -537,6 +543,20 @@ const ForgotPassword = () => {
                     </TouchableOpacity>
                   </ScrollView>
                 </View>
+                <AlertModal
+                  isVisible={isAlertModalVisible}
+                  message={alertMessage}
+                  isSuccess={isSuccess}
+                  onClose={handleCloseAlertModal}
+                />
+                <AlertModal
+                  isVisible={isConfirmModalVisible}
+                  isConfirmationModal={true}
+                  title="Reset Password?"
+                  message="Are you sure you want to reset your Password?"
+                  onClose={() => setIsConfirmModalVisible(false)}
+                  onConfirm={handleSubmit}
+                />
               </View>
             </>
           ) : /* One-Time Password */ isOTPClicked ? (
@@ -623,20 +643,19 @@ const ForgotPassword = () => {
               <BackgroundOverlay />
 
               <View style={MyStyles.forgotCardWrapper}>
-                <View style={[MyStyles.forgotCard, { height: "60%" }]}>
-                  <ScrollView showsVerticalScrollIndicator={true}>
+                <View style={[MyStyles.forgotCard]}>
+                  <ScrollView showsVerticalScrollIndicator={false}>
                     <View
                       style={{
                         width: "100%",
                         flexDirection: "row",
                         justifyContent: "flex-start",
+                        alignItems: "center",
                       }}
                     >
                       <MaterialIcons
                         name="arrow-back-ios"
-                        size={30}
-                        color="#04384E"
-                        style={{ alignSelf: "flex-start" }}
+                        style={MyStyles.backArrow}
                       />
 
                       <Text style={MyStyles.header}>Security Question</Text>
@@ -661,7 +680,8 @@ const ForgotPassword = () => {
                             value: q.question,
                           }))}
                           placeholder="Select"
-                          placeholderStyle={{ color: "#808080" }}
+                          placeholderStyle={MyStyles.placeholderText}
+                          selectedTextStyle={MyStyles.selectedText}
                           onChange={(item) =>
                             handleInputChange("question", item.value)
                           }
@@ -674,12 +694,24 @@ const ForgotPassword = () => {
                           Answer
                           <Text style={{ color: "red" }}>*</Text>
                         </Text>
-                        <TextInput
-                          onChangeText={(e) => handleInputChange("answer", e)}
-                          secureTextEntry={true}
-                          placeholder="Answer"
-                          style={MyStyles.input}
-                        />
+                        <View style={MyStyles.eyeInputContainer}>
+                          <TextInput
+                            onChangeText={(e) => handleInputChange("answer", e)}
+                            secureTextEntry={secureAnswer}
+                            placeholder="Answer"
+                            style={MyStyles.input}
+                          />
+                          <TouchableOpacity
+                            style={MyStyles.eyeToggle}
+                            onPress={togglesecureAnswer}
+                          >
+                            <Ionicons
+                              name={secureAnswer ? "eye-off" : "eye"}
+                              size={24}
+                              color="gray"
+                            />
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
 
@@ -688,7 +720,7 @@ const ForgotPassword = () => {
                       style={MyStyles.button}
                       disabled={loading}
                     >
-                      <Text style={[MyStyles.buttonText]}>
+                      <Text style={MyStyles.buttonText}>
                         {loading ? "Verifying..." : "Verify"}
                       </Text>
                     </TouchableOpacity>
@@ -702,21 +734,20 @@ const ForgotPassword = () => {
               <BackgroundOverlay />
               {/* Card container with transparency */}
               <View style={MyStyles.forgotCardWrapper}>
-                <View style={[MyStyles.forgotCard, { height: "50%" }]}>
-                  <ScrollView showsVerticalScrollIndicator={true}>
+                <View style={MyStyles.forgotCard}>
+                  <ScrollView showsVerticalScrollIndicator={false}>
                     <View
                       style={{
                         width: "100%",
                         flexDirection: "row",
                         justifyContent: "flex-start",
+                        alignItems: "center",
                       }}
                     >
                       <MaterialIcons
                         onPress={() => setIsExisting(false)}
                         name="arrow-back-ios"
-                        size={30}
-                        color="#04384E"
-                        style={{ alignSelf: "flex-start" }}
+                        style={MyStyles.backArrow}
                       />
                       <Text style={MyStyles.header}>Verification Method</Text>
                     </View>
@@ -733,16 +764,9 @@ const ForgotPassword = () => {
                       >
                         <MaterialIcons
                           name="password"
-                          size={24}
-                          color="#04384E"
+                          style={MyStyles.forgotPassMethodsIcon}
                         />
-                        <Text
-                          style={{
-                            color: "#04384E",
-                            fontSize: 18,
-                            fontFamily: "QuicksandBold",
-                          }}
-                        >
+                        <Text style={MyStyles.forgotPassMethodsText}>
                           One Time Password
                         </Text>
                       </TouchableOpacity>
@@ -764,16 +788,9 @@ const ForgotPassword = () => {
                       >
                         <MaterialCommunityIcons
                           name="comment-question"
-                          size={24}
-                          color="#04384E"
+                          style={MyStyles.forgotPassMethodsIcon}
                         />
-                        <Text
-                          style={{
-                            color: "#04384E",
-                            fontSize: 18,
-                            fontFamily: "QuicksandSemiBold",
-                          }}
-                        >
+                        <Text style={MyStyles.forgotPassMethodsText}>
                           Security Question
                         </Text>
                       </TouchableOpacity>
