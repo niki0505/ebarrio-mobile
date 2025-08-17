@@ -209,7 +209,7 @@ const ChangePassword = () => {
               Current Password
               <Text style={{ color: "red", fontSize: 16 }}>*</Text>
             </Text>
-            <View style={{ position: "relative", height: 45 }}>
+            <View style={MyStyles.eyeInputContainer}>
               <TextInput
                 onChangeText={handlePassChange}
                 value={password}
@@ -237,7 +237,7 @@ const ChangePassword = () => {
             <Text style={MyStyles.inputLabel}>
               New Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
             </Text>
-            <View style={{ position: "relative", height: 45 }}>
+            <View style={MyStyles.eyeInputContainer}>
               <TextInput
                 onChangeText={passwordValidation}
                 value={newpassword}
@@ -272,7 +272,7 @@ const ChangePassword = () => {
               Confirm New Password
               <Text style={{ color: "red", fontSize: 16 }}>*</Text>
             </Text>
-            <View style={{ position: "relative", height: 45 }}>
+            <View style={MyStyles.eyeInputContainer}>
               <TextInput
                 onChangeText={repasswordValidation}
                 value={renewpassword}

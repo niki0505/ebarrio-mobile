@@ -28,6 +28,8 @@ import NetInfo from "@react-native-community/netinfo";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { InfoContext } from "./context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Entypo from "@expo/vector-icons/Entypo";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //Screens
 import Login from "./components/Login";
@@ -71,6 +73,7 @@ import Chat from "./components/Chat";
 import TermsConditions from "./components/TermsConditions";
 import ResidentForm from "./components/ResidentForm";
 import UserProfile from "./components/UserProfile";
+import AlertModal from "./components/AlertModal";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -164,6 +167,7 @@ const CustomTabBar = ({
           }
 
           const onPress = () => navigation.navigate(route.name);
+          const iconSize = RFPercentage(2.8);
 
           return (
             <TouchableOpacity
@@ -173,7 +177,7 @@ const CustomTabBar = ({
               style={MyStyles.bottomTabButtons}
             >
               <View style={{ position: "relative" }}>
-                <Ionicons name={iconName} size={24} color={iconColor} />
+                <Ionicons name={iconName} size={iconSize} color={iconColor} />
                 {badgeCount > 0 && (
                   <View style={MyStyles.badge}>
                     <Text style={MyStyles.badgeText}>{badgeCount}</Text>
@@ -236,17 +240,17 @@ const DrawerContent = ({ navigation }) => {
   const { user, logout, loading } = useContext(AuthContext);
 
   const handleConfirm = () => {
-    setModalVisible(true);
+    setIsConfirmModalVisible(true);
   };
 
   const handleLogout = () => {
+    setIsConfirmModalVisible(false);
     logout();
-    setModalVisible(false);
   };
 
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   return (
     <View
@@ -257,6 +261,12 @@ const DrawerContent = ({ navigation }) => {
         backgroundColor: "#fff",
       }}
     >
+      <Entypo
+        name="menu"
+        color="#04384E"
+        onPress={() => navigation.closeDrawer()}
+        style={[MyStyles.burgerChatIcon, { alignSelf: "flex-end" }]}
+      />
       {/* Profile Info */}
       <View
         style={{
@@ -269,23 +279,10 @@ const DrawerContent = ({ navigation }) => {
       >
         <Image
           source={{ uri: user?.picture || "" }}
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 50,
-          }}
+          style={MyStyles.drawerImg}
         />
         <View style={{ marginLeft: 10 }}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              color: "#04384E",
-              fontFamily: "REMBold",
-            }}
-          >
-            {user.name}
-          </Text>
+          <Text style={MyStyles.drawerUsername}>{user.name}</Text>
         </View>
       </View>
 
@@ -298,17 +295,12 @@ const DrawerContent = ({ navigation }) => {
         }}
         onPress={() => navigation.navigate("Certificates")}
       >
-        <Ionicons name="document-text" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Request Document
-        </Text>
+        <Ionicons
+          name="document-text"
+          style={{ fontSize: RFPercentage(2.8) }}
+          color="#04384E"
+        />
+        <Text style={MyStyles.drawerServicesText}>Request Document</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -319,17 +311,12 @@ const DrawerContent = ({ navigation }) => {
         }}
         onPress={() => navigation.navigate("CourtReservations")}
       >
-        <Ionicons name="calendar" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Reserve Court
-        </Text>
+        <Ionicons
+          name="calendar"
+          style={{ fontSize: RFPercentage(2.8) }}
+          color="#04384E"
+        />
+        <Text style={MyStyles.drawerServicesText}>Reserve Court</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -340,17 +327,12 @@ const DrawerContent = ({ navigation }) => {
         }}
         onPress={() => navigation.navigate("Blotter")}
       >
-        <Ionicons name="file-tray-full" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Report Blotter
-        </Text>
+        <Ionicons
+          name="file-tray-full"
+          style={{ fontSize: RFPercentage(2.8) }}
+          color="#04384E"
+        />
+        <Text style={MyStyles.drawerServicesText}>Report Blotter</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -362,17 +344,12 @@ const DrawerContent = ({ navigation }) => {
         }}
         onPress={() => navigation.navigate("Status")}
       >
-        <Ionicons name="calendar" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Status
-        </Text>
+        <Ionicons
+          name="calendar"
+          style={{ fontSize: RFPercentage(2.8) }}
+          color="#04384E"
+        />
+        <Text style={MyStyles.drawerServicesText}>Status</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -384,17 +361,12 @@ const DrawerContent = ({ navigation }) => {
         }}
         onPress={() => navigation.navigate("AccountSettings")}
       >
-        <Ionicons name="settings" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Account Settings
-        </Text>
+        <Ionicons
+          name="settings"
+          style={{ fontSize: RFPercentage(2.8) }}
+          color="#04384E"
+        />
+        <Text style={MyStyles.drawerServicesText}>Account Settings</Text>
       </TouchableOpacity>
 
       <View
@@ -415,23 +387,21 @@ const DrawerContent = ({ navigation }) => {
         onPress={handleConfirm}
         disabled={loading}
       >
-        <Text
-          style={{
-            fontSize: 18,
-            borderRadius: 5,
-            color: "#fff",
-            backgroundColor: "#04384E",
-            width: "100%",
-            fontFamily: "QuicksandBold",
-            paddingVertical: 15,
-            textAlign: "center",
-          }}
-        >
+        <Text style={MyStyles.drawerLogoutText}>
           {loading ? "Logging out..." : "Logout"}
         </Text>
       </TouchableOpacity>
 
-      <Modal
+      <AlertModal
+        isVisible={isConfirmModalVisible}
+        isConfirmationModal={true}
+        title="Log Out?"
+        message="Are you sure you want to log out?"
+        onClose={() => setIsConfirmModalVisible(false)}
+        onConfirm={handleLogout}
+      />
+
+      {/* <Modal
         animationType="fade"
         transparent={true}
         visible={isModalVisible}
@@ -463,7 +433,7 @@ const DrawerContent = ({ navigation }) => {
                 color: "#808080",
               }}
             >
-              Log out?
+              Log Out?
             </Text>
             <Text
               style={{
@@ -542,7 +512,7 @@ const DrawerContent = ({ navigation }) => {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </View>
   );
 };
