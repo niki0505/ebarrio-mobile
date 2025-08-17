@@ -12,8 +12,7 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
+import * as Location from "expo-location";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import Fire from "../assets/SOS/firefire.png";
@@ -22,11 +21,34 @@ import Earthquake from "../assets/SOS/earthquake.png";
 import Typhoon from "../assets/SOS/typhoon.png";
 import Medical from "../assets/SOS/medical.png";
 import Suspicious from "../assets/SOS/suspicious.png";
-import Location from "../assets/SOS/location.png";
+import api from "../api";
 
 const SOS = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+
+  const sendSOS = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.warn("Location permission not granted");
+      }
+      let loc = await Location.getCurrentPositionAsync({});
+      try {
+        await api.post("/sendsos", {
+          location: {
+            lat: loc.coords.latitude,
+            lng: loc.coords.longitude,
+          },
+        });
+        navigation.navigate("SOSStatusPage");
+      } catch (error) {
+        console.error("Error sending SOS:", error);
+      }
+    } catch (e) {
+      console.error("Error getting location:", error);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -80,7 +102,7 @@ const SOS = () => {
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             <TouchableOpacity
-              onPress={() => navigation.navigate("SOSStatusPage")}
+              onPress={sendSOS}
               style={{
                 width: 280,
                 height: 280,
@@ -342,15 +364,7 @@ const SOS = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <Image
-              source={Location}
-              style={{
-                width: "100%",
-                height: 250,
-                borderBottomLeftRadius: 15,
-                borderBottomRightRadius: 15,
-              }}
-            />
+
             <TouchableOpacity
               style={[
                 MyStyles.button,

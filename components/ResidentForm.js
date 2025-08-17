@@ -37,7 +37,10 @@ import api from "../api";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ResidentForm = () => {
-  const { width, height } = Dimensions.get("window");
+  const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
+  const landscapeWidth = Math.max(screenWidth, screenHeight);
+  const landscapeHeight = Math.min(screenWidth, screenHeight);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
@@ -82,13 +85,6 @@ const ResidentForm = () => {
     street: "",
     HOAname: "",
     address: "",
-    mother: "",
-    father: "",
-    spouse: "",
-    siblings: [],
-    children: [],
-    numberofsiblings: "",
-    numberofchildren: "",
     employmentstatus: "",
     employmentfield: "",
     occupation: "",
@@ -453,70 +449,6 @@ const ResidentForm = () => {
     }
   };
 
-  const pickSigImage = async () => {
-    try {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission required",
-          "We need access to your photos to let you upload an image."
-        );
-        return;
-      }
-
-      setIsSignProcessing(true);
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["images"],
-        allowsEditing: true,
-        quality: 1,
-      });
-
-      if (!result.canceled && result.assets?.length > 0) {
-        setResidentForm((prev) => ({
-          ...prev,
-          signature: result.assets[0].uri,
-        }));
-      }
-    } catch (error) {
-      console.error("Error picking image:", error);
-      setAlertMessage("Something went wrong while picking the image.");
-      setIsAlertModalVisible(true);
-    } finally {
-      setIsSignProcessing(false);
-    }
-  };
-
-  const toggleSigCamera = async () => {
-    const permissionResult = await ImagePicker.getCameraPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      const askPermission = await ImagePicker.requestCameraPermissionsAsync();
-      if (!askPermission.granted) {
-        Alert.alert("Permission Denied", "Camera permission is required.");
-        return;
-      }
-    }
-    try {
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ["images"],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setResidentForm((prev) => ({
-          ...prev,
-          signature: result.assets[0].uri,
-        }));
-      }
-    } catch (error) {
-      console.error("Camera error:", error);
-      setAlertMessage("Failed to open camera.");
-      isAlertModalVisible(true);
-    }
-  };
-
   const handleInputChange = (name, value) => {
     setResidentForm((prev) => ({
       ...prev,
@@ -543,96 +475,6 @@ const ResidentForm = () => {
       ...prev,
       [name]: !prev[name],
     }));
-  };
-
-  const residentOptions = residents.map((resident) => ({
-    label: resident.middlename
-      ? `${resident.firstname} ${resident.middlename} ${resident.lastname}`
-      : `${resident.firstname} ${resident.lastname}`,
-    value: resident._id,
-  }));
-
-  const renderSiblingsDropdown = () => {
-    const numberOfSiblings = parseInt(residentForm.numberofsiblings, 10) || 0;
-
-    const siblingsDropdowns = [];
-    for (let i = 0; i < numberOfSiblings; i++) {
-      siblingsDropdowns.push(
-        <View key={i} style={{ marginVertical: 8 }}>
-          <Text style={[MyStyles.inputLabel, { marginBottom: 4 }]}>
-            Sibling {i + 1}
-          </Text>
-          <Dropdown
-            style={MyStyles.input}
-            data={residentOptions}
-            labelField="label"
-            valueField="value"
-            placeholder="Select"
-            placeholderStyle={{
-              color: "#808080",
-              fontFamily: "QuicksandMedium",
-              fontSize: 16,
-            }}
-            selectedTextStyle={{
-              color: "#000",
-              fontFamily: "QuicksandMedium",
-              fontSize: 16,
-            }}
-            value={residentForm.siblings?.[i] || null}
-            onChange={(item) =>
-              handleMultipleDropdownChange(item.value, i, "siblings")
-            }
-          />
-        </View>
-      );
-    }
-    return siblingsDropdowns;
-  };
-
-  const renderChildrenDropdown = () => {
-    const numberOfChildren = parseInt(residentForm.numberofchildren, 10) || 0;
-
-    const childrenDropdowns = [];
-    for (let i = 0; i < numberOfChildren; i++) {
-      childrenDropdowns.push(
-        <View key={i} style={{ marginVertical: 8 }}>
-          <Text style={[MyStyles.inputLabel, { marginBottom: 4 }]}>
-            Child {i + 1}
-          </Text>
-          <Dropdown
-            style={MyStyles.input}
-            data={residentOptions}
-            labelField="label"
-            valueField="value"
-            placeholder="Select"
-            placeholderStyle={{
-              color: "#808080",
-              fontFamily: "QuicksandMedium",
-              fontSize: 16,
-            }}
-            selectedTextStyle={{
-              color: "#000",
-              fontFamily: "QuicksandMedium",
-              fontSize: 16,
-            }}
-            value={residentForm.children?.[i] || null}
-            onChange={(item) =>
-              handleMultipleDropdownChange(item.value, i, "children")
-            }
-          />
-        </View>
-      );
-    }
-    return childrenDropdowns;
-  };
-
-  const handleMultipleDropdownChange = (selectedValue, index, field) => {
-    const updatedArray = [...(residentForm[field] || [])];
-    updatedArray[index] = selectedValue;
-    setResidentForm({
-      ...residentForm,
-      [field]: updatedArray,
-    });
   };
 
   const handleHouseholdRadioChange = (name, value) => {
@@ -771,17 +613,11 @@ const ResidentForm = () => {
   };
 
   const handleOpenSignature = async () => {
-    await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.LANDSCAPE
-    );
     setShowSignModal(true);
   };
 
   const handleCloseSignature = async () => {
     setShowSignModal(false);
-    await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.PORTRAIT_UP
-    );
   };
 
   useEffect(() => {
@@ -940,6 +776,7 @@ const ResidentForm = () => {
   const handleClear = () => {
     setResidentForm({ ...residentForm, signature: null });
   };
+
   return (
     <SafeAreaView
       style={{
@@ -1044,41 +881,60 @@ const ResidentForm = () => {
                   </View>
 
                   {/* Signature Modal */}
-                  <Modal visible={showSignModal} animationType="slide">
+                  <Modal
+                    visible={showSignModal}
+                    animationType="slide"
+                    presentationStyle="fullScreen"
+                    onRequestClose={() => setShowSignModal(false)}
+                  >
                     <View
-                      style={{ flex: 1, backgroundColor: "#fff", padding: 10 }}
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#fff",
+                      }}
                     >
+                      {/* Rotated container */}
                       <View
                         style={{
-                          flex: 1,
+                          width: landscapeWidth,
+                          height: landscapeHeight,
+                          transform: [{ rotate: "90deg" }],
+                          backgroundColor: "#fff",
                         }}
                       >
                         <Signature
                           onOK={handleSignatureOK}
-                          onEmpty={() => setShowSignModal(false)}
+                          onClear={() => console.log("Cleared")}
                           descriptionText="Sign Above"
                           clearText="Clear"
                           confirmText="Save"
                           webStyle={`
-                          .m-signature-pad {
-                            margin: 0;
-                            height: 90%;
-                          }
-
-                          .m-signature-pad--footer {
-                            display: flex;
-                            justify-content: space-between !important;
-                          }
-
-                          .button {
-                            margin-right:35px;
-                          }
-                        `}
+                .m-signature-pad {
+                  margin: 0;
+                  height: 100%;
+                }
+                .m-signature-pad--footer {
+                  display: flex;
+                  justify-content: space-between !important;
+                }
+              `}
                         />
+                      </View>
+
+                      <View
+                        style={{
+                          position: "absolute",
+                          bottom: 10,
+                          left: 10,
+                          flexDirection: "row",
+                          gap: 8,
+                        }}
+                      >
                         <Button
-                          title="Close"
-                          onPress={handleCloseSignature}
-                          color="#007BFF"
+                          title="Cancel"
+                          onPress={() => setShowSignModal(false)}
                         />
                       </View>
                     </View>
@@ -1841,114 +1697,6 @@ const ResidentForm = () => {
                     }
                   />
                 </View>
-
-                {/* Family Information */}
-
-                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
-                  Family Information
-                </Text>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>Mother</Text>
-                  <Dropdown
-                    style={MyStyles.input}
-                    data={residents
-                      .filter((res) => res.sex === "Female")
-                      .map((res) => ({
-                        label: res.middlename
-                          ? `${res.firstname} ${res.middlename} ${res.lastname}`
-                          : `${res.firstname} ${res.lastname}`,
-                        value: res._id,
-                      }))}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Mother"
-                    placeholderStyle={MyStyles.placeholderText}
-                    selectedTextStyle={MyStyles.selectedText}
-                    value={residentForm.mother}
-                    onChange={(item) => handleInputChange("mother", item.value)}
-                  />
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>Father</Text>
-                  <Dropdown
-                    style={MyStyles.input}
-                    data={residents
-                      .filter((res) => res.sex === "Male")
-                      .map((res) => ({
-                        label: res.middlename
-                          ? `${res.firstname} ${res.middlename} ${res.lastname}`
-                          : `${res.firstname} ${res.lastname}`,
-                        value: res._id,
-                      }))}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Father"
-                    placeholderStyle={MyStyles.placeholderText}
-                    selectedTextStyle={MyStyles.selectedText}
-                    value={residentForm.father}
-                    onChange={(item) => handleInputChange("father", item.value)}
-                  />
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>Spouse</Text>
-                  <Dropdown
-                    style={MyStyles.input}
-                    data={residents.map((res) => ({
-                      label: res.middlename
-                        ? `${res.firstname} ${res.middlename} ${res.lastname}`
-                        : `${res.firstname} ${res.lastname}`,
-                      value: res._id,
-                    }))}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Spouse"
-                    placeholderStyle={MyStyles.placeholderText}
-                    selectedTextStyle={MyStyles.selectedText}
-                    value={residentForm.spouse}
-                    onChange={(item) => handleInputChange("spouse", item.value)}
-                  />
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>Number of Siblings</Text>
-                  <TextInput
-                    placeholder="Number of Siblings"
-                    value={residentForm.numberofsiblings}
-                    onChangeText={(text) =>
-                      setResidentForm({
-                        ...residentForm,
-                        numberofsiblings: text.replace(/[^0-9]/g, ""),
-                      })
-                    }
-                    keyboardType="numeric"
-                    maxLength={1}
-                    style={MyStyles.input}
-                  />
-                </View>
-                {parseInt(residentForm.numberofsiblings, 10) > 0 &&
-                  renderSiblingsDropdown()}
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>Number of Children</Text>
-                  <TextInput
-                    placeholder="Number of Children"
-                    value={residentForm.numberofchildren}
-                    onChangeText={(text) =>
-                      setResidentForm({
-                        ...residentForm,
-                        numberofchildren: text.replace(/[^0-9]/g, ""),
-                      })
-                    }
-                    keyboardType="numeric"
-                    maxLength={1}
-                    style={MyStyles.input}
-                  />
-                </View>
-                {parseInt(residentForm.numberofchildren, 10) > 0 &&
-                  renderChildrenDropdown()}
 
                 {/* Address Information */}
                 <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>

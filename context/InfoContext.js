@@ -26,6 +26,7 @@ export const InfoProvider = ({ children }) => {
   const [active, setActive] = useState([]);
   const [FAQs, setFAQs] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
+  const [report, setReport] = useState(null);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -71,6 +72,7 @@ export const InfoProvider = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated) {
       fetchUsers();
+      fetchReport();
     }
   }, [isAuthenticated]);
 
@@ -189,6 +191,16 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchReport = async () => {
+    try {
+      const response = await api.get("/getactivesos");
+      setReport(response.data[0]);
+      console.log(report);
+    } catch (error) {
+      console.error("❌ Failed to fetch report:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -225,6 +237,7 @@ export const InfoProvider = ({ children }) => {
         FAQs,
         active,
         chatMessages,
+        report,
         setChatMessages,
         fetchServices,
         fetchUserDetails,
@@ -236,6 +249,7 @@ export const InfoProvider = ({ children }) => {
         fetchFAQs,
         fetchActive,
         fetchChats,
+        fetchReport,
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 import AppLogo from "../assets/applogo-darkbg.png";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AlertModal from "./AlertModal";
 
 const OTP = ({}) => {
   const route = useRoute();

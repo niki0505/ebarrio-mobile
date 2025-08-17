@@ -13,7 +13,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useContext, useEffect, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -52,8 +52,6 @@ const Chat = () => {
     loadData();
   }, []);
 
-  console.log(JSON.stringify(chatMessages, null, 2));
-
   //ASSIGNING CHAT (SUCCESS)
   useEffect(() => {
     if (!socket) return;
@@ -64,7 +62,7 @@ const Chat = () => {
     };
 
     const handleChatAssigned = (chatData) => {
-      console.log("✅ Chat assigned:", chatData);
+      console.log(chatData);
       const {
         _id,
         participants,
@@ -122,9 +120,6 @@ const Chat = () => {
       socket.off("request_bot_chat");
     };
   }, [socket]);
-  console.log(isEnded);
-  console.log(isChat);
-  console.log(roomId);
 
   //RECEIVING CHAT (SUCCESS)
   useEffect(() => {
@@ -133,7 +128,14 @@ const Chat = () => {
       return;
     }
 
-    const handleReceive = async ({ from, to, message, timestamp, roomId }) => {
+    const handleReceive = async ({
+      from,
+      to,
+      message,
+      timestamp,
+      roomId,
+      status,
+    }) => {
       console.log("📥 Message received:", { from, to, message, roomId });
       if (user.userID === from) {
         return;
@@ -298,10 +300,19 @@ const Chat = () => {
   };
 
   const allMessages = chatMessages
+    .map((chat) => {
+      const hasEndMessage = chat.messages.some(
+        (msg) =>
+          msg.from === "000000000000000000000000" &&
+          msg.message === "This chat has ended."
+      );
+      return hasEndMessage ? { ...chat, status: "Ended" } : chat;
+    })
     .flatMap((chat) =>
       chat.messages.map((msg) => ({
         ...msg,
         chatId: chat._id,
+        status: chat.status,
       }))
     )
     .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
@@ -454,6 +465,7 @@ const Chat = () => {
                               borderRadius: 8,
                               marginTop: 5,
                             }}
+                            disabled={msg.status === "Ended"}
                           >
                             <Text style={{ color: "#333", fontWeight: "bold" }}>
                               {option.label}

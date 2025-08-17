@@ -455,12 +455,14 @@ const Home = () => {
                   </View>
                 </View>
 
-                <Ionicons
-                  name="chatbubble-ellipses"
-                  size={30}
-                  color="#04384E"
-                  onPress={() => navigation.navigate("Chat")}
-                ></Ionicons>
+                {user.role === "Resident" && (
+                  <Ionicons
+                    name="chatbubble-ellipses"
+                    size={30}
+                    color="#04384E"
+                    onPress={() => navigation.navigate("Chat")}
+                  ></Ionicons>
+                )}
               </View>
 
               <ScrollView
@@ -916,43 +918,6 @@ const Home = () => {
 
                 <Text style={MyStyles.subHeader}>Emergency Tools</Text>
                 <View style={MyStyles.emergencyToolsCol}>
-                  <View>
-                    {user.role !== "Resident" && (
-                      <View style={{ flexDirection: "column", gap: 10 }}>
-                        <TouchableOpacity style={MyStyles.sosContainer}>
-                          <View style={MyStyles.sosRowWrapper}>
-                            <Image source={SOS} style={MyStyles.servicesImg} />
-                            <Text
-                              style={[
-                                MyStyles.emergencyTitle,
-                                { fontSize: 25, marginLeft: 15 },
-                              ]}
-                            >
-                              SOS REQUESTS
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={MyStyles.sosContainer}>
-                          <View style={MyStyles.sosRowWrapper}>
-                            <Image
-                              source={Check}
-                              style={MyStyles.servicesImg}
-                            />
-                            <Text
-                              style={[
-                                MyStyles.emergencyTitle,
-                                { fontSize: 25, marginLeft: 15 },
-                              ]}
-                            >
-                              RESPONDED SOS
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                  </View>
-
                   <View style={{ flexDirection: "row", gap: 10 }}>
                     <TouchableOpacity
                       style={[
