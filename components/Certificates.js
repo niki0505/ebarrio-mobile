@@ -407,7 +407,7 @@ const Certificates = () => {
                       handleInputChange("lineofbusiness", text)
                     }
                     style={MyStyles.input}
-                    value={certificateForm.lineofbusinesss}
+                    value={certificateForm.lineofbusiness}
                   />
                   {lineBusError ? (
                     <Text style={MyStyles.errorMsg}>{lineBusError}</Text>

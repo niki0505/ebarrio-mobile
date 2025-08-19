@@ -28,6 +28,8 @@ export const InfoProvider = ({ children }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [report, setReport] = useState(null);
   const [pendingReports, setPendingReports] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadNotifications, setUnreadNotifications] = useState(null);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -74,6 +76,7 @@ export const InfoProvider = ({ children }) => {
     if (isAuthenticated) {
       fetchUsers();
       fetchReport();
+      fetchUnreadNotifications();
     }
   }, [isAuthenticated]);
 
@@ -210,6 +213,24 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await api.get("/getnotifications");
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch notifications:", error);
+    }
+  };
+
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await api.get("/getunreadnotifications");
+      setUnreadNotifications(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch unread notifications:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -222,6 +243,10 @@ export const InfoProvider = ({ children }) => {
         setEmergencyHotlines(updatedData.data);
       } else if (updatedData.type === "users") {
         setUsers(updatedData.data);
+      } else if (updatedData.type === "notifications") {
+        setNotifications(updatedData.data);
+      } else if (updatedData.type === "unreadnotifications") {
+        setUnreadNotifications(updatedData.data);
       }
     };
 
@@ -248,6 +273,10 @@ export const InfoProvider = ({ children }) => {
         chatMessages,
         report,
         pendingReports,
+        notifications,
+        unreadNotifications,
+        fetchNotifications,
+        setNotifications,
         setPendingReports,
         setChatMessages,
         fetchServices,

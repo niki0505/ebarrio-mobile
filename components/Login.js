@@ -200,7 +200,7 @@ const Login = () => {
             disabled={loading}
           >
             <Text style={MyStyles.buttonText}>
-              {loading ? "Logging in..." : "Log In"}
+              {loading ? "Logging in..." : "Login"}
             </Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
