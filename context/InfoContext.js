@@ -27,6 +27,7 @@ export const InfoProvider = ({ children }) => {
   const [FAQs, setFAQs] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
   const [report, setReport] = useState(null);
+  const [pendingReports, setPendingReports] = useState(null);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -195,9 +196,17 @@ export const InfoProvider = ({ children }) => {
     try {
       const response = await api.get("/getactivesos");
       setReport(response.data[0]);
-      console.log(report);
     } catch (error) {
       console.error("❌ Failed to fetch report:", error);
+    }
+  };
+
+  const fetchPendingReports = async () => {
+    try {
+      const response = await api.get("/getpendingsos");
+      setPendingReports(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch pending reports:", error);
     }
   };
 
@@ -238,6 +247,8 @@ export const InfoProvider = ({ children }) => {
         active,
         chatMessages,
         report,
+        pendingReports,
+        setPendingReports,
         setChatMessages,
         fetchServices,
         fetchUserDetails,
@@ -250,6 +261,7 @@ export const InfoProvider = ({ children }) => {
         fetchActive,
         fetchChats,
         fetchReport,
+        fetchPendingReports,
       }}
     >
       {children}

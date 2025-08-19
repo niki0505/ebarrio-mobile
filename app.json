@@ -39,6 +39,12 @@
           "color": "#ffffff",
           "googleServicesFile": "./android/app/google-services.json"
         }
+      ],
+      [
+        "expo-maps",
+        {
+          "googleMapsApiKey": "AIzaSyC3T3SOxoBKrTVpuJwvxGZIBQKg2iuFHGE"
+        }
       ]
     ],
     "extra": {

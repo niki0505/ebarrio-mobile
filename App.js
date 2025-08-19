@@ -85,6 +85,7 @@ import * as Notifications from "expo-notifications";
 import SuccessfulPage from "./components/SuccessfulPage";
 import SuccessfulPage2 from "./components/SuccessfulPage2";
 import LocationSetUp from "./components/LocationSetUp";
+import SOSReportDetails from "./components/SOSReportDetails";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -296,70 +297,70 @@ const DrawerContent = ({ navigation }) => {
       {user.role === "Resident" ? (
         <>
           {/* Menu Options */}
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        onPress={() => navigation.navigate("Certificates")}
-      >
-        <Ionicons
-          name="document-text"
-          style={{ fontSize: RFPercentage(2.8) }}
-          color="#04384E"
-        />
-        <Text style={MyStyles.drawerServicesText}>Request Document</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("Certificates")}
+          >
+            <Ionicons
+              name="document-text"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Request Document</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        onPress={() => navigation.navigate("CourtReservations")}
-      >
-        <Ionicons
-          name="calendar"
-          style={{ fontSize: RFPercentage(2.8) }}
-          color="#04384E"
-        />
-        <Text style={MyStyles.drawerServicesText}>Reserve Court</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("CourtReservations")}
+          >
+            <Ionicons
+              name="calendar"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Reserve Court</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        onPress={() => navigation.navigate("Blotter")}
-      >
-        <Ionicons
-          name="file-tray-full"
-          style={{ fontSize: RFPercentage(2.8) }}
-          color="#04384E"
-        />
-        <Text style={MyStyles.drawerServicesText}>Report Blotter</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("Blotter")}
+          >
+            <Ionicons
+              name="file-tray-full"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Report Blotter</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-          fontFamily: "QuicksandBold",
-        }}
-        onPress={() => navigation.navigate("Status")}
-      >
-        <Ionicons
-          name="calendar"
-          style={{ fontSize: RFPercentage(2.8) }}
-          color="#04384E"
-        />
-        <Text style={MyStyles.drawerServicesText}>Status</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+              fontFamily: "QuicksandBold",
+            }}
+            onPress={() => navigation.navigate("Status")}
+          >
+            <Ionicons
+              name="calendar"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Status</Text>
+          </TouchableOpacity>
         </>
       ) : (
         <>
@@ -576,6 +577,10 @@ const BottomTabsWithDrawer = () => {
   const navigation = useNavigation();
   const { report } = useContext(InfoContext);
   const insets = useSafeAreaInsets();
+
+  const hasArrivedResponder = report?.responder?.some(
+    (r) => r.status === "Arrived"
+  );
   return (
     <View style={{ flex: 1 }}>
       {report && (
@@ -590,9 +595,7 @@ const BottomTabsWithDrawer = () => {
           onPress={() => navigation.navigate("SOSStatusPage")}
         >
           <Text style={{ color: "white", fontWeight: "bold" }}>
-            {report.status === "Pending"
-              ? "Help is on the way"
-              : "Help has arrived"}
+            {hasArrivedResponder ? "Help has arrived" : "Help is on the way"}
           </Text>
         </TouchableOpacity>
       )}
@@ -1144,6 +1147,18 @@ export default function App() {
                           element={
                             <InfoProvider>
                               <SOSRequests />
+                            </InfoProvider>
+                          }
+                        />
+                      )}
+                    />
+                    <Stack.Screen
+                      name="SOSReportDetails"
+                      children={() => (
+                        <PrivateRoute
+                          element={
+                            <InfoProvider>
+                              <SOSReportDetails />
                             </InfoProvider>
                           }
                         />
