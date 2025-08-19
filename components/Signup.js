@@ -459,11 +459,7 @@ const Signup = () => {
 
               <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
                 <Text
-                  style={{
-                    color: "#808080",
-                    fontSize: 16,
-                    fontFamily: "QuicksandSemiBold",
-                  }}
+                  style={[MyStyles.byClickingText, { textAlign: "center" }]}
                 >
                   Already have an account?
                 </Text>

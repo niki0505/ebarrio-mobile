@@ -118,11 +118,11 @@ const AccountSettings = () => {
             style={MyStyles.rowAlignment}
           >
             <View style={MyStyles.rowAlignment}>
-              <AntDesign name="mobile1" size={18} style={MyStyles.menuIcons} />
+              <AntDesign name="mobile1" style={MyStyles.menuIcons} />
               <Text style={MyStyles.menuText}>Mobile Number</Text>
             </View>
 
-            <MaterialIcons name="navigate-next" size={24} color="gray" />
+            <MaterialIcons name="navigate-next" style={MyStyles.menuArrow} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -135,11 +135,11 @@ const AccountSettings = () => {
                 alignItems: "center",
               }}
             >
-              <FontAwesome5 name="user" size={18} style={MyStyles.menuIcons} />
+              <FontAwesome5 name="user" style={MyStyles.menuIcons} />
               <Text style={MyStyles.menuText}>Username</Text>
             </View>
 
-            <MaterialIcons name="navigate-next" size={24} color="gray" />
+            <MaterialIcons name="navigate-next" style={MyStyles.menuArrow} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -147,15 +147,11 @@ const AccountSettings = () => {
             style={MyStyles.rowAlignment}
           >
             <View style={MyStyles.rowAlignment}>
-              <MaterialIcons
-                name="password"
-                size={18}
-                style={MyStyles.menuIcons}
-              />
+              <MaterialIcons name="password" style={MyStyles.menuIcons} />
               <Text style={MyStyles.menuText}>Password</Text>
             </View>
 
-            <MaterialIcons name="navigate-next" size={24} color="gray" />
+            <MaterialIcons name="navigate-next" style={MyStyles.menuArrow} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -165,13 +161,12 @@ const AccountSettings = () => {
             <View style={MyStyles.rowAlignment}>
               <MaterialCommunityIcons
                 name="comment-question-outline"
-                size={18}
                 style={MyStyles.menuIcons}
               />
               <Text style={MyStyles.menuText}>Security Questions</Text>
             </View>
 
-            <MaterialIcons name="navigate-next" size={24} color="gray" />
+            <MaterialIcons name="navigate-next" style={MyStyles.menuArrow} />
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -27,10 +27,20 @@ import Medical from "../assets/SOS/medical.png";
 import Suspicious from "../assets/SOS/suspicious.png";
 import Location from "../assets/SOS/location.png";
 import LottieView from "lottie-react-native";
+import { InfoContext } from "../context/InfoContext";
 
 const SOSStatusPage = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const { fetchReport, report } = useContext(InfoContext);
+
+  useEffect(() => {
+    fetchReport();
+  }, []);
+
+  const hasArrivedResponder = report?.responder?.some(
+    (r) => r.status === "Arrived"
+  );
 
   return (
     <SafeAreaView
@@ -58,46 +68,97 @@ const SOSStatusPage = () => {
             color="#fff"
           />
 
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                textAlign: "start",
-                color: "#fff",
-              },
-            ]}
-          >
-            Help is on the way
-          </Text>
+          {report &&
+            (hasArrivedResponder ? (
+              <>
+                <Text
+                  style={[
+                    MyStyles.header,
+                    {
+                      marginTop: 20,
+                      textAlign: "start",
+                      color: "#fff",
+                    },
+                  ]}
+                >
+                  Help has arrived
+                </Text>
+                {report.responder
+                  .filter((r) => r.status === "Arrived")
+                  .map((r) => {
+                    return (
+                      <View key={r.empID._id}>
+                        <Image
+                          source={{
+                            uri: r.empID.resID.picture,
+                          }}
+                          style={{ width: 80, height: 80, borderRadius: 40 }}
+                        />
+                        <Text>
+                          {r.empID.resID.firstname} {r.empID.resID.lastname}
+                        </Text>
+                        <Text>{r.empID.position}</Text>
+                        <Text>
+                          {r.arrivedat
+                            ? new Date(r.arrivedat).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "N/A"}
+                        </Text>
+                        <Text>{r.empID.resID.mobilenumber}</Text>
+                      </View>
+                    );
+                  })}
+              </>
+            ) : (
+              <>
+                <Text
+                  style={[
+                    MyStyles.header,
+                    {
+                      marginTop: 20,
+                      textAlign: "start",
+                      color: "#fff",
+                    },
+                  ]}
+                >
+                  Help is on the way
+                </Text>
 
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <LottieView
-              source={require("../assets/sos-on-the-way.json")}
-              autoPlay
-              loop
-              style={{
-                width: 350,
-                height: 350,
-              }}
-            />
-            <Text
-              style={{
-                fontFamily: "QuicksandBold",
-                marginTop: 20,
-                textAlign: "center",
-                color: "#fff",
-                opacity: 0.8,
-                fontSize: 18,
-                padding: 20,
-              }}
-            >
-              Your help is on the way. {"\n"} In the meantime, please remain
-              calm and know that assistance is coming soon.
-            </Text>
-          </View>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <LottieView
+                    source={require("../assets/sos-on-the-way.json")}
+                    autoPlay
+                    loop
+                    style={{
+                      width: 350,
+                      height: 350,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: "QuicksandBold",
+                      marginTop: 20,
+                      textAlign: "center",
+                      color: "#fff",
+                      opacity: 0.8,
+                      fontSize: 18,
+                      padding: 20,
+                    }}
+                  >
+                    Your help is on the way. {"\n"} In the meantime, please
+                    remain calm and know that assistance is coming soon.
+                  </Text>
+                </View>
+              </>
+            ))}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

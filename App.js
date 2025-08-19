@@ -3,6 +3,7 @@ import Svg, { Path } from "react-native-svg";
 import React, { useContext, useEffect, useState } from "react";
 import {
   NavigationContainer,
+  useNavigation,
   useNavigationContainerRef,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -28,6 +29,8 @@ import NetInfo from "@react-native-community/netinfo";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { InfoContext } from "./context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Entypo from "@expo/vector-icons/Entypo";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //Screens
 import Login from "./components/Login";
@@ -71,6 +74,7 @@ import Chat from "./components/Chat";
 import TermsConditions from "./components/TermsConditions";
 import ResidentForm from "./components/ResidentForm";
 import UserProfile from "./components/UserProfile";
+import AlertModal from "./components/AlertModal";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -80,6 +84,9 @@ import NotificationSetup from "./components/NotificationSetUp";
 import * as Notifications from "expo-notifications";
 import SuccessfulPage from "./components/SuccessfulPage";
 import SuccessfulPage2 from "./components/SuccessfulPage2";
+import LocationSetUp from "./components/LocationSetUp";
+import SOSReportDetails from "./components/SOSReportDetails";
+import { DraftProvider } from "./context/DraftContext";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -92,6 +99,8 @@ const CustomTabBar = ({
   unreadAnnouncements,
 }) => {
   const insets = useSafeAreaInsets();
+  const { report } = useContext(InfoContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <View style={[MyStyles.bottomTabContainer, { bottom: insets.bottom }]}>
@@ -164,6 +173,7 @@ const CustomTabBar = ({
           }
 
           const onPress = () => navigation.navigate(route.name);
+          const iconSize = RFPercentage(2.8);
 
           return (
             <TouchableOpacity
@@ -173,7 +183,7 @@ const CustomTabBar = ({
               style={MyStyles.bottomTabButtons}
             >
               <View style={{ position: "relative" }}>
-                <Ionicons name={iconName} size={24} color={iconColor} />
+                <Ionicons name={iconName} size={iconSize} color={iconColor} />
                 {badgeCount > 0 && (
                   <View style={MyStyles.badge}>
                     <Text style={MyStyles.badgeText}>{badgeCount}</Text>
@@ -186,31 +196,29 @@ const CustomTabBar = ({
       </View>
 
       {/* Floating SOS Button in Center */}
-      <TouchableOpacity
-        style={[MyStyles.fab, { bottom: 45 }]}
-        onPress={() => console.log("SOS Pressed")}
-      >
-        <Text style={MyStyles.fabText}>SOS</Text>
-      </TouchableOpacity>
+      {user.role === "Resident" && (
+        <TouchableOpacity
+          style={[MyStyles.fab, { bottom: 45 }]}
+          onPress={() => navigation.navigate(report ? "SOSStatusPage" : "SOS")}
+        >
+          <Text style={MyStyles.fabText}>SOS</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
 
 const BottomTabs = () => {
-  const [unreadNotifications] = useState(1);
-  const [unreadAnnouncements] = useState(3);
+  const { unreadNotifications } = useContext(InfoContext);
 
   return (
     <>
+      <LocationSetUp />
       <NotificationSetup />
       <Tab.Navigator
         initialRouteName="Home"
         tabBar={(props) => (
-          <CustomTabBar
-            {...props}
-            unreadNotifications={unreadNotifications}
-            unreadAnnouncements={unreadAnnouncements}
-          />
+          <CustomTabBar {...props} unreadNotifications={unreadNotifications} />
         )}
         screenOptions={{ headerShown: false }}
       >
@@ -236,17 +244,17 @@ const DrawerContent = ({ navigation }) => {
   const { user, logout, loading } = useContext(AuthContext);
 
   const handleConfirm = () => {
-    setModalVisible(true);
+    setIsConfirmModalVisible(true);
   };
 
   const handleLogout = () => {
+    setIsConfirmModalVisible(false);
     logout();
-    setModalVisible(false);
   };
 
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   return (
     <View
@@ -257,6 +265,12 @@ const DrawerContent = ({ navigation }) => {
         backgroundColor: "#fff",
       }}
     >
+      <Entypo
+        name="menu"
+        color="#04384E"
+        onPress={() => navigation.closeDrawer()}
+        style={[MyStyles.burgerChatIcon, { alignSelf: "flex-end" }]}
+      />
       {/* Profile Info */}
       <View
         style={{
@@ -269,111 +283,126 @@ const DrawerContent = ({ navigation }) => {
       >
         <Image
           source={{ uri: user?.picture || "" }}
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 50,
-          }}
+          style={MyStyles.drawerImg}
         />
         <View style={{ marginLeft: 10 }}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              color: "#04384E",
-              fontFamily: "REMBold",
-            }}
-          >
-            {user.name}
-          </Text>
+          <Text style={MyStyles.drawerUsername}>{user.name}</Text>
         </View>
       </View>
 
-      {/* Menu Options */}
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        onPress={() => navigation.navigate("Certificates")}
-      >
-        <Ionicons name="document-text" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Request Document
-        </Text>
-      </TouchableOpacity>
+      {user.role === "Resident" ? (
+        <>
+          {/* Menu Options */}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("Certificates")}
+          >
+            <Ionicons
+              name="document-text"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Request Document</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        onPress={() => navigation.navigate("CourtReservations")}
-      >
-        <Ionicons name="calendar" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Reserve Court
-        </Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("CourtReservations")}
+          >
+            <Ionicons
+              name="calendar"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Reserve Court</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        onPress={() => navigation.navigate("Blotter")}
-      >
-        <Ionicons name="file-tray-full" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Report Blotter
-        </Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("Blotter")}
+          >
+            <Ionicons
+              name="file-tray-full"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Report Blotter</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 20,
-          fontFamily: "QuicksandBold",
-        }}
-        onPress={() => navigation.navigate("Status")}
-      >
-        <Ionicons name="calendar" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Status
-        </Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+              fontFamily: "QuicksandBold",
+            }}
+            onPress={() => navigation.navigate("Status")}
+          >
+            <Ionicons
+              name="calendar"
+              style={{ fontSize: RFPercentage(2.8) }}
+              color="#04384E"
+            />
+            <Text style={MyStyles.drawerServicesText}>Status</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("SOSRequests")}
+          >
+            <Ionicons name="document-text" size={22} color="#04384E" />
+            <Text
+              style={{
+                fontSize: 18,
+                marginLeft: 15,
+                color: "#04384E",
+                fontFamily: "QuicksandBold",
+              }}
+            >
+              SOS Requests
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+            }}
+            onPress={() => navigation.navigate("RespondedSOS")}
+          >
+            <Ionicons name="document-text" size={22} color="#04384E" />
+            <Text
+              style={{
+                fontSize: 18,
+                marginLeft: 15,
+                color: "#04384E",
+                fontFamily: "QuicksandBold",
+              }}
+            >
+              Responded SOS
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
 
       <TouchableOpacity
         style={{
@@ -384,17 +413,12 @@ const DrawerContent = ({ navigation }) => {
         }}
         onPress={() => navigation.navigate("AccountSettings")}
       >
-        <Ionicons name="settings" size={22} color="#04384E" />
-        <Text
-          style={{
-            fontSize: 18,
-            marginLeft: 15,
-            color: "#04384E",
-            fontFamily: "QuicksandBold",
-          }}
-        >
-          Account Settings
-        </Text>
+        <Ionicons
+          name="settings"
+          style={{ fontSize: RFPercentage(2.8) }}
+          color="#04384E"
+        />
+        <Text style={MyStyles.drawerServicesText}>Account Settings</Text>
       </TouchableOpacity>
 
       <View
@@ -415,23 +439,21 @@ const DrawerContent = ({ navigation }) => {
         onPress={handleConfirm}
         disabled={loading}
       >
-        <Text
-          style={{
-            fontSize: 18,
-            borderRadius: 5,
-            color: "#fff",
-            backgroundColor: "#04384E",
-            width: "100%",
-            fontFamily: "QuicksandBold",
-            paddingVertical: 15,
-            textAlign: "center",
-          }}
-        >
+        <Text style={MyStyles.drawerLogoutText}>
           {loading ? "Logging out..." : "Logout"}
         </Text>
       </TouchableOpacity>
 
-      <Modal
+      <AlertModal
+        isVisible={isConfirmModalVisible}
+        isConfirmationModal={true}
+        title="Log Out?"
+        message="Are you sure you want to log out?"
+        onClose={() => setIsConfirmModalVisible(false)}
+        onConfirm={handleLogout}
+      />
+
+      {/* <Modal
         animationType="fade"
         transparent={true}
         visible={isModalVisible}
@@ -463,7 +485,7 @@ const DrawerContent = ({ navigation }) => {
                 color: "#808080",
               }}
             >
-              Log out?
+              Log Out?
             </Text>
             <Text
               style={{
@@ -542,19 +564,45 @@ const DrawerContent = ({ navigation }) => {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </View>
   );
 };
 
 const BottomTabsWithDrawer = () => {
+  const navigation = useNavigation();
+  const { report } = useContext(InfoContext);
+  const insets = useSafeAreaInsets();
+
+  const hasArrivedResponder = report?.responder?.some(
+    (r) => r.status === "Arrived"
+  );
   return (
-    <Drawer.Navigator
-      screenOptions={{ headerShown: false }}
-      drawerContent={(props) => <DrawerContent {...props} />}
-    >
-      <Drawer.Screen name="BottomTabs" component={BottomTabs} />
-    </Drawer.Navigator>
+    <View style={{ flex: 1 }}>
+      {report && (
+        <TouchableOpacity
+          style={{
+            paddingTop: insets.top,
+            backgroundColor: "red",
+            padding: 10,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => navigation.navigate("SOSStatusPage")}
+        >
+          <Text style={{ color: "white", fontWeight: "bold" }}>
+            {hasArrivedResponder ? "Help has arrived" : "Help is on the way"}
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      <Drawer.Navigator
+        screenOptions={{ headerShown: false }}
+        drawerContent={(props) => <DrawerContent {...props} />}
+      >
+        <Drawer.Screen name="BottomTabs" component={BottomTabs} />
+      </Drawer.Navigator>
+    </View>
   );
 };
 
@@ -732,7 +780,13 @@ export default function App() {
                     <Stack.Screen
                       name="ResidentForm"
                       children={() => (
-                        <PublicRoute element={<ResidentForm />} />
+                        <PublicRoute
+                          element={
+                            <DraftProvider>
+                              <ResidentForm />
+                            </DraftProvider>
+                          }
+                        />
                       )}
                     />
                     <Stack.Screen
@@ -1095,6 +1149,18 @@ export default function App() {
                           element={
                             <InfoProvider>
                               <SOSRequests />
+                            </InfoProvider>
+                          }
+                        />
+                      )}
+                    />
+                    <Stack.Screen
+                      name="SOSReportDetails"
+                      children={() => (
+                        <PrivateRoute
+                          element={
+                            <InfoProvider>
+                              <SOSReportDetails />
                             </InfoProvider>
                           }
                         />

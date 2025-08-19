@@ -8,6 +8,9 @@ import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 import AppLogo from "../assets/applogo-darkbg.png";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { RFPercentage } from "react-native-responsive-fontsize";
+
+import AlertModal from "./AlertModal";
 
 const OTP = ({}) => {
   const route = useRoute();
@@ -141,17 +144,12 @@ const OTP = ({}) => {
             gap: 20,
           }}
         >
-          <Text
-            style={[
-              MyStyles.header,
-              { marginTop: 10, alignSelf: "flex-start" },
-            ]}
-          >
+          <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
             Account Verification
           </Text>
           <Text
             style={{
-              fontSize: 16,
+              fontSize: RFPercentage(1.6),
               color: "#808080",
               fontFamily: "QuicksandSemiBold",
             }}
@@ -160,7 +158,7 @@ const OTP = ({}) => {
           </Text>
           <Text
             style={{
-              fontSize: 16,
+              fontSize: RFPercentage(1.6),
               color: "#04384E",
               fontFamily: "QuicksandSemiBold",
               marginTop: "-20",
@@ -178,7 +176,7 @@ const OTP = ({}) => {
           {isResendDisabled ? (
             <Text
               style={{
-                fontSize: 16,
+                fontSize: RFPercentage(1.6),
                 color: "#808080",
                 fontFamily: "QuicksandSemiBold",
               }}
@@ -191,7 +189,7 @@ const OTP = ({}) => {
               <Text
                 onPress={handleResend}
                 style={{
-                  fontSize: 16,
+                  fontSize: RFPercentage(1.6),
                   color: "#808080",
                   fontFamily: "QuicksandSemiBold",
                 }}
@@ -202,7 +200,7 @@ const OTP = ({}) => {
                 onPress={handleResend}
                 style={{
                   color: "#006EFF",
-                  fontSize: 16,
+                  fontSize: RFPercentage(1.6),
                   fontFamily: "QuicksandBold",
                 }}
               >

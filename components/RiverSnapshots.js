@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import api from "../api";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const RiverSnapshots = () => {
   const insets = useSafeAreaInsets();
@@ -65,28 +66,24 @@ const RiverSnapshots = () => {
             },
           ]}
         >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialIcons
-              name="arrow-back-ios"
-              size={30}
-              color="white"
-              style={{ marginLeft: 20, marginTop: 20 }}
-            />
-          </TouchableOpacity>
-
-          <Text
-            style={[
-              MyStyles.header,
-              {
-                marginTop: 20,
-                marginBottom: 0,
-                textAlign: "center",
-                color: "white",
-              },
-            ]}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
-            River Snapshots
-          </Text>
+            <MaterialIcons
+              onPress={() => navigation.goBack()}
+              name="arrow-back-ios"
+              style={[MyStyles.backArrow, { color: "#fff" }]}
+            />
+
+            <Text
+              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+            >
+              River Snapshots
+            </Text>
+          </View>
 
           <View
             style={{
@@ -100,6 +97,7 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
+                  height: RFPercentage(6),
                   flex: 1,
                   backgroundColor: viewMode === "current" ? "#04384E" : "white",
                   marginHorizontal: 10,
@@ -111,7 +109,7 @@ const RiverSnapshots = () => {
                 style={[
                   MyStyles.buttonText,
                   {
-                    fontSize: 16,
+                    fontSize: RFPercentage(1.8),
                     color: viewMode === "current" ? "white" : "#04384E",
                     textAlign: "center",
                   },
@@ -125,9 +123,11 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
+                  height: RFPercentage(6),
                   flex: 1,
                   backgroundColor: viewMode === "history" ? "#04384E" : "white",
                   marginHorizontal: 10,
+                  alignItems: "center",
                 },
               ]}
               onPress={() => setViewMode("history")}
@@ -136,7 +136,7 @@ const RiverSnapshots = () => {
                 style={[
                   MyStyles.buttonText,
                   {
-                    fontSize: 16,
+                    fontSize: RFPercentage(1.8),
                     color: viewMode === "history" ? "white" : "#04384E",
                     textAlign: "center",
                   },
@@ -158,7 +158,7 @@ const RiverSnapshots = () => {
                   <Text
                     style={{
                       color: "white",
-                      fontSize: 25,
+                      fontSize: RFPercentage(2.5),
                       fontFamily: "REMBold",
                       textAlign: "center",
                       marginTop: 50,
@@ -170,7 +170,7 @@ const RiverSnapshots = () => {
                     source={{ uri: latest.url }}
                     style={{
                       width: "100%",
-                      height: 250,
+                      height: RFPercentage(30),
                       borderRadius: 15,
                       resizeMode: "cover",
                       marginTop: 20,
@@ -193,7 +193,7 @@ const RiverSnapshots = () => {
                     >
                       <Text
                         style={{
-                          fontSize: 20,
+                          fontSize: RFPercentage(2),
                           color: "white",
                           fontFamily: "QuicksandBold",
                           textAlign: "center",
@@ -206,7 +206,7 @@ const RiverSnapshots = () => {
                   </View>
                   <Text
                     style={{
-                      fontSize: 16,
+                      fontSize: RFPercentage(1.6),
                       color: "#D3D3D3",
                       textAlign: "center",
                       fontFamily: "QuicksandSemiBold",
@@ -229,7 +229,7 @@ const RiverSnapshots = () => {
                           source={{ uri: snap.url }}
                           style={{
                             width: "100%",
-                            height: 250,
+                            height: RFPercentage(30),
                             borderRadius: 15,
                             resizeMode: "cover",
                           }}
@@ -237,7 +237,7 @@ const RiverSnapshots = () => {
 
                         <Text
                           style={{
-                            fontSize: 16,
+                            fontSize: RFPercentage(1.6),
                             color: "white",
                             fontFamily: "QuicksandBold",
                             textAlign: "right",

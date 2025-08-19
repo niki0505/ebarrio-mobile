@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, View, Text, TouchableOpacity } from "react-native";
 import LottieView from "lottie-react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const AlertModal = ({
   isVisible,
@@ -35,7 +36,7 @@ const AlertModal = ({
             backgroundColor: "white",
             padding: 20,
             borderRadius: 10,
-            width: 300,
+            width: RFPercentage(35),
             alignItems: "center",
           }}
         >
@@ -53,7 +54,7 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: RFPercentage(2),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
@@ -63,7 +64,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: RFPercentage(1.6),
                   color: "#808080",
                   marginBottom: 30,
                   fontFamily: "QuicksandMedium",
@@ -87,7 +88,7 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: RFPercentage(2),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
@@ -97,7 +98,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: RFPercentage(1.6),
                   color: "#808080",
                   marginBottom: 20,
                   fontFamily: "QuicksandMedium",
@@ -112,7 +113,6 @@ const AlertModal = ({
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  gap: 10,
                 }}
               >
                 <TouchableOpacity
@@ -123,7 +123,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: 100,
+                    width: RFPercentage(15),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -131,7 +131,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#BC0F0F",
-                      fontSize: 16,
+                      fontSize: RFPercentage(1.8),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -149,7 +149,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: 100,
+                    width: RFPercentage(1),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -157,7 +157,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#fff",
-                      fontSize: 16,
+                      fontSize: RFPercentage(1.8),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -170,10 +170,14 @@ const AlertModal = ({
           ) : isConfirmationModal ? (
             // Confirmation Modal (Help Icon)
             <>
-              <Ionicons name="help-circle-outline" size={70} color="#BC0F0F" />
+              <Ionicons
+                name="help-circle-outline"
+                color="#BC0F0F"
+                style={{ fontSize: RFPercentage(8) }}
+              />
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: RFPercentage(2),
                   fontFamily: "REMBold",
                   marginVertical: 10,
                   color: "#808080",
@@ -183,7 +187,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: RFPercentage(1.6),
                   color: "#808080",
                   marginBottom: 20,
                   fontFamily: "QuicksandMedium",
@@ -198,7 +202,6 @@ const AlertModal = ({
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  gap: 10,
                 }}
               >
                 <TouchableOpacity
@@ -209,7 +212,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: 100,
+                    width: RFPercentage(15),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -217,7 +220,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#BC0F0F",
-                      fontSize: 16,
+                      fontSize: RFPercentage(1.8),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -235,7 +238,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: 100,
+                    width: RFPercentage(15),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -243,7 +246,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#fff",
-                      fontSize: 16,
+                      fontSize: RFPercentage(1.8),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -267,7 +270,7 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: RFPercentage(2),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
@@ -277,7 +280,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: RFPercentage(1.6),
                   color: "#808080",
                   marginBottom: 30,
                   fontFamily: "QuicksandMedium",
@@ -292,7 +295,6 @@ const AlertModal = ({
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  gap: 10,
                 }}
               >
                 <TouchableOpacity
@@ -302,7 +304,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: 150,
+                    width: RFPercentage(15),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -310,7 +312,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "white",
-                      fontSize: 16,
+                      fontSize: RFPercentage(1.8),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}

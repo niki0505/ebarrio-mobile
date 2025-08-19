@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
+  Dimensions,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState } from "react";
@@ -63,15 +64,15 @@ const Login = () => {
       });
       if (res.status === 200) {
         if (res.data.message === "Credentials verified") {
-          // await login({ username, password });
-          const response = await api.get(`/getmobilenumber/${username}`);
-          sendOTP(username, response.data.mobilenumber);
-          navigation.navigate("OTP", {
-            navigatelink: "BottomTabs",
-            username,
-            mobilenumber: response.data.mobilenumber,
-            password: password,
-          });
+          await login({ username, password });
+          // const response = await api.get(`/getmobilenumber/${username}`);
+          // sendOTP(username, response.data.mobilenumber);
+          // navigation.navigate("OTP", {
+          //   navigatelink: "BottomTabs",
+          //   username,
+          //   mobilenumber: response.data.mobilenumber,
+          //   password: password,
+          // });
         } else if (res.data.message === "Token verified successfully!") {
           navigation.navigate("SetPassword", {
             username,
@@ -199,7 +200,7 @@ const Login = () => {
             disabled={loading}
           >
             <Text style={MyStyles.buttonText}>
-              {loading ? "Logging in..." : "Log In"}
+              {loading ? "Logging in..." : "Login"}
             </Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>

@@ -20,6 +20,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { InfoContext } from "../context/InfoContext";
 import api from "../api";
 import Dialog from "react-native-dialog";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -203,7 +204,7 @@ const Status = () => {
             value={sortOption}
             placeholder={sortOption}
             onChange={(item) => setSortOption(item.value)}
-            style={[MyStyles.dropdownWrapper, { width: "50%", height: 50 }]}
+            style={[MyStyles.dropdownWrapper, { width: RFPercentage(15) }]}
             selectedTextStyle={MyStyles.selectedText}
           />
 
@@ -321,7 +322,7 @@ const Status = () => {
             </View>
           ) : sortedServices.length === 0 ? (
             <View style={{ paddingVertical: 30, alignItems: "center" }}>
-              <Text>No requested services found.</Text>
+              <Text style={MyStyles.noEvents}>NO REQUEST STATUS FOUND</Text>
             </View>
           ) : (
             sortedServices.map((service, index) => {

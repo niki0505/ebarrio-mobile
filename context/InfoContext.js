@@ -26,6 +26,10 @@ export const InfoProvider = ({ children }) => {
   const [active, setActive] = useState([]);
   const [FAQs, setFAQs] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
+  const [report, setReport] = useState(null);
+  const [pendingReports, setPendingReports] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadNotifications, setUnreadNotifications] = useState(null);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -71,6 +75,8 @@ export const InfoProvider = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated) {
       fetchUsers();
+      fetchReport();
+      fetchUnreadNotifications();
     }
   }, [isAuthenticated]);
 
@@ -189,6 +195,42 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchReport = async () => {
+    try {
+      const response = await api.get("/getactivesos");
+      setReport(response.data[0]);
+    } catch (error) {
+      console.error("❌ Failed to fetch report:", error);
+    }
+  };
+
+  const fetchPendingReports = async () => {
+    try {
+      const response = await api.get("/getpendingsos");
+      setPendingReports(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch pending reports:", error);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await api.get("/getnotifications");
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch notifications:", error);
+    }
+  };
+
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await api.get("/getunreadnotifications");
+      setUnreadNotifications(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch unread notifications:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -201,6 +243,10 @@ export const InfoProvider = ({ children }) => {
         setEmergencyHotlines(updatedData.data);
       } else if (updatedData.type === "users") {
         setUsers(updatedData.data);
+      } else if (updatedData.type === "notifications") {
+        setNotifications(updatedData.data);
+      } else if (updatedData.type === "unreadnotifications") {
+        setUnreadNotifications(updatedData.data);
       }
     };
 
@@ -225,6 +271,13 @@ export const InfoProvider = ({ children }) => {
         FAQs,
         active,
         chatMessages,
+        report,
+        pendingReports,
+        notifications,
+        unreadNotifications,
+        fetchNotifications,
+        setNotifications,
+        setPendingReports,
         setChatMessages,
         fetchServices,
         fetchUserDetails,
@@ -236,6 +289,8 @@ export const InfoProvider = ({ children }) => {
         fetchFAQs,
         fetchActive,
         fetchChats,
+        fetchReport,
+        fetchPendingReports,
       }}
     >
       {children}
