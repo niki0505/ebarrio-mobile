@@ -86,6 +86,7 @@ import SuccessfulPage from "./components/SuccessfulPage";
 import SuccessfulPage2 from "./components/SuccessfulPage2";
 import LocationSetUp from "./components/LocationSetUp";
 import SOSReportDetails from "./components/SOSReportDetails";
+import { DraftProvider } from "./context/DraftContext";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -208,8 +209,7 @@ const CustomTabBar = ({
 };
 
 const BottomTabs = () => {
-  const [unreadNotifications] = useState(1);
-  const [unreadAnnouncements] = useState(3);
+  const { unreadNotifications } = useContext(InfoContext);
 
   return (
     <>
@@ -218,11 +218,7 @@ const BottomTabs = () => {
       <Tab.Navigator
         initialRouteName="Home"
         tabBar={(props) => (
-          <CustomTabBar
-            {...props}
-            unreadNotifications={unreadNotifications}
-            unreadAnnouncements={unreadAnnouncements}
-          />
+          <CustomTabBar {...props} unreadNotifications={unreadNotifications} />
         )}
         screenOptions={{ headerShown: false }}
       >
@@ -784,7 +780,13 @@ export default function App() {
                     <Stack.Screen
                       name="ResidentForm"
                       children={() => (
-                        <PublicRoute element={<ResidentForm />} />
+                        <PublicRoute
+                          element={
+                            <DraftProvider>
+                              <ResidentForm />
+                            </DraftProvider>
+                          }
+                        />
                       )}
                     />
                     <Stack.Screen

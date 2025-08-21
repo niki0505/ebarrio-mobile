@@ -263,7 +263,6 @@ const ForgotPassword = () => {
     } finally {
       setLoading(false);
     }
-    setLoading(false);
     setIsConfirmModalVisible(false);
     setIsAlertModalVisible(true);
     setAlertMessage(message);
@@ -478,7 +477,18 @@ const ForgotPassword = () => {
                       }}
                     >
                       <MaterialIcons
-                        onPress={() => setOTPClicked(false)}
+                        onPress={() => {
+                          setIsExisting(false);
+                          setIsVerified(false);
+                          setQuestionsClicked(false);
+                          setOTPClicked(false);
+                          setNewPassword("");
+                          setReNewPassword("");
+                          setSecurityQuestion({
+                            question: "",
+                            answer: "",
+                          });
+                        }}
                         name="arrow-back-ios"
                         style={MyStyles.backArrow}
                       />
@@ -499,6 +509,7 @@ const ForgotPassword = () => {
                         <View style={MyStyles.eyeInputContainer}>
                           <TextInput
                             onChangeText={passwordValidation}
+                            value={newPassword}
                             secureTextEntry={secureNewPass}
                             placeholder="New Password"
                             style={MyStyles.input}
@@ -536,6 +547,7 @@ const ForgotPassword = () => {
                           <TextInput
                             onChangeText={repasswordValidation}
                             secureTextEntry={secureConfirmPass}
+                            value={renewPassword}
                             placeholder="Confirm New Password"
                             style={MyStyles.input}
                           />
@@ -585,7 +597,7 @@ const ForgotPassword = () => {
                   title="Reset Password?"
                   message="Are you sure you want to reset your Password?"
                   onClose={() => setIsConfirmModalVisible(false)}
-                  onConfirm={handleSubmit}
+                  onConfirm={handleSuccessful}
                 />
               </View>
             </>
@@ -692,6 +704,7 @@ const ForgotPassword = () => {
                     >
                       <MaterialIcons
                         name="arrow-back-ios"
+                        onPress={() => setQuestionsClicked(false)}
                         style={MyStyles.backArrow}
                       />
 

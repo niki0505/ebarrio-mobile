@@ -21,12 +21,15 @@ import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
+import { InfoContext } from "../context/InfoContext";
+import { AuthContext } from "../context/AuthContext";
 
 const Notification = () => {
   const navigation = useNavigation();
   dayjs.extend(relativeTime);
   const insets = useSafeAreaInsets();
-  const { notifications, fetchNotifications } = useContext(SocketContext);
+  const { user } = useContext(AuthContext);
+  const { notifications, fetchNotifications } = useContext(InfoContext);
   const [isFilterDropdownVisible, setIsFilterDropdownVisible] = useState(false);
   const [filter, setFilter] = useState("All");
 

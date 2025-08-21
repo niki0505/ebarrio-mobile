@@ -31,10 +31,11 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
 
 //ICONS
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import api from "../api";
 import { MaterialIcons } from "@expo/vector-icons";
+import { DraftContext } from "../context/DraftContext";
 
 const ResidentForm = () => {
   const screenWidth = Dimensions.get("window").width;
@@ -52,7 +53,11 @@ const ResidentForm = () => {
   const [households, setHouseholds] = useState([]);
   const [showBirthdatePicker, setShowBirthdatePicker] = useState(false);
   const [showLastMenstrualPicker, setShowLastMenstrualPicker] = useState(false);
-  const [residentForm, setResidentForm] = useState({
+  const [loading, setLoading] = useState(false);
+
+  const { residentForm, setResidentForm, householdForm, setHouseholdForm } =
+    useContext(DraftContext);
+  const residentInitialForm = {
     id: "",
     signature: "",
     firstname: "",
@@ -80,16 +85,11 @@ const ResidentForm = () => {
     emergencyname: "",
     emergencymobilenumber: "+63",
     emergencyaddress: "",
-    housenumber: "",
-    street: "",
-    HOAname: "",
-    address: "",
     employmentstatus: "",
     employmentfield: "",
     occupation: "",
     monthlyincome: "",
     educationalattainment: "",
-    typeofschool: "",
     householdno: "",
     householdposition: "",
     head: "",
@@ -117,8 +117,9 @@ const ResidentForm = () => {
     haveFPmethod: "",
     fpmethod: "",
     fpstatus: "",
-  });
-  const [householdForm, setHouseholdForm] = useState({
+  };
+
+  const householdInitialForm = {
     members: [],
     vehicles: [],
     ethnicity: "",
@@ -127,7 +128,11 @@ const ResidentForm = () => {
     nhtsno: "",
     watersource: "",
     toiletfacility: "",
-  });
+    housenumber: "",
+    street: "",
+    HOAname: "",
+    address: "",
+  };
 
   // DROPDOWN VALUES
   const suffixList = ["Jr.", "Sr.", "I", "II", "III", "IV"];
@@ -699,8 +704,11 @@ const ResidentForm = () => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    setLoading(true);
     try {
-      const fulladdress = `${residentForm.housenumber} ${residentForm.street} Aniban 2, Bacoor, Cavite`;
+      const fulladdress = `${householdForm.housenumber} ${householdForm.street} Aniban 2, Bacoor, Cavite`;
       const idPicture = await uploadToFirebase(residentForm.id);
       const signaturePicture = await uploadToFirebase(residentForm.signature);
 
@@ -734,7 +742,6 @@ const ResidentForm = () => {
 
       const updatedResidentForm = {
         ...residentForm,
-        address: fulladdress,
         mobilenumber: formattedMobileNumber,
         emergencymobilenumber: formattedEmergencyMobileNumber,
         telephone: formattedTelephone,
@@ -742,20 +749,29 @@ const ResidentForm = () => {
         lastmenstrual: formattedLastMenstrual,
       };
 
+      const updatedHouseholdForm = {
+        ...householdForm,
+        address: fulladdress,
+      };
+
       await api.post("/createresident", {
         picture: idPicture,
         signature: signaturePicture,
         ...updatedResidentForm,
-        householdForm,
+        householdForm: updatedHouseholdForm,
       });
+      setResidentForm(residentInitialForm);
+      setHouseholdForm(setHouseholdForm);
       navigation.navigate("SuccessfulPage2", {
         service: "ResidentForm",
       });
     } catch (error) {
       console.log("Error", error);
+    } finally {
+      setLoading(false);
     }
 
-    setIsConfirmModalVisible(true);
+    setIsConfirmModalVisible(false);
   };
 
   const [showSignModal, setShowSignModal] = useState(false);
@@ -773,7 +789,11 @@ const ResidentForm = () => {
   };
 
   const handleClear = () => {
-    setResidentForm({ ...residentForm, signature: null });
+    setResidentForm(residentInitialForm);
+    setHouseholdForm(householdInitialForm);
+  };
+  const handleSignatureClear = () => {
+    setResidentForm({ ...prev, signature: "" });
   };
 
   return (
@@ -878,7 +898,7 @@ const ResidentForm = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      onPress={handleClear}
+                      onPress={handleSignatureClear}
                       style={MyStyles.personalInfoButton}
                     >
                       <Text>🗑️</Text>
@@ -1703,67 +1723,6 @@ const ResidentForm = () => {
                   />
                 </View>
 
-                {/* Address Information */}
-                <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
-                  Address Information
-                </Text>
-                <View>
-                  <Text style={MyStyles.inputLabel}>House Number</Text>
-                  <TextInput
-                    placeholder="House Number"
-                    style={MyStyles.input}
-                    keyboardType="numeric"
-                    value={residentForm.housenumber}
-                    onChangeText={(text) =>
-                      handleInputChange("housenumber", text)
-                    }
-                  />
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Street<Text style={{ color: "red" }}>*</Text>
-                  </Text>
-                  <Dropdown
-                    labelField="label"
-                    valueField="value"
-                    value={residentForm.street}
-                    data={streetList.map((purp) => ({
-                      label: purp,
-                      value: purp,
-                    }))}
-                    placeholder="Select"
-                    placeholderStyle={MyStyles.placeholderText}
-                    selectedTextStyle={MyStyles.selectedText}
-                    onChange={(item) =>
-                      handleDropdownChange("street", item.value)
-                    }
-                    style={MyStyles.input}
-                  ></Dropdown>
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>HOA Name</Text>
-                  <Dropdown
-                    labelField="label"
-                    valueField="value"
-                    value={residentForm.HOAname}
-                    data={[
-                      {
-                        label: "Bermuda Town Homes",
-                        value: "Bermuda Town Homes",
-                      },
-                    ]}
-                    placeholder="Select"
-                    placeholderStyle={MyStyles.placeholderText}
-                    selectedTextStyle={MyStyles.selectedText}
-                    onChange={(item) =>
-                      handleDropdownChange("street", item.value)
-                    }
-                    style={MyStyles.input}
-                  ></Dropdown>
-                </View>
-
                 {/* Household Information */}
                 <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                   Household Information
@@ -1861,6 +1820,62 @@ const ResidentForm = () => {
 
                 {residentForm.head === "Yes" && (
                   <>
+                    <View>
+                      <Text style={MyStyles.inputLabel}>House Number</Text>
+                      <TextInput
+                        placeholder="House Number"
+                        style={MyStyles.input}
+                        keyboardType="numeric"
+                        value={residentForm.housenumber}
+                        onChangeText={(text) =>
+                          handleInputChange("housenumber", text)
+                        }
+                      />
+                    </View>
+
+                    <View>
+                      <Text style={MyStyles.inputLabel}>
+                        Street<Text style={{ color: "red" }}>*</Text>
+                      </Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={residentForm.street}
+                        data={streetList.map((purp) => ({
+                          label: purp,
+                          value: purp,
+                        }))}
+                        placeholder="Select"
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
+                        onChange={(item) =>
+                          handleDropdownChange("street", item.value)
+                        }
+                        style={MyStyles.input}
+                      ></Dropdown>
+                    </View>
+
+                    <View>
+                      <Text style={MyStyles.inputLabel}>HOA Name</Text>
+                      <Dropdown
+                        labelField="label"
+                        valueField="value"
+                        value={residentForm.HOAname}
+                        data={[
+                          {
+                            label: "Bermuda Town Homes",
+                            value: "Bermuda Town Homes",
+                          },
+                        ]}
+                        placeholder="Select"
+                        placeholderStyle={MyStyles.placeholderText}
+                        selectedTextStyle={MyStyles.selectedText}
+                        onChange={(item) =>
+                          handleDropdownChange("street", item.value)
+                        }
+                        style={MyStyles.input}
+                      ></Dropdown>
+                    </View>
                     <View>
                       <Text style={MyStyles.inputLabel}>
                         Ethnicity<Text style={{ color: "red" }}>*</Text>
@@ -2317,26 +2332,6 @@ const ResidentForm = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.inputLabel}>Type of School</Text>
-                  <Dropdown
-                    labelField="label"
-                    valueField="value"
-                    value={residentForm.typeofschool}
-                    data={[
-                      { label: "Public", value: "Public" },
-                      { label: "Private", value: "Private" },
-                    ]}
-                    placeholder="Select"
-                    placeholderStyle={MyStyles.placeholderText}
-                    selectedTextStyle={MyStyles.selectedText}
-                    onChange={(item) =>
-                      handleDropdownChange("typeofschool", item.value)
-                    }
-                    style={MyStyles.input}
-                  ></Dropdown>
-                </View>
-
-                <View>
                   <Text style={MyStyles.inputLabel}>Course</Text>
                   <TextInput
                     placeholder="Course"
@@ -2347,8 +2342,18 @@ const ResidentForm = () => {
                 </View>
               </View>
 
-              <TouchableOpacity style={MyStyles.button} onPress={handleConfirm}>
-                <Text style={MyStyles.buttonText}>Submit</Text>
+              <TouchableOpacity style={MyStyles.button} onPress={handleClear}>
+                <Text style={MyStyles.buttonText}>Clear</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={MyStyles.button}
+                onPress={handleConfirm}
+                disabled={loading}
+              >
+                <Text style={MyStyles.buttonText}>
+                  {loading ? "Submitting..." : "Submit"}
+                </Text>
               </TouchableOpacity>
 
               <AlertModal

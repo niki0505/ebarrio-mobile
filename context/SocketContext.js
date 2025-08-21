@@ -16,17 +16,7 @@ export const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const navigation = useNavigation();
   const { user, isAuthenticated } = useContext(AuthContext);
-  const [notifications, setNotifications] = useState([]);
   const socketRef = useRef(null); // ✅ Persistent ref
-
-  const fetchNotifications = async () => {
-    try {
-      const response = await api.get("/getnotifications");
-      setNotifications(response.data);
-    } catch (error) {
-      console.error("❌ Failed to fetch notifications:", error);
-    }
-  };
 
   useEffect(() => {
     if (!user?.userID || socketRef.current) return;
@@ -76,7 +66,7 @@ export const SocketProvider = ({ children }) => {
       );
     });
 
-    socket.on("notificationUpdate", setNotifications);
+    // socket.on("notificationUpdate", setNotifications);
 
     socket.on("blotterUpdate", (blotter) => {
       Alert.alert(
@@ -120,8 +110,6 @@ export const SocketProvider = ({ children }) => {
     <SocketContext.Provider
       value={{
         socket: socketRef.current,
-        fetchNotifications,
-        notifications,
       }}
     >
       {children}
