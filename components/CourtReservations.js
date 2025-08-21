@@ -185,16 +185,24 @@ const CourtReservations = () => {
   };
 
   const handleConfirm = () => {
+    if (reservationForm.date.length === 0 && !reservationForm.purpose) {
+      setAlertMessage("Both fields need to be filled to reserve a court.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
     if (reservationForm.date.length === 0) {
       setAlertMessage("Please select at least one date.");
       setIsAlertModalVisible(true);
       return;
     }
+
     if (!reservationForm.purpose) {
       setAlertMessage("Please select a purpose.");
       setIsAlertModalVisible(true);
       return;
     }
+
     if (errorMsg) {
       setAlertMessage(errorMsg);
       setIsAlertModalVisible(true);

@@ -137,7 +137,7 @@ const ChangePassword = () => {
         password,
       });
       setIsSuccess(true);
-      setAlertMessage("Password updated successfully! Please log in again.");
+      setAlertMessage("Your username has been updated. Please log in again.");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {

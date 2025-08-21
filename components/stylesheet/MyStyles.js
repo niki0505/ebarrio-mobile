@@ -612,7 +612,8 @@ export const MyStyles = StyleSheet.create({
     color: "red",
     fontFamily: "QuicksandMedium",
     fontSize: RFPercentage(1.6),
-    width: "80%",
+    width: "auto",
+    //changed from 80% to auto
   },
   errorDetailsWrapper: {
     display: "flex",

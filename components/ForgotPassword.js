@@ -78,6 +78,12 @@ const ForgotPassword = () => {
   const handleSubmit = async () => {
     if (loading) return;
 
+    if (!username || username.trim() === "") {
+      setAlertMessage("Kindly enter your username.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await api.get(`/checkuser/${username}`);
@@ -97,11 +103,34 @@ const ForgotPassword = () => {
     } finally {
       setLoading(false);
     }
-    setIsConfirmModalVisible(false);
+    // setIsConfirmModalVisible(false);
   };
 
   const handleQuestionVerify = async () => {
     if (loading) return;
+
+    if (
+      !securityquestion.question ||
+      securityquestion.question.trim() === "Select"
+    ) {
+      if (!securityquestion.answer || securityquestion.answer.trim() === "") {
+        setAlertMessage(
+          "Both fields need to be filled before proceeding to reset your password."
+        );
+        setIsAlertModalVisible(true);
+        return;
+      }
+
+      setAlertMessage("Kindly choose a security question to continue.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
+    if (!securityquestion.answer || securityquestion.answer.trim() === "") {
+      setAlertMessage("Kindly enter your answer.");
+      setIsAlertModalVisible(true);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -210,8 +239,6 @@ const ForgotPassword = () => {
     if (hasErrors) {
       return;
     }
-
-    setIsConfirmModalVisible(true);
   };
 
   const handleSuccessful = async () => {
@@ -383,8 +410,10 @@ const ForgotPassword = () => {
       <AlertModal
         isVisible={isAlertModalVisible}
         message={alertMessage}
+        isSuccess={isSuccess}
         onClose={() => setIsAlertModalVisible(false)}
       />
+
       {/* 1st Design */}
       {!isExisting && (
         <View style={{ flex: 4, backgroundColor: "#04384E" }}>
@@ -472,7 +501,7 @@ const ForgotPassword = () => {
                             onChangeText={passwordValidation}
                             secureTextEntry={secureNewPass}
                             placeholder="New Password"
-                            style={[MyStyles.input, { paddingRight: 40 }]}
+                            style={MyStyles.input}
                           />
                           <TouchableOpacity
                             style={MyStyles.eyeToggle}
@@ -485,6 +514,7 @@ const ForgotPassword = () => {
                             />
                           </TouchableOpacity>
                         </View>
+
                         {passwordErrors.length > 0 && (
                           <View>
                             {passwordErrors.map((error, index) => (
@@ -507,7 +537,7 @@ const ForgotPassword = () => {
                             onChangeText={repasswordValidation}
                             secureTextEntry={secureConfirmPass}
                             placeholder="Confirm New Password"
-                            style={[MyStyles.input, { paddingRight: 40 }]}
+                            style={MyStyles.input}
                           />
                           <TouchableOpacity
                             style={MyStyles.eyeToggle}
@@ -521,7 +551,7 @@ const ForgotPassword = () => {
                           </TouchableOpacity>
                         </View>
                         {repasswordErrors.length > 0 && (
-                          <View style={{ marginTop: 5, width: 300 }}>
+                          <View style={{ marginTop: 5 }}>
                             {repasswordErrors.map((error, index) => (
                               <Text key={index} style={MyStyles.errorMsg}>
                                 {error}
@@ -564,14 +594,22 @@ const ForgotPassword = () => {
               <BackgroundOverlay />
               <View style={MyStyles.forgotCardWrapper}>
                 <View style={MyStyles.forgotCard}>
-                  <MaterialIcons
-                    onPress={() => setOTPClicked(false)}
-                    name="arrow-back-ios"
-                    size={30}
-                    color="#04384E"
-                    style={{ alignSelf: "flex-start" }}
-                  />
-                  <Text style={MyStyles.header}>Account Verification</Text>
+                  <View
+                    style={{
+                      width: "100%",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <MaterialIcons
+                      onPress={() => setOTPClicked(false)}
+                      name="arrow-back-ios"
+                      style={MyStyles.backArrow}
+                    />
+
+                    <Text style={MyStyles.header}>Account Verification</Text>
+                  </View>
 
                   <Text style={MyStyles.forgotMsg}>
                     Enter the 6-digit code sent to
@@ -614,7 +652,6 @@ const ForgotPassword = () => {
                       }}
                     >
                       <Text
-                        onPress={handleResend}
                         style={{
                           fontSize: 16,
                           color: "#808080",

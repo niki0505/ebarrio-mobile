@@ -96,7 +96,7 @@ const ChangeUsername = () => {
       try {
         await api.put("/changeusername", { username, password });
         setIsSuccess(true);
-        setAlertMessage("Username updated successfully!");
+        setAlertMessage("Your username has been updated");
         fetchUserDetails();
       } catch (error) {
         const response = error.response;

@@ -46,7 +46,6 @@ const ResidentForm = () => {
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-
   const [isIDProcessing, setIsIDProcessing] = useState(false);
   const [isSignProcessing, setIsSignProcessing] = useState(false);
   const [residents, setResidents] = useState([]);
@@ -811,6 +810,9 @@ const ResidentForm = () => {
                 <Text style={MyStyles.FormSectionTitle}>
                   Personal Information
                 </Text>
+                <Text style={MyStyles.inputLabel}>
+                  Picture<Text style={{ color: "red" }}>*</Text>
+                </Text>
                 <View style={MyStyles.uploadBox}>
                   <View style={MyStyles.previewContainer}>
                     {isIDProcessing ? (
@@ -846,6 +848,9 @@ const ResidentForm = () => {
                 </View>
 
                 {/* New Signature */}
+                <Text style={MyStyles.inputLabel}>
+                  Signature<Text style={{ color: "red" }}>*</Text>
+                </Text>
                 <View style={MyStyles.uploadBox}>
                   <View style={MyStyles.previewContainer}>
                     {isSignProcessing ? (
