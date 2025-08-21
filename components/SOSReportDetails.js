@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import MapView, { Marker } from "react-native-maps";
 import api from "../api";
+import AlertModal from "./AlertModal";
 
 const SOSReportDetails = () => {
   dayjs.extend(relativeTime);
@@ -30,6 +31,10 @@ const SOSReportDetails = () => {
   const { user } = useContext(AuthContext);
   const { fetchPendingReports, pendingReports } = useContext(InfoContext);
   const navigation = useNavigation();
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isConfirmArrivedVisible, setIsConfirmArrivedVisible] = useState(false);
+  const [isConfirmDidNotArrivedVisible, setIsConfirmDidNotArrivedVisible] =
+    useState(false);
 
   useEffect(() => {
     fetchPendingReports();
@@ -44,6 +49,7 @@ const SOSReportDetails = () => {
   );
 
   const headingSOS = async () => {
+    setIsConfirmModalVisible(false);
     try {
       await api.put(`/headingsos/${selectedID}`);
     } catch (error) {
@@ -52,8 +58,18 @@ const SOSReportDetails = () => {
   };
 
   const arrivedSOS = async () => {
+    setIsConfirmArrivedVisible(false);
     try {
       await api.put(`/arrivedsos/${selectedID}`);
+    } catch (error) {
+      console.error("❌ Failed to click arrived:", error);
+    }
+  };
+
+  const didntArriveSOS = async () => {
+    setIsConfirmDidNotArrivedVisible(false);
+    try {
+      await api.put(`/didntarrivesos/${selectedID}`);
     } catch (error) {
       console.error("❌ Failed to click arrived:", error);
     }
@@ -140,7 +156,7 @@ const SOSReportDetails = () => {
                   {responder.status === "Heading" && (
                     <>
                       <TouchableOpacity
-                        onPress={arrivedSOS}
+                        onPress={() => setIsConfirmArrivedVisible(true)}
                         style={MyStyles.button}
                       >
                         <Text>Arrived</Text>
@@ -155,21 +171,60 @@ const SOSReportDetails = () => {
                   )}
 
                   {responder.status === "Arrived" && responder.isHead && (
-                    <TouchableOpacity
-                      onPress={headingSOS}
-                      style={MyStyles.button}
-                    >
-                      <Text>Verify</Text>
-                    </TouchableOpacity>
+                    <>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("PostIncident", { selectedID })
+                        }
+                        style={MyStyles.button}
+                      >
+                        <Text>Verify</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("FalseAlarm", { selectedID })
+                        }
+                        style={MyStyles.button}
+                      >
+                        <Text>False Alarm</Text>
+                      </TouchableOpacity>
+                    </>
                   )}
                 </>
               ) : (
-                <TouchableOpacity onPress={headingSOS} style={MyStyles.button}>
+                <TouchableOpacity
+                  onPress={() => setIsConfirmModalVisible(true)}
+                  style={MyStyles.button}
+                >
                   <Text>Heading</Text>
                 </TouchableOpacity>
               )}
             </View>
           )}
+          <AlertModal
+            isVisible={isConfirmModalVisible}
+            isConfirmationModal={true}
+            title="Heading?"
+            message="Are you sure you want to proceed to this location?"
+            onClose={() => setIsConfirmModalVisible(false)}
+            onConfirm={headingSOS}
+          />
+          <AlertModal
+            isVisible={isConfirmArrivedVisible}
+            isConfirmationModal={true}
+            title="Arrived?"
+            message="Are you sure you arrived at the location?"
+            onClose={() => setIsConfirmArrivedVisible(false)}
+            onConfirm={arrivedSOS}
+          />
+          <AlertModal
+            isVisible={isConfirmDidNotArrivedVisible}
+            isConfirmationModal={true}
+            title="Did Not Arrived?"
+            message="Are you sure you did not arrive at the location?"
+            onClose={() => setIsConfirmDidNotArrivedVisible(false)}
+            onConfirm={didntArriveSOS}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
@@ -28,14 +29,23 @@ const SOSRequests = () => {
     useContext(InfoContext);
   const navigation = useNavigation();
   const [modifiedReports, setModifiedReports] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // fetch reports once on mount
     fetchPendingReports();
   }, []);
 
   useEffect(() => {
-    // when pendingReports updates, enrich them
+    const loadData = async () => {
+      setLoading(true);
+      await fetchPendingReports();
+      setLoading(false);
+    };
+
+    loadData();
+  }, []);
+
+  useEffect(() => {
     const enrichReports = async () => {
       if (pendingReports && pendingReports.length > 0) {
         const updatedReports = await Promise.all(
@@ -128,8 +138,14 @@ const SOSRequests = () => {
             color="#04384E"
           />
           <Text style={MyStyles.header}>SOS Requests</Text>
-          {modifiedReports?.map((report) => {
-            return (
+          {loading ? (
+            <ActivityIndicator size="large" color="#04384E" />
+          ) : pendingReports.length === 0 ? (
+            <Text style={[MyStyles.noEvents, { color: "gray" }]}>
+              No pending SOS requests found.
+            </Text>
+          ) : (
+            modifiedReports.map((report) => (
               <TouchableOpacity
                 onPress={() => viewDetails(report._id)}
                 key={report._id}
@@ -142,8 +158,8 @@ const SOSRequests = () => {
                 <Text>{report.reporttype ? report.reporttype : "SOS"}</Text>
                 <Text>{report.readableAddress}</Text>
               </TouchableOpacity>
-            );
-          })}
+            ))
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

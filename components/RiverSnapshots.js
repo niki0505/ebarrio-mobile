@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
   View,
@@ -16,6 +16,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import api from "../api";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import Dialog from "react-native-dialog";
+import { AuthContext } from "../context/AuthContext";
+import AlertModal from "./AlertModal";
 
 const RiverSnapshots = () => {
   const insets = useSafeAreaInsets();
@@ -24,6 +27,12 @@ const RiverSnapshots = () => {
   const [history, setHistory] = useState([]);
   const [viewMode, setViewMode] = useState("current");
   const [loading, setLoading] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertResidentsMessage, setAlertResidentsMessage] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const { user } = useContext(AuthContext);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchLatest = async () => {
@@ -44,6 +53,36 @@ const RiverSnapshots = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleSubmit = () => {
+    setAlertVisible(false);
+    setTimeout(() => {
+      setIsConfirmModalVisible(true);
+    }, 500);
+  };
+
+  const alertResidents = async () => {
+    setIsConfirmModalVisible(false);
+    try {
+      const res = await api.post("/alertresidents", {
+        alertResidentsMessage,
+      });
+      console.log("You have sent an alert successfully.");
+    } catch (error) {
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
+        setAlertVisible(false);
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
+        setAlertVisible(false);
+      }
+    }
+  };
 
   return (
     <SafeAreaView
@@ -66,6 +105,38 @@ const RiverSnapshots = () => {
             },
           ]}
         >
+          <Dialog.Container
+            visible={alertVisible}
+            // onDismiss={() => setIsConfirmModalVisible(true)}
+            contentStyle={MyStyles.statusDialogWrapper}
+          >
+            <Dialog.Title style={MyStyles.cancelReserve}>
+              Alert Residents
+            </Dialog.Title>
+
+            <Dialog.Input
+              placeholder="Enter your message here..."
+              onChangeText={(text) => setAlertResidentsMessage(text)}
+              style={{
+                fontFamily: "QuicksandMedium",
+                fontSize: 16,
+                padding: 10,
+                color: "#04384E",
+              }}
+              placeholderTextColor="#808080"
+            />
+
+            <Dialog.Button
+              label="Cancel"
+              onPress={() => setAlertVisible(false)}
+              color="#666"
+            />
+            <Dialog.Button
+              label="Submit"
+              onPress={handleSubmit}
+              color="#BC0F0F"
+            />
+          </Dialog.Container>
           <View
             style={{
               flexDirection: "row",
@@ -215,6 +286,14 @@ const RiverSnapshots = () => {
                   >
                     The next update will be in 10 minutes.
                   </Text>
+                  {user.role !== "Resident" && (
+                    <TouchableOpacity
+                      onPress={() => setAlertVisible(true)}
+                      style={MyStyles.button}
+                    >
+                      <Text style={MyStyles.buttonText}>Alert Residents</Text>
+                    </TouchableOpacity>
+                  )}
                 </>
               )}
             </View>
@@ -254,6 +333,19 @@ const RiverSnapshots = () => {
             </View>
           )}
         </ScrollView>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          onClose={() => setIsAlertModalVisible(false)}
+        />
+        <AlertModal
+          isVisible={isConfirmModalVisible}
+          isConfirmationModal={true}
+          title="Alert Residents?"
+          message="Are you sure you want to alert residents?"
+          onClose={() => setIsConfirmModalVisible(false)}
+          onConfirm={alertResidents}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
