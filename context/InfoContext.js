@@ -30,6 +30,7 @@ export const InfoProvider = ({ children }) => {
   const [pendingReports, setPendingReports] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifications, setUnreadNotifications] = useState(null);
+  const [respondedSOS, setRespondedSOS] = useState([]);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -231,6 +232,15 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const fetchRespondedSOS = async () => {
+    try {
+      const response = await api.get("/getrespondedsos");
+      setRespondedSOS(response.data);
+    } catch (error) {
+      console.error("❌ Failed to fetch responded sos:", error);
+    }
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -275,6 +285,8 @@ export const InfoProvider = ({ children }) => {
         pendingReports,
         notifications,
         unreadNotifications,
+        respondedSOS,
+        fetchRespondedSOS,
         fetchNotifications,
         setNotifications,
         setPendingReports,
