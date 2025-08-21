@@ -73,6 +73,31 @@ const AlertModal = ({
               >
                 {message}
               </Text>
+              <TouchableOpacity
+                onPress={onConfirm}
+                style={{
+                  borderWidth: 3,
+                  borderColor: "#2cda94",
+                  backgroundColor: "#2cda94",
+                  padding: 10,
+                  borderRadius: 10,
+                  marginHorizontal: 10,
+                  width: RFPercentage(15),
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: RFPercentage(1.8),
+                    fontFamily: "QuicksandBold",
+                    textAlign: "center",
+                  }}
+                >
+                  OK
+                </Text>
+              </TouchableOpacity>
             </>
           ) : isResidentConfirmationModal ? (
             // Resident Confirmation Modal
@@ -149,7 +174,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: RFPercentage(1),
+                    width: RFPercentage(15),
                     justifyContent: "center",
                     alignItems: "center",
                   }}

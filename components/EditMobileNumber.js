@@ -132,7 +132,6 @@ const EditMobileNumber = () => {
 
   const mobileInputChange = (input) => {
     input = input.replace(/(?!^)\+/g, "");
-
     input = input.replace(/[^\d+]/g, "");
 
     if (!input.startsWith("+63")) {

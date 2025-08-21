@@ -53,7 +53,7 @@ const SuccessfulPage = () => {
               </Text>
               <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
                 Your document request has been received by the barangay. You
-                will be notified once the request is ready for pick up. For the
+                will be notified once the request is ready for pickup. For the
                 meantime, you may view the status of your request.
               </Text>
             </View>

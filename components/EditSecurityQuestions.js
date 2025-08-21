@@ -379,6 +379,7 @@ const EditSecurityQuestions = () => {
             message={alertMessage}
             isSuccess={isSuccess}
             onClose={handleCloseAlertModal}
+            onConfirm={handleCloseAlertModal}
           />
 
           <AlertModal

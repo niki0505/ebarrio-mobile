@@ -259,6 +259,7 @@ const ChangeUsername = () => {
           message={alertMessage}
           isSuccess={isSuccess}
           onClose={handleCloseAlertModal}
+          onConfirm={handleCloseAlertModal}
         />
 
         <AlertModal
