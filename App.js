@@ -87,6 +87,9 @@ import SuccessfulPage2 from "./components/SuccessfulPage2";
 import LocationSetUp from "./components/LocationSetUp";
 import SOSReportDetails from "./components/SOSReportDetails";
 import { DraftProvider } from "./context/DraftContext";
+import PostIncident from "./components/PostIncident";
+import FalseAlarm from "./components/FalseAlarm";
+import SOSRespondedDetails from "./components/SOSRespondedDetails";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -1173,6 +1176,42 @@ export default function App() {
                           element={
                             <InfoProvider>
                               <RespondedSOS />
+                            </InfoProvider>
+                          }
+                        />
+                      )}
+                    />
+                    <Stack.Screen
+                      name="PostIncident"
+                      children={() => (
+                        <PrivateRoute
+                          element={
+                            <InfoProvider>
+                              <PostIncident />
+                            </InfoProvider>
+                          }
+                        />
+                      )}
+                    />
+                    <Stack.Screen
+                      name="FalseAlarm"
+                      children={() => (
+                        <PrivateRoute
+                          element={
+                            <InfoProvider>
+                              <FalseAlarm />
+                            </InfoProvider>
+                          }
+                        />
+                      )}
+                    />
+                    <Stack.Screen
+                      name="SOSRespondedDetails"
+                      children={() => (
+                        <PrivateRoute
+                          element={
+                            <InfoProvider>
+                              <SOSRespondedDetails />
                             </InfoProvider>
                           }
                         />

@@ -159,6 +159,12 @@ const SOSStatusPage = () => {
                 </View>
               </>
             ))}
+          <TouchableOpacity
+            // onPress={() => setIsConfirmModalVisible(true)}
+            style={MyStyles.button}
+          >
+            <Text>Cancel</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

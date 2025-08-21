@@ -205,7 +205,7 @@ const Signup = () => {
           mobilenumber: formattedNumber,
         });
         try {
-          sendOTP(username, { mobilenumber: formattedNumber });
+          sendOTP(username, formattedNumber);
           navigation.navigate("OTP", {
             username: username,
             password: password,
