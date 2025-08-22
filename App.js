@@ -123,17 +123,27 @@ const CustomTabBar = ({
           preserveAspectRatio="none"
         >
           <Path
-            d="
-              M0,0 
-              H38
-              C42,4 38,20 47,36
-              C49,40 51,40 53,36
-              C62,20 58,4 62,0
-              H100
-              V100 
-              H0
-              Z
-            "
+            d={
+              user.role === "Resident"
+                ? `
+          M0,0 
+          H38
+          C42,4 38,20 47,36
+          C49,40 51,40 53,36
+          C62,20 58,4 62,0
+          H100
+          V100 
+          H0
+          Z
+        `
+                : `
+          M0,0 
+          H100 
+          V100 
+          H0 
+          Z
+        `
+            }
             fill="#fff"
           />
         </Svg>
@@ -145,6 +155,7 @@ const CustomTabBar = ({
           MyStyles.bottomTabIcons,
           {
             height: 60,
+            justifyContent: "space-around",
           },
         ]}
       >
@@ -213,6 +224,7 @@ const CustomTabBar = ({
 
 const BottomTabs = () => {
   const { unreadNotifications } = useContext(InfoContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <>
@@ -228,12 +240,14 @@ const BottomTabs = () => {
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Announcements" component={Announcement} />
 
-        <Tab.Screen
-          name="CenterButtonPlaceholder"
-          options={{ tabBarButton: () => null }}
-        >
-          {() => null}
-        </Tab.Screen>
+        {user.role === "Resident" && (
+          <Tab.Screen
+            name="CenterButtonPlaceholder"
+            options={{ tabBarButton: () => null }}
+          >
+            {() => null}
+          </Tab.Screen>
+        )}
 
         <Tab.Screen name="Notification" component={Notification} />
         <Tab.Screen name="Profile" component={UserProfile} />
@@ -455,119 +469,6 @@ const DrawerContent = ({ navigation }) => {
         onClose={() => setIsConfirmModalVisible(false)}
         onConfirm={handleLogout}
       />
-
-      {/* <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={handleCloseModal}
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              padding: 20,
-              borderRadius: 10,
-              width: 300,
-              alignItems: "center",
-            }}
-          >
-            <Ionicons name="help-circle-outline" size={70} color="#BC0F0F" />
-            <Text
-              style={{
-                fontSize: 18,
-                fontFamily: "REMBold",
-                marginVertical: 10,
-                color: "#808080",
-              }}
-            >
-              Log Out?
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                color: "#808080",
-                marginBottom: 20,
-                fontFamily: "QuicksandMedium",
-                textAlign: "center",
-              }}
-            >
-              Are you sure you want to log out?
-            </Text>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-                gap: 10,
-              }}
-            >
-              <TouchableOpacity
-                onPress={handleCloseModal}
-                style={{
-                  borderWidth: 3,
-                  borderColor: "#BC0F0F",
-                  paddingVertical: 10,
-                  paddingHorizontal: 25,
-                  borderRadius: 10,
-                  marginHorizontal: 10,
-                  width: 100,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#BC0F0F",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
-                    textAlign: "center",
-                  }}
-                >
-                  NO
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={handleLogout}
-                style={{
-                  borderWidth: 3,
-                  borderColor: "#BC0F0F",
-                  backgroundColor: "#BC0F0F",
-                  paddingVertical: 10,
-                  paddingHorizontal: 25,
-                  borderRadius: 10,
-                  marginHorizontal: 10,
-                  width: 100,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#BC0F0F",
-                    fontSize: 16,
-                    fontFamily: "QuicksandBold",
-                    textAlign: "center",
-                    color: "#fff",
-                  }}
-                >
-                  YES
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
     </View>
   );
 };
@@ -580,6 +481,16 @@ const BottomTabsWithDrawer = () => {
   const hasArrivedResponder = report?.responder?.some(
     (r) => r.status === "Arrived"
   );
+
+  const [dots, setDots] = useState("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots((prev) => (prev.length < 3 ? prev + "." : ""));
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <View style={{ flex: 1 }}>
       {report && (
@@ -593,8 +504,10 @@ const BottomTabsWithDrawer = () => {
           }}
           onPress={() => navigation.navigate("SOSStatusPage")}
         >
-          <Text style={{ color: "white", fontWeight: "bold" }}>
-            {hasArrivedResponder ? "Help has arrived" : "Help is on the way"}
+          <Text style={MyStyles.helpBannerText}>
+            {hasArrivedResponder
+              ? "Help has arrived"
+              : `Help is on the way ${dots}`}
           </Text>
         </TouchableOpacity>
       )}

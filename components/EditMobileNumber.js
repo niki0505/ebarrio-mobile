@@ -18,6 +18,8 @@ import { OtpInput } from "react-native-otp-entry";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import api from "../api";
 import { OtpContext } from "../context/OtpContext";
+import AlertModal from "./AlertModal";
+import { AntDesign } from "@expo/vector-icons";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
@@ -40,9 +42,10 @@ const EditMobileNumber = () => {
   const insets = useSafeAreaInsets();
   const [securePass, setsecurePass] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const mobnum =
     userDetails.resID?.mobilenumber || userDetails.empID?.resID?.mobilenumber;
@@ -55,14 +58,19 @@ const EditMobileNumber = () => {
     fetchUserDetails();
   }, []);
   99;
+
   const handleConfirm = () => {
     let hasError = false;
     let formattedNumber = mobilenumber;
     formattedNumber = "0" + mobilenumber.slice(3);
 
     if (formattedNumber === mobnum) {
-      alert("The new mobile number must be different from the current one.");
-      hasError = true;
+      setAlertMessage(
+        "The new mobile number must be different from the current one."
+      );
+
+      setIsAlertModalVisible(true);
+      return;
     }
 
     if (formattedNumber.length !== 11) {
@@ -83,14 +91,15 @@ const EditMobileNumber = () => {
       return;
     }
 
-    setIsModalVisible(true);
+    setIsConfirmModalVisible(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
   };
 
   const checkPassword = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -101,10 +110,12 @@ const EditMobileNumber = () => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     } finally {
       setLoading(false);
@@ -122,10 +133,12 @@ const EditMobileNumber = () => {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
     }
   };
@@ -189,7 +202,8 @@ const EditMobileNumber = () => {
       await api.get(`/checkotp/${userDetails.username}`);
       if (resendCount === 3) {
         setIsResendDisabled(true);
-        alert("You can only resend OTP 3 times.");
+        setAlertMessage("You can only resend OTP 3 times.");
+        setIsAlertModalVisible(true);
         setIsVerified(false);
         await api.get(`/limitotp/${userDetails.username}`);
         return;
@@ -201,7 +215,8 @@ const EditMobileNumber = () => {
       sendOTP(userDetails.username, mobilenumber);
     } catch (error) {
       if (error.response && error.response.status === 429) {
-        alert("OTP use is currently disabled. Try again later.");
+        setAlertMessage("OTP use is currently disabled. Try again later.");
+        setIsAlertModalVisible(true);
       } else {
         console.error("Error checking OTP:", error);
       }
@@ -218,28 +233,39 @@ const EditMobileNumber = () => {
         console.log("New OTP is generated");
       } catch (error) {
         console.error("Error sending OTP:", error);
-        alert("Something went wrong while sending OTP");
+        setAlertMessage("Something went wrong while sending OTP");
+        setIsAlertModalVisible(true);
       }
     } else {
       await api.get(`/limitotp/${username}`);
-      alert("You can only resend OTP 3 times.");
+      setAlertMessage("You can only resend OTP 3 times.");
+      setIsAlertModalVisible(true);
     }
   };
 
   const handleVerify = async (OTP) => {
     try {
       const result = await verifyOTP(userDetails.username, OTP);
-      alert(result.message);
       handleMobileNumberChange();
+      setIsSuccess(true);
+      setAlertMessage("Your mobile number has been updated");
+      setIsAlertModalVisible(true);
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
         console.log("❌ Error status:", response.status);
-        alert(response.data.message || "Something went wrong.");
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
       } else {
         console.log("❌ Network or unknown error:", error.message);
-        alert("An unexpected error occurred.");
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
       }
+      setLoading(false);
+      setIsConfirmModalVisible(false);
+      setIsAlertModalVisible(true);
+      setAlertMessage(message);
+      setIsSuccess(false);
     }
   };
 
@@ -336,24 +362,15 @@ const EditMobileNumber = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("AccountSettings")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("AccountSettings")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Change Mobile Number
-            </Text>
-          </View>
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Change Mobile Number
+          </Text>
 
           <View style={MyStyles.servicesContentWrapper}>
             <View>
@@ -417,120 +434,14 @@ const EditMobileNumber = () => {
             </Text>
           </TouchableOpacity>
 
-          {/* Confirmation Modal */}
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={isModalVisible}
-            onRequestClose={handleCloseModal}
-          >
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "white",
-                  padding: 20,
-                  borderRadius: 10,
-                  width: 300,
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons
-                  name="help-circle-outline"
-                  size={70}
-                  color="#BC0F0F"
-                />
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontFamily: "REMBold",
-                    marginVertical: 10,
-                    color: "#808080",
-                  }}
-                >
-                  Are you sure?
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: "#808080",
-                    marginBottom: 20,
-                    fontFamily: "QuicksandMedium",
-                    textAlign: "center",
-                  }}
-                >
-                  Do you really want to change your mobile number?
-                </Text>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    gap: 10,
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={handleCloseModal}
-                    style={{
-                      borderWidth: 3,
-                      borderColor: "#BC0F0F",
-                      padding: 10,
-                      borderRadius: 10,
-                      marginHorizontal: 10,
-                      width: 100,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#BC0F0F",
-                        fontSize: 16,
-                        fontFamily: "QuicksandBold",
-                        textAlign: "center",
-                      }}
-                    >
-                      CANCEL
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={handleVerify}
-                    style={{
-                      borderWidth: 3,
-                      borderColor: "#BC0F0F",
-                      backgroundColor: "#BC0F0F",
-                      padding: 10,
-                      borderRadius: 10,
-                      marginHorizontal: 10,
-                      width: 100,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 16,
-                        fontFamily: "QuicksandBold",
-                        textAlign: "center",
-                      }}
-                    >
-                      CONFIRM
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </Modal>
+          <AlertModal
+            isVisible={isConfirmModalVisible}
+            isConfirmationModal={true}
+            title="Change Mobile Number?"
+            message="Are you sure you want to change your mobile number? This action cannot be undone."
+            onClose={() => setIsConfirmModalVisible(false)}
+            onConfirm={checkPassword}
+          />
         </ScrollView>
       ) : (
         <>
@@ -653,6 +564,14 @@ const EditMobileNumber = () => {
           </View>
         </>
       )}
+
+      <AlertModal
+        isVisible={isAlertModalVisible}
+        message={alertMessage}
+        isSuccess={isSuccess}
+        onClose={handleCloseAlertModal}
+        onConfirm={handleCloseAlertModal}
+      />
     </SafeAreaView>
   );
 };

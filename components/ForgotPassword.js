@@ -78,6 +78,12 @@ const ForgotPassword = () => {
   const handleSubmit = async () => {
     if (loading) return;
 
+    if (!username || username.trim() === "") {
+      setAlertMessage("Kindly enter your username.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await api.get(`/checkuser/${username}`);
@@ -102,6 +108,29 @@ const ForgotPassword = () => {
 
   const handleQuestionVerify = async () => {
     if (loading) return;
+
+    if (
+      !securityquestion.question ||
+      securityquestion.question.trim() === "Select"
+    ) {
+      if (!securityquestion.answer || securityquestion.answer.trim() === "") {
+        setAlertMessage(
+          "Both fields need to be filled before proceeding to reset your password."
+        );
+        setIsAlertModalVisible(true);
+        return;
+      }
+
+      setAlertMessage("Kindly choose a security question to continue.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
+    if (!securityquestion.answer || securityquestion.answer.trim() === "") {
+      setAlertMessage("Kindly enter your answer.");
+      setIsAlertModalVisible(true);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -221,7 +250,7 @@ const ForgotPassword = () => {
     try {
       await api.post(`/newpassword/${username}`, { newPassword });
       setIsSuccess(true);
-      setAlertMessage("You have successfully reset your password!");
+      setAlertMessage("Your password is now updated.");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
@@ -363,11 +392,11 @@ const ForgotPassword = () => {
     setsecureAnswer(!secureAnswer);
   };
 
-  const handleCloseAlertModal = () => {
+  const handleCloseSuccessModal = () => {
     setIsAlertModalVisible(false);
+    navigation.navigate("Login");
     setNewPassword("");
     setReNewPassword("");
-    navigation.navigate("Login");
   };
 
   return (
@@ -559,7 +588,8 @@ const ForgotPassword = () => {
                   isVisible={isAlertModalVisible}
                   message={alertMessage}
                   isSuccess={isSuccess}
-                  onClose={handleCloseAlertModal}
+                  onClose={() => setIsAlertModalVisible(false)}
+                  onConfirm={handleCloseSuccessModal}
                 />
                 <AlertModal
                   isVisible={isConfirmModalVisible}
@@ -638,7 +668,7 @@ const ForgotPassword = () => {
                       <Text
                         onPress={handleResend}
                         style={{
-                          color: "#006EFF",
+                          color: "red",
                           fontSize: 16,
                           fontFamily: "QuicksandBold",
                         }}

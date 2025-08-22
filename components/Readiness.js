@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 
 //ICONS & IMAGES
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const Readiness = () => {
   const insets = useSafeAreaInsets();
@@ -72,30 +72,23 @@ const Readiness = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
+          <AntDesign
+            onPress={() => {
+              if (fromOffline) {
+                navigation.navigate("Offline");
+              } else {
+                navigation.navigate("BottomTabs");
+              }
             }}
-          >
-            <MaterialIcons
-              onPress={() => {
-                if (fromOffline) {
-                  navigation.navigate("Offline");
-                } else {
-                  navigation.navigate("BottomTabs");
-                }
-              }}
-              name="arrow-back-ios"
-              style={[MyStyles.backArrow, { color: "#fff" }]}
-            />
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
+          />
 
-            <Text
-              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
-            >
-              Readiness
-            </Text>
-          </View>
+          <Text
+            style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+          >
+            Readiness
+          </Text>
 
           <View style={MyStyles.readinessColWrapper}>
             {readinessData.map((item, index) => (

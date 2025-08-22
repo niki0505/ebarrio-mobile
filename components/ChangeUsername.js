@@ -16,6 +16,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const ChangeUsername = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
@@ -96,7 +97,7 @@ const ChangeUsername = () => {
       try {
         await api.put("/changeusername", { username, password });
         setIsSuccess(true);
-        setAlertMessage("Username updated successfully!");
+        setAlertMessage("Your username has been updated");
         fetchUserDetails();
       } catch (error) {
         const response = error.response;
@@ -169,24 +170,15 @@ const ChangeUsername = () => {
           },
         ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons
-            onPress={() => navigation.navigate("AccountSettings")}
-            name="arrow-back-ios"
-            color="#04384E"
-            size={35}
-            style={MyStyles.backArrow}
-          />
+        <AntDesign
+          onPress={() => navigation.navigate("AccountSettings")}
+          name="arrowleft"
+          style={MyStyles.backArrow}
+        />
 
-          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-            Change Username
-          </Text>
-        </View>
+        <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+          Change Username
+        </Text>
 
         <View style={MyStyles.servicesContentWrapper}>
           <View>
@@ -259,6 +251,7 @@ const ChangeUsername = () => {
           message={alertMessage}
           isSuccess={isSuccess}
           onClose={handleCloseAlertModal}
+          onConfirm={handleCloseAlertModal}
         />
 
         <AlertModal

@@ -53,27 +53,19 @@ const AccountSettings = () => {
         backgroundColor: "#DCE5EB",
       }}
     >
-      <ScrollView contentContainerStyle={[MyStyles.scrollContainer]}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          {/* Back Arrow */}
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            color="#04384E"
-            size={35}
-            style={MyStyles.backArrow}
-          />
+      <ScrollView
+        contentContainerStyle={[MyStyles.scrollContainer, { gap: 10 }]}
+      >
+        <AntDesign
+          onPress={() => navigation.navigate("BottomTabs")}
+          name="arrowleft"
+          style={MyStyles.backArrow}
+        />
 
-          {/* First Calendar Text */}
-          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-            Account Settings
-          </Text>
-        </View>
+        {/* First Calendar Text */}
+        <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+          Account Settings
+        </Text>
 
         {/* <View
           style={{

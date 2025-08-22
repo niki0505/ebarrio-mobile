@@ -397,6 +397,15 @@ const Home = () => {
     .fill(null)
     .concat(Array.from({ length: daysInMonth }, (_, i) => i + 1));
 
+  const todayEvents = events.filter((event) => {
+    const eventDate = new Date(event.start);
+    return (
+      eventDate.getDate() === currentDate.getDate() &&
+      eventDate.getMonth() === currentDate.getMonth() &&
+      eventDate.getFullYear() === currentDate.getFullYear()
+    );
+  });
+
   return (
     // To allow detection of taps anywhere outside the dropdown
     <TouchableWithoutFeedback
@@ -444,16 +453,14 @@ const Home = () => {
                   </View>
                 </View>
 
-
                 {user.role === "Resident" && (
-<Ionicons
-                  name="chatbubble-ellipses"
-                  color="#04384E"
-                  style={MyStyles.burgerChatIcon}
-                  onPress={() => navigation.navigate("Chat")}
-                ></Ionicons>
+                  <Ionicons
+                    name="chatbubble-ellipses"
+                    color="#04384E"
+                    style={MyStyles.burgerChatIcon}
+                    onPress={() => navigation.navigate("Chat")}
+                  ></Ionicons>
                 )}
-
               </View>
 
               <ScrollView
@@ -466,7 +473,7 @@ const Home = () => {
                   },
                 ]}
               >
-                <View style={{ width: width - 40, paddingHorizontal: 10 }}>
+                <View style={{ width: width - 50, paddingHorizontal: 10 }}>
                   <TouchableOpacity
                     style={[MyStyles.calendarContainer, MyStyles.shadow]}
                     onPress={viewCalendar}
@@ -498,75 +505,69 @@ const Home = () => {
                       </View>
 
                       <View>
-                        {events.length > 0 ? (
+                        {todayEvents.length > 0 ? (
                           <>
-                            {events
-                              .filter(
-                                (event) => new Date(event.end) >= new Date()
-                              )
-                              .slice(0, 2)
-                              .map((event, index) => {
-                                const startDate = new Date(event.start);
-                                const endDate = new Date(event.end);
+                            {todayEvents.slice(0, 2).map((event, index) => {
+                              const startDate = new Date(event.start);
+                              const endDate = new Date(event.end);
 
-                                const dateString = startDate.toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                  }
-                                );
+                              const dateString = startDate.toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "long",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }
+                              );
 
-                                const timeString = `${startDate.toLocaleTimeString(
-                                  "en-US",
-                                  {
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                    timeZone: "Asia/Manila",
-                                  }
-                                )} – ${endDate.toLocaleTimeString("en-US", {
+                              const timeString = `${startDate.toLocaleTimeString(
+                                "en-US",
+                                {
                                   hour: "numeric",
                                   minute: "2-digit",
                                   hour12: true,
                                   timeZone: "Asia/Manila",
-                                })}`;
+                                }
+                              )} – ${endDate.toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true,
+                                timeZone: "Asia/Manila",
+                              })}`;
 
-                                return (
-                                  <View key={index} style={{ marginBottom: 8 }}>
-                                    <View style={MyStyles.dotAndTitle}>
-                                      <View
-                                        style={[
-                                          MyStyles.blueDot,
-                                          {
-                                            backgroundColor:
-                                              event.backgroundColor ||
-                                              "#0E94D3",
-                                          },
-                                        ]}
-                                      />
-                                      <Text
-                                        style={MyStyles.eventTitle}
-                                        numberOfLines={1}
-                                        ellipsizeMode="tail"
-                                      >
-                                        {event.title}
-                                      </Text>
-                                    </View>
-                                    <Text style={MyStyles.eventDate}>
-                                      {dateString}
-                                    </Text>
-                                    <Text style={MyStyles.eventTime}>
-                                      {timeString}
+                              return (
+                                <View key={index} style={{ marginBottom: 8 }}>
+                                  <View style={MyStyles.dotAndTitle}>
+                                    <View
+                                      style={[
+                                        MyStyles.blueDot,
+                                        {
+                                          backgroundColor:
+                                            event.backgroundColor || "#0E94D3",
+                                        },
+                                      ]}
+                                    />
+                                    <Text
+                                      style={MyStyles.eventTitle}
+                                      numberOfLines={1}
+                                      ellipsizeMode="tail"
+                                    >
+                                      {event.title}
                                     </Text>
                                   </View>
-                                );
-                              })}
+                                  <Text style={MyStyles.eventDate} numberOfLines={1}
+                                      ellipsizeMode="tail">
+                                    {dateString}
+                                  </Text>
+                                  <Text style={MyStyles.eventTime} numberOfLines={1}
+                                      ellipsizeMode="tail">
+                                    {timeString}
+                                  </Text>
+                                </View>
+                              );
+                            })}
 
-                            {events.filter(
-                              (event) => new Date(event.end) >= new Date()
-                            ).length > 2 && (
+                            {todayEvents.length > 2 && (
                               <Text style={MyStyles.noEvents}>
                                 MORE EVENTS...
                               </Text>
@@ -574,7 +575,7 @@ const Home = () => {
                           </>
                         ) : (
                           <Text style={MyStyles.noEvents}>
-                            NO EVENTS AT THE MOMENT
+                            NO EVENTS FOR TODAY
                           </Text>
                         )}
                       </View>
@@ -628,7 +629,7 @@ const Home = () => {
                 {loadingWeather ? (
                   <View
                     style={{
-                      width: width - 40,
+                      width: width - 50,
                       paddingHorizontal: 10,
                     }}
                   >
@@ -639,7 +640,7 @@ const Home = () => {
                 ) : (
                   <View
                     style={{
-                      width: width - 40,
+                      width: width - 50,
                       paddingHorizontal: 10,
                     }}
                   >
@@ -786,7 +787,7 @@ const Home = () => {
                     <ActivityIndicator size="large" color="#04384E" />
                   </View>
                 ) : importantAnnouncements.length === 0 ? (
-                  <View style={[MyStyles.carouselCard, { width: width - 40 }]}>
+                  <View style={[MyStyles.carouselCard, { width: width - 50 }]}>
                     <Text style={[MyStyles.noEvents, { textAlign: "justify" }]}>
                       NO IMPORTANT ANNOUNCEMENTS YET. GO TO ANNOUNCEMENTS PAGE
                       TO VIEW ALL ANNOUNCEMENTS.
@@ -803,15 +804,15 @@ const Home = () => {
                     showsHorizontalScrollIndicator={false}
                     nestedScrollEnabled={true}
                     getItemLayout={(data, index) => ({
-                      length: width - 40,
-                      offset: (width - 40) * index,
+                      length: width - 50,
+                      offset: (width - 50) * index,
                       index,
                     })}
                     renderItem={({ item }) => (
                       <View
                         style={[
                           {
-                            width: width - 40,
+                            width: width - 50,
                             padding: 10,
                           },
                         ]}
@@ -862,8 +863,6 @@ const Home = () => {
                             )}
 
                             {renderContent(item)}
-
-                            
                           </View>
                         </View>
                       </View>

@@ -199,7 +199,7 @@ const OTP = ({}) => {
               <Text
                 onPress={handleResend}
                 style={{
-                  color: "#006EFF",
+                  color: "red",
                   fontSize: RFPercentage(1.6),
                   fontFamily: "QuicksandBold",
                 }}
@@ -213,7 +213,7 @@ const OTP = ({}) => {
         <AlertModal
           isVisible={isAlertModalVisible}
           message={alertMessage}
-          title="Limit reached"
+          title="Error"
           isSuccess={isSuccess}
           onClose={() => setIsAlertModalVisible(false)}
         />

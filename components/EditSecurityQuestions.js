@@ -23,6 +23,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const EditSecurityQuestions = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
@@ -157,7 +158,9 @@ const EditSecurityQuestions = () => {
     const hasChanges = modifiedQuestions.some((q) => q !== null);
 
     if (!hasChanges) {
-      setAlertMessage("No changes detected in your security questions.");
+      setAlertMessage(
+        "No changes have been made. Please input answer to change security questions"
+      );
       setIsSuccess(false);
       setIsAlertModalVisible(true);
       setLoading(false);
@@ -171,9 +174,7 @@ const EditSecurityQuestions = () => {
         password,
       });
       setIsSuccess(true);
-      setAlertMessage(
-        "Your security questions have been updated successfully!"
-      );
+      setAlertMessage("Your security question has been updated.");
       fetchUserDetails();
 
       setSecurityQuestions((prev) =>
@@ -228,24 +229,15 @@ const EditSecurityQuestions = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("AccountSettings")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("AccountSettings")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Change Security Questions
-            </Text>
-          </View>
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Change Security Questions
+          </Text>
 
           <View style={MyStyles.servicesContentWrapper}>
             <View>
@@ -379,6 +371,7 @@ const EditSecurityQuestions = () => {
             message={alertMessage}
             isSuccess={isSuccess}
             onClose={handleCloseAlertModal}
+            onConfirm={handleCloseAlertModal}
           />
 
           <AlertModal

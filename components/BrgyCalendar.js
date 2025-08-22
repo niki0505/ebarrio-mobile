@@ -12,6 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import { useContext, useState } from "react";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { AntDesign } from "@expo/vector-icons";
 
 const BrgyCalendar = () => {
   const { events } = useContext(InfoContext);
@@ -76,27 +77,18 @@ const BrgyCalendar = () => {
       <ScrollView
         contentContainerStyle={[
           MyStyles.scrollContainer,
-          { backgroundColor: "white" },
+          { backgroundColor: "white", gap: 10 },
         ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            color="#04384E"
-            size={35}
-            style={MyStyles.backArrow}
-          />
+        <AntDesign
+          onPress={() => navigation.navigate("BottomTabs")}
+          name="arrowleft"
+          style={MyStyles.backArrow}
+        />
 
-          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-            Calendar
-          </Text>
-        </View>
+        <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+          Calendar
+        </Text>
 
         {/* Month Header */}
         <View

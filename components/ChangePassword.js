@@ -16,6 +16,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const ChangePassword = () => {
   const { logout } = useContext(AuthContext);
@@ -137,7 +138,7 @@ const ChangePassword = () => {
         password,
       });
       setIsSuccess(true);
-      setAlertMessage("Password updated successfully! Please log in again.");
+      setAlertMessage("Your username has been updated. Please log in again.");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
@@ -184,24 +185,15 @@ const ChangePassword = () => {
           },
         ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons
-            onPress={() => navigation.navigate("AccountSettings")}
-            name="arrow-back-ios"
-            color="#04384E"
-            size={35}
-            style={MyStyles.backArrow}
-          />
+        <AntDesign
+          onPress={() => navigation.navigate("AccountSettings")}
+          name="arrowleft"
+          style={MyStyles.backArrow}
+        />
 
-          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-            Change Password
-          </Text>
-        </View>
+        <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+          Change Password
+        </Text>
 
         <View style={MyStyles.servicesContentWrapper}>
           <View>
@@ -317,6 +309,7 @@ const ChangePassword = () => {
           message={alertMessage}
           isSuccess={isSuccess}
           onClose={handleCloseAlertModal}
+          onConfirm={handleCloseAlertModal}
         />
 
         <AlertModal

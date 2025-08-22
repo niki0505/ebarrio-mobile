@@ -17,7 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import LoadingScreen from "./LoadingScreen";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import ClearDay from "../assets/weather-svg/clear-day";
 import ClearNight from "../assets/weather-svg/clear-night";
 import PartlyCloudyDay from "../assets/weather-svg/partly-cloudy-day";
@@ -263,13 +263,10 @@ const Weather = () => {
         >
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {/* Back Arrow */}
-              <MaterialIcons
+              <AntDesign
                 onPress={() => navigation.navigate("BottomTabs")}
-                name="arrow-back-ios"
-                color="#04384E"
-                size={35}
-                style={[MyStyles.backArrow, { color: "#fff" }]}
+                name="arrowleft"
+                style={[MyStyles.backArrow, { color: "white" }]}
               />
             </View>
 

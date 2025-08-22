@@ -41,7 +41,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!username && !password) {
-      setAlertMessage("Username and password are required!");
+      setAlertMessage("Both fields need to be filled before signing in.");
       setIsAlertModalVisible(true);
       return;
     } else if (!username) {
@@ -180,8 +180,7 @@ const Login = () => {
               >
                 <Ionicons
                   name={secureLoginPass ? "eye-off" : "eye"}
-                  size={20}
-                  color="#808080"
+                  style={MyStyles.eyeToggleSize}
                 />
               </TouchableOpacity>
             </View>

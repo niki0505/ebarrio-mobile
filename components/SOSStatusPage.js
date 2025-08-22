@@ -18,7 +18,7 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import Fire from "../assets/SOS/firefire.png";
 import Flood from "../assets/SOS/flood.png";
 import Earthquake from "../assets/SOS/earthquake.png";
@@ -61,11 +61,10 @@ const SOSStatusPage = () => {
             { backgroundColor: "#BC0F0F" },
           ]}
         >
-          <MaterialIcons
+          <AntDesign
             onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#fff"
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
           />
 
           {report &&
@@ -118,7 +117,7 @@ const SOSStatusPage = () => {
                     MyStyles.header,
                     {
                       marginTop: 20,
-                      textAlign: "start",
+                      textAlign: "center",
                       color: "#fff",
                     },
                   ]}

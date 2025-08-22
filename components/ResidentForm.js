@@ -58,7 +58,7 @@ const ResidentForm = () => {
 
   const { residentForm, setResidentForm, householdForm, setHouseholdForm } =
     useContext(DraftContext);
-  const residentInitialForm = {
+  const residentInitialForm = useState({
     id: "",
     signature: "",
     firstname: "",
@@ -118,7 +118,7 @@ const ResidentForm = () => {
     haveFPmethod: "",
     fpmethod: "",
     fpstatus: "",
-  };
+  });
 
   const householdInitialForm = {
     members: [],
@@ -410,11 +410,11 @@ const ResidentForm = () => {
         quality: 1,
       });
 
-      if (!result.canceled && result.assets?.length > 0) {
-        setResidentForm((prev) => ({
-          ...prev,
-          id: result.assets[0].uri,
-        }));
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        setResidentForm((prev) => ({ ...prev, id: uri }));
+
+        setErrors((prev) => ({ ...prev, id: null }));
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -442,10 +442,10 @@ const ResidentForm = () => {
       });
 
       if (!result.canceled) {
-        setResidentForm((prev) => ({
-          ...prev,
-          id: result.assets[0].uri,
-        }));
+        const uri = result.assets[0].uri;
+        setResidentForm((prev) => ({ ...prev, id: uri }));
+
+        setErrors((prev) => ({ ...prev, id: null }));
       }
     } catch (error) {
       console.error("Camera error:", error);
@@ -700,7 +700,76 @@ const ResidentForm = () => {
     return downloadURL;
   }
 
+  const [errors, setErrors] = useState({});
+
+  const mobileInputChange = (field, input) => {
+    input = input.replace(/(?!^)\+/g, "");
+    input = input.replace(/[^\d+]/g, "");
+
+    if (!input.startsWith("+63")) {
+      input = "+63" + input.replace(/^\+?0*/, "");
+    }
+
+    if (input.length > 13) {
+      input = input.slice(0, 13);
+    }
+
+    if (input.length >= 4 && input[3] === "0") {
+      input = input.slice(0, 3) + input.slice(4);
+    }
+
+    setResidentForm((prev) => ({
+      ...prev,
+      [field]: input,
+    }));
+
+    if (input.length !== 13) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: "Invalid mobile number format!",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, [field]: null }));
+    }
+  };
+
   const handleConfirm = () => {
+    let newErrors = {};
+
+    if (!residentForm.id) {
+      newErrors.id = "This field is required!";
+    }
+    if (!residentForm.signature) {
+      newErrors.signature = "This field is required!";
+    }
+    if (!residentForm.firstname)
+      newErrors.firstname = "This field is required!";
+    if (!residentForm.lastname) newErrors.lastname = "This field is required!";
+    if (!residentForm.sex) newErrors.sex = "This field is required!";
+    if (!residentForm.birthdate)
+      newErrors.birthdate = "This field is required!";
+    if (!residentForm.civilstatus)
+      newErrors.civilstatus = "This field is required!";
+    if (!residentForm.nationality)
+      newErrors.nationality = "This field is required!";
+    if (!residentForm.mobilenumber) {
+      newErrors.mobilenumber = "This field is required!";
+    }
+    if (!residentForm.emergencyname)
+      newErrors.emergencyname = "This field is required!";
+    if (!residentForm.emergencymobilenumber)
+      newErrors.emergencymobilenumber = "This field is required!";
+    if (!residentForm.emergencyaddress)
+      newErrors.emergencyaddress = "This field is required!";
+    if (!residentForm.employmentstatus)
+      newErrors.employmentstatus = "This field is required!";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     setIsConfirmModalVisible(true);
   };
 
@@ -778,7 +847,13 @@ const ResidentForm = () => {
   const [showSignModal, setShowSignModal] = useState(false);
   const handleSignatureOK = async (signature) => {
     setIsSignProcessing(true);
-    setResidentForm({ ...residentForm, signature });
+    setResidentForm((prev) => ({
+      ...prev,
+      signature,
+    }));
+
+    setErrors((prev) => ({ ...prev, signature: null }));
+
     setShowSignModal(false);
 
     setTimeout(async () => {
@@ -794,7 +869,7 @@ const ResidentForm = () => {
     setHouseholdForm(householdInitialForm);
   };
   const handleSignatureClear = () => {
-    setResidentForm({ ...prev, signature: "" });
+    setResidentForm((prev) => ({ ...prev, signature: "" }));
   };
 
   return (
@@ -831,6 +906,10 @@ const ResidentForm = () => {
                 <Text style={MyStyles.FormSectionTitle}>
                   Personal Information
                 </Text>
+
+                <Text style={MyStyles.inputLabel}>
+                  Picture<Text style={{ color: "red" }}>*</Text>
+                </Text>
                 <View style={MyStyles.uploadBox}>
                   <View style={MyStyles.previewContainer}>
                     {isIDProcessing ? (
@@ -865,7 +944,14 @@ const ResidentForm = () => {
                   </View>
                 </View>
 
+                {errors.id && (
+                  <Text style={MyStyles.errorMsg}>{errors.id}</Text>
+                )}
+
                 {/* New Signature */}
+                <Text style={MyStyles.inputLabel}>
+                  Signature<Text style={{ color: "red" }}>*</Text>
+                </Text>
                 <View style={MyStyles.uploadBox}>
                   <View style={MyStyles.previewContainer}>
                     {isSignProcessing ? (
@@ -961,6 +1047,10 @@ const ResidentForm = () => {
                   </Modal>
                 </View>
 
+                {errors.signature && (
+                  <Text style={MyStyles.errorMsg}>{errors.signature}</Text>
+                )}
+
                 <View>
                   <Text style={MyStyles.inputLabel}>
                     First Name<Text style={{ color: "red" }}>*</Text>
@@ -969,10 +1059,14 @@ const ResidentForm = () => {
                     style={MyStyles.input}
                     placeholder="First Name"
                     value={residentForm.firstname}
-                    onChangeText={(text) =>
-                      handleInputChange("firstname", text)
-                    }
+                    onChangeText={(text) => {
+                      handleInputChange("firstname", text);
+                      setErrors((prev) => ({ ...prev, firstname: null }));
+                    }}
                   />
+                  {errors.firstname && (
+                    <Text style={MyStyles.errorMsg}>{errors.firstname}</Text>
+                  )}
                 </View>
 
                 <View>
@@ -995,8 +1089,14 @@ const ResidentForm = () => {
                     style={MyStyles.input}
                     placeholder="Last Name"
                     value={residentForm.lastname}
-                    onChangeText={(text) => handleInputChange("lastname", text)}
+                    onChangeText={(text) => {
+                      handleInputChange("lastname", text);
+                      setErrors((prev) => ({ ...prev, lastname: null }));
+                    }}
                   />
+                  {errors.lastname && (
+                    <Text style={MyStyles.errorMsg}>{errors.lastname}</Text>
+                  )}
                 </View>
 
                 <View>
@@ -1064,9 +1164,15 @@ const ResidentForm = () => {
                     placeholder="Select"
                     placeholderStyle={MyStyles.placeholderText}
                     selectedTextStyle={MyStyles.selectedText}
-                    onChange={(item) => handleDropdownChange("sex", item.value)}
+                    onChange={(item) => {
+                      handleDropdownChange("sex", item.value);
+                      setErrors((prev) => ({ ...prev, sex: null }));
+                    }}
                     style={MyStyles.input}
                   ></Dropdown>
+                  {errors.sex && (
+                    <Text style={MyStyles.errorMsg}>{errors.sex}</Text>
+                  )}
                 </View>
 
                 <View>
@@ -1133,7 +1239,11 @@ const ResidentForm = () => {
 
                   {showBirthdatePicker && (
                     <DateTimePicker
-                      value={residentForm.birthdate || new Date()}
+                      value={
+                        residentForm.birthdate
+                          ? new Date(residentForm.birthdate)
+                          : new Date()
+                      }
                       mode="date"
                       display={Platform.OS === "ios" ? "spinner" : "default"}
                       onChange={(event, selectedDate) => {
@@ -1141,10 +1251,17 @@ const ResidentForm = () => {
                           setShowBirthdatePicker(false);
                         }
                         if (selectedDate) {
-                          handleInputChange("birthdate", selectedDate);
+                          handleInputChange(
+                            "birthdate",
+                            selectedDate.toISOString()
+                          );
+                          setErrors((prev) => ({ ...prev, birthdate: null }));
                         }
                       }}
                     />
+                  )}
+                  {errors.birthdate && (
+                    <Text style={MyStyles.errorMsg}>{errors.birthdate}</Text>
                   )}
                 </View>
 
@@ -1185,11 +1302,15 @@ const ResidentForm = () => {
                     placeholder="Select"
                     placeholderStyle={MyStyles.placeholderText}
                     selectedTextStyle={MyStyles.selectedText}
-                    onChange={(item) =>
-                      handleDropdownChange("civilstatus", item.value)
-                    }
+                    onChange={(item) => {
+                      handleDropdownChange("civilstatus", item.value);
+                      setErrors((prev) => ({ ...prev, sex: null }));
+                    }}
                     style={MyStyles.input}
                   ></Dropdown>
+                  {errors.civilstatus && (
+                    <Text style={MyStyles.errorMsg}>{errors.civilstatus}</Text>
+                  )}
                 </View>
 
                 <View>
@@ -1409,11 +1530,15 @@ const ResidentForm = () => {
                     placeholder="Select"
                     placeholderStyle={MyStyles.placeholderText}
                     selectedTextStyle={MyStyles.selectedText}
-                    onChange={(item) =>
-                      handleDropdownChange("nationality", item.value)
-                    }
+                    onChange={(item) => {
+                      handleDropdownChange("nationality", item.value);
+                      setErrors((prev) => ({ ...prev, sex: null }));
+                    }}
                     style={MyStyles.input}
                   ></Dropdown>
+                  {errors.nationality && (
+                    <Text style={MyStyles.errorMsg}>{errors.nationality}</Text>
+                  )}
                 </View>
 
                 <View>
@@ -1644,14 +1769,18 @@ const ResidentForm = () => {
                     keyboardType="numeric"
                     value={residentForm.mobilenumber}
                     onChangeText={(text) =>
-                      handleInputChange("mobilenumber", text)
+                      mobileInputChange("mobilenumber", text)
                     }
                   />
+                  {errors.mobilenumber && (
+                    <Text style={MyStyles.errorMsg}>{errors.mobilenumber}</Text>
+                  )}
                 </View>
 
                 <View>
                   <Text style={MyStyles.inputLabel}>Telephone</Text>
                   <TextInput
+                    placeholder="Telephone"
                     style={MyStyles.input}
                     keyboardType="numeric"
                     value={residentForm.telephone}
@@ -1684,10 +1813,17 @@ const ResidentForm = () => {
                     placeholder="Full Name"
                     style={MyStyles.input}
                     value={residentForm.emergencyname}
-                    onChangeText={(text) =>
-                      handleInputChange("emergencyname", text)
-                    }
+                    onChangeText={(text) => {
+                      handleInputChange("emergencyname", text);
+                      setErrors((prev) => ({ ...prev, emergencyname: null }));
+                    }}
                   />
+
+                  {errors.emergencyname && (
+                    <Text style={MyStyles.errorMsg}>
+                      {errors.emergencyname}
+                    </Text>
+                  )}
                 </View>
 
                 <View>
@@ -1699,9 +1835,14 @@ const ResidentForm = () => {
                     value={residentForm.emergencymobilenumber}
                     keyboardType="numeric"
                     onChangeText={(text) =>
-                      handleInputChange("emergencymobilenumber", text)
+                      mobileInputChange("emergencymobilenumber", text)
                     }
                   />
+                  {errors.emergencymobilenumber && (
+                    <Text style={MyStyles.errorMsg}>
+                      {errors.emergencymobilenumber}
+                    </Text>
+                  )}
                 </View>
 
                 <View>
@@ -1712,10 +1853,19 @@ const ResidentForm = () => {
                     placeholder="Address"
                     style={MyStyles.input}
                     value={residentForm.emergencyaddress}
-                    onChangeText={(text) =>
-                      handleInputChange("emergencyaddress", text)
-                    }
+                    onChangeText={(text) => {
+                      handleInputChange("emergencyaddress", text);
+                      setErrors((prev) => ({
+                        ...prev,
+                        emergencyaddress: null,
+                      }));
+                    }}
                   />
+                  {errors.emergencyaddress && (
+                    <Text style={MyStyles.errorMsg}>
+                      {errors.emergencyaddress}
+                    </Text>
+                  )}
                 </View>
 
                 {/* Household Information */}
@@ -2260,11 +2410,21 @@ const ResidentForm = () => {
                     placeholder="Select"
                     placeholderStyle={MyStyles.placeholderText}
                     selectedTextStyle={MyStyles.selectedText}
-                    onChange={(item) =>
-                      handleDropdownChange("employmentstatus", item.value)
-                    }
+                    onChange={(item) => {
+                      handleDropdownChange("employmentstatus", item.value);
+                      setErrors((prev) => ({
+                        ...prev,
+                        employmentstatus: null,
+                      }));
+                    }}
                     style={MyStyles.input}
                   ></Dropdown>
+
+                  {errors.employmentstatus && (
+                    <Text style={MyStyles.errorMsg}>
+                      {errors.employmentstatus}
+                    </Text>
+                  )}
                 </View>
 
                 <View>
@@ -2337,19 +2497,21 @@ const ResidentForm = () => {
                 </View>
               </View>
 
-              <TouchableOpacity style={MyStyles.button} onPress={handleClear}>
-                <Text style={MyStyles.buttonText}>Clear</Text>
-              </TouchableOpacity>
+              <View style={{ width: "100%", gap: 15 }}>
+                <TouchableOpacity style={MyStyles.button} onPress={handleClear}>
+                  <Text style={MyStyles.buttonText}>Clear</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={MyStyles.button}
-                onPress={handleConfirm}
-                disabled={loading}
-              >
-                <Text style={MyStyles.buttonText}>
-                  {loading ? "Submitting..." : "Submit"}
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={MyStyles.button}
+                  onPress={handleConfirm}
+                  disabled={loading}
+                >
+                  <Text style={MyStyles.buttonText}>
+                    {loading ? "Submitting..." : "Submit"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               <AlertModal
                 isVisible={isAlertModalVisible}

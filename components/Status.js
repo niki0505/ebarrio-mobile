@@ -23,7 +23,7 @@ import Dialog from "react-native-dialog";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const Status = () => {
   const { fetchServices, services } = useContext(InfoContext);
@@ -171,26 +171,15 @@ const Status = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            {/* Back Arrow */}
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            {/* First Calendar Text */}
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Status
-            </Text>
-          </View>
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Status
+          </Text>
 
           <Dropdown
             data={[
@@ -413,7 +402,7 @@ const Status = () => {
                             style={{
                               fontSize: 15,
                               fontFamily: "QuicksandSemiBold",
-                              color: "#808080",
+                              color: "#04384E",
                             }}
                           >
                             Details:

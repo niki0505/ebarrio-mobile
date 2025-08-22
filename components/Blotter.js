@@ -20,6 +20,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const Blotter = () => {
   const insets = useSafeAreaInsets();
@@ -189,24 +190,14 @@ const Blotter = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Report Blotter
-            </Text>
-          </View>
+          <Text style={MyStyles.servicesHeader}>Report Blotter</Text>
+
           <Text style={MyStyles.formMessage}>
             1. Please fill out the required information to file a blotter
             report.
