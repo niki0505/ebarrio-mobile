@@ -22,7 +22,7 @@ import AlertModal from "./AlertModal";
 import * as ImagePicker from "expo-image-picker";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const PostIncident = () => {
   const route = useRoute();
@@ -180,26 +180,17 @@ const PostIncident = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() =>
-                navigation.navigate("SOSReportDetails", { selectedID })
-              }
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() =>
+              navigation.navigate("SOSReportDetails", { selectedID })
+            }
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Post Incident Report
-            </Text>
-          </View>
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Post Incident Report
+          </Text>
 
           <Text style={MyStyles.formMessage}>
             Please select and fill out the required information to submit an

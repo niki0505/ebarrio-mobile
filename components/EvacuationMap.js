@@ -12,7 +12,7 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import ImageViewing from "react-native-image-viewing";
 
 const EvacuationMap = () => {
@@ -46,26 +46,17 @@ const EvacuationMap = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("Readiness")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={[MyStyles.backArrow, { color: "#fff" }]}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("Readiness")}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
+          />
 
-            <Text
-              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
-            >
-              Evacuation Map
-            </Text>
-          </View>
+          <Text
+            style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+          >
+            Evacuation Map
+          </Text>
 
           <View style={{ flexDirection: "column", gap: 20 }}>
             <Text style={MyStyles.evacuationSubHeader}>

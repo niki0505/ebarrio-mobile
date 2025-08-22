@@ -22,6 +22,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const CourtReservations = () => {
   const insets = useSafeAreaInsets();
@@ -401,24 +402,16 @@ const CourtReservations = () => {
         <ScrollView
           contentContainerStyle={[MyStyles.scrollContainer, { gap: 10 }]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Reserve Court
-            </Text>
-          </View>
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Reserve Court
+          </Text>
+
           <Text style={MyStyles.formMessage}>
             1. Please fill out the required information for reserving a court.
             {"\n"}

@@ -9,7 +9,7 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const TermsConditions = () => {
   const insets = useSafeAreaInsets();
@@ -30,9 +30,9 @@ const TermsConditions = () => {
       >
         <View style={MyStyles.loginWrapper}>
           <View style={{ flex: 0.3, alignSelf: "start", padding: 20 }}>
-            <MaterialIcons
+            <AntDesign
               onPress={() => navigation.navigate("Signup")}
-              name="arrow-back-ios"
+              name="arrowleft"
               style={[
                 MyStyles.backArrow,
                 { color: "#fff", padding: 10, marginVertical: 0 },

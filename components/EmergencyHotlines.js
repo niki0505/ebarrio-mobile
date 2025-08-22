@@ -20,7 +20,7 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const EmergencyHotlines = () => {
   const insets = useSafeAreaInsets();
@@ -96,30 +96,21 @@ const EmergencyHotlines = () => {
             MyStyles.scrollContainer,
             {
               backgroundColor: "#BC0F0F",
+              gap: 10,
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            {/* Back Arrow */}
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={[MyStyles.backArrow, { color: "#fff" }]}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
+          />
 
-            <Text
-              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
-            >
-              Hotlines
-            </Text>
-          </View>
+          <Text
+            style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+          >
+            Hotlines
+          </Text>
 
           <View style={{ gap: 15 }}>
             <View style={{ position: "relative" }}>

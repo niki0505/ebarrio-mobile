@@ -7,7 +7,7 @@ export const MyStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#DCE5EB",
-    padding: 20,
+    padding: 25,
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -27,7 +27,7 @@ export const MyStyles = StyleSheet.create({
     color: "#808080",
     fontFamily: "QuicksandMedium",
   },
-  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#DCE5EB" },
+  scrollContainer: { padding: 25, flexGrow: 1, backgroundColor: "#DCE5EB" },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -60,7 +60,7 @@ export const MyStyles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    height: RFPercentage(5),
+    height: RFPercentage(6),
     borderWidth: 1,
     borderColor: "#ACACAC",
     borderRadius: 15,
@@ -438,6 +438,7 @@ export const MyStyles = StyleSheet.create({
   bottomTabButtons: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
   },
   bottomTabIcons: {
     flexDirection: "row",
@@ -490,7 +491,7 @@ export const MyStyles = StyleSheet.create({
   /*---------------------------------------ANNOUNCEMENTS---------------------------------------*/
   eventDateTime: {
     marginBottom: 5,
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(1.5),
     color: "#04384E",
     fontFamily: "QuicksandSemiBold",
   },
@@ -590,7 +591,7 @@ export const MyStyles = StyleSheet.create({
   },
   /*---------------------------------------SERVICES---------------------------------------*/
   servicesHeader: {
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     color: "#04384E",
     fontFamily: "REMBold",
   },
@@ -685,19 +686,7 @@ export const MyStyles = StyleSheet.create({
     fontSize: RFPercentage(1.6),
     fontFamily: "QuicksandBold",
   },
-  eyeInputContainer: {
-    position: "relative",
-    height: RFPercentage(4.5),
-  },
-  eyeToggle: {
-    position: "absolute",
-    right: 10,
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  /*---------------------------------------CALENDAR---------------------------------------*/
+
   reserveDateWrapper: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -710,6 +699,24 @@ export const MyStyles = StyleSheet.create({
   },
   reserveDateText: {
     fontSize: RFPercentage(1.6),
+  },
+
+  /*---------------------------------------ICONS---------------------------------------*/
+  eyeInputContainer: {
+    position: "relative",
+    height: RFPercentage(4.5),
+  },
+  eyeToggle: {
+    position: "absolute",
+    right: 10,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  eyeToggleSize: {
+    fontSize: RFPercentage(3),
+    color: "#808080",
   },
 
   /*---------------------------------------DISASTER SAFETY TIPS---------------------------------------*/
@@ -899,6 +906,7 @@ export const MyStyles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     fontSize: RFPercentage(1.8),
+    height: RFPercentage(26),
   },
   alignItems: "center",
   leftCalendar: {
@@ -952,13 +960,13 @@ export const MyStyles = StyleSheet.create({
     marginRight: 3,
   },
   eventDate: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(1.5),
     marginLeft: 15,
     fontFamily: "QuicksandMedium",
     color: "#04384E",
   },
   eventTime: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(1.5),
     color: "#666",
     marginLeft: 15,
     fontFamily: "QuicksandMedium",
@@ -977,6 +985,7 @@ export const MyStyles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     justifyContent: "center",
+    height: RFPercentage(25),
   },
   monthHeader: {
     textAlign: "center",
@@ -1310,8 +1319,8 @@ export const MyStyles = StyleSheet.create({
     paddingHorizontal: 50,
   },
   slideImg: {
-    width: 240,
-    height: 240,
+    width: RFPercentage(24),
+    height: RFPercentage(24),
     resizeMode: "contain",
     marginVertical: 70,
   },
@@ -1336,7 +1345,22 @@ export const MyStyles = StyleSheet.create({
     fontFamily: "REMBold",
     fontSize: RFPercentage(2.8),
   },
-
+  previewTitle: {
+    textAlign: "center",
+    fontSize: RFPercentage(2.4),
+  },
+  haveanaccounttext: {
+    color: "#808080",
+    fontFamily: "REMSemiBold",
+    fontSize: RFPercentage(2.5),
+    marginTop: 15,
+  },
+  logintext: {
+    color: "#0E94D3",
+    fontFamily: "REMBold",
+    fontSize: RFPercentage(2.5),
+    marginTop: 15,
+  },
   /*---------------------------------------RESIDENT FORM---------------------------------------*/
   FormSectionTitle: {
     color: "#04384E",
@@ -1413,7 +1437,6 @@ export const MyStyles = StyleSheet.create({
   },
   backArrow: {
     fontSize: RFPercentage(3.5),
-    padding: 10,
     color: "#04384E",
     marginVertical: 10,
     width: 40,
@@ -1503,7 +1526,7 @@ export const MyStyles = StyleSheet.create({
     marginVertical: 10,
   },
   statusServiceType: {
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(2.5),
     fontFamily: "REMSemiBold",
     color: "#04384E",
   },
@@ -1520,7 +1543,7 @@ export const MyStyles = StyleSheet.create({
   statusServiceDetails: {
     fontSize: RFPercentage(1.6),
     fontFamily: "QuicksandMedium",
-    color: "#808080",
+    color: "black",
     marginLeft: 5,
     flexShrink: 1,
     textAlign: "justify",
@@ -1528,7 +1551,7 @@ export const MyStyles = StyleSheet.create({
   statusRemarksText: {
     fontSize: RFPercentage(1.6),
     fontFamily: "QuicksandMedium",
-    color: "#04384E",
+    color: "black",
     marginLeft: 5,
     flexShrink: 1,
     textAlign: "justify",
@@ -1621,5 +1644,11 @@ export const MyStyles = StyleSheet.create({
     fontFamily: "QuicksandBold",
     paddingVertical: 15,
     textAlign: "center",
+  },
+  /*---------------------------------------SOS---------------------------------------*/
+  helpBannerText: {
+    color: "white",
+    fontFamily: "QuicksandBold",
+    fontSize: RFPercentage(2),
   },
 });

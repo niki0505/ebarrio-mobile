@@ -180,8 +180,7 @@ const Login = () => {
               >
                 <Ionicons
                   name={secureLoginPass ? "eye-off" : "eye"}
-                  size={20}
-                  color="#808080"
+                  style={MyStyles.eyeToggleSize}
                 />
               </TouchableOpacity>
             </View>

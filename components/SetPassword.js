@@ -17,7 +17,7 @@ import AppLogo from "../assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const SetPassword = () => {
@@ -201,13 +201,13 @@ const SetPassword = () => {
             showsVerticalScrollIndicator={false}
           >
             {/* Back arrow and heading */}
-            <MaterialIcons
-              name="arrow-back-ios"
-              size={30}
-              color="#04384E"
-              style={{ alignSelf: "flex-start" }}
+
+            <AntDesign
+              name="arrowleft"
+              style={[MyStyles.backArrow]}
               onPress={() => navigation.navigate("Login")}
             />
+
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Set Password
             </Text>

@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const SafetyTips = () => {
   const insets = useSafeAreaInsets();
@@ -68,25 +68,17 @@ const SafetyTips = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
+          <AntDesign
+            onPress={() => navigation.navigate("Readiness")}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
+          />
+
+          <Text
+            style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
           >
-            <MaterialIcons
-              onPress={() => navigation.navigate("Readiness")}
-              name="arrow-back-ios"
-              style={[MyStyles.backArrow, { color: "#fff" }]}
-            />
-
-            <Text
-              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
-            >
-              Disaster Safety Tips
-            </Text>
-          </View>
-
+            Disaster Safety Tips
+          </Text>
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >

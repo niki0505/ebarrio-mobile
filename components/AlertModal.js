@@ -49,7 +49,7 @@ const AlertModal = ({
                 loop
                 style={{
                   width: 100,
-                  height: 100,
+                  height: RFPercentage(10),
                 }}
               />
               <Text
@@ -108,7 +108,7 @@ const AlertModal = ({
                 loop
                 style={{
                   width: 100,
-                  height: 100,
+                  height: RFPercentage(10),
                 }}
               />
               <Text
@@ -290,7 +290,7 @@ const AlertModal = ({
                 loop
                 style={{
                   width: 100,
-                  height: 100,
+                  height: RFPercentage(10),
                 }}
               />
               <Text

@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MyStyles } from "./stylesheet/MyStyles";
+import { AntDesign } from "@expo/vector-icons";
 
 const Earthquake = () => {
   const navigation = useNavigation();
@@ -70,10 +71,10 @@ const Earthquake = () => {
             },
           ]}
         >
-          <MaterialIcons
-            name="arrow-back-ios"
-            style={[MyStyles.backArrow, { color: "#fff" }]}
+          <AntDesign
             onPress={() => navigation.navigate("SafetyTips")}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
           />
 
           <View style={{ alignItems: "center" }}>

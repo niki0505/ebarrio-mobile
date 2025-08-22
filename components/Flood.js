@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { MyStyles } from "./stylesheet/MyStyles";
 
 const Flood = () => {
@@ -70,10 +70,10 @@ const Flood = () => {
             },
           ]}
         >
-          <MaterialIcons
-            name="arrow-back-ios"
-            style={[MyStyles.backArrow, { color: "#fff" }]}
+          <AntDesign
             onPress={() => navigation.navigate("SafetyTips")}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
           />
 
           <View style={{ alignItems: "center" }}>

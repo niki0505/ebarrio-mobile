@@ -14,7 +14,7 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -122,12 +122,12 @@ const RespondedSOS = () => {
             },
           ]}
         >
-          <MaterialIcons
+          <AntDesign
             onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#04384E"
+            name="arrowleft"
+            style={MyStyles.backArrow}
           />
+
           <Text style={MyStyles.header}>Responded SOS</Text>
 
           {loading ? (
