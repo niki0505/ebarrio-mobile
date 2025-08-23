@@ -149,7 +149,7 @@ const OTP = ({}) => {
           </Text>
           <Text
             style={{
-              fontSize: RFPercentage(1.6),
+              fontSize: RFPercentage(2),
               color: "#808080",
               fontFamily: "QuicksandSemiBold",
             }}
@@ -158,7 +158,7 @@ const OTP = ({}) => {
           </Text>
           <Text
             style={{
-              fontSize: RFPercentage(1.6),
+              fontSize: RFPercentage(2),
               color: "#04384E",
               fontFamily: "QuicksandSemiBold",
               marginTop: "-20",
@@ -176,7 +176,7 @@ const OTP = ({}) => {
           {isResendDisabled ? (
             <Text
               style={{
-                fontSize: RFPercentage(1.6),
+                fontSize: RFPercentage(2),
                 color: "#808080",
                 fontFamily: "QuicksandSemiBold",
               }}
@@ -189,7 +189,7 @@ const OTP = ({}) => {
               <Text
                 onPress={handleResend}
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   fontFamily: "QuicksandSemiBold",
                 }}
@@ -200,7 +200,7 @@ const OTP = ({}) => {
                 onPress={handleResend}
                 style={{
                   color: "red",
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   fontFamily: "QuicksandBold",
                 }}
               >

@@ -20,6 +20,7 @@ import api from "../api";
 import { OtpContext } from "../context/OtpContext";
 import AlertModal from "./AlertModal";
 import { AntDesign } from "@expo/vector-icons";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
@@ -382,7 +383,7 @@ const EditMobileNumber = () => {
             <View>
               <Text style={MyStyles.inputLabel}>
                 New Mobile Number
-                <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+                <Text style={MyStyles.redAsterisk}>*</Text>
               </Text>
               <TextInput
                 onChangeText={mobileInputChange}
@@ -398,7 +399,7 @@ const EditMobileNumber = () => {
 
             <View>
               <Text style={MyStyles.inputLabel}>
-                Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+                Password<Text style={MyStyles.redAsterisk}>*</Text>
               </Text>
 
               <View style={MyStyles.eyeInputContainer}>
@@ -424,16 +425,16 @@ const EditMobileNumber = () => {
               ) : null}
             </View>
           </View>
+
           <TouchableOpacity
             onPress={handleConfirm}
-            style={MyStyles.button}
+            style={[MyStyles.button, { marginTop: 30 }]}
             disabled={loading}
           >
             <Text style={MyStyles.buttonText}>
               {loading ? "Verifying..." : "Verify"}
             </Text>
           </TouchableOpacity>
-
           <AlertModal
             isVisible={isConfirmModalVisible}
             isConfirmationModal={true}
@@ -477,7 +478,11 @@ const EditMobileNumber = () => {
               <Text
                 style={[
                   MyStyles.header,
-                  { alignSelf: "flex-start", marginTop: 10, fontSize: 24 },
+                  {
+                    alignSelf: "flex-start",
+                    marginTop: 10,
+                    fontSize: RFPercentage(3),
+                  },
                 ]}
               >
                 Mobile Number Verification
@@ -485,7 +490,7 @@ const EditMobileNumber = () => {
 
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   alignSelf: "flex-start",
                   marginTop: 10,
@@ -496,7 +501,7 @@ const EditMobileNumber = () => {
               </Text>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: RFPercentage(2),
                   color: "#04384E",
                   alignSelf: "flex-start",
                   marginTop: 5,
@@ -518,7 +523,7 @@ const EditMobileNumber = () => {
               {isResendDisabled ? (
                 <Text
                   style={{
-                    fontSize: 16,
+                    fontSize: RFPercentage(2),
                     color: "#808080",
                     alignSelf: "flex-start",
                     marginTop: 10,
@@ -541,7 +546,7 @@ const EditMobileNumber = () => {
                   <Text
                     onPress={handleResend}
                     style={{
-                      fontSize: 16,
+                      fontSize: RFPercentage(2),
                       color: "#808080",
                       fontFamily: "QuicksandSemiBold",
                     }}
@@ -552,7 +557,7 @@ const EditMobileNumber = () => {
                     onPress={handleResend}
                     style={{
                       color: "#006EFF",
-                      fontSize: 16,
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                     }}
                   >

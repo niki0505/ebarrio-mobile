@@ -468,33 +468,24 @@ const ForgotPassword = () => {
               <View style={MyStyles.forgotCardWrapper}>
                 <View style={MyStyles.forgotCard}>
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <View
-                      style={{
-                        width: "100%",
-                        flexDirection: "row",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
+                    <MaterialIcons
+                      onPress={() => {
+                        setIsExisting(false);
+                        setIsVerified(false);
+                        setQuestionsClicked(false);
+                        setOTPClicked(false);
+                        setNewPassword("");
+                        setReNewPassword("");
+                        setSecurityQuestion({
+                          question: "",
+                          answer: "",
+                        });
                       }}
-                    >
-                      <MaterialIcons
-                        onPress={() => {
-                          setIsExisting(false);
-                          setIsVerified(false);
-                          setQuestionsClicked(false);
-                          setOTPClicked(false);
-                          setNewPassword("");
-                          setReNewPassword("");
-                          setSecurityQuestion({
-                            question: "",
-                            answer: "",
-                          });
-                        }}
-                        name="arrow-back-ios"
-                        style={MyStyles.backArrow}
-                      />
+                      name="arrow-back-ios"
+                      style={MyStyles.backArrow}
+                    />
 
-                      <Text style={MyStyles.header}>Reset Password</Text>
-                    </View>
+                    <Text style={MyStyles.header}>Reset Password</Text>
 
                     <Text style={MyStyles.forgotMsg}>
                       To ensure the security of your account, please create a
@@ -657,21 +648,13 @@ const ForgotPassword = () => {
                     >
                       <Text
                         onPress={handleResend}
-                        style={{
-                          fontSize: 16,
-                          color: "#808080",
-                          fontFamily: "QuicksandSemiBold",
-                        }}
+                        style={MyStyles.byClickingText}
                       >
                         Didn't get a code?
                       </Text>
                       <Text
                         onPress={handleResend}
-                        style={{
-                          color: "red",
-                          fontSize: 16,
-                          fontFamily: "QuicksandBold",
-                        }}
+                        style={MyStyles.resendOTPText}
                       >
                         Resend OTP
                       </Text>

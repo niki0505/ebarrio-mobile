@@ -255,7 +255,7 @@ const Status = () => {
               onChangeText={(text) => setCertReason(text)}
               style={{
                 fontFamily: "QuicksandMedium",
-                fontSize: 16,
+                fontSize: RFPercentage(2),
                 color: "#04384E",
               }}
               placeholderTextColor="#808080"
@@ -286,7 +286,7 @@ const Status = () => {
               onChangeText={(text) => setReservationReason(text)}
               style={{
                 fontFamily: "QuicksandMedium",
-                fontSize: 16,
+                fontSize: RFPercentage(2),
                 padding: 10,
                 color: "#04384E",
               }}
@@ -332,7 +332,12 @@ const Status = () => {
                     <View style={MyStyles.rowAlignment}>
                       <Text style={MyStyles.statusLabel}>{status.label}</Text>
 
-                      <Text style={{ fontSize: 15, color: "#808080" }}>
+                      <Text
+                        style={{
+                          fontSize: RFPercentage(1.8),
+                          color: "#808080",
+                        }}
+                      >
                         {dayjs(service.createdAt).fromNow()}
                       </Text>
                     </View>
@@ -400,7 +405,7 @@ const Status = () => {
                         <View style={MyStyles.statusBlotterWrapper}>
                           <Text
                             style={{
-                              fontSize: 15,
+                              fontSize: RFPercentage(1.8),
                               fontFamily: "QuicksandSemiBold",
                               color: "#04384E",
                             }}

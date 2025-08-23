@@ -65,6 +65,7 @@ const SafetyTips = () => {
             MyStyles.scrollContainer,
             {
               backgroundColor: "#BC0F0F",
+              gap: 10,
             },
           ]}
         >
@@ -106,7 +107,11 @@ const SafetyTips = () => {
                         source={item.image}
                         style={[
                           MyStyles.readinessImg,
-                          { width: RFPercentage(8), height: RFPercentage(8) },
+                          {
+                            width: RFPercentage(8),
+                            height: RFPercentage(8),
+                            marginRight: 0,
+                          },
                         ]}
                       />
                       <Text
@@ -117,7 +122,12 @@ const SafetyTips = () => {
                       >
                         {item.title}
                       </Text>
-                      <Text style={MyStyles.readinessSubTitle}>
+                      <Text
+                        style={[
+                          MyStyles.readinessSubTitle,
+                          { textAlign: "center" },
+                        ]}
+                      >
                         {item.subtitle}
                       </Text>
                     </TouchableOpacity>

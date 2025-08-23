@@ -428,8 +428,8 @@ const Home = () => {
           >
             <ActivityIndicator size="large" color="#04384E" />
             <Text style={MyStyles.loadingMessage}>
-              Hang in there! We're fetching the latest data for you.
-              {"\n"}This may take a few seconds...
+              Hang in there! We're fetching the latest data for you. This may
+              take a few seconds...
             </Text>
           </View>
         ) : (
@@ -473,7 +473,7 @@ const Home = () => {
                   },
                 ]}
               >
-                <View style={{ width: width - 50, paddingHorizontal: 10 }}>
+                <View style={{ width: width - 40, paddingHorizontal: 10 }}>
                   <TouchableOpacity
                     style={[MyStyles.calendarContainer, MyStyles.shadow]}
                     onPress={viewCalendar}
@@ -555,12 +555,18 @@ const Home = () => {
                                       {event.title}
                                     </Text>
                                   </View>
-                                  <Text style={MyStyles.eventDate} numberOfLines={1}
-                                      ellipsizeMode="tail">
+                                  <Text
+                                    style={MyStyles.eventDate}
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                  >
                                     {dateString}
                                   </Text>
-                                  <Text style={MyStyles.eventTime} numberOfLines={1}
-                                      ellipsizeMode="tail">
+                                  <Text
+                                    style={MyStyles.eventTime}
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                  >
                                     {timeString}
                                   </Text>
                                 </View>
@@ -629,7 +635,7 @@ const Home = () => {
                 {loadingWeather ? (
                   <View
                     style={{
-                      width: width - 50,
+                      width: width - 40,
                       paddingHorizontal: 10,
                     }}
                   >
@@ -640,7 +646,7 @@ const Home = () => {
                 ) : (
                   <View
                     style={{
-                      width: width - 50,
+                      width: width - 40,
                       paddingHorizontal: 10,
                     }}
                   >
@@ -787,7 +793,7 @@ const Home = () => {
                     <ActivityIndicator size="large" color="#04384E" />
                   </View>
                 ) : importantAnnouncements.length === 0 ? (
-                  <View style={[MyStyles.carouselCard, { width: width - 50 }]}>
+                  <View style={[MyStyles.carouselCard, { width: width - 40 }]}>
                     <Text style={[MyStyles.noEvents, { textAlign: "justify" }]}>
                       NO IMPORTANT ANNOUNCEMENTS YET. GO TO ANNOUNCEMENTS PAGE
                       TO VIEW ALL ANNOUNCEMENTS.
@@ -804,15 +810,15 @@ const Home = () => {
                     showsHorizontalScrollIndicator={false}
                     nestedScrollEnabled={true}
                     getItemLayout={(data, index) => ({
-                      length: width - 50,
-                      offset: (width - 50) * index,
+                      length: width - 40,
+                      offset: (width - 40) * index,
                       index,
                     })}
                     renderItem={({ item }) => (
                       <View
                         style={[
                           {
-                            width: width - 50,
+                            width: width - 40,
                             padding: 10,
                           },
                         ]}

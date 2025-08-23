@@ -7,27 +7,27 @@ export const MyStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#DCE5EB",
-    padding: 25,
+    padding: 20,
     justifyContent: "space-between",
     alignItems: "center",
   },
   header: {
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     color: "#04384E",
     fontFamily: "REMBold",
   },
   subHeader: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(2.4),
     fontFamily: "REMMedium",
     color: "#04384E",
     marginTop: 20,
   },
   textMedium: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#808080",
     fontFamily: "QuicksandMedium",
   },
-  scrollContainer: { padding: 25, flexGrow: 1, backgroundColor: "#DCE5EB" },
+  scrollContainer: { padding: 20, flexGrow: 1, backgroundColor: "#DCE5EB" },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -64,14 +64,14 @@ export const MyStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ACACAC",
     borderRadius: 15,
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     paddingHorizontal: 10,
     backgroundColor: "#fff",
     fontFamily: "QuicksandMedium",
   },
   inputLabel: {
     color: "#04384E",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
   },
   datetimeRow: {
@@ -91,11 +91,11 @@ export const MyStyles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontFamily: "REMBold",
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(2.4),
   },
 
   formMessage: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#808080",
     fontFamily: "QuicksandSemiBold",
   },
@@ -148,17 +148,17 @@ export const MyStyles = StyleSheet.create({
   /*---------------------------------------WEATHER---------------------------------------*/
   weatherHeaderText: {
     fontFamily: "REMBold",
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(2.4),
     color: "#fff",
   },
   weatherBodyText: {
     color: "#fff",
     fontWeight: "400",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
   },
   weatherSubheaderText: {
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     fontFamily: "REMMedium",
     color: "#fff",
     marginTop: 20,
@@ -207,7 +207,7 @@ export const MyStyles = StyleSheet.create({
   loginInput: {
     flex: 1,
     height: 40,
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#000",
   },
   shadow: {
@@ -250,14 +250,14 @@ export const MyStyles = StyleSheet.create({
   },
   readinessTitle: {
     color: "#BC0F0F",
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(2.4),
     fontFamily: "REMBold",
     marginBottom: 5,
     flexShrink: 1,
   },
   readinessSubTitle: {
     color: "#808080",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
     flexShrink: 1,
   },
@@ -326,7 +326,7 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 15,
   },
   modalTitle: {
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     fontFamily: "REMBold",
     color: "#BC0F0F",
     textAlign: "center",
@@ -345,7 +345,7 @@ export const MyStyles = StyleSheet.create({
     width: RFPercentage(3),
     height: RFPercentage(3),
     backgroundColor: "#BC0F0F",
-    borderRadius: RFPercentage(1.5),
+    borderRadius: RFPercentage(1.6),
     justifyContent: "center",
     alignItems: "center",
     marginRight: 10,
@@ -353,10 +353,10 @@ export const MyStyles = StyleSheet.create({
   stepNumberText: {
     color: "#fff",
     fontFamily: "QuicksandBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   stepText: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#333",
     flex: 1,
     fontFamily: "QuicksandSemiBold",
@@ -379,7 +379,7 @@ export const MyStyles = StyleSheet.create({
   },
   quickTitle: {
     color: "white",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
     width: "90%",
   },
@@ -398,7 +398,7 @@ export const MyStyles = StyleSheet.create({
   },
   mapOverlayText: {
     color: "#fff",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
   },
 
@@ -433,7 +433,7 @@ export const MyStyles = StyleSheet.create({
   fabText: {
     color: "#fff",
     fontFamily: "REMSemiBold",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
   },
   bottomTabButtons: {
     flex: 1,
@@ -457,12 +457,12 @@ export const MyStyles = StyleSheet.create({
   },
   badgeText: {
     color: "white",
-    fontSize: RFPercentage(1.2),
+    fontSize: RFPercentage(1.6),
     fontFamily: "QuicksandBold",
   },
   /*---------------------------------------ACCOUNT SETTINGS---------------------------------------*/
   securityText: {
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     color: "#808080",
     fontFamily: "QuicksandBold",
     marginTop: 15,
@@ -472,7 +472,7 @@ export const MyStyles = StyleSheet.create({
     paddingVertical: 20,
   },
   menuIcons: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(2.4),
     backgroundColor: "#E5E4E2B3",
     borderRadius: 10,
     padding: 5,
@@ -480,23 +480,23 @@ export const MyStyles = StyleSheet.create({
   },
   menuText: {
     color: "#04384E",
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(2.4),
     fontFamily: "QuicksandBold",
     marginLeft: 15,
   },
   menuArrow: {
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(2.4),
     color: "#808080",
   },
   /*---------------------------------------ANNOUNCEMENTS---------------------------------------*/
   eventDateTime: {
     marginBottom: 5,
-    fontSize: RFPercentage(1.5),
+    fontSize: RFPercentage(2),
     color: "#04384E",
     fontFamily: "QuicksandSemiBold",
   },
   eventText: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#04384E",
     fontFamily: "QuicksandMedium",
   },
@@ -504,7 +504,7 @@ export const MyStyles = StyleSheet.create({
     color: "#006EFF",
     marginTop: 5,
     fontFamily: "QuicksandMedium",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   dropdownWrapper: {
     backgroundColor: "#fff",
@@ -520,7 +520,7 @@ export const MyStyles = StyleSheet.create({
   dropdownText: {
     color: "#04384E",
     fontFamily: "QuicksandSemiBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   announcementCard: {
     backgroundColor: "#fff",
@@ -542,22 +542,22 @@ export const MyStyles = StyleSheet.create({
   },
   announcementUploader: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
   },
   announcementCreatedAt: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#808080",
     fontFamily: "QuicksandSemiBold",
   },
   announcementCategory: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandSemiBold",
   },
   announcementTitle: {
     color: "#808080",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
   },
   announcementImg: {
@@ -602,17 +602,17 @@ export const MyStyles = StyleSheet.create({
   placeholderText: {
     color: "#808080",
     fontFamily: "QuicksandMedium",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   selectedText: {
     color: "#000",
     fontFamily: "QuicksandMedium",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   errorMsg: {
     color: "red",
     fontFamily: "QuicksandMedium",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     width: "auto",
     //changed from 80% to auto
   },
@@ -625,7 +625,7 @@ export const MyStyles = StyleSheet.create({
   detailsLength: {
     color: "#808080",
     fontFamily: "QuicksandSemiBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     textAlign: "right",
   },
   /*---------------------------------------CALENDAR---------------------------------------*/
@@ -635,11 +635,11 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 5,
   },
   categoriesText: {
-    fontSize: RFPercentage(1.4),
+    fontSize: RFPercentage(1.6),
     fontFamily: "QuicksandSemiBold",
   },
   dateText: {
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     textAlign: "center",
     color: "#04384E",
     fontFamily: "REMBold",
@@ -654,12 +654,12 @@ export const MyStyles = StyleSheet.create({
   },
   calendarEventTitle: {
     color: "#fff",
-    fontSize: RFPercentage(1),
+    fontSize: RFPercentage(1.4),
     fontFamily: "QuicksandBold",
   },
   calendarEventTime: {
     color: "#fff",
-    fontSize: RFPercentage(1),
+    fontSize: RFPercentage(1.4),
     fontFamily: "QuicksandMedium",
   },
   legendsRowWrapper: {
@@ -678,12 +678,12 @@ export const MyStyles = StyleSheet.create({
   },
   importantEventsDate: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
   },
   importantEventsTitle: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
   },
 
@@ -698,7 +698,7 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 5,
   },
   reserveDateText: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
 
   /*---------------------------------------ICONS---------------------------------------*/
@@ -732,7 +732,7 @@ export const MyStyles = StyleSheet.create({
     overflow: "hidden",
   },
   sectionPhase: {
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     fontFamily: "REMBold",
     marginBottom: 10,
     color: "#BC0F0F",
@@ -746,7 +746,7 @@ export const MyStyles = StyleSheet.create({
     width: RFPercentage(3),
     height: RFPercentage(3),
     backgroundColor: "#BC0F0F",
-    borderRadius: RFPercentage(1.5),
+    borderRadius: RFPercentage(1.6),
     justifyContent: "center",
     alignItems: "center",
     marginRight: 10,
@@ -755,10 +755,10 @@ export const MyStyles = StyleSheet.create({
   stepsNo: {
     color: "#fff",
     fontFamily: "QuicksandBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   stepsDesc: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
     color: "#333",
     flex: 1,
@@ -776,13 +776,13 @@ export const MyStyles = StyleSheet.create({
     marginBottom: 0,
     textAlign: "left",
     color: "#fff",
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     fontFamily: "QuicksandBold",
   },
   evacuationImg: {
     width: "100%",
     height: RFPercentage(20),
-    borderRadius: RFPercentage(1.5),
+    borderRadius: RFPercentage(1.6),
   },
 
   /*---------------------------------------HAZARD MAPS---------------------------------------*/
@@ -791,7 +791,7 @@ export const MyStyles = StyleSheet.create({
     marginBottom: 0,
     textAlign: "left",
     color: "#fff",
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     fontFamily: "QuicksandBold",
   },
 
@@ -817,7 +817,7 @@ export const MyStyles = StyleSheet.create({
   /*---------------------------------------HOME---------------------------------------*/
   loadingMessage: {
     marginTop: 20,
-    fontSize: RFPercentage(1.4),
+    fontSize: RFPercentage(1.6),
     color: "#808080",
     fontFamily: "QuicksandSemiBold",
     textAlign: "center",
@@ -826,7 +826,7 @@ export const MyStyles = StyleSheet.create({
   },
 
   greetingsText: {
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     color: "#585252",
     fontFamily: "QuicksandSemiBold",
   },
@@ -836,7 +836,7 @@ export const MyStyles = StyleSheet.create({
   },
   calendarMonth: {
     color: "#808080",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     fontFamily: "REMSemiBold",
   },
   calendarDay: {
@@ -845,7 +845,7 @@ export const MyStyles = StyleSheet.create({
     fontFamily: "REMBold",
   },
   calendarEventTitle: {
-    fontSize: RFPercentage(1.4),
+    fontSize: RFPercentage(1.6),
     color: "#ACACAC",
     marginRight: 20,
   },
@@ -857,7 +857,7 @@ export const MyStyles = StyleSheet.create({
   },
   weatherHighLow: {
     fontFamily: "QuicksandSemiBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#fff",
   },
   carouselWrapper: {
@@ -865,7 +865,7 @@ export const MyStyles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
   },
   carouselCard: {
     backgroundColor: "#fff",
@@ -905,7 +905,7 @@ export const MyStyles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#fff",
     borderRadius: 10,
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     height: RFPercentage(26),
   },
   alignItems: "center",
@@ -928,14 +928,14 @@ export const MyStyles = StyleSheet.create({
     marginTop: 0,
   },
   monthText: {
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandSemiBold",
     color: "#04384E",
     marginTop: 0,
     marginBottom: 0,
   },
   weekText: {
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     color: "#888",
     fontFamily: "QuicksandSemiBold",
   },
@@ -955,18 +955,18 @@ export const MyStyles = StyleSheet.create({
   },
   eventTitle: {
     fontFamily: "QuicksandSemiBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#04384E",
     marginRight: 3,
   },
   eventDate: {
-    fontSize: RFPercentage(1.5),
+    fontSize: RFPercentage(1.6),
     marginLeft: 15,
     fontFamily: "QuicksandMedium",
     color: "#04384E",
   },
   eventTime: {
-    fontSize: RFPercentage(1.5),
+    fontSize: RFPercentage(1.6),
     color: "#666",
     marginLeft: 15,
     fontFamily: "QuicksandMedium",
@@ -976,7 +976,7 @@ export const MyStyles = StyleSheet.create({
     color: "#808080",
     fontFamily: "QuicksandMedium",
     textAlign: "center",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(1.8),
     marginTop: 10,
   },
   rightCalendar: {
@@ -992,7 +992,7 @@ export const MyStyles = StyleSheet.create({
     fontFamily: "QuicksandBold",
     marginBottom: 5,
     color: "#04384E",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
   },
   weekRow: {
     flexDirection: "row",
@@ -1001,7 +1001,7 @@ export const MyStyles = StyleSheet.create({
   weekDay: {
     fontFamily: "QuicksandSemiBold",
     color: "#999",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   calendarRightContainer: {
     flexDirection: "row",
@@ -1020,13 +1020,13 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 12,
   },
   dayText: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
     color: "#04384E",
   },
   currentDayText: {
     color: "#0E94D3",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
   },
   emptyCell: {
@@ -1038,7 +1038,7 @@ export const MyStyles = StyleSheet.create({
     color: "#fff",
   },
   locationText: {
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(2),
     color: "white",
     fontFamily: "QuicksandSemiBold",
   },
@@ -1048,7 +1048,7 @@ export const MyStyles = StyleSheet.create({
   },
   weatherCurrentCondition: {
     fontFamily: "QuicksandBold",
-    fontSize: RFPercentage(1.4),
+    fontSize: RFPercentage(1.6),
     color: "#fff",
     marginTop: 20,
     textAlign: "right",
@@ -1101,13 +1101,13 @@ export const MyStyles = StyleSheet.create({
   },
   emergencyTitle: {
     color: "#fff",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "REMSemiBold",
     textAlign: "center",
   },
   emergencyMessage: {
     color: "#FAFAFA",
-    fontSize: RFPercentage(1.4),
+    fontSize: RFPercentage(1.6),
     textAlign: "center",
     opacity: 0.7,
     fontFamily: "QuicksandBold",
@@ -1143,23 +1143,23 @@ export const MyStyles = StyleSheet.create({
   forgotPassText: {
     color: "#006EFF",
     alignSelf: "flex-end",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
     marginTop: "-10",
   },
   signUpText: {
     color: "#006EFF",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
   },
   byClickingText: {
     color: "#808080",
     alignSelf: "flex-start",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandSemiBold",
   },
   forgotMsg: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#808080",
     alignSelf: "flex-start",
     marginTop: 10,
@@ -1184,7 +1184,7 @@ export const MyStyles = StyleSheet.create({
   },
   forgotPassMethodsText: {
     color: "#04384E",
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(2.4),
     fontFamily: "QuicksandBold",
   },
   forgotPassMethodsIcon: {
@@ -1216,7 +1216,7 @@ export const MyStyles = StyleSheet.create({
   markAllText: {
     paddingHorizontal: 20,
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "REMSemiBold",
     textAlign: "right",
   },
@@ -1235,7 +1235,7 @@ export const MyStyles = StyleSheet.create({
   },
   notifTitleMessage: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
   },
   notifCircle: {
@@ -1266,14 +1266,14 @@ export const MyStyles = StyleSheet.create({
     borderBottomColor: "#ddd",
   },
   filterDropdownText: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#04384E",
     fontFamily: "QuicksandSemiBold",
   },
   /*---------------------------------------OFFLINE---------------------------------------*/
   offHeader: {
     color: "#fff",
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     textAlign: "center",
     fontWeight: "QuicksandBold",
   },
@@ -1310,7 +1310,7 @@ export const MyStyles = StyleSheet.create({
   offHotlineName: {
     color: "#04384E",
     fontFamily: "REMSemiBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   /*---------------------------------------PREVIEW---------------------------------------*/
   slideContainer: {
@@ -1343,28 +1343,28 @@ export const MyStyles = StyleSheet.create({
   buttonsText: {
     color: "white",
     fontFamily: "REMBold",
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
   },
   previewTitle: {
     textAlign: "center",
-    fontSize: RFPercentage(2.4),
+    fontSize: RFPercentage(3),
   },
   haveanaccounttext: {
     color: "#808080",
     fontFamily: "REMSemiBold",
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(2.4),
     marginTop: 15,
   },
   logintext: {
     color: "#0E94D3",
     fontFamily: "REMBold",
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(2.4),
     marginTop: 15,
   },
   /*---------------------------------------RESIDENT FORM---------------------------------------*/
   FormSectionTitle: {
     color: "#04384E",
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     fontFamily: "REMSemiBold",
     alignSelf: "flex-start",
   },
@@ -1445,7 +1445,7 @@ export const MyStyles = StyleSheet.create({
     flex: 1,
     fontWeight: "REMBold",
     textAlign: "center",
-    fontSize: RFPercentage(1.2),
+    fontSize: RFPercentage(1.6),
   },
   dataRow: {
     flexDirection: "row",
@@ -1473,7 +1473,7 @@ export const MyStyles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   residentAddText: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#0E94D3",
   },
   membersWrapper: {
@@ -1494,12 +1494,12 @@ export const MyStyles = StyleSheet.create({
   },
   cancelCert: {
     fontFamily: "REMBold",
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     color: "#04384E",
   },
   cancelReserve: {
     fontFamily: "QuicksandBold",
-    fontSize: RFPercentage(2.8),
+    fontSize: RFPercentage(3),
     color: "#04384E",
     marginBottom: 10,
   },
@@ -1517,7 +1517,7 @@ export const MyStyles = StyleSheet.create({
   },
   statusLabel: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "REMMedium",
   },
   statusLine: {
@@ -1526,12 +1526,12 @@ export const MyStyles = StyleSheet.create({
     marginVertical: 10,
   },
   statusServiceType: {
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(2.4),
     fontFamily: "REMSemiBold",
     color: "#04384E",
   },
   statusTypeofCert: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
     color: "#808080",
   },
@@ -1541,7 +1541,7 @@ export const MyStyles = StyleSheet.create({
     alignItems: "flex-start",
   },
   statusServiceDetails: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
     color: "black",
     marginLeft: 5,
@@ -1549,7 +1549,7 @@ export const MyStyles = StyleSheet.create({
     textAlign: "justify",
   },
   statusRemarksText: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
     color: "black",
     marginLeft: 5,
@@ -1568,7 +1568,7 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 10,
   },
   legendLabel: {
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
     color: "#000",
     width: "90%",
@@ -1596,25 +1596,25 @@ export const MyStyles = StyleSheet.create({
     marginTop: 10,
     color: "#808080",
     fontFamily: "QuicksandSemiBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
   },
   /*---------------------------------------TERMS & CONDITIONS---------------------------------------*/
   termsTitle: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
     textAlign: "left",
     alignSelf: "flex-start",
   },
   termsDesc: {
     color: "#04384E",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
     textAlign: "justify",
   },
   termsEmailContact: {
     fontFamily: "QuicksandSemiBold",
-    fontSize: RFPercentage(1.6),
+    fontSize: RFPercentage(2),
     color: "#04384E",
   },
   /*---------------------------------------DRAWER---------------------------------------*/
@@ -1624,19 +1624,19 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 50,
   },
   drawerUsername: {
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(2.4),
     fontWeight: "600",
     color: "#04384E",
     fontFamily: "REMBold",
   },
   drawerServicesText: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(2.4),
     marginLeft: 15,
     color: "#04384E",
     fontFamily: "QuicksandBold",
   },
   drawerLogoutText: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(2.4),
     borderRadius: 5,
     color: "#fff",
     backgroundColor: "#04384E",
@@ -1649,6 +1649,19 @@ export const MyStyles = StyleSheet.create({
   helpBannerText: {
     color: "white",
     fontFamily: "QuicksandBold",
+    fontSize: RFPercentage(2.4),
+  },
+  blotterFullName: {
+    fontFamily: "QuicksandMedium",
+    fontSize: RFPercentage(1.8),
+  },
+  redAsterisk: {
+    color: "red",
+    fontSize: RFPercentage(1.8),
+  },
+  resendOTPText: {
+    color: "red",
     fontSize: RFPercentage(2),
+    fontFamily: "QuicksandBold",
   },
 });

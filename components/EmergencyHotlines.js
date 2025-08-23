@@ -183,7 +183,7 @@ const EmergencyHotlines = () => {
                         style={{
                           color: "#04384E",
                           fontFamily: "QuicksandSemiBold",
-                          fontSize: RFPercentage(1.8),
+                          fontSize: RFPercentage(2),
                         }}
                       >
                         {element.contactnumber}

@@ -61,7 +61,9 @@ const BrgyCalendar = () => {
   const CategoryItem = ({ color, label }) => (
     <View style={MyStyles.legendsRowWrapper}>
       <View style={[MyStyles.categoriesColors, { backgroundColor: color }]} />
-      <Text style={MyStyles.categoriesText}>{label}</Text>
+      <Text style={[MyStyles.categoriesText, { fontSize: RFPercentage(1.4) }]}>
+        {label}
+      </Text>
     </View>
   );
 
@@ -129,7 +131,7 @@ const BrgyCalendar = () => {
             {weekDays.map((d, i) => (
               <Text
                 key={i}
-                style={[MyStyles.weekDay, { fontSize: RFPercentage(1.8) }]}
+                style={[MyStyles.weekDay, { fontSize: RFPercentage(2) }]}
               >
                 {d}
               </Text>
@@ -140,16 +142,22 @@ const BrgyCalendar = () => {
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             {calendarDays.map((item, index) => {
               const dateObj = item ? new Date(year, month, item) : null;
+
+              // Get events for the specific day
               const dayEvents = dateObj ? getEventsForDate(dateObj) : [];
+
+              // Filter events to exclude those in the past
+              const currentDate = new Date();
+              const filteredEvents = dayEvents.filter((event) => {
+                const eventStartDate = new Date(event.start);
+                return eventStartDate >= currentDate; // Only show events from today onwards
+              });
 
               if (!item) {
                 return (
                   <View
                     key={index}
-                    style={{
-                      width: `${100 / 7}%`,
-                      aspectRatio: 1,
-                    }}
+                    style={{ width: `${100 / 7}%`, aspectRatio: 1 }}
                   />
                 );
               }
@@ -187,7 +195,7 @@ const BrgyCalendar = () => {
                       <Text
                         style={[
                           {
-                            fontSize: RFPercentage(1.6),
+                            fontSize: RFPercentage(1.8),
                             fontFamily: "QuicksandMedium",
                             color: "#000",
                           },
@@ -201,22 +209,24 @@ const BrgyCalendar = () => {
                         {item}
                       </Text>
                     </View>
-
                     {/* Event dots */}
-                    <View style={{ flexDirection: "row", marginTop: 2 }}>
-                      {dayEvents.map((event, idx) => (
-                        <View
-                          key={idx}
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: 3,
-                            backgroundColor: event.backgroundColor || "#3174ad",
-                            marginHorizontal: 1,
-                          }}
-                        />
-                      ))}
-                    </View>
+                    {filteredEvents.length > 0 && (
+                      <View style={{ flexDirection: "row", marginTop: 2 }}>
+                        {filteredEvents.map((event, idx) => (
+                          <View
+                            key={idx}
+                            style={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: 3,
+                              backgroundColor:
+                                event.backgroundColor || "#3174ad",
+                              marginHorizontal: 1,
+                            }}
+                          />
+                        ))}
+                      </View>
+                    )}
                   </View>
                 </TouchableOpacity>
               );
@@ -271,7 +281,7 @@ const BrgyCalendar = () => {
                     </Text>
                     <Text
                       style={{
-                        fontSize: 14,
+                        fontSize: RFPercentage(1.8),
                         color: "#888",
                         fontFamily: "QuicksandSemiBold",
                       }}
@@ -281,7 +291,7 @@ const BrgyCalendar = () => {
 
                     <Text
                       style={{
-                        fontSize: 14,
+                        fontSize: RFPercentage(1.8),
                         color: "white",
                         fontFamily: "QuicksandSemiBold",
                         backgroundColor: event.backgroundColor || "#808080",
@@ -289,6 +299,7 @@ const BrgyCalendar = () => {
                         paddingVertical: 4,
                         borderRadius: 10,
                         alignSelf: "flex-start",
+                        marginTop: 5,
                       }}
                     >
                       {timeString}

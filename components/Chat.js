@@ -405,10 +405,9 @@ const Chat = () => {
                     <View style={{ alignSelf: "center", marginBottom: 10 }}>
                       <Text
                         style={{
-                          fontSize: RFPercentage(1.6),
+                          fontSize: RFPercentage(2),
                           color: "#999",
                           fontWeight: "600",
-
                           paddingHorizontal: 12,
                           paddingVertical: 4,
                           borderRadius: 20,
@@ -466,7 +465,7 @@ const Chat = () => {
                       <>
                         <Text
                           style={{
-                            fontSize: RFPercentage(1.6),
+                            fontSize: RFPercentage(2),
                             fontFamily: "QuicksandSemiBold",
                             fontStyle: isEndedMsg ? "italic" : "normal",
                             color: isEndedMsg ? "#666" : "#fff",
@@ -477,7 +476,7 @@ const Chat = () => {
                         {!isEndedMsg && (
                           <Text
                             style={{
-                              fontSize: RFPercentage(1),
+                              fontSize: RFPercentage(1.6),
                               color: "#eee",
                               marginTop: 5,
                             }}
@@ -523,7 +522,7 @@ const Chat = () => {
                 backgroundColor: "#f2f2f2",
                 borderRadius: 20,
                 paddingHorizontal: 15,
-                fontSize: RFPercentage(1.6),
+                fontSize: RFPercentage(2),
               }}
             />
 
@@ -561,7 +560,7 @@ const Chat = () => {
             >
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   fontWeight: "bold",
                   marginBottom: 10,
                 }}
@@ -578,7 +577,7 @@ const Chat = () => {
                     borderBottomColor: "#ddd",
                   }}
                 >
-                  <Text style={{ fontSize: RFPercentage(1.6) }}>
+                  <Text style={{ fontSize: RFPercentage(2) }}>
                     {msg.question}
                   </Text>
                 </TouchableOpacity>

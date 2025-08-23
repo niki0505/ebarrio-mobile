@@ -199,7 +199,7 @@ const ChangePassword = () => {
           <View>
             <Text style={MyStyles.inputLabel}>
               Current Password
-              <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              <Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <View style={MyStyles.eyeInputContainer}>
               <TextInput
@@ -227,7 +227,7 @@ const ChangePassword = () => {
 
           <View>
             <Text style={MyStyles.inputLabel}>
-              New Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              New Password<Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <View style={MyStyles.eyeInputContainer}>
               <TextInput
@@ -262,7 +262,7 @@ const ChangePassword = () => {
           <View>
             <Text style={MyStyles.inputLabel}>
               Confirm New Password
-              <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              <Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <View style={MyStyles.eyeInputContainer}>
               <TextInput
@@ -296,7 +296,7 @@ const ChangePassword = () => {
         </View>
         <TouchableOpacity
           onPress={handleConfirm}
-          style={MyStyles.button}
+          style={[MyStyles.button, { marginTop: 30 }]}
           disabled={loading}
         >
           <Text style={MyStyles.buttonText}>
