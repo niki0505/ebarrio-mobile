@@ -89,6 +89,7 @@ const ChangeUsername = () => {
   };
 
   const handleUsernameChange = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -120,7 +121,6 @@ const ChangeUsername = () => {
       }
     } finally {
       setLoading(false);
-      setIsConfirmModalVisible(false);
       setIsAlertModalVisible(true);
       setAlertMessage(message);
       setIsSuccess(false);

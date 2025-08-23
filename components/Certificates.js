@@ -136,6 +136,7 @@ const Certificates = () => {
   };
 
   const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -185,7 +186,6 @@ const Certificates = () => {
     } finally {
       setLoading(false);
     }
-    setIsConfirmModalVisible(false);
   };
 
   const handleDropdownChange = ({ target }) => {

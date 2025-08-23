@@ -85,6 +85,7 @@ const Blotter = () => {
   };
 
   const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -108,7 +109,6 @@ const Blotter = () => {
     } finally {
       setLoading(false);
     }
-    setIsConfirmModalVisible(false);
   };
 
   const handleDropdownChange = ({ target }) => {

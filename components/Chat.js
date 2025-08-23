@@ -315,8 +315,7 @@ const Chat = () => {
         chatId: chat._id,
         status: chat.status,
       }))
-    )
-    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    );
 
   const sendIconSize = RFPercentage(3);
 

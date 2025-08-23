@@ -587,6 +587,13 @@ export default function App() {
     return () => subscription.remove();
   }, []);
 
+  // useEffect(() => {
+  //   const clearCache = async () => {
+  //     await SecureStore.deleteItemAsync("hasLaunched");
+  //   };
+  //   clearCache();
+  // }, []);
+
   useEffect(() => {
     const checkFirstLaunch = async () => {
       const hasLaunched = await SecureStore.getItemAsync("hasLaunched");

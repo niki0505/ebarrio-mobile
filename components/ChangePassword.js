@@ -129,6 +129,7 @@ const ChangePassword = () => {
   };
 
   const handlePasswordChange = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -150,7 +151,6 @@ const ChangePassword = () => {
       }
     } finally {
       setLoading(false);
-      setIsConfirmModalVisible(false);
       setIsAlertModalVisible(true);
       setAlertMessage(message);
       setIsSuccess(false);

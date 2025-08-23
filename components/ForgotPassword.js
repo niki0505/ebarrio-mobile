@@ -244,6 +244,7 @@ const ForgotPassword = () => {
   };
 
   const handleSuccessful = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -265,7 +266,6 @@ const ForgotPassword = () => {
     } finally {
       setLoading(false);
     }
-    setIsConfirmModalVisible(false);
     setIsAlertModalVisible(true);
     setAlertMessage(message);
     setIsSuccess(false);

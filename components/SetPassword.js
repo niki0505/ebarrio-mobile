@@ -35,6 +35,7 @@ const SetPassword = () => {
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const togglesecurePass = () => {
     setSecurePass(!securePass);
@@ -44,6 +45,7 @@ const SetPassword = () => {
     setSecureConfirmPass(!secureConfirmPass);
   };
   const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     try {
       await api.put(`/resetpassword/${username}`, { password });
       setIsSuccess(true);
@@ -53,7 +55,6 @@ const SetPassword = () => {
       setAlertMessage("Password reset failed.");
       setIsSuccess(false);
     }
-    setIsConfirmModalVisible(false);
     setAlertMessage(message);
     setIsAlertModalVisible(true);
   };
@@ -193,7 +194,7 @@ const SetPassword = () => {
             />
 
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-              Set Password
+              {loading ? "Confirming..." : "Confirm"}
             </Text>
 
             {/* Form fields */}
@@ -264,7 +265,11 @@ const SetPassword = () => {
             </View>
 
             {/* Submit Button */}
-            <TouchableOpacity onPress={handleConfirm} style={[MyStyles.button]}>
+            <TouchableOpacity
+              disabled={loading}
+              onPress={handleConfirm}
+              style={[MyStyles.button]}
+            >
               <Text style={MyStyles.buttonText}>Submit</Text>
             </TouchableOpacity>
           </ScrollView>

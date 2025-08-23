@@ -298,6 +298,7 @@ const CourtReservations = () => {
   };
 
   const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -350,7 +351,6 @@ const CourtReservations = () => {
     } finally {
       setLoading(false);
     }
-    setIsConfirmModalVisible(false);
   };
 
   const renderDateSelector = () => {

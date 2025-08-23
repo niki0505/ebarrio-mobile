@@ -774,6 +774,7 @@ const ResidentForm = () => {
   };
 
   const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -840,8 +841,6 @@ const ResidentForm = () => {
     } finally {
       setLoading(false);
     }
-
-    setIsConfirmModalVisible(false);
   };
 
   const [showSignModal, setShowSignModal] = useState(false);

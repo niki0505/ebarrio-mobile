@@ -120,6 +120,7 @@ const EditSecurityQuestions = () => {
   };
 
   const handleQuestionsChange = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
     setLoading(true);
 
@@ -196,7 +197,6 @@ const EditSecurityQuestions = () => {
       setIsSuccess(false);
     } finally {
       setLoading(false);
-      setIsConfirmModalVisible(false);
       setIsAlertModalVisible(true);
       setAlertMessage(message);
       setIsSuccess(false);
