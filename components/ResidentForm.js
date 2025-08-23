@@ -29,6 +29,7 @@ import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import Signature from "react-native-signature-canvas";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import { useState, useEffect, useContext } from "react";
@@ -395,13 +396,12 @@ const ResidentForm = () => {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
-          "Permission required",
+        setAlertMessage(
           "We need access to your photos to let you upload an image."
         );
+        setIsAlertModalVisible(true);
         return;
       }
-
       setIsIDProcessing(true);
 
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -413,7 +413,6 @@ const ResidentForm = () => {
       if (!result.canceled) {
         const uri = result.assets[0].uri;
         setResidentForm((prev) => ({ ...prev, id: uri }));
-
         setErrors((prev) => ({ ...prev, id: null }));
       }
     } catch (error) {
@@ -431,7 +430,8 @@ const ResidentForm = () => {
     if (!permissionResult.granted) {
       const askPermission = await ImagePicker.requestCameraPermissionsAsync();
       if (!askPermission.granted) {
-        Alert.alert("Permission Denied", "Camera permission is required.");
+        setAlertMessage("Camera permission is required.");
+        setIsAlertModalVisible(true);
         return;
       }
     }
@@ -1221,7 +1221,7 @@ const ResidentForm = () => {
                       style={{
                         color: residentForm.birthdate ? "black" : "#808080",
                         fontFamily: "QuicksandMedium",
-                        fontSize: 16,
+                        fontSize: RFPercentage(2),
                       }}
                     >
                       {residentForm.birthdate
@@ -1360,7 +1360,7 @@ const ResidentForm = () => {
                               ? "black"
                               : "#808080",
                             fontFamily: "QuicksandMedium",
-                            fontSize: 16,
+                            fontSize: RFPercentage(2),
                           }}
                         >
                           {residentForm.lastmenstrual
@@ -1420,7 +1420,7 @@ const ResidentForm = () => {
                             <Text
                               style={{
                                 fontFamily: "QuicksandMedium",
-                                fontSize: 16,
+                                fontSize: RFPercentage(2),
                               }}
                             >
                               {option}
@@ -1558,7 +1558,7 @@ const ResidentForm = () => {
                         <Text
                           style={{
                             fontFamily: "QuicksandMedium",
-                            fontSize: 16,
+                            fontSize: RFPercentage(2),
                           }}
                         >
                           {option}
@@ -1735,7 +1735,7 @@ const ResidentForm = () => {
                         <Text
                           style={{
                             fontFamily: "QuicksandMedium",
-                            fontSize: 16,
+                            fontSize: RFPercentage(2),
                           }}
                         >
                           {option}
@@ -1891,7 +1891,7 @@ const ResidentForm = () => {
                         <Text
                           style={{
                             fontFamily: "QuicksandMedium",
-                            fontSize: 16,
+                            fontSize: RFPercentage(2),
                           }}
                         >
                           {option}
@@ -2042,7 +2042,7 @@ const ResidentForm = () => {
                             <Text
                               style={{
                                 fontFamily: "QuicksandMedium",
-                                fontSize: 16,
+                                fontSize: RFPercentage(2),
                               }}
                             >
                               {option}
@@ -2094,7 +2094,7 @@ const ResidentForm = () => {
                               <Text
                                 style={{
                                   fontFamily: "QuicksandMedium",
-                                  fontSize: 16,
+                                  fontSize: RFPercentage(2),
                                 }}
                               >
                                 {option}
@@ -2284,7 +2284,12 @@ const ResidentForm = () => {
                       </TouchableOpacity>
                     </View>
 
-                    <Text style={[MyStyles.inputLabel, { fontSize: 18 }]}>
+                    <Text
+                      style={[
+                        MyStyles.inputLabel,
+                        { fontSize: RFPercentage(1.8) },
+                      ]}
+                    >
                       Vehicles
                     </Text>
                     <View>
@@ -2559,7 +2564,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 4,
     marginHorizontal: 2,
-    fontSize: 12,
+    fontSize: RFPercentage(2),
     borderRadius: 5,
   },
   removeButton: {

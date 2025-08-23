@@ -330,7 +330,7 @@ const EditSecurityQuestions = () => {
 
             <View>
               <Text style={MyStyles.inputLabel}>
-                Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+                Password<Text style={MyStyles.redAsterisk}>*</Text>
               </Text>
               <View style={MyStyles.eyeInputContainer}>
                 <TextInput
@@ -358,11 +358,11 @@ const EditSecurityQuestions = () => {
           </View>
           <TouchableOpacity
             onPress={handleConfirm}
-            style={MyStyles.button}
+            style={[MyStyles.button, { marginTop: 30 }]}
             disabled={loading}
           >
             <Text style={MyStyles.buttonText}>
-              {loading ? "Saving..." : "Save"}
+              {loading ? "Updating..." : "Update"}
             </Text>
           </TouchableOpacity>
 

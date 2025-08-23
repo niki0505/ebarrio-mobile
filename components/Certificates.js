@@ -411,7 +411,7 @@ const Certificates = () => {
               <TextInput
                 value={certificateForm.amount}
                 editable={false}
-                style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
+                style={MyStyles.blotterFullName}
               />
             </View>
           </View>

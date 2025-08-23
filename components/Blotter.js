@@ -263,12 +263,7 @@ const Blotter = () => {
                             onPress={() => handleSubjectSuggestionClick(res)}
                             style={MyStyles.suggestionItem}
                           >
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: 15,
-                              }}
-                            >
+                            <Text style={MyStyles.blotterFullName}>
                               {fullName}
                             </Text>
                           </TouchableOpacity>

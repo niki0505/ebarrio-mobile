@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -15,6 +14,7 @@ import { useState } from "react";
 import api from "../api";
 import AppLogo from "../assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
+import AlertModal from "./AlertModal";
 
 //ICONS
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
@@ -29,9 +29,12 @@ const SetPassword = () => {
   const [repassword, setRePassword] = useState("");
   const [passwordErrors, setPasswordErrors] = useState([]);
   const [repasswordErrors, setRePasswordErrors] = useState([]);
-
   const [securePass, setSecurePass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const togglesecurePass = () => {
     setSecurePass(!securePass);
@@ -40,17 +43,19 @@ const SetPassword = () => {
   const togglesecureConfirmPass = () => {
     setSecureConfirmPass(!secureConfirmPass);
   };
-
   const handleSubmit = async () => {
     try {
-      await api.put(`/resetpassword/${username}`, {
-        password,
-      });
-      alert("Password reset successfully!");
-      navigation.navigate("Login");
+      await api.put(`/resetpassword/${username}`, { password });
+      setIsSuccess(true);
+      setAlertMessage("Your password has been set.");
     } catch (error) {
       console.log("Failed to reset password", error);
+      setAlertMessage("Password reset failed.");
+      setIsSuccess(false);
     }
+    setIsConfirmModalVisible(false);
+    setAlertMessage(message);
+    setIsAlertModalVisible(true);
   };
 
   const handleConfirm = () => {
@@ -58,17 +63,17 @@ const SetPassword = () => {
     let perrors = [];
     let rerrors = [];
     if (!password) {
-      perrors.push("Password must not be empty.");
+      perrors.push("This field is required!");
       setPasswordErrors(perrors);
       hasErrors = true;
     }
     if (!repassword) {
-      rerrors.push("Password must not be empty.");
+      rerrors.push("This field is required!");
       setRePasswordErrors(rerrors);
       hasErrors = true;
     }
 
-    if (repasswordErrors.includes("Passwords do not match.")) {
+    if (repasswordErrors.includes("Passwords do not match!")) {
       hasErrors = true;
     }
 
@@ -76,23 +81,7 @@ const SetPassword = () => {
       return;
     }
 
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to set your password?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          onPress: () => {
-            handleSubmit();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    setIsConfirmModalVisible(true);
   };
 
   const passwordValidation = (val) => {
@@ -101,13 +90,13 @@ const SetPassword = () => {
     setPassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (
       (formattedVal && formattedVal.length < 8) ||
       (formattedVal && formattedVal.length > 64)
     ) {
-      errors.push("Password must be between 8 and 64 characters only.");
+      errors.push("Password must be between 8 and 64 characters only!");
     }
     if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
       errors.push(
@@ -123,7 +112,7 @@ const SetPassword = () => {
     setRePassword(formattedVal);
 
     if (!formattedVal) {
-      errors.push("Password must not be empty.");
+      errors.push("This field is required!");
     }
     if (formattedVal !== password && formattedVal.length > 0) {
       errors.push("Passwords do not match.");
@@ -162,6 +151,13 @@ const SetPassword = () => {
     </View>
   );
 
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    navigation.navigate("Login");
+    setPassword("");
+    setRePassword("");
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -173,17 +169,7 @@ const SetPassword = () => {
     >
       <BackgroundOverlay />
       {/* Card container with transparency */}
-      <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 2,
-          marginTop: 20,
-        }}
-      >
+      <View style={MyStyles.forgotCardWrapper}>
         <View
           style={{
             width: "80%",
@@ -200,11 +186,9 @@ const SetPassword = () => {
             }}
             showsVerticalScrollIndicator={false}
           >
-            {/* Back arrow and heading */}
-
             <AntDesign
               name="arrowleft"
-              style={[MyStyles.backArrow]}
+              style={[MyStyles.backArrow, { alignSelf: "flex-start" }]}
               onPress={() => navigation.navigate("Login")}
             />
 
@@ -286,6 +270,22 @@ const SetPassword = () => {
           </ScrollView>
         </View>
       </View>
+
+      <AlertModal
+        isVisible={isAlertModalVisible}
+        message={alertMessage}
+        isSuccess={isSuccess}
+        onClose={() => setIsAlertModalVisible(false)}
+        onConfirm={handleCloseAlertModal}
+      />
+      <AlertModal
+        isVisible={isConfirmModalVisible}
+        isConfirmationModal={true}
+        title="Set Password?"
+        message="Are you sure you want to set your password?"
+        onClose={() => setIsConfirmModalVisible(false)}
+        onConfirm={handleSubmit}
+      />
     </SafeAreaView>
   );
 };

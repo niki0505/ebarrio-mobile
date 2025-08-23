@@ -54,7 +54,7 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
@@ -64,7 +64,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 30,
                   fontFamily: "QuicksandMedium",
@@ -90,7 +90,7 @@ const AlertModal = ({
                 <Text
                   style={{
                     color: "#fff",
-                    fontSize: RFPercentage(1.8),
+                    fontSize: RFPercentage(2),
                     fontFamily: "QuicksandBold",
                     textAlign: "center",
                   }}
@@ -113,7 +113,7 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
@@ -123,7 +123,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 20,
                   fontFamily: "QuicksandMedium",
@@ -156,7 +156,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#BC0F0F",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -182,7 +182,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#fff",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -202,7 +202,7 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 10,
                   color: "#808080",
@@ -212,7 +212,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 20,
                   fontFamily: "QuicksandMedium",
@@ -245,7 +245,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#BC0F0F",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -271,7 +271,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#fff",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -295,7 +295,7 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
@@ -305,7 +305,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 30,
                   fontFamily: "QuicksandMedium",
@@ -337,7 +337,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "white",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}

@@ -30,6 +30,7 @@ import Signature from "react-native-signature-canvas";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
 import api from "../api";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONSS
 import Entypo from "@expo/vector-icons/Entypo";
@@ -1207,7 +1208,7 @@ const UserProfile = () => {
                         style={{
                           color: residentForm.birthdate ? "black" : "#808080",
                           fontFamily: "QuicksandMedium",
-                          fontSize: 16,
+                          fontSize: RFPercentage(2),
                         }}
                       >
                         {residentForm.birthdate
@@ -1333,7 +1334,7 @@ const UserProfile = () => {
                                 ? "black"
                                 : "#808080",
                               fontFamily: "QuicksandMedium",
-                              fontSize: 16,
+                              fontSize: RFPercentage(2),
                             }}
                           >
                             {residentForm.lastmenstrual
@@ -1396,7 +1397,7 @@ const UserProfile = () => {
                               <Text
                                 style={{
                                   fontFamily: "QuicksandMedium",
-                                  fontSize: 16,
+                                  fontSize: RFPercentage(2),
                                 }}
                               >
                                 {option}
@@ -1530,7 +1531,7 @@ const UserProfile = () => {
                           <Text
                             style={{
                               fontFamily: "QuicksandMedium",
-                              fontSize: 16,
+                              fontSize: RFPercentage(2),
                             }}
                           >
                             {option}
@@ -1713,7 +1714,7 @@ const UserProfile = () => {
                           <Text
                             style={{
                               fontFamily: "QuicksandMedium",
-                              fontSize: 16,
+                              fontSize: RFPercentage(2),
                             }}
                           >
                             {option}
@@ -1846,7 +1847,7 @@ const UserProfile = () => {
                           <Text
                             style={{
                               fontFamily: "QuicksandMedium",
-                              fontSize: 16,
+                              fontSize: RFPercentage(2),
                             }}
                           >
                             {option}
@@ -2004,7 +2005,7 @@ const UserProfile = () => {
                                 <Text
                                   style={{
                                     fontFamily: "QuicksandMedium",
-                                    fontSize: 16,
+                                    fontSize: RFPercentage(2),
                                   }}
                                 >
                                   {option}
@@ -2057,7 +2058,7 @@ const UserProfile = () => {
                                 <Text
                                   style={{
                                     fontFamily: "QuicksandMedium",
-                                    fontSize: 16,
+                                    fontSize: RFPercentage(2),
                                   }}
                                 >
                                   {option}

@@ -120,7 +120,7 @@ const RiverSnapshots = () => {
               onChangeText={(text) => setAlertResidentsMessage(text)}
               style={{
                 fontFamily: "QuicksandMedium",
-                fontSize: 16,
+                fontSize: RFPercentage(2),
                 padding: 10,
                 color: "#04384E",
               }}
@@ -174,7 +174,7 @@ const RiverSnapshots = () => {
                 style={[
                   MyStyles.buttonText,
                   {
-                    fontSize: RFPercentage(1.8),
+                    fontSize: RFPercentage(2),
                     color: viewMode === "current" ? "white" : "#04384E",
                     textAlign: "center",
                   },
@@ -201,7 +201,7 @@ const RiverSnapshots = () => {
                 style={[
                   MyStyles.buttonText,
                   {
-                    fontSize: RFPercentage(1.8),
+                    fontSize: RFPercentage(2),
                     color: viewMode === "history" ? "white" : "#04384E",
                     textAlign: "center",
                   },
@@ -271,14 +271,14 @@ const RiverSnapshots = () => {
                   </View>
                   <Text
                     style={{
-                      fontSize: RFPercentage(1.6),
+                      fontSize: RFPercentage(1.8),
                       color: "#D3D3D3",
                       textAlign: "center",
                       fontFamily: "QuicksandSemiBold",
                       marginTop: 10,
                     }}
                   >
-                    The next update will be in 10 minutes.
+                    The next update will be after 10 minutes.
                   </Text>
                   {user.role !== "Resident" && (
                     <TouchableOpacity
@@ -310,7 +310,7 @@ const RiverSnapshots = () => {
 
                         <Text
                           style={{
-                            fontSize: RFPercentage(1.6),
+                            fontSize: RFPercentage(1.8),
                             color: "white",
                             fontFamily: "QuicksandBold",
                             textAlign: "right",

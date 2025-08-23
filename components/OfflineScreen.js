@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -110,7 +111,7 @@ const OfflineScreen = () => {
                       <Text
                         style={[
                           MyStyles.emergencyTitle,
-                          { color: "#BC0F0F", fontSize: 30 },
+                          { color: "#BC0F0F", fontSize: RFPercentage(3) },
                         ]}
                       >
                         READINESS
@@ -118,7 +119,7 @@ const OfflineScreen = () => {
                       <Text
                         style={[
                           MyStyles.emergencyMessage,
-                          { color: "#BC0F0F", fontSize: 16 },
+                          { color: "#BC0F0F", fontSize: RFPercentage(1.8) },
                         ]}
                       >
                         Stay Smart, Stay Safe
@@ -135,7 +136,7 @@ const OfflineScreen = () => {
                       <Text
                         style={[
                           MyStyles.emergencyTitle,
-                          { color: "#BC0F0F", fontSize: 30 },
+                          { color: "#BC0F0F", fontSize: RFPercentage(3) },
                         ]}
                       >
                         HOTLINES
@@ -143,7 +144,7 @@ const OfflineScreen = () => {
                       <Text
                         style={[
                           MyStyles.emergencyMessage,
-                          { color: "#BC0F0F", fontSize: 16 },
+                          { color: "#BC0F0F", fontSize: RFPercentage(1.8) },
                         ]}
                       >
                         Call for Assistance
