@@ -55,7 +55,7 @@ const Status = () => {
   }, []);
   const filteredServices = services.filter((service) => {
     if (sortOption === "documents") {
-      return service.type === "Document";
+      return service.type === "Certificate";
     } else if (sortOption === "reservations") {
       return service.type === "Reservation";
     } else if (sortOption === "blotters") {
@@ -247,7 +247,7 @@ const Status = () => {
             contentStyle={MyStyles.statusDialogWrapper}
           >
             <Dialog.Title style={MyStyles.cancelCert}>
-              Cancel Certificate
+              Cancel Document
             </Dialog.Title>
 
             <Dialog.Input
@@ -351,7 +351,9 @@ const Status = () => {
                       activeOpacity={0.7}
                     >
                       <Text style={MyStyles.statusServiceType}>
-                        {service.type}
+                        {service.type === "Certificate"
+                          ? "Document"
+                          : service.type}
                       </Text>
                       <MaterialIcons
                         name={

@@ -246,7 +246,7 @@ const ChangeUsername = () => {
           disabled={loading}
         >
           <Text style={MyStyles.buttonText}>
-            {loading ? "Upading..." : "Update"}
+            {loading ? "Updating..." : "Update"}
           </Text>
         </TouchableOpacity>
 

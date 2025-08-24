@@ -51,6 +51,7 @@ const ChangePassword = () => {
 
   const passwordValidation = (val) => {
     let errors = [];
+    let errors2 = [];
     let formattedVal = val.replace(/\s+/g, "");
 
     setNewPassword(formattedVal);
@@ -68,7 +69,12 @@ const ChangePassword = () => {
         "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #"
       );
     }
+    if (renewpassword && formattedVal !== renewpassword) {
+      errors2.push("Passwords do not match!");
+    }
+
     setPasswordErrors(errors);
+    setRePasswordErrors(errors2);
   };
 
   const repasswordValidation = (val) => {

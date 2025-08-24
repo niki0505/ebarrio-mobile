@@ -13,7 +13,8 @@ const socket = io("https://ebarrio-mobile-backend.onrender.com", {
 });
 
 export const InfoProvider = ({ children }) => {
-  const { isAuthenticated, setUserStatus, user } = useContext(AuthContext);
+  const { isAuthenticated, setUserStatus, user, setUserPasswordChanged } =
+    useContext(AuthContext);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
@@ -86,6 +87,7 @@ export const InfoProvider = ({ children }) => {
       users.map((usr) => {
         if (usr._id === user.userID) {
           setUserStatus(usr.status);
+          setUserPasswordChanged(usr.passwordchangedat);
         }
       });
     }
