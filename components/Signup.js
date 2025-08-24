@@ -41,7 +41,10 @@ const Signup = () => {
   const [repasswordErrors, setRePasswordErrors] = useState([]);
   const [secureNewPass, setSecureNewPass] = useState(true);
   const [secureConfirmPass, setSecureConfirmPass] = useState(true);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [isAlreadyExistsModalVisible, setIsAlreadyExistsModalVisible] =
+    useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
   const togglesecureNewPass = () => {
@@ -144,16 +147,14 @@ const Signup = () => {
 
   const passwordValidation = (val) => {
     let errors = [];
+    let errors2 = [];
     let formattedVal = val.replace(/\s+/g, "");
     setPassword(formattedVal);
 
     if (!formattedVal) {
       errors.push("This field is required!");
     }
-    if (
-      (formattedVal && formattedVal.length < 8) ||
-      (formattedVal && formattedVal.length > 64)
-    ) {
+    if (formattedVal && (formattedVal.length < 8 || formattedVal.length > 64)) {
       errors.push("Password must be between 8 and 64 characters only!");
     }
     if (formattedVal && !/^[a-zA-Z0-9!@\$%\^&*\+#]+$/.test(formattedVal)) {
@@ -161,7 +162,11 @@ const Signup = () => {
         "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #"
       );
     }
+    if (repassword && formattedVal !== repassword) {
+      errors2.push("Passwords do not match!");
+    }
     setPasswordErrors(errors);
+    setRePasswordErrors(errors2);
   };
 
   const handleSignUp = async () => {
@@ -181,66 +186,49 @@ const Signup = () => {
       repasswordValidation(repassword);
       return;
     }
+
+    if (usernameErrors.length !== 0) {
+      return;
+    }
+    if (passwordErrors.length !== 0) {
+      return;
+    }
+    if (repasswordErrors.length !== 0) {
+      return;
+    }
+    if (mobilenumErrors.length !== 0) {
+      return;
+    }
+
+    setIsConfirmModalVisible(true);
+  };
+
+  const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     try {
-      if (usernameErrors.length !== 0) {
-        return;
-      }
-      if (passwordErrors.length !== 0) {
-        return;
-      }
-      if (repasswordErrors.length !== 0) {
-        return;
-      }
-      if (mobilenumErrors.length !== 0) {
-        return;
-      }
       let formattedNumber = mobilenumber;
       formattedNumber = "0" + mobilenumber.slice(3);
-
+      const response = await api.post("/checkresident", {
+        username,
+        firstname,
+        lastname,
+        mobilenumber: formattedNumber,
+      });
       try {
-        const response = await api.post("/checkresident", {
-          username,
-          firstname,
-          lastname,
+        sendOTP(username, formattedNumber);
+        navigation.navigate("OTP", {
+          username: username,
+          password: password,
           mobilenumber: formattedNumber,
+          resID: response.data.resID,
+          navigatelink: "Login",
         });
-        try {
-          sendOTP(username, formattedNumber);
-          navigation.navigate("OTP", {
-            username: username,
-            password: password,
-            mobilenumber: formattedNumber,
-            resID: response.data.resID,
-            navigatelink: "Login",
-          });
-        } catch (error) {
-          const response = error.response;
-          if (response && response.data) {
-            console.log("❌ Error status:", response.status);
-            setAlertMessage(response.data.message || "Something went wrong.");
-            setIsAlertModalVisible(true);
-          } else {
-            console.log("❌ Network or unknown error:", error.message);
-            setAlertMessage("An unexpected error occurred.");
-            setIsAlertModalVisible(true);
-          }
-        }
       } catch (error) {
         const response = error.response;
         if (response && response.data) {
           console.log("❌ Error status:", response.status);
-          if (
-            response.status === 404 &&
-            response.data.message === "Resident not found"
-          ) {
-            setAlertMessage(
-              "Would you like to register your resident profile now?"
-            );
-            setIsAlertModalVisible(true);
-          } else {
-            setAlertMessage(response.data.message || "Something went wrong.");
-            setIsAlertModalVisible(true);
-          }
+          setAlertMessage(response.data.message || "Something went wrong.");
+          setIsAlertModalVisible(true);
         } else {
           console.log("❌ Network or unknown error:", error.message);
           setAlertMessage("An unexpected error occurred.");
@@ -248,8 +236,26 @@ const Signup = () => {
         }
       }
     } catch (error) {
-      setAlertMessage(error.message);
-      setIsAlertModalVisible(true);
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        if (
+          response.status === 404 &&
+          response.data.message === "Resident not found"
+        ) {
+          setAlertMessage(
+            "Would you like to register your resident profile now?"
+          );
+          setIsAlertModalVisible(true);
+        } else {
+          setAlertMessage(response.data.message || "Something went wrong.");
+          setIsAlreadyExistsModalVisible(true);
+        }
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
+      }
     }
   };
 
@@ -502,6 +508,24 @@ const Signup = () => {
               "Would you like to register your resident profile now?"
             }
             isSuccess={false}
+          />
+
+          <AlertModal
+            isVisible={isAlreadyExistsModalVisible}
+            message={alertMessage}
+            title="Error"
+            onClose={() => setIsAlreadyExistsModalVisible(false)}
+            isHaveAnAccountModal={alertMessage === "Account Already Exists"}
+            isSuccess={false}
+          />
+
+          <AlertModal
+            isVisible={isConfirmModalVisible}
+            isConfirmationModal={true}
+            title="Create Account?"
+            message="Are you sure you want to create account?"
+            onClose={() => setIsConfirmModalVisible(false)}
+            onConfirm={handleSubmit}
           />
         </View>
       </KeyboardAvoidingView>

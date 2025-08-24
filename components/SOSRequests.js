@@ -141,10 +141,7 @@ const SOSRequests = () => {
           />
 
           <Text
-            style={[
-              MyStyles.header,
-              { fontFamily: "REMBold", color: "white", fontSize: 30 },
-            ]}
+            style={[MyStyles.header, { fontFamily: "REMBold", color: "white" }]}
           >
             SOS Requests
           </Text>
@@ -156,7 +153,7 @@ const SOSRequests = () => {
           </Text>
 
           {loading ? (
-            <ActivityIndicator size="large" color="#04384E" />
+            <ActivityIndicator size="large" color="white" />
           ) : pendingReports.length === 0 ? (
             <Text
               style={[MyStyles.noEvents, { color: "#fff", opacity: "0.7" }]}
@@ -168,13 +165,13 @@ const SOSRequests = () => {
               let badgeColor = "gray";
               let badgeIcon = "help-circle";
 
-              if (report.status === "New") {
+              if (report.status === "False Alarm") {
                 badgeColor = "red";
                 badgeIcon = "alert-circle";
               } else if (report.status === "Pending") {
                 badgeColor = "orange";
                 badgeIcon = "time";
-              } else if (report.status === "Responding") {
+              } else if (report.status === "Ongoing") {
                 badgeColor = "green";
                 badgeIcon = "checkmark-done-circle";
               }
@@ -183,84 +180,36 @@ const SOSRequests = () => {
                 <TouchableOpacity
                   onPress={() => viewDetails(report._id)}
                   key={report._id}
-                  style={{
-                    backgroundColor: "white",
-                    padding: 12,
-                    marginVertical: 6,
-                    borderRadius: 12,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 3,
-                    elevation: 3,
-                    marginVertical: 20,
-                  }}
+                  style={[MyStyles.sosCard, MyStyles.shadow]}
                 >
-                  {/* Status badge with icon */}
                   <View
-                    style={{
-                      backgroundColor: badgeColor,
-                      alignSelf: "flex-start",
-                      paddingHorizontal: 16,
-                      paddingVertical: 4,
-                      borderRadius: 50,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: 8,
-                    }}
+                    style={[
+                      MyStyles.statusWrapper,
+                      { backgroundColor: badgeColor },
+                    ]}
                   >
-                    <Ionicons
-                      name={badgeIcon}
-                      size={16}
-                      color="white"
-                      style={{ marginRight: 6 }}
-                    />
-                    <Text
-                      style={{
-                        color: "white",
-                        fontFamily: "QuicksandBold",
-                        fontSize: 14,
-                      }}
-                    >
+                    <Ionicons name={badgeIcon} style={MyStyles.statusIcon} />
+                    <Text style={MyStyles.statusTitle}>
                       {report.status || "Pending"}
                     </Text>
                   </View>
 
-                  {/* Card content */}
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View style={MyStyles.rowAlignment}>
                     <Image
                       source={{ uri: report.resID.picture }}
-                      style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 30,
-                        marginRight: 12,
-                      }}
+                      style={MyStyles.sosImg}
                     />
 
-                    {/* Details */}
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontFamily: "REMSemiBold", fontSize: 20 }}>
+                      <Text style={MyStyles.sosReportType}>
                         {report.reporttype ? report.reporttype : "SOS"}
                       </Text>
 
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        <Text style={{ color: "black", fontSize: 16 }}>
+                      <View style={MyStyles.sosAddressTimeWrapper}>
+                        <Text style={MyStyles.sosDetailsText}>
                           #{report.readableAddress}
                         </Text>
-                        <Text
-                          style={{
-                            color: "black",
-                            fontFamily: "QuicksandMedium",
-                            fontSize: 14,
-                          }}
-                        >
+                        <Text style={MyStyles.sosDetailsText}>
                           {dayjs(report.createdAt).fromNow()}
                         </Text>
                       </View>

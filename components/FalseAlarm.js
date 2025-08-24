@@ -22,7 +22,7 @@ import AlertModal from "./AlertModal";
 import * as ImagePicker from "expo-image-picker";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const FalseAlarm = () => {
   const route = useRoute();
@@ -163,7 +163,7 @@ const FalseAlarm = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#BC0F0F",
       }}
     >
       <KeyboardAvoidingView
@@ -174,104 +174,139 @@ const FalseAlarm = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
+              backgroundColor: "#BC0F0F",
               gap: 10,
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
+          <AntDesign
+            onPress={() =>
+              navigation.navigate("SOSReportDetails", { selectedID })
+            }
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "white" }]}
+          />
+
+          <Text
+            style={[MyStyles.header, { fontFamily: "REMBold", color: "white" }]}
           >
-            <MaterialIcons
-              onPress={() =>
-                navigation.navigate("SOSReportDetails", { selectedID })
-              }
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+            False Report
+          </Text>
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              False Report
-            </Text>
-          </View>
-
-          <Text style={MyStyles.formMessage}>
+          <Text
+            style={[MyStyles.formMessage, { color: "white", opacity: 0.7 }]}
+          >
             Please select and fill out the required information to submit an
             update.
           </Text>
-          <View>
-            <Text style={MyStyles.inputLabel}>
-              Reason for Marking as False Alarm
-              <Text style={{ color: "red" }}>*</Text>
-            </Text>
-            <TextInput
-              placeholder="Describe any actions you or your team took upon arrival."
-              style={[
-                MyStyles.input,
-                { height: 150, textAlignVertical: "top" },
-              ]}
-              value={postIncidentForm.postreportdetails}
-              type="text"
-              multiline={true}
-              numberOfLines={4}
-              maxLength={3000}
-              autoCapitalize="sentences"
-              onChangeText={(text) =>
-                handleInputChange("postreportdetails", text)
-              }
-            />
 
-            <View style={MyStyles.errorDetailsWrapper}>
-              <Text style={MyStyles.detailsLength}>
-                {postIncidentForm.postreportdetails.length}/1000
+          <View style={{ marginVertical: 30, gap: 10 }}>
+            <View>
+              <Text style={[MyStyles.inputLabel, { color: "white" }]}>
+                Reason for Marking as False Alarm
+                <Text style={{ color: "red" }}>*</Text>
               </Text>
-            </View>
-          </View>
+              <TextInput
+                placeholder="Describe any actions you or your team took upon arrival."
+                style={[
+                  MyStyles.input,
+                  { height: 200, textAlignVertical: "top" },
+                ]}
+                value={falseAlarmForm.postreportdetails}
+                type="text"
+                multiline={true}
+                numberOfLines={4}
+                maxLength={3000}
+                autoCapitalize="sentences"
+                onChangeText={(text) =>
+                  handleInputChange("postreportdetails", text)
+                }
+              />
 
-          {/* Evidence */}
-          <View>
-            <Text style={MyStyles.inputLabel}>
-              Evidence <Text style={{ color: "gray" }}>(if available)</Text>
-            </Text>
-            <View style={MyStyles.uploadBox}>
-              <View style={MyStyles.previewContainer}>
-                {isEvidenceProcessing ? (
-                  <ActivityIndicator size="small" color="#0000ff" />
-                ) : postIncidentForm.evidence ? (
-                  <Image
-                    source={{ uri: postIncidentForm.evidence }}
-                    style={MyStyles.image}
-                  />
-                ) : (
-                  <View style={MyStyles.placeholder}>
-                    <Text style={MyStyles.placeholderText}>Attach Picture</Text>
-                  </View>
-                )}
+              <View
+                style={[
+                  MyStyles.errorDetailsWrapper,
+                  { alignSelf: "flex-end" },
+                ]}
+              >
+                <Text
+                  style={[
+                    MyStyles.detailsLength,
+                    { color: "white", opacity: 0.7 },
+                  ]}
+                >
+                  {falseAlarmForm.postreportdetails.length}/1000
+                </Text>
               </View>
+            </View>
 
-              <View style={MyStyles.personalInfobuttons}>
-                <TouchableOpacity
-                  onPress={toggleEvidenceCamera}
-                  style={MyStyles.personalInfoButton}
-                >
-                  <Text>📷</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={pickEvidenceImage}
-                  style={MyStyles.personalInfoButton}
-                >
-                  <Text>📤</Text>
-                </TouchableOpacity>
+            {/* Evidence */}
+            <View>
+              <Text style={[MyStyles.inputLabel, { color: "white" }]}>
+                Evidence{" "}
+                <Text style={[MyStyles.inputLabel, { color: "white" }]}>
+                  (if available)
+                </Text>
+              </Text>
+              <View style={[MyStyles.uploadBox, { backgroundColor: "white" }]}>
+                <View style={MyStyles.previewContainer}>
+                  {isEvidenceProcessing ? (
+                    <ActivityIndicator size="small" color="#0000ff" />
+                  ) : falseAlarmForm.evidence ? (
+                    <Image
+                      source={{ uri: falseAlarmForm.evidence }}
+                      style={MyStyles.image}
+                    />
+                  ) : (
+                    <View style={MyStyles.placeholder}>
+                      <Text style={[MyStyles.placeholderText]}>
+                        Attach Picture
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                <View style={MyStyles.personalInfobuttons}>
+                  <TouchableOpacity
+                    onPress={toggleEvidenceCamera}
+                    style={[
+                      MyStyles.personalInfoButton,
+                      {
+                        borderWidth: 3,
+                        borderColor: "#BC0F0F",
+                        backgroundColor: "white",
+                      },
+                    ]}
+                  >
+                    <Text>📷</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={pickEvidenceImage}
+                    style={[
+                      MyStyles.personalInfoButton,
+                      {
+                        borderWidth: 3,
+                        borderColor: "#BC0F0F",
+                        backgroundColor: "white",
+                      },
+                    ]}
+                  >
+                    <Text>📤</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
 
           <TouchableOpacity
-            style={MyStyles.button}
+            style={[
+              MyStyles.button,
+              {
+                borderWidth: 3,
+                borderColor: "white",
+                backgroundColor: "#BC0F0F",
+              },
+            ]}
             onPress={handleConfirm}
             disabled={loading}
           >
@@ -283,7 +318,7 @@ const FalseAlarm = () => {
           <AlertModal
             isVisible={isConfirmModalVisible}
             isConfirmationModal={true}
-            title="False Alarm Report?"
+            title="Submit False Alarm Report?"
             message="Are you sure you want to submit a false alarm report?"
             onClose={() => setIsConfirmModalVisible(false)}
             onConfirm={handleSubmit}
@@ -295,3 +330,4 @@ const FalseAlarm = () => {
 };
 
 export default FalseAlarm;
+  

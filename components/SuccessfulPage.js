@@ -67,7 +67,7 @@ const SuccessfulPage = () => {
               <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
                 Your blotter report has been received by the barangay. You will
                 be notified once your report has an update. For the meantime,
-                you may view the status of your request.
+                you may view the status of your report.
               </Text>
             </View>
           )}
@@ -108,6 +108,8 @@ const SuccessfulPage = () => {
                 alignItems: "center",
                 justifyContent: "flex-end",
                 flex: 1,
+                flexDirection: "column",
+                gap: 15,
               }}
             >
               <TouchableOpacity
