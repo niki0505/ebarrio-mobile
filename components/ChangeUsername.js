@@ -45,23 +45,27 @@ const ChangeUsername = () => {
   const usernameValidation = (val) => {
     let errors = [];
     let formattedVal = val.replace(/\s+/g, "");
-
     setUsername(formattedVal);
 
     if (!formattedVal) {
       errors.push("This field is required!");
-    } else if (formattedVal.length < 3 || formattedVal.length > 16) {
-      errors.push("Username must be between 3 and 16 characters only!");
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formattedVal)) {
+    }
+    if (
+      (formattedVal && formattedVal.length < 3) ||
+      (formattedVal && formattedVal.length > 16)
+    ) {
+      errors.push("Username must be between 3 and 16 characters only.");
+    }
+    if (formattedVal && !/^[a-zA-Z0-9_]+$/.test(formattedVal)) {
       errors.push(
-        "Username can only contain letters, numbers, and underscores!"
+        "Username can only contain letters, numbers, and underscores."
       );
-    } else if (formattedVal.startsWith("_") || formattedVal.endsWith("_")) {
-      errors.push("Username must not start or end with an underscore!");
-    } else if (formattedVal === userDetails.username) {
-      errors.push(
-        "The new username must be different from the current username."
-      );
+    }
+    if (
+      (formattedVal && formattedVal.startsWith("_")) ||
+      (formattedVal && formattedVal.endsWith("_"))
+    ) {
+      errors.push("Username must not start or end with an underscore.");
     }
 
     setUsernameErrors(errors);

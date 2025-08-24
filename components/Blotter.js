@@ -300,7 +300,7 @@ const Blotter = () => {
                 placeholder="Details of the Incident"
                 style={[
                   MyStyles.input,
-                  { height: 150, textAlignVertical: "top" },
+                  { height: 200, textAlignVertical: "top" },
                 ]}
                 value={blotterForm.details}
                 type="text"

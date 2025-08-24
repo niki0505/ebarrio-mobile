@@ -139,7 +139,7 @@ const ChangePassword = () => {
         password,
       });
       setIsSuccess(true);
-      setAlertMessage("Your username has been updated. Please log in again.");
+      setAlertMessage("Your password has been updated. Please log in again.");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
@@ -282,16 +282,16 @@ const ChangePassword = () => {
                   color="gray"
                 />
               </TouchableOpacity>
+              {repasswordErrors.length > 0 && (
+                <View>
+                  {repasswordErrors.map((error, index) => (
+                    <Text key={index} style={MyStyles.errorMsg}>
+                      {error}
+                    </Text>
+                  ))}
+                </View>
+              )}
             </View>
-            {repasswordErrors.length > 0 && (
-              <View>
-                {repasswordErrors.map((error, index) => (
-                  <Text key={index} style={MyStyles.errorMsg}>
-                    {error}
-                  </Text>
-                ))}
-              </View>
-            )}
           </View>
         </View>
         <TouchableOpacity

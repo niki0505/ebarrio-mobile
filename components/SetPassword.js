@@ -50,9 +50,11 @@ const SetPassword = () => {
       await api.put(`/resetpassword/${username}`, { password });
       setIsSuccess(true);
       setAlertMessage("Your password has been set.");
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.log("Failed to reset password", error);
       setAlertMessage("Password reset failed.");
+      setIsAlertModalVisible(true);
       setIsSuccess(false);
     }
     setAlertMessage(message);
@@ -116,7 +118,7 @@ const SetPassword = () => {
       errors.push("This field is required!");
     }
     if (formattedVal !== password && formattedVal.length > 0) {
-      errors.push("Passwords do not match.");
+      errors.push("Passwords do not match!");
     }
     setRePasswordErrors(errors);
   };
@@ -169,24 +171,9 @@ const SetPassword = () => {
       }}
     >
       <BackgroundOverlay />
-      {/* Card container with transparency */}
       <View style={MyStyles.forgotCardWrapper}>
-        <View
-          style={{
-            width: "80%",
-            height: "50%",
-            backgroundColor: "#fff",
-            borderRadius: 20,
-            overflow: "hidden",
-          }}
-        >
-          <ScrollView
-            contentContainerStyle={{
-              padding: 30,
-              alignItems: "center",
-            }}
-            showsVerticalScrollIndicator={false}
-          >
+        <View style={MyStyles.forgotCard}>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <AntDesign
               name="arrowleft"
               style={[MyStyles.backArrow, { alignSelf: "flex-start" }]}
@@ -221,7 +208,7 @@ const SetPassword = () => {
                   </TouchableOpacity>
                 </View>
                 {passwordErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
+                  <View>
                     {passwordErrors.map((error, index) => (
                       <Text key={index} style={MyStyles.errorMsg}>
                         {error}
@@ -253,7 +240,7 @@ const SetPassword = () => {
                   </TouchableOpacity>
                 </View>
                 {repasswordErrors.length > 0 && (
-                  <View style={{ marginTop: 5, width: 300 }}>
+                  <View>
                     {repasswordErrors.map((error, index) => (
                       <Text key={index} style={MyStyles.errorMsg}>
                         {error}

@@ -19,6 +19,7 @@ import api from "../api";
 import AppLogo from "../assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import AlertModal from "./AlertModal";
+import { AntDesign } from "@expo/vector-icons";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -468,7 +469,7 @@ const ForgotPassword = () => {
               <View style={MyStyles.forgotCardWrapper}>
                 <View style={MyStyles.forgotCard}>
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <MaterialIcons
+                    <AntDesign
                       onPress={() => {
                         setIsExisting(false);
                         setIsVerified(false);
@@ -481,7 +482,7 @@ const ForgotPassword = () => {
                           answer: "",
                         });
                       }}
-                      name="arrow-back-ios"
+                      name="arrowleft"
                       style={MyStyles.backArrow}
                     />
 
@@ -516,16 +517,16 @@ const ForgotPassword = () => {
                             />
                           </TouchableOpacity>
                         </View>
-                        {passwordErrors.length > 0 && (
-                          <View>
-                            {passwordErrors.map((error, index) => (
-                              <Text key={index} style={MyStyles.errorMsg}>
-                                {error}
-                              </Text>
-                            ))}
-                          </View>
-                        )}
                       </View>
+                      {passwordErrors.length > 0 && (
+                        <View>
+                          {passwordErrors.map((error, index) => (
+                            <Text key={index} style={MyStyles.errorMsg}>
+                              {error}
+                            </Text>
+                          ))}
+                        </View>
+                      )}
 
                       <View>
                         <Text style={MyStyles.inputLabel}>
@@ -597,69 +598,73 @@ const ForgotPassword = () => {
               <BackgroundOverlay />
               <View style={MyStyles.forgotCardWrapper}>
                 <View style={MyStyles.forgotCard}>
-                  <MaterialIcons
-                    onPress={() => setOTPClicked(false)}
-                    name="arrow-back-ios"
-                    size={30}
-                    color="#04384E"
-                    style={{ alignSelf: "flex-start" }}
-                  />
-                  <Text style={MyStyles.header}>Account Verification</Text>
-
-                  <Text style={MyStyles.forgotMsg}>
-                    Enter the 6-digit code sent to
-                  </Text>
-                  <Text
-                    style={[
-                      MyStyles.forgotMsg,
-                      {
-                        marginTop: 5,
-                      },
-                    ]}
-                  >
-                    {maskMobileNumber(
-                      user.resID?.mobilenumber || user.empID?.resID.mobilenumber
-                    )}
-                  </Text>
-
-                  <View style={{ marginTop: 30 }}>
-                    <OtpInput
-                      ref={otpRef}
-                      type="numeric"
-                      numberOfDigits={6}
-                      onTextChange={handleOTPChange}
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <AntDesign
+                      onPress={() => setOTPClicked(false)}
+                      name="arrowleft"
+                      style={MyStyles.backArrow}
                     />
-                  </View>
+                    <Text style={MyStyles.header}>Account Verification</Text>
 
-                  {isResendDisabled ? (
                     <Text style={MyStyles.forgotMsg}>
-                      Resend OTP in{" "}
-                      <Text style={{ color: "red" }}>{resendTimer} </Text>second
-                      {resendTimer !== 1 ? "s" : ""}
+                      Enter the 6-digit code sent to
                     </Text>
-                  ) : (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        gap: 4,
-                        alignSelf: "flex-start",
-                        marginTop: 10,
-                      }}
+                    <Text
+                      style={[
+                        MyStyles.forgotMsg,
+
+                        {
+                          marginTop: 5,
+                          color: "#04384E",
+                        },
+                      ]}
                     >
-                      <Text
-                        onPress={handleResend}
-                        style={MyStyles.byClickingText}
-                      >
-                        Didn't get a code?
-                      </Text>
-                      <Text
-                        onPress={handleResend}
-                        style={MyStyles.resendOTPText}
-                      >
-                        Resend OTP
-                      </Text>
+                      {maskMobileNumber(
+                        user.resID?.mobilenumber ||
+                          user.empID?.resID.mobilenumber
+                      )}
+                    </Text>
+
+                    <View style={{ marginTop: 30 }}>
+                      <OtpInput
+                        ref={otpRef}
+                        type="numeric"
+                        numberOfDigits={6}
+                        onTextChange={handleOTPChange}
+                      />
                     </View>
-                  )}
+
+                    {isResendDisabled ? (
+                      <Text style={MyStyles.forgotMsg}>
+                        Resend OTP in{" "}
+                        <Text style={{ color: "red" }}>{resendTimer} </Text>
+                        second
+                        {resendTimer !== 1 ? "s" : ""}
+                      </Text>
+                    ) : (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 4,
+                          alignSelf: "flex-start",
+                          marginTop: 10,
+                        }}
+                      >
+                        <Text
+                          onPress={handleResend}
+                          style={MyStyles.byClickingText}
+                        >
+                          Didn't get a code?
+                        </Text>
+                        <Text
+                          onPress={handleResend}
+                          style={MyStyles.resendOTPText}
+                        >
+                          Resend OTP
+                        </Text>
+                      </View>
+                    )}
+                  </ScrollView>
                 </View>
               </View>
             </>
@@ -670,22 +675,14 @@ const ForgotPassword = () => {
               <View style={MyStyles.forgotCardWrapper}>
                 <View style={[MyStyles.forgotCard]}>
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <View
-                      style={{
-                        width: "100%",
-                        flexDirection: "row",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                      }}
-                    >
-                      <MaterialIcons
-                        name="arrow-back-ios"
-                        onPress={() => setQuestionsClicked(false)}
-                        style={MyStyles.backArrow}
-                      />
+                    <AntDesign
+                      onPress={() => setQuestionsClicked(false)}
+                      name="arrowleft"
+                      style={MyStyles.backArrow}
+                    />
 
-                      <Text style={MyStyles.header}>Security Question</Text>
-                    </View>
+                    <Text style={MyStyles.header}>Security Question</Text>
+
                     <Text style={MyStyles.forgotMsg}>
                       To verify your identity, please answer your chosen
                       security question below.
@@ -762,21 +759,13 @@ const ForgotPassword = () => {
               <View style={MyStyles.forgotCardWrapper}>
                 <View style={MyStyles.forgotCard}>
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <View
-                      style={{
-                        width: "100%",
-                        flexDirection: "row",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                      }}
-                    >
-                      <MaterialIcons
-                        onPress={() => setIsExisting(false)}
-                        name="arrow-back-ios"
-                        style={MyStyles.backArrow}
-                      />
-                      <Text style={MyStyles.header}>Verification Method</Text>
-                    </View>
+                    <AntDesign
+                      onPress={() => setIsExisting(false)}
+                      name="arrowleft"
+                      style={MyStyles.backArrow}
+                    />
+
+                    <Text style={MyStyles.header}>Verification Method</Text>
 
                     <Text style={MyStyles.forgotMsg}>
                       Please choose a method to verify your identity and

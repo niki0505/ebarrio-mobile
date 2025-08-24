@@ -350,10 +350,10 @@ const EditSecurityQuestions = () => {
                     color="gray"
                   />
                 </TouchableOpacity>
+                {passError ? (
+                  <Text style={MyStyles.errorMsg}>{passError}</Text>
+                ) : null}
               </View>
-              {passError ? (
-                <Text style={MyStyles.errorMsg}>{passError}</Text>
-              ) : null}
             </View>
           </View>
           <TouchableOpacity

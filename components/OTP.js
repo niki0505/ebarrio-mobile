@@ -77,33 +77,31 @@ const OTP = ({}) => {
       const result = await verifyOTP(username, OTP);
       setIsSuccess(true);
       setAlertMessage(result.message);
-      if (navigatelink === "Login") {
-        try {
-          await api.post("/register", {
-            username,
-            password,
-            resID,
-          });
-          navigation.navigate("Login");
-        } catch (error) {
-          console.log("Error logging in", error);
-        }
-      } else if (navigatelink === "BottomTabs") {
-        await login({ username, password });
-      }
+      setIsAlertModalVisible(true);
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
-        console.log("❌ Error status:", response.status);
         setAlertMessage(response.data.message || "Something went wrong.");
-        setIsAlertModalVisible(true);
       } else {
-        console.log("❌ Network or unknown error:", error.message);
         setAlertMessage("An unexpected error occurred.");
-        setIsAlertModalVisible(true);
       }
+      setIsAlertModalVisible(true);
     }
-    setIsSuccess(false);
+  };
+
+  const handleSuccessModalClose = async () => {
+    setIsAlertModalVisible(false);
+
+    if (navigatelink === "Login") {
+      try {
+        await api.post("/register", { username, password, resID });
+        navigation.navigate("Login");
+      } catch (error) {
+        console.log("Error logging in", error);
+      }
+    } else if (navigatelink === "BottomTabs") {
+      await login({ username, password });
+    }
   };
 
   const handleOTPChange = (text) => {
@@ -213,9 +211,9 @@ const OTP = ({}) => {
         <AlertModal
           isVisible={isAlertModalVisible}
           message={alertMessage}
-          title="Error"
+          title={isSuccess ? "Success" : "Error"}
           isSuccess={isSuccess}
-          onClose={() => setIsAlertModalVisible(false)}
+          onConfirm={handleSuccessModalClose}
         />
       </View>
     </SafeAreaView>

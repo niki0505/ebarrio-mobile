@@ -60,7 +60,7 @@ const SuccessfulPage2 = () => {
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
                 Resident Profile Request Submitted
               </Text>
-              <Text style={MyStyles.MyStyles.serviceDesc}>
+              <Text style={MyStyles.serviceDesc}>
                 Your resident profile request has been submitted to the
                 barangay. You will receive a confirmation message via SMS within
                 3 business days.

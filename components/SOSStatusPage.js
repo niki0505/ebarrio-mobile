@@ -2,32 +2,23 @@ import {
   StyleSheet,
   Text,
   View,
-  Alert,
-  TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Animated,
+  Dimensions,
   Image,
-  TextInput,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import Fire from "../assets/SOS/firefire.png";
-import Flood from "../assets/SOS/flood.png";
-import Earthquake from "../assets/SOS/earthquake.png";
-import Typhoon from "../assets/SOS/typhoon.png";
-import Medical from "../assets/SOS/medical.png";
-import Suspicious from "../assets/SOS/suspicious.png";
-import Location from "../assets/SOS/location.png";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { InfoContext } from "../context/InfoContext";
+import { PanResponder } from "react-native";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const SOSStatusPage = () => {
   const insets = useSafeAreaInsets();
@@ -41,6 +32,89 @@ const SOSStatusPage = () => {
   const hasArrivedResponder = report?.responder?.some(
     (r) => r.status === "Arrived"
   );
+
+  const { width } = Dimensions.get("window");
+  const SLIDER_WIDTH = width * 0.8;
+  const SLIDER_HEIGHT = 60;
+  const CIRCLE_SIZE = 50;
+
+  const pan = useRef(new Animated.ValueXY()).current;
+  const [cancelled, setCancelled] = useState(false);
+  const [isSliding, setIsSliding] = useState(false);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gesture) => {
+        setIsSliding(true);
+        // Limit the horizontal movement to the slider container width
+        const newX = Math.min(
+          Math.max(gesture.dx, 0),
+          SLIDER_WIDTH - CIRCLE_SIZE
+        );
+        pan.setValue({ x: newX, y: 0 });
+      },
+      onPanResponderRelease: (_, gesture) => {
+        if (gesture.dx > SLIDER_WIDTH - CIRCLE_SIZE * 1.5) {
+          setCancelled(true);
+          Animated.spring(pan, {
+            toValue: { x: SLIDER_WIDTH - CIRCLE_SIZE - 5, y: 0 },
+            useNativeDriver: false,
+          }).start();
+        } else {
+          Animated.spring(pan, {
+            toValue: { x: 0, y: 0 },
+            useNativeDriver: false,
+          }).start();
+        }
+        setIsSliding(false);
+      },
+    })
+  ).current;
+
+  const styles = StyleSheet.create({
+    container: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginVertical: 30,
+    },
+    slider: {
+      width: SLIDER_WIDTH,
+      height: SLIDER_HEIGHT,
+      backgroundColor: "#a11",
+      borderRadius: SLIDER_HEIGHT / 2,
+      justifyContent: "center",
+      paddingLeft: CIRCLE_SIZE / 2,
+    },
+    text: {
+      position: "absolute",
+      left: CIRCLE_SIZE + 20,
+      color: "white",
+      fontWeight: "bold",
+      fontSize: RFPercentage(2),
+    },
+    circle: {
+      position: "absolute",
+      left: 5,
+      width: CIRCLE_SIZE,
+      height: CIRCLE_SIZE,
+      borderRadius: CIRCLE_SIZE / 2,
+      backgroundColor: "#fff",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    cross: {
+      fontSize: RFPercentage(2.4),
+      color: "#a11",
+      fontWeight: "bold",
+    },
+    done: {
+      marginTop: 20,
+      color: "white",
+      fontSize: RFPercentage(2),
+    },
+  });
 
   return (
     <SafeAreaView
@@ -67,6 +141,7 @@ const SOSStatusPage = () => {
             style={[MyStyles.backArrow, { color: "#fff" }]}
           />
 
+          {/* Display "Help has arrived" or "Help is on the way" */}
           {report &&
             (hasArrivedResponder ? (
               <>
@@ -82,30 +157,74 @@ const SOSStatusPage = () => {
                 >
                   Help has arrived
                 </Text>
+                {/* Render responders */}
                 {report.responder
                   .filter((r) => r.status === "Arrived")
                   .map((r) => {
                     return (
-                      <View key={r.empID._id}>
+                      <View
+                        key={r.empID._id}
+                        style={{ marginVertical: 30, alignItems: "center" }}
+                      >
                         <Image
                           source={{
                             uri: r.empID.resID.picture,
                           }}
-                          style={{ width: 80, height: 80, borderRadius: 40 }}
+                          style={{
+                            width: 180,
+                            height: 180,
+                            borderRadius: 90,
+                            backgroundColor: "white",
+                          }}
                         />
-                        <Text>
+                        <Text style={MyStyles.sosResponderName}>
                           {r.empID.resID.firstname} {r.empID.resID.lastname}
                         </Text>
-                        <Text>{r.empID.position}</Text>
-                        <Text>
-                          {r.arrivedat
-                            ? new Date(r.arrivedat).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : "N/A"}
+                        <Text style={MyStyles.sosResponderPosition}>
+                          {r.empID.position}
                         </Text>
-                        <Text>{r.empID.resID.mobilenumber}</Text>
+                        {/* Responders' time and mobile number */}
+                        <View
+                          style={[
+                            MyStyles.sosCard,
+                            { flexDirection: "column", gap: 20, padding: 30 },
+                          ]}
+                        >
+                          <View
+                            style={[MyStyles.sosDetailsRowWrapper, { gap: 10 }]}
+                          >
+                            <Ionicons
+                              name="time"
+                              style={[MyStyles.sosHelpHasArriveIcon]}
+                            />
+                            <Text style={MyStyles.sosHelpHasArriveDetails}>
+                              Time:
+                            </Text>
+                            <Text style={MyStyles.sosHelpHasArriveDetails}>
+                              {r.arrivedat
+                                ? new Date(r.arrivedat).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })
+                                : "N/A"}
+                            </Text>
+                          </View>
+
+                          <View
+                            style={[MyStyles.sosDetailsRowWrapper, { gap: 10 }]}
+                          >
+                            <Ionicons
+                              name="call"
+                              style={[MyStyles.sosHelpHasArriveIcon]}
+                            />
+                            <Text style={MyStyles.sosHelpHasArriveDetails}>
+                              Mobile:
+                            </Text>
+                            <Text style={MyStyles.sosHelpHasArriveDetails}>
+                              {r.empID.resID.mobilenumber}
+                            </Text>
+                          </View>
+                        </View>
                       </View>
                     );
                   })}
@@ -124,7 +243,6 @@ const SOSStatusPage = () => {
                 >
                   Help is on the way
                 </Text>
-
                 <View
                   style={{
                     flex: 1,
@@ -148,7 +266,7 @@ const SOSStatusPage = () => {
                       textAlign: "center",
                       color: "#fff",
                       opacity: 0.8,
-                      fontSize: 18,
+                      fontSize: RFPercentage(2),
                       padding: 20,
                     }}
                   >
@@ -158,12 +276,24 @@ const SOSStatusPage = () => {
                 </View>
               </>
             ))}
-          <TouchableOpacity
-            // onPress={() => setIsConfirmModalVisible(true)}
-            style={MyStyles.button}
-          >
-            <Text>Cancel</Text>
-          </TouchableOpacity>
+
+          <View style={styles.container}>
+            <View style={[styles.slider, { paddingLeft: CIRCLE_SIZE / 2 }]}>
+              {/* Conditionally render the "slide to cancel" text */}
+              {!isSliding && !cancelled && (
+                <Text style={styles.text}>slide to cancel</Text>
+              )}
+              <Animated.View
+                {...panResponder.panHandlers}
+                style={[styles.circle, { transform: [{ translateX: pan.x }] }]}
+              >
+                <Text style={styles.cross}>✕</Text>
+              </Animated.View>
+            </View>
+
+            {/* Show "Cancelled" if the slider has been successfully cancelled */}
+            {cancelled && <Text style={styles.done}>Cancelled!</Text>}
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -763,6 +763,21 @@ const ResidentForm = () => {
       newErrors.emergencyaddress = "This field is required!";
     if (!residentForm.employmentstatus)
       newErrors.employmentstatus = "This field is required!";
+    if (residentForm.head === "Yes" && !residentForm.street) {
+      newErrors.street = "This field is required!";
+    }
+    if (residentForm.head === "Yes" && !residentForm.ethnicity) {
+      newErrors.ethnicity = "This field is required!";
+    }
+    if (residentForm.head === "Yes" && !residentForm.sociostatus) {
+      newErrors.sociostatus = "This field is required!";
+    }
+    if (residentForm.head === "Yes" && !residentForm.watersource) {
+      newErrors.watersource = "This field is required!";
+    }
+    if (residentForm.head === "Yes" && !residentForm.toiletfacility) {
+      newErrors.toiletfacility = "This field is required!";
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -1997,6 +2012,10 @@ const ResidentForm = () => {
                         }
                         style={MyStyles.input}
                       ></Dropdown>
+
+                      {errors.street && (
+                        <Text style={MyStyles.errorMsg}>{errors.street}</Text>
+                      )}
                     </View>
 
                     <View>
@@ -2049,6 +2068,11 @@ const ResidentForm = () => {
                           </Pressable>
                         ))}
                       </View>
+                      {errors.ethnicity && (
+                        <Text style={MyStyles.errorMsg}>
+                          {errors.ethnicity}
+                        </Text>
+                      )}
                     </View>
 
                     {householdForm.ethnicity === "IP Household" && (
@@ -2102,6 +2126,11 @@ const ResidentForm = () => {
                           )
                         )}
                       </View>
+                      {errors.sociostatus && (
+                        <Text style={MyStyles.errorMsg}>
+                          {errors.sociostatus}
+                        </Text>
+                      )}
                     </View>
 
                     {(householdForm.sociostatus === "NHTS 4Ps" ||
@@ -2146,6 +2175,11 @@ const ResidentForm = () => {
                         }
                         style={MyStyles.input}
                       ></Dropdown>
+                      {errors.watersource && (
+                        <Text style={MyStyles.errorMsg}>
+                          {errors.watersource}
+                        </Text>
+                      )}
                     </View>
 
                     <View>
@@ -2172,6 +2206,11 @@ const ResidentForm = () => {
                         }
                         style={MyStyles.input}
                       ></Dropdown>
+                      {errors.toiletfacility && (
+                        <Text style={MyStyles.errorMsg}>
+                          {errors.toiletfacility}
+                        </Text>
+                      )}
                     </View>
                     <Text style={MyStyles.inputLabel}>Members</Text>
                     <View>
@@ -2502,7 +2541,10 @@ const ResidentForm = () => {
               </View>
 
               <View style={{ width: "100%", gap: 15 }}>
-                <TouchableOpacity style={MyStyles.button} onPress={handleClear}>
+                <TouchableOpacity
+                  style={[MyStyles.button, { backgroundColor: "#808080" }]}
+                  onPress={handleClear}
+                >
                   <Text style={MyStyles.buttonText}>Clear</Text>
                 </TouchableOpacity>
 
