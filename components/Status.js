@@ -193,8 +193,8 @@ const Status = () => {
             value={sortOption}
             placeholder={sortOption}
             onChange={(item) => setSortOption(item.value)}
-            style={[MyStyles.dropdownWrapper, { width: RFPercentage(15) }]}
-            selectedTextStyle={MyStyles.selectedText}
+            style={[MyStyles.dropdownWrapper, { width: RFPercentage(20) }]}
+            selectedTextStyle={MyStyles.dropdownText}
           />
 
           <View style={{ marginVertical: 10 }}>
