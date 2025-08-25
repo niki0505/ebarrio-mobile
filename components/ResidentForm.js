@@ -2061,6 +2061,7 @@ const ResidentForm = () => {
                               style={{
                                 fontFamily: "QuicksandMedium",
                                 fontSize: RFPercentage(2),
+                                flexWrap: 1,
                               }}
                             >
                               {option}
@@ -2126,6 +2127,7 @@ const ResidentForm = () => {
                           )
                         )}
                       </View>
+
                       {errors.sociostatus && (
                         <Text style={MyStyles.errorMsg}>
                           {errors.sociostatus}
