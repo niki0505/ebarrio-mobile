@@ -508,8 +508,8 @@ export const MyStyles = StyleSheet.create({
   },
   dropdownWrapper: {
     backgroundColor: "#fff",
-    width: RFPercentage(10),
-    height: RFPercentage(4),
+    width: RFPercentage(16),
+    height: RFPercentage(7),
     borderWidth: 1,
     borderColor: "#ACACAC",
     borderRadius: 5,
@@ -601,11 +601,6 @@ export const MyStyles = StyleSheet.create({
   },
   placeholderText: {
     color: "#808080",
-    fontFamily: "QuicksandMedium",
-    fontSize: RFPercentage(2),
-  },
-  selectedText: {
-    color: "#000",
     fontFamily: "QuicksandMedium",
     fontSize: RFPercentage(2),
   },
@@ -1414,7 +1409,7 @@ export const MyStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    maxWidth: "45%", 
+    maxWidth: "45%",
   },
   radioCircle: {
     height: 20,
