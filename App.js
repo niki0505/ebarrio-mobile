@@ -386,16 +386,7 @@ const DrawerContent = ({ navigation }) => {
             onPress={() => navigation.navigate("SOSRequests")}
           >
             <Ionicons name="document-text" size={22} color="#04384E" />
-            <Text
-              style={{
-                fontSize: 18,
-                marginLeft: 15,
-                color: "#04384E",
-                fontFamily: "QuicksandBold",
-              }}
-            >
-              SOS Requests
-            </Text>
+            <Text style={MyStyles.drawerServicesText}>SOS Requests</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -407,16 +398,7 @@ const DrawerContent = ({ navigation }) => {
             onPress={() => navigation.navigate("RespondedSOS")}
           >
             <Ionicons name="document-text" size={22} color="#04384E" />
-            <Text
-              style={{
-                fontSize: 18,
-                marginLeft: 15,
-                color: "#04384E",
-                fontFamily: "QuicksandBold",
-              }}
-            >
-              Responded SOS
-            </Text>
+            <Text style={MyStyles.drawerServicesText}>Responded SOS</Text>
           </TouchableOpacity>
         </>
       )}

@@ -151,8 +151,7 @@ const Notification = () => {
             contentContainerStyle={[
               MyStyles.scrollContainer,
               {
-                padding: 20,
-                paddingBottom: insets.bottom + 70,
+                paddingBottom: insets.bottom + 100,
               },
             ]}
             showsVerticalScrollIndicator={false}

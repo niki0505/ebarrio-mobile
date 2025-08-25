@@ -259,7 +259,7 @@ export const MyStyles = StyleSheet.create({
     color: "#808080",
     fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
-    flexShrink: 1,
+    // flexShrink: 1,
   },
   safetyTipsCard: {
     flexDirection: "column",
@@ -275,7 +275,7 @@ export const MyStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    height: RFPercentage(20),
+    height: RFPercentage(24),
     maxWidth: "48%",
   },
   readinessHeader: {
@@ -1180,7 +1180,6 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 20,
     padding: 30,
     flexDirection: "column",
- 
   },
   forgotPassMethodsText: {
     color: "#04384E",
@@ -1407,13 +1406,15 @@ export const MyStyles = StyleSheet.create({
   },
   radioGroup: {
     flexDirection: "row",
-    gap: 20,
-    maxWidth: "20%",
+    flexWrap: "wrap",
+    width: "100%",
+    gap: 15,
   },
   radioOption: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
+    maxWidth: "45%", 
   },
   radioCircle: {
     height: 20,

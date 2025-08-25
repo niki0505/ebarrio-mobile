@@ -76,7 +76,7 @@ const OTP = ({}) => {
     try {
       const result = await verifyOTP(username, OTP);
       setIsSuccess(true);
-      setAlertMessage(result.message);
+      setAlertMessage("New Resident Account Created.");
       setIsAlertModalVisible(true);
     } catch (error) {
       const response = error.response;
@@ -214,6 +214,7 @@ const OTP = ({}) => {
           title={isSuccess ? "Success" : "Error"}
           isSuccess={isSuccess}
           onConfirm={handleSuccessModalClose}
+          onClose={() => setIsAlertModalVisible(false)}
         />
       </View>
     </SafeAreaView>

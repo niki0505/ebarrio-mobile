@@ -111,7 +111,7 @@ const Signup = () => {
       errors.push("This field is required!");
     }
     if (formattedVal !== password && formattedVal.length > 0) {
-      errors.push("Passwords do not match.");
+      errors.push("Passwords do not match!");
     }
     setRePasswordErrors(errors);
   };
