@@ -9,6 +9,8 @@ import {
   Animated,
   Dimensions,
   Image,
+  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useState, useEffect, useRef, useContext } from "react";
@@ -19,15 +21,22 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { InfoContext } from "../context/InfoContext";
 import { PanResponder } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import api from "../api";
+import AlertModal from "./AlertModal";
 
 const SOSStatusPage = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { fetchReport, report } = useContext(InfoContext);
+  const { report } = useContext(InfoContext);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const reportRef = useRef(report);
 
   useEffect(() => {
-    fetchReport();
-  }, []);
+    reportRef.current = report;
+  }, [report]);
 
   const hasArrivedResponder = report?.responder?.some(
     (r) => r.status === "Arrived"
@@ -37,8 +46,9 @@ const SOSStatusPage = () => {
   const SLIDER_WIDTH = width * 0.8;
   const SLIDER_HEIGHT = 60;
   const CIRCLE_SIZE = 50;
+  const SLIDE_THRESHOLD = SLIDER_WIDTH - CIRCLE_SIZE - 10;
 
-  const pan = useRef(new Animated.ValueXY()).current;
+  const panX = useRef(new Animated.Value(0)).current;
   const [cancelled, setCancelled] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
 
@@ -48,23 +58,22 @@ const SOSStatusPage = () => {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (_, gesture) => {
         setIsSliding(true);
-        // Limit the horizontal movement to the slider container width
         const newX = Math.min(
           Math.max(gesture.dx, 0),
           SLIDER_WIDTH - CIRCLE_SIZE
         );
-        pan.setValue({ x: newX, y: 0 });
+        panX.setValue(newX);
       },
       onPanResponderRelease: (_, gesture) => {
-        if (gesture.dx > SLIDER_WIDTH - CIRCLE_SIZE * 1.5) {
-          setCancelled(true);
-          Animated.spring(pan, {
-            toValue: { x: SLIDER_WIDTH - CIRCLE_SIZE - 5, y: 0 },
+        if (gesture.dx > SLIDE_THRESHOLD) {
+          cancelSOS();
+          Animated.spring(panX, {
+            toValue: SLIDER_WIDTH - CIRCLE_SIZE - 5,
             useNativeDriver: false,
           }).start();
         } else {
-          Animated.spring(pan, {
-            toValue: { x: 0, y: 0 },
+          Animated.spring(panX, {
+            toValue: 0,
             useNativeDriver: false,
           }).start();
         }
@@ -72,6 +81,31 @@ const SOSStatusPage = () => {
       },
     })
   ).current;
+  const cancelSOS = async () => {
+    if (!reportRef.current?._id) {
+      setAlertMessage("Report not loaded yet.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+    try {
+      await api.put(`/cancelsos/${reportRef.current._id}`);
+      alert("Your report has been cancelled successfully.");
+      navigation.navigate("BottomTabs");
+    } catch (error) {
+      const response = error.response;
+      if (response && response.data) {
+        console.log("❌ Error status:", response.status);
+        setAlertMessage(response.data.message || "Something went wrong.");
+        setIsAlertModalVisible(true);
+        setAlertVisible(false);
+      } else {
+        console.log("❌ Network or unknown error:", error.message);
+        setAlertMessage("An unexpected error occurred.");
+        setIsAlertModalVisible(true);
+        setAlertVisible(false);
+      }
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -142,6 +176,7 @@ const SOSStatusPage = () => {
           />
 
           {/* Display "Help has arrived" or "Help is on the way" */}
+
           {report &&
             (hasArrivedResponder ? (
               <>
@@ -277,8 +312,11 @@ const SOSStatusPage = () => {
               </>
             ))}
 
-          {(!report?.responder || report.responder.length === 0) && (
+          {report && (!report?.responder || report.responder.length === 0) && (
             <View style={styles.container}>
+              {/* <TouchableOpacity onPress={cancelSOS}>
+                <Text>Cancel</Text>
+              </TouchableOpacity> */}
               <View style={[styles.slider, { paddingLeft: CIRCLE_SIZE / 2 }]}>
                 {/* Conditionally render the "slide to cancel" text */}
                 {!isSliding && !cancelled && (
@@ -288,18 +326,22 @@ const SOSStatusPage = () => {
                   {...panResponder.panHandlers}
                   style={[
                     styles.circle,
-                    { transform: [{ translateX: pan.x }] },
+                    {
+                      transform: [{ translateX: panX }],
+                    },
                   ]}
                 >
                   <Text style={styles.cross}>✕</Text>
                 </Animated.View>
               </View>
-
-              {/* Show "Cancelled" if the slider has been successfully cancelled */}
-              {cancelled && <Text style={styles.done}>Cancelled!</Text>}
             </View>
           )}
         </ScrollView>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          onClose={() => setIsAlertModalVisible(false)}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

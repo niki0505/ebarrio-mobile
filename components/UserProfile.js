@@ -1075,7 +1075,6 @@ const UserProfile = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
-
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[
@@ -1086,10 +1085,6 @@ const UserProfile = () => {
               },
             ]}
           >
-            <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-              Register Resident Profile
-            </Text>
-
             <View style={MyStyles.loginFormWrapper}>
               {/* Personal Information */}
 
@@ -1111,8 +1106,10 @@ const UserProfile = () => {
                       <Text style={MyStyles.placeholderText}>
                         Attach ID Picture
                       </Text>
-                  </View>
-       
+                    </View>
+                  )}
+                </View>
+
                 <View style={MyStyles.personalInfobuttons}>
                   <TouchableOpacity
                     onPress={toggleIDCamera}
@@ -2474,7 +2471,6 @@ const UserProfile = () => {
                 Employment Information
               </Text>
 
-
               <View>
                 <Text style={MyStyles.inputLabel}>
                   Employment Status<Text style={{ color: "red" }}>*</Text>
@@ -2559,6 +2555,7 @@ const UserProfile = () => {
                   style={MyStyles.input}
                   value={residentForm.course}
                   onChangeText={(text) => handleInputChange("course", text)}
+                />
               </View>
             </View>
 
@@ -2579,13 +2576,13 @@ const UserProfile = () => {
             />
 
             <AlertModal
-                  isVisible={isConfirmModalVisible}
-                  isConfirmationModal={true}
-                  title="Update Resident Profile?"
-                  message="Are you sure you want to update your profile?"
-                  onClose={() => setIsConfirmModalVisible(false)}
-                  onConfirm={handleSubmit}
-                />
+              isVisible={isConfirmModalVisible}
+              isConfirmationModal={true}
+              title="Update Resident Profile?"
+              message="Are you sure you want to update your profile?"
+              onClose={() => setIsConfirmModalVisible(false)}
+              onConfirm={handleSubmit}
+            />
           </ScrollView>
         </KeyboardAvoidingView>
       </View>

@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   TextInput,
+  Animated,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
@@ -22,10 +23,21 @@ import Typhoon from "../assets/SOS/typhoon.png";
 import Medical from "../assets/SOS/medical.png";
 import Suspicious from "../assets/SOS/suspicious.png";
 import api from "../api";
+import { useRef } from "react";
+import Svg, { Circle } from "react-native-svg";
+
+const CIRCLE_SIZE = 280; // match button size
+const STROKE_WIDTH = 6;
+const RADIUS = (CIRCLE_SIZE - STROKE_WIDTH) / 2;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const SOS = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const timerRef = useRef(null);
+  const borderAnim = useRef(new Animated.Value(0)).current;
 
   const sendSOS = async () => {
     try {
@@ -48,6 +60,26 @@ const SOS = () => {
     } catch (e) {
       console.error("Error getting location:", error);
     }
+  };
+
+  const handlePressIn = () => {
+    Animated.timing(borderAnim, {
+      toValue: 1,
+      duration: 5000, // 5 seconds
+      useNativeDriver: false,
+    }).start(({ finished }) => {
+      if (finished) {
+        sendSOS();
+      }
+    });
+  };
+
+  const handlePressOut = () => {
+    Animated.timing(borderAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
   };
 
   return (
@@ -101,29 +133,60 @@ const SOS = () => {
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <TouchableOpacity
-              onPress={sendSOS}
+            <View
               style={{
-                width: 280,
-                height: 280,
-                borderRadius: 140,
-                backgroundColor: "#fff",
-                marginTop: 20,
                 justifyContent: "center",
                 alignItems: "center",
+                position: "relative",
+                width: CIRCLE_SIZE,
+                height: CIRCLE_SIZE,
               }}
             >
-              <Text
+              <Svg
+                width={CIRCLE_SIZE}
+                height={CIRCLE_SIZE}
+                style={{ position: "absolute", top: 0, left: 0 }}
+              >
+                <AnimatedCircle
+                  cx={CIRCLE_SIZE / 2}
+                  cy={CIRCLE_SIZE / 2}
+                  r={RADIUS}
+                  stroke="#0E94D3"
+                  strokeWidth={STROKE_WIDTH}
+                  strokeDasharray={CIRCUMFERENCE}
+                  strokeDashoffset={borderAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [CIRCUMFERENCE, 0],
+                  })}
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              </Svg>
+
+              <TouchableOpacity
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
                 style={{
-                  color: "#BC0F0F",
-                  fontFamily: "REMBold",
-                  fontSize: 70,
-                  textAlign: "center",
+                  width: 280,
+                  height: 280,
+                  borderRadius: 140,
+                  backgroundColor: "#fff",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                SOS
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#BC0F0F",
+                    fontFamily: "REMBold",
+                    fontSize: 70,
+                    textAlign: "center",
+                  }}
+                >
+                  SOS
+                </Text>
+              </TouchableOpacity>
+            </View>
             <Text
               style={[
                 MyStyles.header,
@@ -316,7 +379,7 @@ const SOS = () => {
 
             {/* Location */}
 
-            <View
+            {/*<View
               style={{
                 width: "100%",
                 marginTop: 20,
@@ -363,7 +426,7 @@ const SOS = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View>*/}
 
             <TouchableOpacity
               style={[

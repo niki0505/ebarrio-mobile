@@ -1,5 +1,11 @@
 import api from "../api";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import * as SecureStore from "expo-secure-store";
 import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
@@ -7,10 +13,6 @@ import { SocketContext } from "./SocketContext";
 import axios from "axios";
 
 export const InfoContext = createContext(undefined);
-
-const socket = io("https://ebarrio-mobile-backend.onrender.com", {
-  withCredentials: true,
-});
 
 export const InfoProvider = ({ children }) => {
   const { isAuthenticated, setUserStatus, user, setUserPasswordChanged } =
@@ -243,8 +245,40 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const socketRef = useRef(null); // ✅ Persistent ref
+
   useEffect(() => {
-    if (!socket) return;
+    if (!isAuthenticated || !user?.userID) return;
+
+    // Create socket when authenticated
+    const newSocket = io("https://ebarrio-mobile-backend.onrender.com", {
+      withCredentials: true,
+    });
+
+    socketRef.current = newSocket;
+
+    newSocket.on("connect", () => {
+      console.log("✅ Socket connected:", newSocket.id);
+      newSocket.emit("register", user.userID, user.role);
+    });
+
+    newSocket.on("connect_error", (err) => {
+      console.log("❌ Socket connection failed:", err.message);
+    });
+
+    // Cleanup only when user logs out or component unmounts
+    return () => {
+      if (socketRef.current) {
+        newSocket.emit("unregister", user.userID);
+        newSocket.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, [isAuthenticated, user?.userID, user?.role]);
+
+  useEffect(() => {
+    const s = socketRef.current;
+    if (!s) return;
 
     const handler = (updatedData) => {
       if (updatedData.type === "announcements") {
@@ -259,15 +293,17 @@ export const InfoProvider = ({ children }) => {
         setNotifications(updatedData.data);
       } else if (updatedData.type === "unreadnotifications") {
         setUnreadNotifications(updatedData.data);
+      } else if (updatedData.type === "report") {
+        setReport(updatedData.data[0]);
       }
     };
 
-    socket.on("mobile-dbChange", handler);
+    s.on("mobile-dbChange", handler);
 
     return () => {
-      socket.off("mobile-dbChange", handler);
+      s.off("mobile-dbChange", handler);
     };
-  }, [socket]);
+  }, []);
 
   return (
     <InfoContext.Provider
