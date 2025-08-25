@@ -556,13 +556,6 @@ const Home = () => {
                                     </Text>
                                   </View>
                                   <Text
-                                    style={MyStyles.eventDate}
-                                    numberOfLines={1}
-                                    ellipsizeMode="tail"
-                                  >
-                                    {dateString}
-                                  </Text>
-                                  <Text
                                     style={MyStyles.eventTime}
                                     numberOfLines={1}
                                     ellipsizeMode="tail"

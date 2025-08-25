@@ -61,6 +61,70 @@ const UserProfile = () => {
   const [showLastMenstrualPicker, setShowLastMenstrualPicker] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [householdProfile, setHouseholdProfile] = useState({});
+  const [residentProfile, setResidentProfile] = useState({
+    picture: "",
+    signature: "",
+    firstname: "",
+    middlename: "",
+    lastname: "",
+    suffix: "",
+    alias: "",
+    salutation: "",
+    sex: "",
+    gender: "",
+    birthdate: "",
+    age: "",
+    birthplace: "",
+    civilstatus: "",
+    bloodtype: "",
+    religion: "",
+    nationality: "",
+    voter: "",
+    precinct: "",
+    deceased: "",
+    email: "",
+    mobilenumber: "",
+    telephone: "+63",
+    facebook: "",
+    emergencyname: "",
+    emergencymobilenumber: "",
+    emergencyaddress: "",
+    employmentstatus: "",
+    employmentfield: "",
+    occupation: "",
+    monthlyincome: "",
+    educationalattainment: "",
+    typeofschool: "",
+    course: "",
+    householdno: "",
+    householdposition: "",
+    head: "",
+    isSenior: false,
+    isInfant: false,
+    isNewborn: false,
+    isUnder5: false,
+    isSchoolAge: false,
+    isAdolescent: false,
+    isAdolescentPregnant: false,
+    isAdult: false,
+    isPostpartum: false,
+    isWomenOfReproductive: false,
+    isPregnant: false,
+    isPWD: false,
+    philhealthid: "",
+    philhealthtype: "",
+    philhealthcategory: "",
+    haveHypertension: false,
+    haveDiabetes: false,
+    haveTubercolosis: false,
+    haveSurgery: false,
+    lastmenstrual: "",
+    haveFPmethod: "",
+    fpmethod: "",
+    fpstatus: "",
+  });
+
   const [residentForm, setResidentForm] = useState({
     picture: "",
     signature: "",
@@ -206,6 +270,18 @@ const UserProfile = () => {
         telephone: formattedTelephone,
         householdno: residentInfo.householdno?._id,
       }));
+      setResidentProfile((prevForm) => ({
+        ...prevForm,
+        ...residentInfo,
+        numberofsiblings: siblingsLength,
+        numberofchildren: childrenLength,
+        street: streetName,
+        housenumber: houseNumber,
+        mobilenumber: formattedNumber,
+        emergencymobilenumber: formattedEmergencyNumber,
+        telephone: formattedTelephone,
+        householdno: residentInfo.householdno?._id,
+      }));
     }
   }, [residentInfo]);
 
@@ -246,6 +322,10 @@ const UserProfile = () => {
               ...prev,
               head: "Yes",
             }));
+            setResidentProfile((prev) => ({
+              ...prev,
+              head: "Yes",
+            }));
 
             const otherMembers = res.data.members.filter(
               (member) => member.position !== "Head"
@@ -264,6 +344,11 @@ const UserProfile = () => {
               (member) => member.resID?._id === user.resID
             );
             setResidentForm((prev) => ({
+              ...prev,
+              head: "No",
+              householdposition: currentMember?.position || "",
+            }));
+            setResidentProfile((prev) => ({
               ...prev,
               head: "No",
               householdposition: currentMember?.position || "",
@@ -556,7 +641,7 @@ const UserProfile = () => {
       if (!result.canceled && result.assets?.length > 0) {
         setResidentForm((prev) => ({
           ...prev,
-          id: result.assets[0].uri,
+          picture: result.assets[0].uri,
         }));
       }
     } catch (error) {
@@ -588,7 +673,7 @@ const UserProfile = () => {
       if (!result.canceled) {
         setResidentForm((prev) => ({
           ...prev,
-          id: result.assets[0].uri,
+          picture: result.assets[0].uri,
         }));
       }
     } catch (error) {
@@ -820,6 +905,17 @@ const UserProfile = () => {
         isAdult,
         isWomenOfReproductive,
       }));
+      setResidentProfile((prev) => ({
+        ...prev,
+        age,
+        isSenior,
+        isNewborn,
+        isInfant,
+        isUnder5,
+        isAdolescent,
+        isAdult,
+        isWomenOfReproductive,
+      }));
     }
   }, [residentForm.birthdate]);
 
@@ -859,15 +955,94 @@ const UserProfile = () => {
   };
 
   const handleSignatureClear = () => {
-    setResidentForm({ ...prev, signature: "" });
+    setResidentForm((prev) => ({ ...prev, signature: "" }));
   };
 
   const handleConfirm = () => {
+    const hasChanges =
+      JSON.stringify(residentProfile) !== JSON.stringify(residentForm);
+
+    if (!hasChanges) {
+      alert("No changes detected.");
+      return;
+    }
     setIsConfirmModalVisible(true);
   };
 
-  const handleSubmit = () => {
-    setIsConfirmModalVisible(true);
+  const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
+
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      let idPicture = residentProfile.picture;
+      let signaturePicture = residentProfile.signature;
+      if (
+        residentForm.picture &&
+        residentForm.picture !== residentProfile.picture
+      ) {
+        idPicture = await uploadToFirebase(residentForm.picture);
+      }
+      if (
+        residentForm.signature &&
+        residentForm.signature !== residentProfile.signature
+      ) {
+        signaturePicture = await uploadToFirebase(residentForm.signature);
+      }
+      const fulladdress = `${householdForm.housenumber} ${householdForm.street} Aniban 2, Bacoor, Cavite`;
+
+      let formattedMobileNumber = residentForm.mobilenumber;
+      formattedMobileNumber = "0" + residentForm.mobilenumber.slice(3);
+
+      let formattedEmergencyMobileNumber = residentForm.emergencymobilenumber;
+      formattedEmergencyMobileNumber =
+        "0" + residentForm.emergencymobilenumber.slice(3);
+
+      let formattedTelephone = residentForm.telephone;
+      if (residentForm.telephone !== "+63") {
+        formattedTelephone = "0" + residentForm.telephone.slice(3);
+        delete residentForm.telephone;
+      } else {
+        formattedTelephone = "";
+      }
+
+      const formattedBirthdate = residentForm.birthdate
+        ? formatToDateOnly(residentForm.birthdate)
+        : null;
+
+      const formattedLastMenstrual = residentForm.lastmenstrual
+        ? formatToDateOnly(residentForm.lastmenstrual)
+        : null;
+
+      const updatedResidentForm = {
+        ...residentForm,
+        mobilenumber: formattedMobileNumber,
+        emergencymobilenumber: formattedEmergencyMobileNumber,
+        telephone: formattedTelephone,
+        birthdate: formattedBirthdate,
+        lastmenstrual: formattedLastMenstrual,
+        picture: idPicture,
+        signature: signaturePicture,
+      };
+
+      const updatedHouseholdForm = {
+        ...householdForm,
+        address: fulladdress,
+      };
+
+      console.log(updatedResidentForm);
+
+      await api.put("/updateprofile", {
+        ...updatedResidentForm,
+        householdForm: updatedHouseholdForm,
+      });
+      alert("Your profile change request has been submitted successfully.");
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <SafeAreaView
@@ -900,6 +1075,7 @@ const UserProfile = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
+
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[
@@ -935,10 +1111,8 @@ const UserProfile = () => {
                       <Text style={MyStyles.placeholderText}>
                         Attach ID Picture
                       </Text>
-                    </View>
-                  )}
-                </View>
-
+                  </View>
+       
                 <View style={MyStyles.personalInfobuttons}>
                   <TouchableOpacity
                     onPress={toggleIDCamera}
@@ -2300,6 +2474,7 @@ const UserProfile = () => {
                 Employment Information
               </Text>
 
+
               <View>
                 <Text style={MyStyles.inputLabel}>
                   Employment Status<Text style={{ color: "red" }}>*</Text>
@@ -2384,7 +2559,6 @@ const UserProfile = () => {
                   style={MyStyles.input}
                   value={residentForm.course}
                   onChangeText={(text) => handleInputChange("course", text)}
-                />
               </View>
             </View>
 
@@ -2405,13 +2579,13 @@ const UserProfile = () => {
             />
 
             <AlertModal
-              isVisible={isConfirmModalVisible}
-              isConfirmationModal={true}
-              title="Register Resident Profile?"
-              message="Are you sure you want to register to be a member of barangay?"
-              onClose={() => setIsConfirmModalVisible(false)}
-              onConfirm={handleSubmit}
-            />
+                  isVisible={isConfirmModalVisible}
+                  isConfirmationModal={true}
+                  title="Update Resident Profile?"
+                  message="Are you sure you want to update your profile?"
+                  onClose={() => setIsConfirmModalVisible(false)}
+                  onConfirm={handleSubmit}
+                />
           </ScrollView>
         </KeyboardAvoidingView>
       </View>

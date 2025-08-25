@@ -277,23 +277,28 @@ const SOSStatusPage = () => {
               </>
             ))}
 
-          <View style={styles.container}>
-            <View style={[styles.slider, { paddingLeft: CIRCLE_SIZE / 2 }]}>
-              {/* Conditionally render the "slide to cancel" text */}
-              {!isSliding && !cancelled && (
-                <Text style={styles.text}>slide to cancel</Text>
-              )}
-              <Animated.View
-                {...panResponder.panHandlers}
-                style={[styles.circle, { transform: [{ translateX: pan.x }] }]}
-              >
-                <Text style={styles.cross}>✕</Text>
-              </Animated.View>
-            </View>
+          {(!report?.responder || report.responder.length === 0) && (
+            <View style={styles.container}>
+              <View style={[styles.slider, { paddingLeft: CIRCLE_SIZE / 2 }]}>
+                {/* Conditionally render the "slide to cancel" text */}
+                {!isSliding && !cancelled && (
+                  <Text style={styles.text}>slide to cancel</Text>
+                )}
+                <Animated.View
+                  {...panResponder.panHandlers}
+                  style={[
+                    styles.circle,
+                    { transform: [{ translateX: pan.x }] },
+                  ]}
+                >
+                  <Text style={styles.cross}>✕</Text>
+                </Animated.View>
+              </View>
 
-            {/* Show "Cancelled" if the slider has been successfully cancelled */}
-            {cancelled && <Text style={styles.done}>Cancelled!</Text>}
-          </View>
+              {/* Show "Cancelled" if the slider has been successfully cancelled */}
+              {cancelled && <Text style={styles.done}>Cancelled!</Text>}
+            </View>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
