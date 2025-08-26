@@ -253,6 +253,21 @@ const SOSRespondedDetails = () => {
                     {enrichedReport?.postreportdetails}
                   </Text>
                 </View>
+                <View style={MyStyles.sosDetailsColWrapper}>
+                  <Text style={MyStyles.sosDetailsTitle}>Evidence:</Text>
+                  {enrichedReport?.evidence ? (
+                    <Image
+                      source={{
+                        uri:
+                          enrichedReport?.evidence ||
+                          "https://via.placeholder.com/80",
+                      }}
+                      style={MyStyles.evidenceImg}
+                    />
+                  ) : (
+                    <Text style={MyStyles.sosDetailsAnswer}>N/A</Text>
+                  )}
+                </View>
 
                 <View style={MyStyles.sosMapWrapper}>
                   <View style={MyStyles.sosMapHeader}>

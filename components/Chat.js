@@ -14,7 +14,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useState, useRef, useContext, useEffect, useMemo } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -26,16 +26,17 @@ import { AuthContext } from "../context/AuthContext";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Chat = () => {
+  const route = useRoute();
   const { fetchFAQs, FAQs, fetchActive } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
   const insets = useSafeAreaInsets();
-  const [roomId, setRoomId] = useState(null);
+  const [roomId, setRoomId] = useState(route?.params?.roomId ?? null);
   const navigation = useNavigation();
   const [message, setMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [assignedAdmin, setAssignedAdmin] = useState(null);
-  const [isChat, setIsChat] = useState(false);
+  const [isChat, setIsChat] = useState(route?.params?.isChat ?? false);
   const [isEnded, setIsEnded] = useState(false);
   // const [chatMessages, setChatMessages] = useState([]);
   const { fetchChats, chatMessages, setChatMessages } = useContext(InfoContext);
@@ -63,7 +64,6 @@ const Chat = () => {
     };
 
     const handleChatAssigned = (chatData) => {
-      console.log(chatData);
       const {
         _id,
         participants,
@@ -137,7 +137,6 @@ const Chat = () => {
       roomId,
       status,
     }) => {
-      console.log("📥 Message received:", { from, to, message, roomId });
       if (user.userID === from) {
         return;
       }
@@ -194,12 +193,11 @@ const Chat = () => {
   }, [socket]);
   // Send a message and add to chat list
   const handleSendMessage = (text) => {
-    if (!assignedAdmin || text.trim() === "") return;
-    console.log("Sending to:", assignedAdmin);
+    if (!roomId || text.trim() === "") return;
 
     const newMessage = {
       from: user.userID,
-      to: assignedAdmin,
+      to: assignedAdmin || null,
       message: text,
       timestamp: new Date(),
       roomId,

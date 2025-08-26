@@ -46,16 +46,19 @@ const SetPassword = () => {
   };
   const handleSubmit = async () => {
     setIsConfirmModalVisible(false);
+    if (loading) return;
+    setLoading(true);
     try {
       await api.put(`/resetpassword/${username}`, { password });
       setIsSuccess(true);
       setAlertMessage("Your password has been set.");
       setIsAlertModalVisible(true);
     } catch (error) {
-      console.log("Failed to reset password", error);
       setAlertMessage("Password reset failed.");
       setIsAlertModalVisible(true);
       setIsSuccess(false);
+    } finally {
+      setLoading(false);
     }
     setAlertMessage(message);
     setIsAlertModalVisible(true);
@@ -262,7 +265,9 @@ const SetPassword = () => {
               onPress={handleConfirm}
               style={[MyStyles.button]}
             >
-              <Text style={MyStyles.buttonText}>Submit</Text>
+              <Text style={MyStyles.buttonText}>
+                {loading ? "Confirming..." : "Confirm"}
+              </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

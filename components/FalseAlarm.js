@@ -37,18 +37,15 @@ const FalseAlarm = () => {
   const [loading, setLoading] = useState(false);
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isEvidenceProcessing, setIsEvidenceProcessing] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleInputChange = (name, value) => {
-    setBlotterForm((prev) => ({
+    setFalseAlarmForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-    // if (name === "subjectname") {
-    //   setSubjectError(!value ? "This field is required!" : null);
-    // }
-    // if (name === "details") {
-    //   setDetailsError(!value ? "This field is required!" : null);
-    // }
   };
 
   const pickEvidenceImage = async () => {
@@ -150,11 +147,18 @@ const FalseAlarm = () => {
       await api.put(`/falsealarm/${selectedID}`, {
         falseAlarmForm: updatedFalseAlarmForm,
       });
+      setIsSuccess(true);
+      setAlertMessage("You have marked the report as false alarm.");
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.log("Error in submitting a false alarm report", error);
     } finally {
       setLoading(false);
     }
+  };
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    navigation.navigate("SOSRespondedDetails", { selectedID });
   };
 
   return (
@@ -324,6 +328,12 @@ const FalseAlarm = () => {
             onConfirm={handleSubmit}
           />
         </ScrollView>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={isSuccess}
+          onConfirm={handleCloseAlertModal}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

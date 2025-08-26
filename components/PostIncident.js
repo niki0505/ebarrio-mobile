@@ -37,18 +37,15 @@ const PostIncident = () => {
   const [loading, setLoading] = useState(false);
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isEvidenceProcessing, setIsEvidenceProcessing] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleInputChange = (name, value) => {
     setPostIncidentForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-    // if (name === "subjectname") {
-    //   setSubjectError(!value ? "This field is required!" : null);
-    // }
-    // if (name === "details") {
-    //   setDetailsError(!value ? "This field is required!" : null);
-    // }
   };
 
   const pickEvidenceImage = async () => {
@@ -152,11 +149,18 @@ const PostIncident = () => {
       await api.put(`/postincident/${selectedID}`, {
         postIncidentForm: updatedPostIncidentForm,
       });
+      setIsSuccess(true);
+      setAlertMessage("The report has been successfully resolved.");
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.log("Error in submitting a post incident report", error);
     } finally {
       setLoading(false);
     }
+  };
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    navigation.navigate("SOSRespondedDetails", { selectedID });
   };
 
   return (
@@ -325,6 +329,12 @@ const PostIncident = () => {
             onConfirm={handleSubmit}
           />
         </ScrollView>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={isSuccess}
+          onConfirm={handleCloseAlertModal}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

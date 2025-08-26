@@ -1031,8 +1031,6 @@ const UserProfile = () => {
         address: fulladdress,
       };
 
-      console.log(updatedResidentForm);
-
       await api.put("/updateprofile", {
         ...updatedResidentForm,
         householdForm: updatedHouseholdForm,

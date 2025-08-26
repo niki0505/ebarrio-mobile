@@ -7,8 +7,6 @@ const PrivateRoute = ({ element }) => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigation = useNavigation();
 
-  console.log("Is Authenticated", isAuthenticated);
-
   useEffect(() => {
     if (isAuthenticated === false) {
       setTimeout(() => {

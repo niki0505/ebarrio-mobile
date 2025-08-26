@@ -1791,4 +1791,11 @@ export const MyStyles = StyleSheet.create({
     fontSize: RFPercentage(2.4),
     color: "black",
   },
+  evidenceImg: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    resizeMode: "cover",
+    marginTop: 5,
+  },
 });

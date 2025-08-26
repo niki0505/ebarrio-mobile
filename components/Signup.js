@@ -238,7 +238,6 @@ const Signup = () => {
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
-        console.log("❌ Error status:", response.status);
         if (
           response.status === 404 &&
           response.data.message === "Resident not found"

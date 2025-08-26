@@ -13,8 +13,7 @@ import api from "../api";
 
 export const SocketContext = createContext();
 
-export const SocketProvider = ({ children }) => {
-  const navigation = useNavigation();
+export const SocketProvider = ({ children, navigationRef }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const socketRef = useRef(null); // ✅ Persistent ref
 
@@ -22,8 +21,12 @@ export const SocketProvider = ({ children }) => {
     if (!user?.userID || socketRef.current) return;
 
     const socket = io("https://api.ebarrio.online", {
-      transports: ["polling"],
+      transports: ["polling", "websocket"],
       withCredentials: true,
+      timeout: 60000,
+      reconnectionAttempts: Infinity, // retry forever
+      reconnectionDelay: 1000, // start with 1s delay
+      reconnectionDelayMax: 10000, // max delay 10s
     });
 
     socketRef.current = socket;
@@ -47,7 +50,7 @@ export const SocketProvider = ({ children }) => {
           { text: "Cancel", style: "cancel" },
           {
             text: "View Now",
-            onPress: () => navigation.navigate("Announcements"),
+            onPress: () => navigationRef.navigate("Announcements"),
           },
         ],
         { cancelable: true }
@@ -60,13 +63,11 @@ export const SocketProvider = ({ children }) => {
         certificate.message,
         [
           { text: "Cancel", style: "cancel" },
-          { text: "View Now", onPress: () => navigation.navigate("Status") },
+          { text: "View Now", onPress: () => navigationRef.navigate("Status") },
         ],
         { cancelable: true }
       );
     });
-
-    // socket.on("notificationUpdate", setNotifications);
 
     socket.on("blotterUpdate", (blotter) => {
       Alert.alert(
@@ -74,7 +75,7 @@ export const SocketProvider = ({ children }) => {
         blotter.message,
         [
           { text: "Cancel", style: "cancel" },
-          { text: "View Now", onPress: () => navigation.navigate("Status") },
+          { text: "View Now", onPress: () => navigationRef.navigate("Status") },
         ],
         { cancelable: true }
       );
@@ -86,7 +87,28 @@ export const SocketProvider = ({ children }) => {
         res.message,
         [
           { text: "Cancel", style: "cancel" },
-          { text: "View Now", onPress: () => navigation.navigate("Status") },
+          { text: "View Now", onPress: () => navigationRef.navigate("Status") },
+        ],
+        { cancelable: true }
+      );
+    });
+
+    socket.on("chatUpdate", (res) => {
+      const currentRoute = navigationRef.getCurrentRoute();
+
+      if (currentRoute?.name === "Chat") {
+        return;
+      }
+      Alert.alert(
+        res.title,
+        res.message,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "View Now",
+            onPress: () =>
+              navigationRef.navigate("Chat", { roomId: res.roomId }),
+          },
         ],
         { cancelable: true }
       );

@@ -556,9 +556,13 @@ export default function App() {
     const subscription = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         const screen = response.notification.request.content.data?.screen;
+        const roomId = response.notification.request.content.data?.roomId;
         if (screen && navigationRef.isReady()) {
           if (screen === "Announcement") {
-            navigationRef.navigate("BottomTabs", { screen });
+            navigationRef.navigate("BottomTabs", { screen: "Announcements" });
+          } else if (screen === "Chat") {
+            console.log("➡️ Navigating to room", roomId);
+            navigationRef.navigate(screen, { isChat: true, roomId });
           } else {
             navigationRef.navigate(screen);
           }
@@ -621,7 +625,7 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer ref={navigationRef}>
         <AuthProvider>
-          <SocketProvider>
+          <SocketProvider navigationRef={navigationRef}>
             <OtpProvider>
               <Stack.Navigator
                 key={`${isFirstLaunch}-${isConnected}`}

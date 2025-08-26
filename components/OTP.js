@@ -60,7 +60,6 @@ const OTP = ({}) => {
         setResendTimer(30);
         setIsResendDisabled(true);
         setResendCount((prevCount) => prevCount + 1);
-        console.log("New OTP is generated");
       } catch (error) {
         console.error("Error sending OTP:", error);
         setAlertMessage("Something went wrong while sending OTP");

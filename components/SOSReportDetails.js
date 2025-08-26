@@ -39,6 +39,11 @@ const SOSReportDetails = () => {
   const [isConfirmDidNotArrivedVisible, setIsConfirmDidNotArrivedVisible] =
     useState(false);
   const { width } = Dimensions.get("window");
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     fetchPendingReports();
@@ -54,29 +59,63 @@ const SOSReportDetails = () => {
 
   const headingSOS = async () => {
     setIsConfirmModalVisible(false);
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put(`/headingsos/${selectedID}`);
+      setIsSuccess(true);
+      setAlertMessage(
+        "You have marked yourself as heading at the report location."
+      );
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.error("❌ Failed to click heading:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const arrivedSOS = async () => {
     setIsConfirmArrivedVisible(false);
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put(`/arrivedsos/${selectedID}`);
+      setIsSuccess(true);
+      setAlertMessage(
+        "You have marked yourself as arrived at the report location."
+      );
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.error("❌ Failed to click arrived:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const didntArriveSOS = async () => {
     setIsConfirmDidNotArrivedVisible(false);
+    if (loading2) return;
+
+    setLoading2(true);
     try {
       await api.put(`/didntarrivesos/${selectedID}`);
+      setIsSuccess(true);
+      setAlertMessage(
+        "You have marked yourself as did not arrive at the report location."
+      );
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.error("❌ Failed to click arrived:", error);
+    } finally {
+      setLoading2(false);
     }
+  };
+
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
   };
   return (
     <SafeAreaView
@@ -288,17 +327,21 @@ const SOSReportDetails = () => {
                           MyStyles.button,
                           { backgroundColor: "#BC0F0F" },
                         ]}
+                        disabled={loading}
                       >
-                        <Text style={MyStyles.buttonText}>Arrived</Text>
+                        <Text style={MyStyles.buttonText}>
+                          {loading ? "Loading..." : "Arrive"}
+                        </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => setIsConfirmDidNotArrivedVisible(true)}
                         style={[MyStyles.button, MyStyles.sosWhiteBtn]}
+                        disabled={loading2}
                       >
                         <Text
                           style={[MyStyles.buttonText, { color: "#BC0F0F" }]}
                         >
-                          Did Not Arrive
+                          {loading2 ? "Loading..." : "Did Not Arrive"}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -314,6 +357,7 @@ const SOSReportDetails = () => {
                           MyStyles.button,
                           { backgroundColor: "#BC0F0F" },
                         ]}
+                        disabled={loading}
                       >
                         <Text style={MyStyles.buttonText}>Verify</Text>
                       </TouchableOpacity>
@@ -322,6 +366,7 @@ const SOSReportDetails = () => {
                           navigation.navigate("FalseAlarm", { selectedID })
                         }
                         style={[MyStyles.button, MyStyles.sosWhiteBtn]}
+                        disabled={loading}
                       >
                         <Text
                           style={[MyStyles.buttonText, { color: "#BC0F0F" }]}
@@ -339,8 +384,11 @@ const SOSReportDetails = () => {
                     MyStyles.button,
                     { marginTop: 30, backgroundColor: "#BC0F0F" },
                   ]}
+                  disabled={loading}
                 >
-                  <Text style={MyStyles.buttonText}>Heading</Text>
+                  <Text style={MyStyles.buttonText}>
+                    {loading ? "Loading..." : "Heading"}
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -370,6 +418,13 @@ const SOSReportDetails = () => {
             onConfirm={didntArriveSOS}
           />
         </ScrollView>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={isSuccess}
+          onClose={() => setIsAlertModalVisible(false)}
+          onConfirm={handleCloseAlertModal}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

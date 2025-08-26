@@ -47,16 +47,18 @@ const RespondedSOS = () => {
     const enrichReports = async () => {
       if (respondedSOS && respondedSOS.length > 0) {
         const updatedReports = await Promise.all(
-          respondedSOS.map(async (report) => {
-            if (report.location?.lat && report.location?.lng) {
-              const address = await getReadableAddress(
-                report.location.lat,
-                report.location.lng
-              );
-              return { ...report, readableAddress: address || "Unknown" };
-            }
-            return { ...report, readableAddress: "No location available" };
-          })
+          respondedSOS
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map(async (report) => {
+              if (report.location?.lat && report.location?.lng) {
+                const address = await getReadableAddress(
+                  report.location.lat,
+                  report.location.lng
+                );
+                return { ...report, readableAddress: address || "Unknown" };
+              }
+              return { ...report, readableAddress: "No location available" };
+            })
         );
         setModifiedReports(updatedReports);
       } else {
