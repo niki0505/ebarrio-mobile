@@ -40,6 +40,7 @@ const FalseAlarm = () => {
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (name, value) => {
     setFalseAlarmForm((prev) => ({
@@ -89,7 +90,8 @@ const FalseAlarm = () => {
     if (!permissionResult.granted) {
       const askPermission = await ImagePicker.requestCameraPermissionsAsync();
       if (!askPermission.granted) {
-        Alert.alert("Permission Denied", "Camera permission is required.");
+        setAlertMessage("Camera permission is required.");
+        setIsAlertModalVisible(true);
         return;
       }
     }
@@ -130,7 +132,13 @@ const FalseAlarm = () => {
   };
 
   const handleSubmit = async () => {
-    setIsConfirmModalVisible(false);
+    if (!falseAlarmForm.postreportdetails.trim()) {
+      setIsConfirmModalVisible(false);
+      setAlertMessage("Please input details for the false-alarm report.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
     if (loading) return;
     setLoading(true);
     try {
@@ -333,6 +341,7 @@ const FalseAlarm = () => {
           message={alertMessage}
           isSuccess={isSuccess}
           onConfirm={handleCloseAlertModal}
+          onClose={() => setIsAlertModalVisible(false)}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -40,6 +40,7 @@ const PostIncident = () => {
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (name, value) => {
     setPostIncidentForm((prev) => ({
@@ -89,7 +90,8 @@ const PostIncident = () => {
     if (!permissionResult.granted) {
       const askPermission = await ImagePicker.requestCameraPermissionsAsync();
       if (!askPermission.granted) {
-        Alert.alert("Permission Denied", "Camera permission is required.");
+        setAlertMessage("Camera permission is required.");
+        setIsAlertModalVisible(true);
         return;
       }
     }
@@ -130,7 +132,13 @@ const PostIncident = () => {
   }
 
   const handleSubmit = async () => {
-    setIsConfirmModalVisible(false);
+    if (!postIncidentForm.postreportdetails.trim()) {
+      setIsConfirmModalVisible(false);
+      setAlertMessage("Please input details for the post-incident report.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
     if (loading) return;
     setLoading(true);
     try {
@@ -209,7 +217,7 @@ const PostIncident = () => {
           <View style={{ marginVertical: 30, gap: 10 }}>
             <View>
               <Text style={[MyStyles.inputLabel, { color: "white" }]}>
-                Actions Taken on Scene<Text style={{ color: "red" }}>*</Text>
+                Actions Taken on Scene<Text style={{ color: "white" }}>*</Text>
               </Text>
               <TextInput
                 placeholder="Describe any actions you or your team took upon arrival."
@@ -223,9 +231,9 @@ const PostIncident = () => {
                 numberOfLines={4}
                 maxLength={3000}
                 autoCapitalize="sentences"
-                onChangeText={(text) =>
-                  handleInputChange("postreportdetails", text)
-                }
+                onChangeText={(text) => {
+                  handleInputChange("postreportdetails", text);
+                }}
               />
 
               <View
@@ -334,6 +342,7 @@ const PostIncident = () => {
           message={alertMessage}
           isSuccess={isSuccess}
           onConfirm={handleCloseAlertModal}
+          onClose={() => setIsAlertModalVisible(false)}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

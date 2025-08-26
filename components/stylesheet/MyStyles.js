@@ -1701,12 +1701,17 @@ export const MyStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
+    flexWrap: "wrap",
   },
   sosDetailsText: {
     color: "black",
     fontSize: RFPercentage(2),
     fontFamily: "QuicksandMedium",
     marginLeft: 5,
+    flexWrap: "wrap",
+    flex: 1,
+    marginRight: 5,
+    overflow: "hidden",
   },
   sosDetailsWrapper: {
     marginTop: 15,
