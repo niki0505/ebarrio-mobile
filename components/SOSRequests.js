@@ -34,10 +34,6 @@ const SOSRequests = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchPendingReports();
-  }, []);
-
-  useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       await fetchPendingReports();
@@ -156,10 +152,8 @@ const SOSRequests = () => {
 
           {loading ? (
             <ActivityIndicator size="large" color="white" />
-          ) : pendingReports.length === 0 ? (
-            <Text
-              style={[MyStyles.noEvents, { color: "#fff", opacity: "0.7" }]}
-            >
+          ) : modifiedReports.length === 0 ? (
+            <Text style={[MyStyles.noEvents, { color: "#fff", opacity: 0.7 }]}>
               No pending SOS requests found.
             </Text>
           ) : (
@@ -198,7 +192,11 @@ const SOSRequests = () => {
 
                   <View style={MyStyles.rowAlignment}>
                     <Image
-                      source={{ uri: report.resID.picture }}
+                      source={{
+                        uri:
+                          report.resID?.picture ||
+                          "https://via.placeholder.com/150",
+                      }}
                       style={MyStyles.sosImg}
                     />
 
@@ -209,7 +207,7 @@ const SOSRequests = () => {
 
                       <View style={MyStyles.sosAddressTimeWrapper}>
                         <Text style={MyStyles.sosDetailsText}>
-                          #{report.readableAddress}
+                          #{report.readableAddress || "No location available"}
                         </Text>
                         <Text style={MyStyles.sosDetailsText}>
                           {dayjs(report.createdAt).fromNow()}
