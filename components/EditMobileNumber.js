@@ -468,13 +468,12 @@ const EditMobileNumber = () => {
                 alignItems: "center",
               }}
             >
-              <MaterialIcons
+              <AntDesign
                 onPress={() => setIsVerified(false)}
-                name="arrow-back-ios"
-                size={30}
-                color="#04384E"
-                style={{ alignSelf: "flex-start" }}
+                name="arrowleft"
+                style={[MyStyles.backArrow, { alignSelf: "flex-start" }]}
               />
+
               <Text
                 style={[
                   MyStyles.header,
