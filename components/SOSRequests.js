@@ -152,7 +152,7 @@ const SOSRequests = () => {
 
           {loading ? (
             <ActivityIndicator size="large" color="white" />
-          ) : modifiedReports.length === 0 ? (
+          ) : pendingReports.length === 0 ? (
             <Text style={[MyStyles.noEvents, { color: "#fff", opacity: 0.7 }]}>
               No pending SOS requests found.
             </Text>

@@ -115,6 +115,11 @@ const PostIncident = () => {
   };
 
   const handleConfirm = () => {
+    if (!postIncidentForm.postreportdetails.trim()) {
+      setAlertMessage("Please input details for the post-incident report.");
+      setIsAlertModalVisible(true);
+      return;
+    }
     setIsConfirmModalVisible(true);
   };
 
@@ -132,12 +137,7 @@ const PostIncident = () => {
   }
 
   const handleSubmit = async () => {
-    if (!postIncidentForm.postreportdetails.trim()) {
-      setIsConfirmModalVisible(false);
-      setAlertMessage("Please input details for the post-incident report.");
-      setIsAlertModalVisible(true);
-      return;
-    }
+    setIsConfirmModalVisible(false);
 
     if (loading) return;
     setLoading(true);

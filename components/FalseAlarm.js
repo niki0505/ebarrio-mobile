@@ -128,17 +128,16 @@ const FalseAlarm = () => {
   }
 
   const handleConfirm = () => {
-    setIsConfirmModalVisible(true);
-  };
-
-  const handleSubmit = async () => {
     if (!falseAlarmForm.postreportdetails.trim()) {
-      setIsConfirmModalVisible(false);
       setAlertMessage("Please input details for the false-alarm report.");
       setIsAlertModalVisible(true);
       return;
     }
+    setIsConfirmModalVisible(true);
+  };
 
+  const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
     setLoading(true);
     try {
