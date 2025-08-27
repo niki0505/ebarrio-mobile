@@ -238,7 +238,7 @@ const EditMobileNumber = () => {
         setIsAlertModalVisible(true);
       }
     } else {
-      await api.get(`/limitotp/${username}`);
+      await api.get(`/limitotp/${userDetails.username}`);
       setAlertMessage("You can only resend OTP 3 times.");
       setIsAlertModalVisible(true);
     }
@@ -338,11 +338,19 @@ const EditMobileNumber = () => {
   );
 
   const maskMobileNumber = (number) => {
-    if (!number || number.length < 4) return number;
-    const start = number.slice(0, 2);
-    const end = number.slice(-2);
-    const masked = "*".repeat(number.length - 4);
-    return `${start}${masked}${end}`;
+    if (!number || number.length < 6) return number;
+
+    const localNumber = number.startsWith("+63")
+      ? "0" + number.slice(3)
+      : number;
+
+    const firstTwo = localNumber.slice(0, 2);
+
+    const lastTwo = localNumber.slice(-2);
+
+    const middleMasked = "*".repeat(localNumber.length - 4);
+
+    return `${firstTwo}${middleMasked}${lastTwo}`;
   };
 
   return (
@@ -508,7 +516,7 @@ const EditMobileNumber = () => {
                   fontFamily: "QuicksandSemiBold",
                 }}
               >
-                {mobilenumber}
+                {maskMobileNumber(mobilenumber)}
               </Text>
 
               <View style={{ marginTop: 30 }}>

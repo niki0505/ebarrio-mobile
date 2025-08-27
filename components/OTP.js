@@ -74,9 +74,13 @@ const OTP = ({}) => {
   const handleVerify = async (OTP) => {
     try {
       const result = await verifyOTP(username, OTP);
-      setIsSuccess(true);
-      setAlertMessage("New Resident Account Created.");
-      setIsAlertModalVisible(true);
+      if (navigatelink === "Login") {
+        setIsSuccess(true);
+        setAlertMessage("New Resident Account Created.");
+        setIsAlertModalVisible(true);
+      } else {
+        await login({ username, password });
+      }
     } catch (error) {
       const response = error.response;
       if (response && response.data) {

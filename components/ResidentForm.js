@@ -763,19 +763,19 @@ const ResidentForm = () => {
       newErrors.emergencyaddress = "This field is required!";
     if (!residentForm.employmentstatus)
       newErrors.employmentstatus = "This field is required!";
-    if (residentForm.head === "Yes" && !residentForm.street) {
+    if (residentForm.head === "Yes" && !householdForm.street) {
       newErrors.street = "This field is required!";
     }
-    if (residentForm.head === "Yes" && !residentForm.ethnicity) {
+    if (residentForm.head === "Yes" && !householdForm.ethnicity) {
       newErrors.ethnicity = "This field is required!";
     }
-    if (residentForm.head === "Yes" && !residentForm.sociostatus) {
+    if (residentForm.head === "Yes" && !householdForm.sociostatus) {
       newErrors.sociostatus = "This field is required!";
     }
-    if (residentForm.head === "Yes" && !residentForm.watersource) {
+    if (residentForm.head === "Yes" && !householdForm.watersource) {
       newErrors.watersource = "This field is required!";
     }
-    if (residentForm.head === "Yes" && !residentForm.toiletfacility) {
+    if (residentForm.head === "Yes" && !householdForm.toiletfacility) {
       newErrors.toiletfacility = "This field is required!";
     }
 
@@ -805,8 +805,9 @@ const ResidentForm = () => {
       formattedEmergencyMobileNumber =
         "0" + residentForm.emergencymobilenumber.slice(3);
 
-      let formattedTelephone = residentForm.telephone;
-      if (residentForm.telephone !== "+63") {
+      let formattedTelephone = "";
+
+      if (residentForm.telephone && residentForm.telephone !== "+63") {
         formattedTelephone = "0" + residentForm.telephone.slice(3);
         delete residentForm.telephone;
       } else {
@@ -847,7 +848,7 @@ const ResidentForm = () => {
         householdForm: updatedHouseholdForm,
       });
       setResidentForm(residentInitialForm);
-      setHouseholdForm(setHouseholdForm);
+      setHouseholdForm(householdInitialForm);
       navigation.navigate("SuccessfulPage2", {
         service: "ResidentForm",
       });
@@ -1985,9 +1986,9 @@ const ResidentForm = () => {
                         placeholder="House Number"
                         style={MyStyles.input}
                         keyboardType="numeric"
-                        value={residentForm.housenumber}
+                        value={householdForm.housenumber}
                         onChangeText={(text) =>
-                          handleInputChange("housenumber", text)
+                          handleHouseholdDropdownChange("housenumber", text)
                         }
                       />
                     </View>
@@ -1999,7 +2000,7 @@ const ResidentForm = () => {
                       <Dropdown
                         labelField="label"
                         valueField="value"
-                        value={residentForm.street}
+                        value={householdForm.street}
                         data={streetList.map((purp) => ({
                           label: purp,
                           value: purp,
@@ -2008,7 +2009,7 @@ const ResidentForm = () => {
                         placeholderStyle={MyStyles.placeholderText}
                         selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
-                          handleDropdownChange("street", item.value)
+                          handleHouseholdDropdownChange("street", item.value)
                         }
                         style={MyStyles.input}
                       ></Dropdown>
@@ -2023,7 +2024,7 @@ const ResidentForm = () => {
                       <Dropdown
                         labelField="label"
                         valueField="value"
-                        value={residentForm.HOAname}
+                        value={householdForm.HOAname}
                         data={[
                           {
                             label: "Bermuda Town Homes",
@@ -2034,7 +2035,7 @@ const ResidentForm = () => {
                         placeholderStyle={MyStyles.placeholderText}
                         selectedTextStyle={MyStyles.selectedText}
                         onChange={(item) =>
-                          handleDropdownChange("street", item.value)
+                          handleHouseholdDropdownChange("street", item.value)
                         }
                         style={MyStyles.input}
                       ></Dropdown>
