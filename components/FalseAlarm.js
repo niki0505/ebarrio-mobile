@@ -14,7 +14,8 @@ import { useContext, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { storage } from "../firebase";
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import * as FileSystem from "expo-file-system";
 import api from "../api";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -114,17 +115,37 @@ const FalseAlarm = () => {
     }
   };
 
-  async function uploadToFirebase(url) {
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const fileName = `id_evidences/${Date.now()}_${randomString}.png`;
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const file = new File([blob], fileName, { type: blob.type });
-    const storageRef = ref(storage, fileName);
-    await uploadBytes(storageRef, file);
+  async function uploadToFirebase(fileUriOrBase64) {
+    try {
+      let fileUri = fileUriOrBase64;
 
-    const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL;
+      if (fileUri.startsWith("data:")) {
+        fileUri = await base64ToFile(fileUriOrBase64);
+      }
+
+      const randomString = Math.random().toString(36).substring(2, 15);
+      const fileName = `id_images/${Date.now()}_${randomString}.jpg`;
+      const storageRef = ref(storage, fileName);
+
+      // ✅ Convert local file:// URI → Blob
+      const response = await fetch(fileUri);
+      const blob = await response.blob();
+      console.log("📦 Blob created, size:", blob.size);
+
+      // ✅ Upload blob
+      const snapshot = await uploadBytesResumable(storageRef, blob, {
+        contentType: "image/jpeg",
+      });
+
+      console.log("✅ Upload complete!");
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log("🌐 Download URL:", downloadURL);
+
+      return downloadURL;
+    } catch (err) {
+      console.log("❌ Upload error:", err);
+      throw err;
+    }
   }
 
   const handleConfirm = () => {
