@@ -20,6 +20,7 @@ import AppLogo from "../assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import AlertModal from "./AlertModal";
 import { AntDesign } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
@@ -317,8 +318,8 @@ const ForgotPassword = () => {
   const handleVerify = async (OTP) => {
     try {
       const result = await verifyOTP(username, OTP);
-      setAlertMessage(result.message);
-      setIsAlertModalVisible(true);
+      // setAlertMessage(result.message);
+      // setIsAlertModalVisible(true);
       setIsVerified(true);
     } catch (error) {
       const response = error.response;
@@ -352,31 +353,22 @@ const ForgotPassword = () => {
 
   const BackgroundOverlay = () => (
     <View style={{ position: "relative", height: "100%", width: "100%" }}>
-      {/* SVG Background */}
-      <Svg height="100%" width="100%">
-        <Defs>
-          <RadialGradient
-            id="grad1"
-            cx="50%"
-            cy="50%"
-            r="50%"
-            fx="50%"
-            fy="50%"
-          >
-            <Stop offset="0%" stopColor="#0981B4" stopOpacity="1" />
-            <Stop offset="25%" stopColor="#0978A7" stopOpacity="1" />
-            <Stop offset="50%" stopColor="#086F9B" stopOpacity="1" />
-            <Stop offset="75%" stopColor="#065474" stopOpacity="1" />
-            <Stop offset="100%" stopColor="#064965" stopOpacity="1" />
-          </RadialGradient>
-        </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
-      </Svg>
+      <LinearGradient
+        colors={["#0e94d3", "#0a70a0", "#095e86", "#074c6d"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          height: "100%",
+          width: "100%",
+          zIndex: -1,
+        }}
+      />
 
-      {/* Logo */}
       <Image source={AppLogo} style={MyStyles.overlayLogo} />
 
-      {/* Black Overlay */}
       <View style={MyStyles.overlayBlack} />
     </View>
   );
@@ -401,423 +393,432 @@ const ForgotPassword = () => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        backgroundColor: "#04384E",
-      }}
+    <LinearGradient
+      colors={["#0e94d3", "#0a70a0", "#095e86", "#074c6d"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={{ flex: 1 }}
     >
-      <AlertModal
-        isVisible={isAlertModalVisible}
-        message={alertMessage}
-        onClose={() => setIsAlertModalVisible(false)}
-      />
-      {/* 1st Design */}
-      {!isExisting && (
-        <View style={{ flex: 4, backgroundColor: "#04384E" }}>
-          <View style={{ flex: 1, alignSelf: "center" }}>
-            <Image source={AppLogo} style={MyStyles.loginLogo} />
-          </View>
-
-          <View style={MyStyles.loginBottomWrapper}>
-            <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-              Forgot Password
-            </Text>
-
-            <View style={MyStyles.loginFormWrapper}>
-              <View>
-                <Text style={MyStyles.inputLabel}>
-                  Username<Text style={{ color: "red" }}>*</Text>
-                </Text>
-                <TextInput
-                  onChangeText={setUsername}
-                  placeholder="Username"
-                  style={MyStyles.input}
-                />
-              </View>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: "transparent",
+        }}
+      >
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          onClose={() => setIsAlertModalVisible(false)}
+        />
+        {/* 1st Design */}
+        {!isExisting && (
+          <View style={MyStyles.loginWrapper}>
+            <View style={MyStyles.loginTopWrapper}>
+              <Image source={AppLogo} style={MyStyles.loginLogo} />
             </View>
 
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={MyStyles.button}
-              disabled={loading}
-            >
-              <Text style={MyStyles.buttonText}>
-                {loading ? "Checking..." : "Continue"}
+            <View style={MyStyles.loginBottomWrapper}>
+              <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
+                Forgot Password
               </Text>
-            </TouchableOpacity>
 
-            <Text
-              onPress={() => navigation.navigate("Login")}
-              style={[MyStyles.signUpText, { marginTop: 10 }]}
-            >
-              Remember your password?
-            </Text>
+              <View style={MyStyles.loginFormWrapper}>
+                <View>
+                  <Text style={MyStyles.inputLabel}>
+                    Username<Text style={{ color: "red" }}>*</Text>
+                  </Text>
+                  <TextInput
+                    onChangeText={setUsername}
+                    placeholder="Username"
+                    style={MyStyles.input}
+                  />
+                </View>
+              </View>
+
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={MyStyles.button}
+                disabled={loading}
+              >
+                <Text style={MyStyles.buttonText}>
+                  {loading ? "Checking..." : "Continue"}
+                </Text>
+              </TouchableOpacity>
+
+              <Text
+                onPress={() => navigation.navigate("Login")}
+                style={[MyStyles.signUpText, { marginTop: 10 }]}
+              >
+                Remember your password?
+              </Text>
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
-      {/* 2nd Design */}
-      {isExisting && (
-        <>
-          {/* Reset Password */}
-          {isVerified ? (
-            <>
-              <BackgroundOverlay />
-              <View style={MyStyles.forgotCardWrapper}>
-                <View style={MyStyles.forgotCard}>
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <AntDesign
-                      onPress={() => {
-                        setIsExisting(false);
-                        setIsVerified(false);
-                        setQuestionsClicked(false);
-                        setOTPClicked(false);
-                        setNewPassword("");
-                        setReNewPassword("");
-                        setSecurityQuestion({
-                          question: "",
-                          answer: "",
-                        });
-                      }}
-                      name="arrowleft"
-                      style={MyStyles.backArrow}
-                    />
+        {/* 2nd Design */}
+        {isExisting && (
+          <>
+            {/* Reset Password */}
+            {isVerified ? (
+              <>
+                <BackgroundOverlay />
+                <View style={MyStyles.forgotCardWrapper}>
+                  <View style={MyStyles.forgotCard}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      <AntDesign
+                        onPress={() => {
+                          setIsExisting(false);
+                          setIsVerified(false);
+                          setQuestionsClicked(false);
+                          setOTPClicked(false);
+                          setNewPassword("");
+                          setReNewPassword("");
+                          setSecurityQuestion({
+                            question: "",
+                            answer: "",
+                          });
+                        }}
+                        name="arrowleft"
+                        style={MyStyles.backArrow}
+                      />
 
-                    <Text style={MyStyles.header}>Reset Password</Text>
+                      <Text style={MyStyles.header}>Reset Password</Text>
 
-                    <Text style={MyStyles.forgotMsg}>
-                      To ensure the security of your account, please create a
-                      new password.
-                    </Text>
+                      <Text style={MyStyles.forgotMsg}>
+                        To ensure the security of your account, please create a
+                        new password.
+                      </Text>
 
-                    <View style={MyStyles.loginFormWrapper}>
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          New Password<Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <View style={MyStyles.eyeInputContainer}>
-                          <TextInput
-                            onChangeText={passwordValidation}
-                            value={newPassword}
-                            secureTextEntry={secureNewPass}
-                            placeholder="New Password"
-                            style={[MyStyles.input, { paddingRight: 40 }]}
-                          />
-                          <TouchableOpacity
-                            style={MyStyles.eyeToggle}
-                            onPress={togglesecureNewPass}
-                          >
-                            <Ionicons
-                              name={secureNewPass ? "eye-off" : "eye"}
-                              size={24}
-                              color="#808080"
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                      {passwordErrors.length > 0 && (
+                      <View style={MyStyles.loginFormWrapper}>
                         <View>
-                          {passwordErrors.map((error, index) => (
-                            <Text key={index} style={MyStyles.errorMsg}>
-                              {error}
-                            </Text>
-                          ))}
-                        </View>
-                      )}
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Confirm New Password
-                          <Text style={{ color: "red" }}>*</Text>
-                        </Text>
-
-                        <View style={{ position: "relative" }}>
-                          <TextInput
-                            onChangeText={repasswordValidation}
-                            secureTextEntry={secureConfirmPass}
-                            value={renewPassword}
-                            placeholder="Confirm New Password"
-                            style={[MyStyles.input, { paddingRight: 40 }]}
-                          />
-                          <TouchableOpacity
-                            style={MyStyles.eyeToggle}
-                            onPress={togglesecureConfirmPass}
-                          >
-                            <Ionicons
-                              name={secureConfirmPass ? "eye-off" : "eye"}
-                              size={24}
-                              color="#808080"
+                          <Text style={MyStyles.inputLabel}>
+                            New Password<Text style={{ color: "red" }}>*</Text>
+                          </Text>
+                          <View style={MyStyles.eyeInputContainer}>
+                            <TextInput
+                              onChangeText={passwordValidation}
+                              value={newPassword}
+                              secureTextEntry={secureNewPass}
+                              placeholder="New Password"
+                              style={[MyStyles.input, { paddingRight: 40 }]}
                             />
-                          </TouchableOpacity>
+                            <TouchableOpacity
+                              style={MyStyles.eyeToggle}
+                              onPress={togglesecureNewPass}
+                            >
+                              <Ionicons
+                                name={secureNewPass ? "eye-off" : "eye"}
+                                size={24}
+                                color="#808080"
+                              />
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                        {repasswordErrors.length > 0 && (
-                          <View style={{ marginTop: 5, width: 300 }}>
-                            {repasswordErrors.map((error, index) => (
+                        {passwordErrors.length > 0 && (
+                          <View>
+                            {passwordErrors.map((error, index) => (
                               <Text key={index} style={MyStyles.errorMsg}>
                                 {error}
                               </Text>
                             ))}
                           </View>
                         )}
-                      </View>
-                    </View>
 
-                    <TouchableOpacity
-                      onPress={handleConfirm}
-                      style={MyStyles.button}
-                      disabled={loading}
-                    >
-                      <Text style={MyStyles.buttonText}>
-                        {loading ? "Resetting..." : "Reset"}
-                      </Text>
-                    </TouchableOpacity>
-                  </ScrollView>
-                </View>
-                <AlertModal
-                  isVisible={isAlertModalVisible}
-                  message={alertMessage}
-                  isSuccess={isSuccess}
-                  onClose={() => setIsAlertModalVisible(false)}
-                  onConfirm={handleCloseSuccessModal}
-                />
-                <AlertModal
-                  isVisible={isConfirmModalVisible}
-                  isConfirmationModal={true}
-                  title="Reset Password?"
-                  message="Are you sure you want to reset your Password?"
-                  onClose={() => setIsConfirmModalVisible(false)}
-                  onConfirm={handleSuccessful}
-                />
-              </View>
-            </>
-          ) : /* One-Time Password */ isOTPClicked ? (
-            <>
-              <BackgroundOverlay />
-              <View style={MyStyles.forgotCardWrapper}>
-                <View style={MyStyles.forgotCard}>
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <AntDesign
-                      onPress={() => setOTPClicked(false)}
-                      name="arrowleft"
-                      style={MyStyles.backArrow}
-                    />
-                    <Text style={MyStyles.header}>Account Verification</Text>
+                        <View>
+                          <Text style={MyStyles.inputLabel}>
+                            Confirm New Password
+                            <Text style={{ color: "red" }}>*</Text>
+                          </Text>
 
-                    <Text style={MyStyles.forgotMsg}>
-                      Enter the 6-digit code sent to
-                    </Text>
-                    <Text
-                      style={[
-                        MyStyles.forgotMsg,
-
-                        {
-                          marginTop: 5,
-                          color: "#04384E",
-                        },
-                      ]}
-                    >
-                      {maskMobileNumber(
-                        user.resID?.mobilenumber ||
-                          user.empID?.resID.mobilenumber
-                      )}
-                    </Text>
-
-                    <View style={{ marginTop: 30 }}>
-                      <OtpInput
-                        ref={otpRef}
-                        type="numeric"
-                        numberOfDigits={6}
-                        onTextChange={handleOTPChange}
-                      />
-                    </View>
-
-                    {isResendDisabled ? (
-                      <Text style={MyStyles.forgotMsg}>
-                        Resend OTP in{" "}
-                        <Text style={{ color: "red" }}>{resendTimer} </Text>
-                        second
-                        {resendTimer !== 1 ? "s" : ""}
-                      </Text>
-                    ) : (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          gap: 4,
-                          alignSelf: "flex-start",
-                          marginTop: 10,
-                        }}
-                      >
-                        <Text
-                          onPress={handleResend}
-                          style={MyStyles.byClickingText}
-                        >
-                          Didn't get a code?
-                        </Text>
-                        <Text
-                          onPress={handleResend}
-                          style={MyStyles.resendOTPText}
-                        >
-                          Resend OTP
-                        </Text>
-                      </View>
-                    )}
-                  </ScrollView>
-                </View>
-              </View>
-            </>
-          ) : /* Security Questions */ isQuestionsClicked ? (
-            <>
-              <BackgroundOverlay />
-
-              <View style={MyStyles.forgotCardWrapper}>
-                <View style={[MyStyles.forgotCard]}>
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <AntDesign
-                      onPress={() => setQuestionsClicked(false)}
-                      name="arrowleft"
-                      style={MyStyles.backArrow}
-                    />
-
-                    <Text style={MyStyles.header}>Security Question</Text>
-
-                    <Text style={MyStyles.forgotMsg}>
-                      To verify your identity, please answer your chosen
-                      security question below.
-                    </Text>
-
-                    <View style={MyStyles.loginFormWrapper}>
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Security Question
-                          <Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <Dropdown
-                          labelField="label"
-                          valueField="value"
-                          value={securityquestion.question}
-                          data={user.securityquestions?.map((q) => ({
-                            label: q.question,
-                            value: q.question,
-                          }))}
-                          placeholder="Select"
-                          placeholderStyle={MyStyles.placeholderText}
-                          selectedTextStyle={MyStyles.selectedText}
-                          onChange={(item) =>
-                            handleInputChange("question", item.value)
-                          }
-                          style={MyStyles.input}
-                        ></Dropdown>
-                      </View>
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Answer
-                          <Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <View style={MyStyles.eyeInputContainer}>
-                          <TextInput
-                            onChangeText={(e) => handleInputChange("answer", e)}
-                            secureTextEntry={secureAnswer}
-                            placeholder="Answer"
-                            style={MyStyles.input}
-                          />
-                          <TouchableOpacity
-                            style={MyStyles.eyeToggle}
-                            onPress={togglesecureAnswer}
-                          >
-                            <Ionicons
-                              name={secureAnswer ? "eye-off" : "eye"}
-                              size={24}
-                              color="gray"
+                          <View style={{ position: "relative" }}>
+                            <TextInput
+                              onChangeText={repasswordValidation}
+                              secureTextEntry={secureConfirmPass}
+                              value={renewPassword}
+                              placeholder="Confirm New Password"
+                              style={[MyStyles.input, { paddingRight: 40 }]}
                             />
-                          </TouchableOpacity>
+                            <TouchableOpacity
+                              style={MyStyles.eyeToggle}
+                              onPress={togglesecureConfirmPass}
+                            >
+                              <Ionicons
+                                name={secureConfirmPass ? "eye-off" : "eye"}
+                                size={24}
+                                color="#808080"
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          {repasswordErrors.length > 0 && (
+                            <View style={{ marginTop: 5, width: 300 }}>
+                              {repasswordErrors.map((error, index) => (
+                                <Text key={index} style={MyStyles.errorMsg}>
+                                  {error}
+                                </Text>
+                              ))}
+                            </View>
+                          )}
                         </View>
                       </View>
-                    </View>
 
-                    <TouchableOpacity
-                      onPress={handleQuestionVerify}
-                      style={MyStyles.button}
-                      disabled={loading}
-                    >
-                      <Text style={MyStyles.buttonText}>
-                        {loading ? "Verifying..." : "Verify"}
+                      <TouchableOpacity
+                        onPress={handleConfirm}
+                        style={MyStyles.button}
+                        disabled={loading}
+                      >
+                        <Text style={MyStyles.buttonText}>
+                          {loading ? "Resetting..." : "Reset"}
+                        </Text>
+                      </TouchableOpacity>
+                    </ScrollView>
+                  </View>
+                  <AlertModal
+                    isVisible={isAlertModalVisible}
+                    message={alertMessage}
+                    isSuccess={isSuccess}
+                    onClose={() => setIsAlertModalVisible(false)}
+                    onConfirm={handleCloseSuccessModal}
+                  />
+                  <AlertModal
+                    isVisible={isConfirmModalVisible}
+                    isConfirmationModal={true}
+                    title="Reset Password?"
+                    message="Are you sure you want to reset your Password?"
+                    onClose={() => setIsConfirmModalVisible(false)}
+                    onConfirm={handleSuccessful}
+                  />
+                </View>
+              </>
+            ) : /* One-Time Password */ isOTPClicked ? (
+              <>
+                <BackgroundOverlay />
+                <View style={MyStyles.forgotCardWrapper}>
+                  <View style={MyStyles.forgotCard}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      <AntDesign
+                        onPress={() => setOTPClicked(false)}
+                        name="arrowleft"
+                        style={MyStyles.backArrow}
+                      />
+                      <Text style={MyStyles.header}>Account Verification</Text>
+
+                      <Text style={MyStyles.forgotMsg}>
+                        Enter the 6-digit code sent to
                       </Text>
-                    </TouchableOpacity>
-                  </ScrollView>
-                </View>
-              </View>
-            </>
-          ) : (
-            /* Verification Method */
-            <>
-              <BackgroundOverlay />
-              {/* Card container with transparency */}
-              <View style={MyStyles.forgotCardWrapper}>
-                <View style={MyStyles.forgotCard}>
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <AntDesign
-                      onPress={() => setIsExisting(false)}
-                      name="arrowleft"
-                      style={MyStyles.backArrow}
-                    />
+                      <Text
+                        style={[
+                          MyStyles.forgotMsg,
 
-                    <Text style={MyStyles.header}>Verification Method</Text>
-
-                    <Text style={MyStyles.forgotMsg}>
-                      Please choose a method to verify your identity and
-                      continue resetting your password
-                    </Text>
-
-                    <View style={MyStyles.methodOptionsWrapper}>
-                      <TouchableOpacity
-                        onPress={handleOTP}
-                        style={MyStyles.methodOptions}
+                          {
+                            marginTop: 5,
+                            color: "#04384E",
+                          },
+                        ]}
                       >
-                        <MaterialIcons
-                          name="password"
-                          style={MyStyles.forgotPassMethodsIcon}
+                        {maskMobileNumber(
+                          user.resID?.mobilenumber ||
+                            user.empID?.resID.mobilenumber
+                        )}
+                      </Text>
+
+                      <View style={{ marginTop: 30 }}>
+                        <OtpInput
+                          ref={otpRef}
+                          type="numeric"
+                          numberOfDigits={6}
+                          onTextChange={handleOTPChange}
                         />
-                        <Text style={MyStyles.forgotPassMethodsText}>
-                          One Time Password
+                      </View>
+
+                      {isResendDisabled ? (
+                        <Text style={MyStyles.forgotMsg}>
+                          Resend OTP in{" "}
+                          <Text style={{ color: "red" }}>{resendTimer} </Text>
+                          second
+                          {resendTimer !== 1 ? "s" : ""}
+                        </Text>
+                      ) : (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            gap: 4,
+                            alignSelf: "flex-start",
+                            marginTop: 10,
+                          }}
+                        >
+                          <Text
+                            onPress={handleResend}
+                            style={MyStyles.byClickingText}
+                          >
+                            Didn't get a code?
+                          </Text>
+                          <Text
+                            onPress={handleResend}
+                            style={MyStyles.resendOTPText}
+                          >
+                            Resend OTP
+                          </Text>
+                        </View>
+                      )}
+                    </ScrollView>
+                  </View>
+                </View>
+              </>
+            ) : /* Security Questions */ isQuestionsClicked ? (
+              <>
+                <BackgroundOverlay />
+
+                <View style={MyStyles.forgotCardWrapper}>
+                  <View style={[MyStyles.forgotCard]}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      <AntDesign
+                        onPress={() => setQuestionsClicked(false)}
+                        name="arrowleft"
+                        style={MyStyles.backArrow}
+                      />
+
+                      <Text style={MyStyles.header}>Security Question</Text>
+
+                      <Text style={MyStyles.forgotMsg}>
+                        To verify your identity, please answer your chosen
+                        security question below.
+                      </Text>
+
+                      <View style={MyStyles.loginFormWrapper}>
+                        <View>
+                          <Text style={MyStyles.inputLabel}>
+                            Security Question
+                            <Text style={{ color: "red" }}>*</Text>
+                          </Text>
+                          <Dropdown
+                            labelField="label"
+                            valueField="value"
+                            value={securityquestion.question}
+                            data={user.securityquestions?.map((q) => ({
+                              label: q.question,
+                              value: q.question,
+                            }))}
+                            placeholder="Select"
+                            placeholderStyle={MyStyles.placeholderText}
+                            selectedTextStyle={MyStyles.selectedText}
+                            onChange={(item) =>
+                              handleInputChange("question", item.value)
+                            }
+                            style={MyStyles.input}
+                          ></Dropdown>
+                        </View>
+
+                        <View>
+                          <Text style={MyStyles.inputLabel}>
+                            Answer
+                            <Text style={{ color: "red" }}>*</Text>
+                          </Text>
+                          <View style={MyStyles.eyeInputContainer}>
+                            <TextInput
+                              onChangeText={(e) =>
+                                handleInputChange("answer", e)
+                              }
+                              secureTextEntry={secureAnswer}
+                              placeholder="Answer"
+                              style={MyStyles.input}
+                            />
+                            <TouchableOpacity
+                              style={MyStyles.eyeToggle}
+                              onPress={togglesecureAnswer}
+                            >
+                              <Ionicons
+                                name={secureAnswer ? "eye-off" : "eye"}
+                                size={24}
+                                color="gray"
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
+
+                      <TouchableOpacity
+                        onPress={handleQuestionVerify}
+                        style={MyStyles.button}
+                        disabled={loading}
+                      >
+                        <Text style={MyStyles.buttonText}>
+                          {loading ? "Verifying..." : "Verify"}
                         </Text>
                       </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            !user.securityquestions ||
-                            user.securityquestions.length === 0
-                          ) {
-                            alert(
-                              "No security questions found for this account."
-                            );
-                          } else {
-                            setQuestionsClicked(true);
-                          }
-                        }}
-                        style={MyStyles.methodOptions}
-                      >
-                        <MaterialCommunityIcons
-                          name="comment-question"
-                          style={MyStyles.forgotPassMethodsIcon}
-                        />
-                        <Text style={MyStyles.forgotPassMethodsText}>
-                          Security Question
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </ScrollView>
+                    </ScrollView>
+                  </View>
                 </View>
-              </View>
-            </>
-          )}
-        </>
-      )}
-    </SafeAreaView>
+              </>
+            ) : (
+              /* Verification Method */
+              <>
+                <BackgroundOverlay />
+                {/* Card container with transparency */}
+                <View style={MyStyles.forgotCardWrapper}>
+                  <View style={MyStyles.forgotCard}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                      <AntDesign
+                        onPress={() => setIsExisting(false)}
+                        name="arrowleft"
+                        style={MyStyles.backArrow}
+                      />
+
+                      <Text style={MyStyles.header}>Verification Method</Text>
+
+                      <Text style={MyStyles.forgotMsg}>
+                        Please choose a method to verify your identity and
+                        continue resetting your password
+                      </Text>
+
+                      <View style={MyStyles.methodOptionsWrapper}>
+                        <TouchableOpacity
+                          onPress={handleOTP}
+                          style={MyStyles.methodOptions}
+                        >
+                          <MaterialIcons
+                            name="password"
+                            style={MyStyles.forgotPassMethodsIcon}
+                          />
+                          <Text style={MyStyles.forgotPassMethodsText}>
+                            One Time Password
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (
+                              !user.securityquestions ||
+                              user.securityquestions.length === 0
+                            ) {
+                              alert(
+                                "No security questions found for this account."
+                              );
+                            } else {
+                              setQuestionsClicked(true);
+                            }
+                          }}
+                          style={MyStyles.methodOptions}
+                        >
+                          <MaterialCommunityIcons
+                            name="comment-question"
+                            style={MyStyles.forgotPassMethodsIcon}
+                          />
+                          <Text style={MyStyles.forgotPassMethodsText}>
+                            Security Question
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </ScrollView>
+                  </View>
+                </View>
+              </>
+            )}
+          </>
+        )}
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 

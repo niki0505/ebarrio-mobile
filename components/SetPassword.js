@@ -15,6 +15,7 @@ import api from "../api";
 import AppLogo from "../assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import AlertModal from "./AlertModal";
+import { LinearGradient } from "expo-linear-gradient";
 
 //ICONS
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
@@ -133,31 +134,22 @@ const SetPassword = () => {
 
   const BackgroundOverlay = () => (
     <View style={{ position: "relative", height: "100%", width: "100%" }}>
-      {/* SVG Background */}
-      <Svg height="100%" width="100%">
-        <Defs>
-          <RadialGradient
-            id="grad1"
-            cx="50%"
-            cy="50%"
-            r="50%"
-            fx="50%"
-            fy="50%"
-          >
-            <Stop offset="0%" stopColor="#0981B4" stopOpacity="1" />
-            <Stop offset="25%" stopColor="#0978A7" stopOpacity="1" />
-            <Stop offset="50%" stopColor="#086F9B" stopOpacity="1" />
-            <Stop offset="75%" stopColor="#065474" stopOpacity="1" />
-            <Stop offset="100%" stopColor="#064965" stopOpacity="1" />
-          </RadialGradient>
-        </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
-      </Svg>
+      <LinearGradient
+        colors={["#0e94d3", "#0a70a0", "#095e86", "#074c6d"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          height: "100%",
+          width: "100%",
+          zIndex: -1,
+        }}
+      />
 
-      {/* Logo */}
       <Image source={AppLogo} style={MyStyles.overlayLogo} />
 
-      {/* Black Overlay */}
       <View style={MyStyles.overlayBlack} />
     </View>
   );
@@ -175,7 +167,7 @@ const SetPassword = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "transparent",
       }}
     >
       <BackgroundOverlay />

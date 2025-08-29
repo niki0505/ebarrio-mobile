@@ -1111,7 +1111,6 @@ export const MyStyles = StyleSheet.create({
   /*---------------------------------------LOGIN, SIGN UP, FORGOT PASS---------------------------------------*/
   loginWrapper: {
     flex: 4,
-    backgroundColor: "#04384E",
   },
   loginTopWrapper: {
     flex: 1,
