@@ -126,7 +126,7 @@ const EditSecurityQuestions = () => {
 
     let sameAnswerFound = false;
 
-    modifiedQuestions = securityquestions.map((q, index) => {
+    modifiedQuestions = securityquestions?.map((q, index) => {
       const current = userDetails.securityquestions?.[index];
       const isSameQuestion = current?.question === q.question;
       const hasNewAnswer = q.answer?.trim() !== "";
@@ -146,15 +146,6 @@ const EditSecurityQuestions = () => {
         return null;
       }
     });
-
-    // if (sameAnswerFound) {
-    //   setAlertMessage("Answers must be different from your old ones.");
-    //   setIsSuccess(false);
-    //   setIsAlertModalVisible(true);
-    //   setLoading(false);
-    //   setIsConfirmModalVisible(false);
-    //   return;
-    // }
 
     const hasChanges = modifiedQuestions.some((q) => q !== null);
 

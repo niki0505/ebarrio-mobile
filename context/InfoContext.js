@@ -286,7 +286,6 @@ export const InfoProvider = ({ children }) => {
     if (!s) return;
 
     const handler = (updatedData) => {
-      console.log(updatedData.type);
       if (updatedData.type === "announcements") {
         setAnnouncements(updatedData.data);
       } else if (updatedData.type === "services") {
