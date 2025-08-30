@@ -30,6 +30,7 @@ import Signature from "react-native-signature-canvas";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -929,14 +930,20 @@ const ResidentForm = () => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        backgroundColor: "#04384E",
-      }}
+    <LinearGradient
+      colors={["#0e94d3", "#0a70a0", "#095e86", "#074c6d"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={{ flex: 1 }}
     >
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: "transparent",
+        }}
+      >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -2621,7 +2628,8 @@ const ResidentForm = () => {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+        </SafeAreaView>
+    </LinearGradient>
   );
 };
 export default ResidentForm;

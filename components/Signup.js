@@ -19,6 +19,7 @@ import api from "../api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AppLogo from "../assets/applogo-darkbg.png";
 import AlertModal from "./AlertModal";
+import { LinearGradient } from "expo-linear-gradient";
 
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -270,265 +271,275 @@ const Signup = () => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        backgroundColor: "#04384E",
-      }}
+    <LinearGradient
+      colors={["#0e94d3", "#0a70a0", "#095e86", "#074c6d"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={{ flex: 1 }}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: "transparent",
+        }}
       >
-        <View style={MyStyles.loginWrapper}>
-          <View style={MyStyles.loginTopWrapper}>
-            <Image source={AppLogo} style={MyStyles.loginLogo} />
-          </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
+          <View style={MyStyles.loginWrapper}>
+            <View style={MyStyles.loginTopWrapper}>
+              <Image source={AppLogo} style={MyStyles.loginLogo} />
+            </View>
 
-          <View style={MyStyles.loginBottomWrapper}>
-            <ScrollView
-              style={{ width: "100%" }}
-              contentContainerStyle={{
-                alignItems: "center",
-              }}
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-            >
-              <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                Create Account
-              </Text>
+            <View style={MyStyles.loginBottomWrapper}>
+              <ScrollView
+                style={{ width: "100%" }}
+                contentContainerStyle={{
+                  alignItems: "center",
+                }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              >
+                <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
+                  Create Account
+                </Text>
 
-              <View style={MyStyles.loginFormWrapper}>
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    First Name<Text style={{ color: "red" }}>*</Text>
-                  </Text>
-                  <TextInput
-                    style={MyStyles.input}
-                    placeholder="First name"
-                    value={firstname}
-                    onChangeText={firstnameValidation}
-                  />
-                  {fnameError ? (
-                    <Text style={MyStyles.errorMsg}>{fnameError}</Text>
-                  ) : null}
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Last Name<Text style={{ color: "red" }}>*</Text>
-                  </Text>
-                  <TextInput
-                    style={MyStyles.input}
-                    placeholder="Last name"
-                    value={lastname}
-                    onChangeText={lastnameValidation}
-                  />
-                  {lnameError ? (
-                    <Text style={MyStyles.errorMsg}>{lnameError}</Text>
-                  ) : null}
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Mobile Number<Text style={{ color: "red" }}>*</Text>
-                  </Text>
-                  <TextInput
-                    style={MyStyles.input}
-                    placeholder="Mobile Number"
-                    value={mobilenumber}
-                    keyboardType="numeric"
-                    onChangeText={mobileInputChange}
-                  />
-                  {mobilenumErrors.length > 0 && (
-                    <View>
-                      {mobilenumErrors.map((error, index) => (
-                        <Text key={index} style={MyStyles.errorMsg}>
-                          {error}
-                        </Text>
-                      ))}
-                    </View>
-                  )}
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Username<Text style={{ color: "red" }}>*</Text>
-                  </Text>
-                  <TextInput
-                    style={MyStyles.input}
-                    placeholder="Username"
-                    value={username}
-                    autoCapitalize="none"
-                    onChangeText={usernameValidation}
-                    onBlur={() => setUsername(username.toLowerCase())}
-                  />
-                  {usernameErrors.length > 0 && (
-                    <View>
-                      {usernameErrors.map((error, index) => (
-                        <Text key={index} style={MyStyles.errorMsg}>
-                          {error}
-                        </Text>
-                      ))}
-                    </View>
-                  )}
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Password<Text style={{ color: "red" }}>*</Text>
-                  </Text>
-                  <View style={{ position: "relative" }}>
+                <View style={MyStyles.loginFormWrapper}>
+                  <View>
+                    <Text style={MyStyles.inputLabel}>
+                      First Name<Text style={{ color: "red" }}>*</Text>
+                    </Text>
                     <TextInput
-                      value={password}
-                      onChangeText={passwordValidation}
-                      secureTextEntry={secureNewPass}
-                      placeholder="Password"
-                      style={[MyStyles.input, { paddingRight: 40 }]}
+                      style={MyStyles.input}
+                      placeholder="First name"
+                      value={firstname}
+                      onChangeText={firstnameValidation}
                     />
-                    <TouchableOpacity
-                      style={MyStyles.eyeToggle}
-                      onPress={togglesecureNewPass}
-                    >
-                      <Ionicons
-                        name={secureNewPass ? "eye-off" : "eye"}
-                        size={24}
-                        color="gray"
-                      />
-                    </TouchableOpacity>
+                    {fnameError ? (
+                      <Text style={MyStyles.errorMsg}>{fnameError}</Text>
+                    ) : null}
                   </View>
 
-                  {passwordErrors.length > 0 && (
-                    <View>
-                      {passwordErrors.map((error, index) => (
-                        <Text key={index} style={MyStyles.errorMsg}>
-                          {error}
-                        </Text>
-                      ))}
-                    </View>
-                  )}
-                </View>
-
-                <View>
-                  <Text style={MyStyles.inputLabel}>
-                    Confirm Password<Text style={{ color: "red" }}>*</Text>
-                  </Text>
-                  <View style={{ position: "relative" }}>
+                  <View>
+                    <Text style={MyStyles.inputLabel}>
+                      Last Name<Text style={{ color: "red" }}>*</Text>
+                    </Text>
                     <TextInput
-                      value={repassword}
-                      onChangeText={repasswordValidation}
-                      secureTextEntry={secureConfirmPass}
-                      placeholder="Confirm New Password"
-                      style={[MyStyles.input, { paddingRight: 40 }]}
+                      style={MyStyles.input}
+                      placeholder="Last name"
+                      value={lastname}
+                      onChangeText={lastnameValidation}
                     />
-                    <TouchableOpacity
-                      style={MyStyles.eyeToggle}
-                      onPress={togglesecureConfirmPass}
-                    >
-                      <Ionicons
-                        name={secureConfirmPass ? "eye-off" : "eye"}
-                        size={24}
-                        color="gray"
-                      />
-                    </TouchableOpacity>
+                    {lnameError ? (
+                      <Text style={MyStyles.errorMsg}>{lnameError}</Text>
+                    ) : null}
                   </View>
-                  {repasswordErrors.length > 0 && (
-                    <View>
-                      {repasswordErrors.map((error, index) => (
-                        <Text key={index} style={MyStyles.errorMsg}>
-                          {error}
-                        </Text>
-                      ))}
+
+                  <View>
+                    <Text style={MyStyles.inputLabel}>
+                      Mobile Number<Text style={{ color: "red" }}>*</Text>
+                    </Text>
+                    <TextInput
+                      style={MyStyles.input}
+                      placeholder="Mobile Number"
+                      value={mobilenumber}
+                      keyboardType="numeric"
+                      onChangeText={mobileInputChange}
+                    />
+                    {mobilenumErrors.length > 0 && (
+                      <View>
+                        {mobilenumErrors.map((error, index) => (
+                          <Text key={index} style={MyStyles.errorMsg}>
+                            {error}
+                          </Text>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+
+                  <View>
+                    <Text style={MyStyles.inputLabel}>
+                      Username<Text style={{ color: "red" }}>*</Text>
+                    </Text>
+                    <TextInput
+                      style={MyStyles.input}
+                      placeholder="Username"
+                      value={username}
+                      autoCapitalize="none"
+                      onChangeText={usernameValidation}
+                      onBlur={() => setUsername(username.toLowerCase())}
+                    />
+                    {usernameErrors.length > 0 && (
+                      <View>
+                        {usernameErrors.map((error, index) => (
+                          <Text key={index} style={MyStyles.errorMsg}>
+                            {error}
+                          </Text>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+
+                  <View>
+                    <Text style={MyStyles.inputLabel}>
+                      Password<Text style={{ color: "red" }}>*</Text>
+                    </Text>
+                    <View style={{ position: "relative" }}>
+                      <TextInput
+                        value={password}
+                        onChangeText={passwordValidation}
+                        secureTextEntry={secureNewPass}
+                        placeholder="Password"
+                        style={[MyStyles.input, { paddingRight: 40 }]}
+                      />
+                      <TouchableOpacity
+                        style={MyStyles.eyeToggle}
+                        onPress={togglesecureNewPass}
+                      >
+                        <Ionicons
+                          name={secureNewPass ? "eye-off" : "eye"}
+                          size={24}
+                          color="gray"
+                        />
+                      </TouchableOpacity>
                     </View>
-                  )}
+
+                    {passwordErrors.length > 0 && (
+                      <View>
+                        {passwordErrors.map((error, index) => (
+                          <Text key={index} style={MyStyles.errorMsg}>
+                            {error}
+                          </Text>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+
+                  <View>
+                    <Text style={MyStyles.inputLabel}>
+                      Confirm Password<Text style={{ color: "red" }}>*</Text>
+                    </Text>
+                    <View style={{ position: "relative" }}>
+                      <TextInput
+                        value={repassword}
+                        onChangeText={repasswordValidation}
+                        secureTextEntry={secureConfirmPass}
+                        placeholder="Confirm New Password"
+                        style={[MyStyles.input, { paddingRight: 40 }]}
+                      />
+                      <TouchableOpacity
+                        style={MyStyles.eyeToggle}
+                        onPress={togglesecureConfirmPass}
+                      >
+                        <Ionicons
+                          name={secureConfirmPass ? "eye-off" : "eye"}
+                          size={24}
+                          color="gray"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    {repasswordErrors.length > 0 && (
+                      <View>
+                        {repasswordErrors.map((error, index) => (
+                          <Text key={index} style={MyStyles.errorMsg}>
+                            {error}
+                          </Text>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={{}}>
+                    <Text style={MyStyles.byClickingText}>
+                      By clicking Sign Up, you agree to eBarrio’s eBarrio’s{" "}
+                      <Text
+                        onPress={() => navigation.navigate("TermsConditions")}
+                        style={MyStyles.signUpText}
+                      >
+                        Terms and Conditions
+                      </Text>
+                    </Text>
+                  </View>
                 </View>
 
-                <View style={{}}>
-                  <Text style={MyStyles.byClickingText}>
-                    By clicking Sign Up, you agree to eBarrio’s eBarrio’s{" "}
+                <TouchableOpacity
+                  onPress={handleSignUp}
+                  style={MyStyles.button}
+                >
+                  <Text style={MyStyles.buttonText}>Sign up</Text>
+                </TouchableOpacity>
+
+                <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
+                  <Text
+                    style={[MyStyles.byClickingText, { textAlign: "center" }]}
+                  >
+                    Already have an account?
+                  </Text>
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={MyStyles.signUpText}
+                  >
+                    Login
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    marginTop: 10,
+                  }}
+                >
+                  <Text
+                    style={[MyStyles.byClickingText, { textAlign: "center" }]}
+                  >
+                    Don’t have a resident profile?
                     <Text
-                      onPress={() => navigation.navigate("TermsConditions")}
+                      onPress={() => navigation.navigate("ResidentForm")}
                       style={MyStyles.signUpText}
                     >
-                      Terms and Conditions
+                      {" "}
+                      Create one
                     </Text>
                   </Text>
                 </View>
-              </View>
+              </ScrollView>
+            </View>
 
-              <TouchableOpacity onPress={handleSignUp} style={MyStyles.button}>
-                <Text style={MyStyles.buttonText}>Sign up</Text>
-              </TouchableOpacity>
+            <AlertModal
+              isVisible={isAlertModalVisible}
+              message={alertMessage}
+              title="Resident Not Found"
+              onClose={() => setIsAlertModalVisible(false)}
+              onConfirm={onResidentModalConfirm}
+              isResidentConfirmationModal={
+                alertMessage ===
+                "Would you like to register your resident profile now?"
+              }
+              isSuccess={false}
+            />
 
-              <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
-                <Text
-                  style={[MyStyles.byClickingText, { textAlign: "center" }]}
-                >
-                  Already have an account?
-                </Text>
-                <Text
-                  onPress={() => navigation.navigate("Login")}
-                  style={MyStyles.signUpText}
-                >
-                  Login
-                </Text>
-              </View>
-              <View
-                style={{
-                  marginTop: 10,
-                }}
-              >
-                <Text
-                  style={[MyStyles.byClickingText, { textAlign: "center" }]}
-                >
-                  Don’t have a resident profile?
-                  <Text
-                    onPress={() => navigation.navigate("ResidentForm")}
-                    style={MyStyles.signUpText}
-                  >
-                    {" "}
-                    Create one
-                  </Text>
-                </Text>
-              </View>
-            </ScrollView>
+            <AlertModal
+              isVisible={isAlreadyExistsModalVisible}
+              message={alertMessage}
+              title="Error"
+              onClose={() => setIsAlreadyExistsModalVisible(false)}
+              isHaveAnAccountModal={alertMessage === "Account Already Exists"}
+              isSuccess={false}
+            />
+
+            <AlertModal
+              isVisible={isConfirmModalVisible}
+              isConfirmationModal={true}
+              title="Create Account?"
+              message="Are you sure you want to create account?"
+              onClose={() => setIsConfirmModalVisible(false)}
+              onConfirm={handleSubmit}
+            />
           </View>
-
-          <AlertModal
-            isVisible={isAlertModalVisible}
-            message={alertMessage}
-            title="Resident Not Found"
-            onClose={() => setIsAlertModalVisible(false)}
-            onConfirm={onResidentModalConfirm}
-            isResidentConfirmationModal={
-              alertMessage ===
-              "Would you like to register your resident profile now?"
-            }
-            isSuccess={false}
-          />
-
-          <AlertModal
-            isVisible={isAlreadyExistsModalVisible}
-            message={alertMessage}
-            title="Error"
-            onClose={() => setIsAlreadyExistsModalVisible(false)}
-            isHaveAnAccountModal={alertMessage === "Account Already Exists"}
-            isSuccess={false}
-          />
-
-          <AlertModal
-            isVisible={isConfirmModalVisible}
-            isConfirmationModal={true}
-            title="Create Account?"
-            message="Are you sure you want to create account?"
-            onClose={() => setIsConfirmModalVisible(false)}
-            onConfirm={handleSubmit}
-          />
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 export default Signup;
