@@ -162,34 +162,52 @@ const SOSReportDetails = () => {
               style={[MyStyles.sosCard, MyStyles.shadow]}
             >
               <View
-                style={[
-                  MyStyles.statusWrapper,
-                  {
-                    backgroundColor:
-                      selectedReport.status === "False Alarm"
-                        ? "red"
-                        : selectedReport.status === "Pending"
-                        ? "orange"
-                        : selectedReport.status === "Ongoing"
-                        ? "green"
-                        : "gray",
-                  },
-                ]}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  alignContent: "center",
+                }}
               >
-                <Ionicons
-                  name={
-                    selectedReport.status === "False Alarm"
-                      ? "alert-circle"
-                      : selectedReport.status === "Pending"
-                      ? "time"
-                      : selectedReport.status === "Ongoing"
-                      ? "checkmark-done-circle"
-                      : "help-circle"
-                  }
-                  style={MyStyles.statusIcon}
-                />
-                <Text style={MyStyles.statusTitle}>
-                  {selectedReport.status || "Pending"}
+                <View
+                  style={[
+                    MyStyles.statusWrapper,
+                    {
+                      backgroundColor:
+                        selectedReport.status === "False Alarm"
+                          ? "red"
+                          : selectedReport.status === "Pending"
+                          ? "orange"
+                          : selectedReport.status === "Ongoing"
+                          ? "green"
+                          : "gray",
+                    },
+                  ]}
+                >
+                  <Ionicons
+                    name={
+                      selectedReport.status === "False Alarm"
+                        ? "alert-circle"
+                        : selectedReport.status === "Pending"
+                        ? "time"
+                        : selectedReport.status === "Ongoing"
+                        ? "checkmark-done-circle"
+                        : "help-circle"
+                    }
+                    style={MyStyles.statusIcon}
+                  />
+                  <Text style={MyStyles.statusTitle}>
+                    {selectedReport.status || "Pending"}
+                  </Text>
+                </View>
+
+                <Text
+                  style={[
+                    MyStyles.sosDetailsText,
+                    { textAlign: "right", flex: 1, color: "gray" },
+                  ]}
+                >
+                  {dayjs(selectedReport.createdAt).fromNow()}
                 </Text>
               </View>
 
@@ -210,7 +228,7 @@ const SOSReportDetails = () => {
                   />
                 </View>
                 <View>
-                  <Text style={MyStyles.sosReportType}>
+                  <Text style={[MyStyles.sosReportType, { color: "black" }]}>
                     {selectedReport.resID.firstname}{" "}
                     {selectedReport.resID.lastname}
                   </Text>
@@ -258,13 +276,6 @@ const SOSReportDetails = () => {
                   <Text style={MyStyles.sosDetailsTitle}>Mobile:</Text>
                   <Text style={MyStyles.sosDetailsAnswer}>
                     {selectedReport.resID.mobilenumber}
-                  </Text>
-                </View>
-
-                <View style={MyStyles.sosDetailsRowWrapper}>
-                  <Text style={MyStyles.sosDetailsTitle}>Time Reported:</Text>
-                  <Text style={MyStyles.sosDetailsAnswer}>
-                    {dayjs(selectedReport.createdAt).fromNow()}
                   </Text>
                 </View>
 

@@ -913,7 +913,7 @@ export const MyStyles = StyleSheet.create({
     fontFamily: "QuicksandBold",
     color: "#04384E",
     lineHeight: 50,
-    marginTop: 0, 
+    marginTop: 0,
   },
   monthText: {
     fontSize: RFPercentage(1.8),
@@ -1685,8 +1685,9 @@ export const MyStyles = StyleSheet.create({
     marginRight: 12,
   },
   sosReportType: {
-    fontFamily: "REMMedium",
+    fontFamily: "REMSemiBold",
     fontSize: RFPercentage(2.4),
+    color: "#BC0F0F",
   },
   sosAddressTimeWrapper: {
     flexDirection: "row",

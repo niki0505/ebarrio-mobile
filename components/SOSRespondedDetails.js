@@ -142,7 +142,12 @@ const SOSRespondedDetails = () => {
                   </Text>
                 </View>
 
-                <Text style={MyStyles.sosDetailsAnswer}>
+                <Text
+                  style={[
+                    MyStyles.sosDetailsText,
+                    { textAlign: "right", flex: 1, color: "gray" },
+                  ]}
+                >
                   {dayjs(enrichedReport.updatedAt).fromNow()}
                 </Text>
               </View>
@@ -164,7 +169,12 @@ const SOSRespondedDetails = () => {
                   />
                 </View>
                 <View>
-                  <Text style={MyStyles.sosReportType}>
+                  <Text
+                    style={[
+                      MyStyles.sosReportType,
+                      { color: "black", fontFamily: "REMMedium" },
+                    ]}
+                  >
                     {enrichedReport.resID.firstname}{" "}
                     {enrichedReport.resID.lastname}
                   </Text>
@@ -215,22 +225,9 @@ const SOSRespondedDetails = () => {
                   </Text>
                 </View>
 
-                <View
-                  style={[
-                    MyStyles.sosDetailsRowWrapper,
-                    { alignItems: "flex-start" },
-                  ]}
-                >
+                <View style={MyStyles.sosDetailsColWrapper}>
                   <Text style={MyStyles.sosDetailsTitle}>Time Resolved:</Text>
-                  <Text
-                    style={[
-                      MyStyles.sosDetailsAnswer,
-                      {
-                        flexShrink: 1,
-                        flexWrap: "wrap",
-                      },
-                    ]}
-                  >
+                  <Text style={[MyStyles.sosDetailsAnswer, { marginLeft: 5 }]}>
                     {enrichedReport?.datePart} at {enrichedReport?.timePart}
                   </Text>
                 </View>
@@ -267,7 +264,11 @@ const SOSRespondedDetails = () => {
                       style={MyStyles.evidenceImg}
                     />
                   ) : (
-                    <Text style={MyStyles.sosDetailsAnswer}>N/A</Text>
+                    <Text
+                      style={[MyStyles.sosDetailsAnswer, { marginLeft: 5 }]}
+                    >
+                      N/A
+                    </Text>
                   )}
                 </View>
 

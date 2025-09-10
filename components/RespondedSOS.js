@@ -175,19 +175,35 @@ const RespondedSOS = () => {
                   }
                   style={[MyStyles.sosCard, MyStyles.shadow]}
                 >
-                  {/* Status badge with icon */}
                   <View
-                    style={[
-                      MyStyles.statusWrapper,
-                      { backgroundColor: badgeColor },
-                    ]}
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      alignContent: "center",
+                    }}
                   >
-                    <Ionicons name={badgeIcon} style={MyStyles.statusIcon} />
-                    <Text style={MyStyles.statusTitle}>
-                      {report.status || "Pending"}
+                    <View
+                      style={[
+                        MyStyles.statusWrapper,
+                        { backgroundColor: badgeColor },
+                      ]}
+                    >
+                      <Ionicons name={badgeIcon} style={MyStyles.statusIcon} />
+                      <Text style={MyStyles.statusTitle}>
+                        {report.status || "Pending"}
+                      </Text>
+                    </View>
+
+                    <Text
+                      style={[
+                        MyStyles.sosDetailsText,
+                        { textAlign: "right", flex: 1, color: "gray" },
+                      ]}
+                    >
+                      {dayjs(report.updatedAt).fromNow()}
                     </Text>
                   </View>
-
                   {/* Card content */}
                   <View style={MyStyles.rowAlignment}>
                     <Image
@@ -204,9 +220,6 @@ const RespondedSOS = () => {
                       <View style={MyStyles.sosAddressTimeWrapper}>
                         <Text style={MyStyles.sosDetailsText}>
                           #{report.readableAddress}
-                        </Text>
-                        <Text style={MyStyles.sosDetailsText}>
-                          {dayjs(report.updatedAt).fromNow()}
                         </Text>
                       </View>
                     </View>

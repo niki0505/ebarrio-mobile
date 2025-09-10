@@ -237,7 +237,7 @@ const SOS = () => {
                   { source: Fire, label: "FIRE" },
                   { source: Flood, label: "FLOOD" },
                 ].map(({ source, label }, index) => (
-                  <View
+                  <TouchableOpacity
                     key={index}
                     style={{
                       flexDirection: "column",
@@ -258,7 +258,7 @@ const SOS = () => {
                     >
                       {label}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
 
@@ -274,7 +274,7 @@ const SOS = () => {
                   { source: Earthquake, label: "EARTHQUAKE" },
                   { source: Typhoon, label: "TYPHOON" },
                 ].map(({ source, label }, index) => (
-                  <View
+                  <TouchableOpacity
                     key={index}
                     style={{
                       flexDirection: "column",
@@ -295,7 +295,7 @@ const SOS = () => {
                     >
                       {label}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
 
@@ -311,7 +311,7 @@ const SOS = () => {
                   { source: Medical, label: "MEDICAL" },
                   { source: Suspicious, label: "SUSPICIOUS" },
                 ].map(({ source, label }, index) => (
-                  <View
+                  <TouchableOpacity
                     key={index}
                     style={{
                       flexDirection: "column",
@@ -332,7 +332,7 @@ const SOS = () => {
                     >
                       {label}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             </View>

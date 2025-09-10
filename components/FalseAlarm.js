@@ -154,6 +154,14 @@ const FalseAlarm = () => {
       setIsAlertModalVisible(true);
       return;
     }
+
+    if (falseAlarmForm.postreportdetails.trim().length < 10) {
+      setAlertMessage(
+        "False alarm report details must be at least 10 characters."
+      );
+      setIsAlertModalVisible(true);
+      return;
+    }
     setIsConfirmModalVisible(true);
   };
 
@@ -228,8 +236,8 @@ const FalseAlarm = () => {
           <Text
             style={[MyStyles.formMessage, { color: "white", opacity: 0.7 }]}
           >
-            Please select and fill out the required information to submit an
-            update.
+            Please fill out the required information to submit a false alarm
+            report.
           </Text>
 
           <View style={{ marginVertical: 30, gap: 10 }}>
@@ -334,7 +342,7 @@ const FalseAlarm = () => {
             style={[
               MyStyles.button,
               {
-                borderWidth: 3,
+                borderWidth: 5,
                 borderColor: "white",
                 backgroundColor: "#BC0F0F",
               },

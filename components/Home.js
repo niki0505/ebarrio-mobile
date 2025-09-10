@@ -307,10 +307,12 @@ const Home = () => {
         )}
         <Text
           style={[MyStyles.eventText, contentStyle]}
-          numberOfLines={importantAnnouncements.picture ? 3 : 0}
+          numberOfLines={importantAnnouncements.picture ? 2 : 10}
+          ellipsizeMode="tail"
         >
           {displayText}
         </Text>
+
         {isLong && (
           <Text
             style={MyStyles.seeMoreText}
