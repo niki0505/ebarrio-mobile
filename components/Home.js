@@ -490,7 +490,7 @@ const Home = () => {
                           {currentDate.getDate()}
                         </Text>
 
-                        <View style={{ marginLeft: 10 }}>
+                        <View style={{ marginLeft: 5 }}>
                           <Text style={MyStyles.monthText}>
                             {currentDate.toLocaleString("en-US", {
                               month: "long",

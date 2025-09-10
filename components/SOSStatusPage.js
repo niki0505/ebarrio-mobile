@@ -31,6 +31,7 @@ const SOSStatusPage = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const reportRef = useRef(report);
 
@@ -89,7 +90,8 @@ const SOSStatusPage = () => {
     }
     try {
       await api.put(`/cancelsos/${reportRef.current._id}`);
-      alert("Your report has been cancelled successfully.");
+      setIsSuccess(true);
+      setAlertMessage("Your report has been cancelled successfully.");
       navigation.navigate("BottomTabs");
     } catch (error) {
       const response = error.response;
@@ -104,6 +106,10 @@ const SOSStatusPage = () => {
         setIsAlertModalVisible(true);
         setAlertVisible(false);
       }
+    } finally {
+      setIsAlertModalVisible(true);
+      setAlertMessage(message);
+      setIsSuccess(false);
     }
   };
 
@@ -341,6 +347,7 @@ const SOSStatusPage = () => {
           isVisible={isAlertModalVisible}
           message={alertMessage}
           onClose={() => setIsAlertModalVisible(false)}
+          isSuccess={isSuccess}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

@@ -480,7 +480,7 @@ const BottomTabsWithDrawer = () => {
           style={{
             paddingTop: insets.top,
             backgroundColor: "red",
-            padding: 10,
+            padding: 15,
             alignItems: "center",
             justifyContent: "center",
           }}

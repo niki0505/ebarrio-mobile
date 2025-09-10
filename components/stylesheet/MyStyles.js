@@ -509,7 +509,7 @@ export const MyStyles = StyleSheet.create({
   dropdownWrapper: {
     backgroundColor: "#fff",
     width: RFPercentage(16),
-    height: RFPercentage(7),
+    height: RFPercentage(6),
     borderWidth: 1,
     borderColor: "#ACACAC",
     borderRadius: 5,
@@ -895,7 +895,6 @@ export const MyStyles = StyleSheet.create({
 
   //HOME CALENDAR
   calendarContainer: {
-    padding: 5,
     flex: 1,
     flexDirection: "row",
     backgroundColor: "#fff",
@@ -903,34 +902,28 @@ export const MyStyles = StyleSheet.create({
     fontSize: RFPercentage(2),
     height: RFPercentage(28),
   },
-  alignItems: "center",
   leftCalendar: {
-    width: "45%",
+    width: "48%",
     padding: 10,
-    backgroundColor: "#F8F8F8",
     borderRightWidth: 1,
     borderRightColor: "#E0E0E0",
-    borderTopLeftRadius: 10, // add this
-    borderBottomLeftRadius: 10, // add this
-    paddingVertical: 10,
-    paddingHorizontal: 10,
   },
   bigDate: {
-    fontSize: RFPercentage(5),
+    fontSize: RFPercentage(4.5),
     fontFamily: "QuicksandBold",
     color: "#04384E",
     lineHeight: 50,
-    marginTop: 0,
+    marginTop: 0, 
   },
   monthText: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(1.8),
     fontFamily: "QuicksandSemiBold",
     color: "#04384E",
     marginTop: 0,
     marginBottom: 0,
   },
   weekText: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(1.8),
     color: "#888",
     fontFamily: "QuicksandSemiBold",
   },
@@ -950,7 +943,7 @@ export const MyStyles = StyleSheet.create({
   },
   eventTitle: {
     fontFamily: "QuicksandSemiBold",
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(1.8),
     color: "#04384E",
     marginRight: 3,
   },
@@ -975,12 +968,9 @@ export const MyStyles = StyleSheet.create({
     marginTop: 10,
   },
   rightCalendar: {
-    width: "55%",
+    width: "52%",
     padding: 5,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    justifyContent: "center",
-    height: RFPercentage(25),
+    alignSelf: "center",
   },
   monthHeader: {
     textAlign: "center",
@@ -996,17 +986,18 @@ export const MyStyles = StyleSheet.create({
   weekDay: {
     fontFamily: "QuicksandSemiBold",
     color: "#999",
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(1.9),
   },
   calendarRightContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
   },
   dayCell: {
-    width: `${100 / 7}%`, // 7 columns in a row
-    aspectRatio: 1, // make cells square
+    width: `${100 / 7}%`,
+    aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 8,
   },
   currentDay: {
     width: 24,
@@ -1015,13 +1006,13 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 12,
   },
   dayText: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(1.9),
     fontFamily: "QuicksandMedium",
     color: "#04384E",
   },
   currentDayText: {
     color: "#0E94D3",
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(1.9),
     fontFamily: "QuicksandMedium",
   },
   emptyCell: {
@@ -1645,6 +1636,7 @@ export const MyStyles = StyleSheet.create({
     color: "white",
     fontFamily: "QuicksandBold",
     fontSize: RFPercentage(2.4),
+    marginTop: 5,
   },
   blotterFullName: {
     fontFamily: "QuicksandMedium",
