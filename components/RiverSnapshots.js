@@ -169,11 +169,10 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
-                  height: RFPercentage(6),
+                  height: RFPercentage(7),
                   flex: 1,
                   backgroundColor: viewMode === "current" ? "#04384E" : "white",
                   marginHorizontal: 10,
-                  height: RFPercentage("auto"),
                 },
               ]}
               onPress={() => setViewMode("current")}
@@ -196,7 +195,7 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
-                  height: RFPercentage(6),
+                  height: RFPercentage(7),
                   flex: 1,
                   backgroundColor: viewMode === "history" ? "#04384E" : "white",
                   marginHorizontal: 10,

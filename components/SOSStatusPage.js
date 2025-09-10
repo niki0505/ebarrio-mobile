@@ -238,7 +238,12 @@ const SOSStatusPage = () => {
                               name="time"
                               style={[MyStyles.sosHelpHasArriveIcon]}
                             />
-                            <Text style={MyStyles.sosHelpHasArriveDetails}>
+                            <Text
+                              style={[
+                                MyStyles.sosHelpHasArriveDetails,
+                                { fontFamily: "QuicksandBold" },
+                              ]}
+                            >
                               Time:
                             </Text>
                             <Text style={MyStyles.sosHelpHasArriveDetails}>
@@ -258,7 +263,12 @@ const SOSStatusPage = () => {
                               name="call"
                               style={[MyStyles.sosHelpHasArriveIcon]}
                             />
-                            <Text style={MyStyles.sosHelpHasArriveDetails}>
+                            <Text
+                              style={[
+                                MyStyles.sosHelpHasArriveDetails,
+                                { fontFamily: "QuicksandBold" },
+                              ]}
+                            >
                               Mobile:
                             </Text>
                             <Text style={MyStyles.sosHelpHasArriveDetails}>

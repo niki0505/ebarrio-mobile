@@ -200,7 +200,7 @@ const SOSRequests = () => {
                     <Text
                       style={[
                         MyStyles.sosDetailsText,
-                        { textAlign: "right", flex: 1 },
+                        { textAlign: "right", flex: 1, color: "gray" },
                       ]}
                     >
                       {dayjs(report.createdAt).fromNow()}
