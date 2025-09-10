@@ -179,14 +179,31 @@ const SOSRequests = () => {
                   style={[MyStyles.sosCard, MyStyles.shadow]}
                 >
                   <View
-                    style={[
-                      MyStyles.statusWrapper,
-                      { backgroundColor: badgeColor },
-                    ]}
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      alignContent: "center",
+                    }}
                   >
-                    <Ionicons name={badgeIcon} style={MyStyles.statusIcon} />
-                    <Text style={MyStyles.statusTitle}>
-                      {report.status || "Pending"}
+                    <View
+                      style={[
+                        MyStyles.statusWrapper,
+                        { backgroundColor: badgeColor },
+                      ]}
+                    >
+                      <Ionicons name={badgeIcon} style={MyStyles.statusIcon} />
+                      <Text style={MyStyles.statusTitle}>
+                        {report.status || "Pending"}
+                      </Text>
+                    </View>
+                    <Text
+                      style={[
+                        MyStyles.sosDetailsText,
+                        { textAlign: "right", flex: 1 },
+                      ]}
+                    >
+                      {dayjs(report.createdAt).fromNow()}
                     </Text>
                   </View>
 
@@ -208,9 +225,6 @@ const SOSRequests = () => {
                       <View style={MyStyles.sosAddressTimeWrapper}>
                         <Text style={MyStyles.sosDetailsText}>
                           #{report.readableAddress || "No location available"}
-                        </Text>
-                        <Text style={MyStyles.sosDetailsText}>
-                          {dayjs(report.createdAt).fromNow()}
                         </Text>
                       </View>
                     </View>
