@@ -146,9 +146,7 @@ const RespondedSOS = () => {
           {loading ? (
             <ActivityIndicator size="large" color="white" />
           ) : respondedSOS.length === 0 ? (
-            <Text
-              style={[MyStyles.noEvents, { color: "#fff", opacity: "0.7" }]}
-            >
+            <Text style={[MyStyles.noEvents, { color: "#fff", opacity: 0.7 }]}>
               No responded SOS requests found.
             </Text>
           ) : (

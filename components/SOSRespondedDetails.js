@@ -191,7 +191,9 @@ const SOSRespondedDetails = () => {
                       },
                     ]}
                   >
-                    # {enrichedReport.resID.householdno.address}
+                    {enrichedReport.resID.householdno
+                      ? enrichedReport.resID.householdno?.address
+                      : "N/A"}
                   </Text>
                 </View>
 

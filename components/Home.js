@@ -275,50 +275,6 @@ const Home = () => {
     }
   };
 
-  const viewEmergencyHotlines = async () => {
-    const action = "Emergency Hotlines";
-    const description = "User viewed emergency hotlines.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("EmergencyHotlines");
-    } catch (error) {
-      console.log("Error in viewing emergency hotlines", error);
-    }
-  };
-
-  const viewReadiness = async () => {
-    const action = "Readiness";
-    const description = "User viewed readiness.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("Readiness");
-    } catch (error) {
-      console.log("Error in viewing readiness", error);
-    }
-  };
-
-  const viewWeather = async () => {
-    const action = "Weather";
-    const description = "User viewed weather.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("Weather");
-    } catch (error) {
-      console.log("Error in viewing weather", error);
-    }
-  };
-
-  const viewCalendar = async () => {
-    const action = "Barangay Calendar";
-    const description = "User viewed barangay calendar.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("BrgyCalendar");
-    } catch (error) {
-      console.log("Error in viewing barangay calendar", error);
-    }
-  };
-
   //Announcements Carousel
   const { width } = Dimensions.get("window");
   const flatListRef = useRef(null);
@@ -476,7 +432,7 @@ const Home = () => {
                 <View style={{ width: width - 40, paddingHorizontal: 10 }}>
                   <TouchableOpacity
                     style={[MyStyles.calendarContainer, MyStyles.shadow]}
-                    onPress={viewCalendar}
+                    onPress={() => navigation.navigate("BrgyCalendar")}
                   >
                     {/* Left panel */}
                     <View style={MyStyles.leftCalendar}>
@@ -644,7 +600,7 @@ const Home = () => {
                     }}
                   >
                     <TouchableOpacity
-                      onPress={viewWeather}
+                      onPress={() => navigation.navigate("Weather")}
                       style={[
                         {
                           height: "auto",
@@ -881,7 +837,7 @@ const Home = () => {
                           alignItems: "center",
                         },
                       ]}
-                      onPress={viewReadiness}
+                      onPress={() => navigation.navigate("Readiness")}
                     >
                       <MaterialCommunityIcons
                         name="lightbulb-on"
@@ -895,7 +851,7 @@ const Home = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      onPress={viewEmergencyHotlines}
+                      onPress={() => navigation.navigate("EmergencyHotlines")}
                       style={[
                         MyStyles.sosContainer,
                         {

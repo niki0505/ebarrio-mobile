@@ -42,19 +42,11 @@ const EmergencyHotlines = () => {
     loadData();
   }, []);
 
-  const handleCall = async (contactName, contactNumber) => {
+  const handleCall = async (contactNumber) => {
     const phoneNumber = `tel:${contactNumber}`;
     Linking.openURL(phoneNumber).catch((err) =>
       console.error("Error opening dialer: ", err)
     );
-    const action = "Emergency Hotlines";
-    const description = `User tapped the contact number of ${contactName}, initiating a phone call.`;
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("EmergencyHotlines");
-    } catch (error) {
-      console.log("Error in viewing emergency hotlines", error);
-    }
   };
 
   const handleSearch = (text) => {
@@ -149,9 +141,7 @@ const EmergencyHotlines = () => {
                 .map((element) => (
                   <TouchableOpacity
                     key={element._id}
-                    onPress={() =>
-                      handleCall(element.name, element.contactnumber)
-                    }
+                    onPress={() => handleCall(element.contactnumber)}
                     style={[
                       MyStyles.input,
                       {

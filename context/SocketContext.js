@@ -24,9 +24,9 @@ export const SocketProvider = ({ children, navigationRef }) => {
       transports: ["polling", "websocket"],
       withCredentials: true,
       timeout: 60000,
-      reconnectionAttempts: Infinity, // retry forever
-      reconnectionDelay: 1000, // start with 1s delay
-      reconnectionDelayMax: 10000, // max delay 10s
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 10000,
     });
 
     socketRef.current = socket;
@@ -35,6 +35,10 @@ export const SocketProvider = ({ children, navigationRef }) => {
       console.log("✅ Socket connected:", socket.id);
       socket.emit("register", user.userID, user.role);
       socket.emit("join_announcements");
+
+      if (user.role !== "Resident") {
+        socket.emit("join_sos");
+      }
     });
 
     socket.on("connect_error", (err) => {
@@ -108,6 +112,36 @@ export const SocketProvider = ({ children, navigationRef }) => {
             text: "View Now",
             onPress: () =>
               navigationRef.navigate("Chat", { roomId: res.roomId }),
+          },
+        ],
+        { cancelable: true }
+      );
+    });
+
+    socket.on("sos", (s) => {
+      Alert.alert(
+        s.title,
+        s.message,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "View Now",
+            onPress: () => navigationRef.navigate("SOSRequests"),
+          },
+        ],
+        { cancelable: true }
+      );
+    });
+
+    socket.on("sosUpdate", (s) => {
+      Alert.alert(
+        s.title,
+        s.message,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "View Now",
+            onPress: () => navigationRef.navigate("SOSStatusPage"),
           },
         ],
         { cancelable: true }

@@ -244,7 +244,9 @@ const SOSReportDetails = () => {
                       },
                     ]}
                   >
-                    # {selectedReport.resID.householdno.address}
+                    {selectedReport.resID.householdno
+                      ? selectedReport.resID.householdno?.address
+                      : "N/A"}
                   </Text>
                 </View>
 

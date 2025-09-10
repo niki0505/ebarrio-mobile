@@ -163,7 +163,7 @@ const Blotter = () => {
       ...prevForm,
       subjectID: res._id,
       subjectname: fullName,
-      subjectaddress: res.address,
+      subjectaddress: res.householdno ? res.householdno.address : "N/A",
     }));
     setSubjectError(null);
     setSubjectSuggestions([]);

@@ -13,21 +13,21 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { useState, useRef, useContext, useEffect, useMemo } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import Aniban2Logo from "../assets/aniban2logo.png";
 import { InfoContext } from "../context/InfoContext";
-import * as SecureStore from "expo-secure-store";
 import { SocketContext } from "../context/SocketContext";
 import { AuthContext } from "../context/AuthContext";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import AlertModal from "./AlertModal";
 
 const Chat = () => {
   const route = useRoute();
-  const { fetchFAQs, FAQs, fetchActive } = useContext(InfoContext);
+  const { fetchFAQs, FAQs } = useContext(InfoContext);
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
   const insets = useSafeAreaInsets();
@@ -38,9 +38,12 @@ const Chat = () => {
   const [assignedAdmin, setAssignedAdmin] = useState(null);
   const [isChat, setIsChat] = useState(route?.params?.isChat ?? false);
   const [isEnded, setIsEnded] = useState(false);
-  // const [chatMessages, setChatMessages] = useState([]);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const { fetchChats, chatMessages, setChatMessages } = useContext(InfoContext);
   const [loading, setLoading] = useState(false);
+  const [loadingSend, setLoadingSend] = useState(false);
   const scrollViewRef = useRef();
 
   useEffect(() => {
@@ -193,7 +196,7 @@ const Chat = () => {
   }, [socket]);
   // Send a message and add to chat list
   const handleSendMessage = (text) => {
-    if (!roomId || text.trim() === "") return;
+    if (!roomId || text.trim() === "" || loadingSend) return;
 
     const newMessage = {
       from: user.userID,
@@ -203,33 +206,70 @@ const Chat = () => {
       roomId,
     };
 
-    socket.emit("send_message", newMessage);
+    setLoadingSend(true);
+    socket.emit("send_message", newMessage, (ack) => {
+      if (ack.success) {
+        setChatMessages((prevChats) => {
+          const existingChat = prevChats.find((chat) => chat._id === roomId);
 
-    setChatMessages((prevChats) => {
-      const existingChat = prevChats.find((chat) => chat._id === roomId);
-
-      if (existingChat) {
-        return prevChats.map((chat) => {
-          if (chat._id === roomId) {
-            return {
-              ...chat,
-              messages: [...chat.messages, newMessage],
-            };
+          if (existingChat) {
+            return prevChats.map((chat) => {
+              if (chat._id === roomId) {
+                return {
+                  ...chat,
+                  messages: [...chat.messages, newMessage],
+                };
+              }
+              return chat;
+            });
+          } else {
+            return [
+              ...prevChats,
+              {
+                _id: roomId,
+                participants: [user.userID, assignedAdmin],
+                messages: [newMessage],
+              },
+            ];
           }
-          return chat;
         });
+        setMessage("");
+        setLoadingSend(false);
       } else {
-        return [
-          ...prevChats,
-          {
-            _id: roomId,
-            participants: [user.userID, assignedAdmin],
-            messages: [newMessage],
-          },
-        ];
+        setAlertMessage(
+          "An unexpected error occurred. Please try again later."
+        );
+        setIsAlertModalVisible(true);
       }
     });
-    setMessage("");
+
+    // socket.emit("send_message", newMessage);
+
+    // setChatMessages((prevChats) => {
+    //   const existingChat = prevChats.find((chat) => chat._id === roomId);
+
+    //   if (existingChat) {
+    //     return prevChats.map((chat) => {
+    //       if (chat._id === roomId) {
+    //         return {
+    //           ...chat,
+    //           messages: [...chat.messages, newMessage],
+    //         };
+    //       }
+    //       return chat;
+    //     });
+    //   } else {
+    //     return [
+    //       ...prevChats,
+    //       {
+    //         _id: roomId,
+    //         participants: [user.userID, assignedAdmin],
+    //         messages: [newMessage],
+    //       },
+    //     ];
+    //   }
+    // });
+    // setMessage("");
   };
 
   const getBotReply = (question) => {
@@ -289,12 +329,28 @@ const Chat = () => {
     });
   };
 
+  const requestChat = () => {
+    setIsConfirmModalVisible(false);
+    socket.emit("request_chat", (response) => {
+      if (response.success) {
+        setIsChat(true);
+      } else {
+        setAlertMessage(
+          "An unexpected error occurred. Please try again later."
+        );
+        setIsAlertModalVisible(true);
+      }
+    });
+  };
+  const handleConfirm = async () => {
+    setIsConfirmModalVisible(true);
+  };
+
   const handleOptionClick = async (id) => {
     if (id === "faq") {
       setModalVisible(true);
     } else if (id === "chat") {
-      setIsChat(true);
-      socket.emit("request_chat");
+      handleConfirm();
     }
   };
 
@@ -526,8 +582,15 @@ const Chat = () => {
             <TouchableOpacity
               style={{ marginLeft: 10 }}
               onPress={() => handleSendMessage(message)}
+              disabled={loadingSend || !message.trim() || !socket}
             >
-              <MaterialIcons name="send" size={sendIconSize} color="#04384E" />
+              <MaterialIcons
+                name="send"
+                size={sendIconSize}
+                color={
+                  loadingSend || !message.trim() || !socket ? "gray" : "#04384E"
+                }
+              />
             </TouchableOpacity>
           </View>
         )}
@@ -582,6 +645,20 @@ const Chat = () => {
             </View>
           </Pressable>
         </Modal>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={false}
+          onClose={() => setIsAlertModalVisible(false)}
+        />
+        <AlertModal
+          isVisible={isConfirmModalVisible}
+          isConfirmationModal={true}
+          title="Chat with the Barangay?"
+          message="Are you sure you want to connect with the barangay admins now?"
+          onClose={() => setIsConfirmModalVisible(false)}
+          onConfirm={requestChat}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
