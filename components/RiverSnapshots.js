@@ -49,7 +49,7 @@ const RiverSnapshots = () => {
     };
 
     fetchLatest(); // Initial fetch
-    const interval = setInterval(fetchLatest, 60000);
+    const interval = setInterval(fetchLatest, 600000);
 
     return () => clearInterval(interval);
   }, []);

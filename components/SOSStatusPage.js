@@ -330,11 +330,7 @@ const SOSStatusPage = () => {
 
           {report && (!report?.responder || report.responder.length === 0) && (
             <View style={styles.container}>
-              {/* <TouchableOpacity onPress={cancelSOS}>
-                <Text>Cancel</Text>
-              </TouchableOpacity> */}
               <View style={[styles.slider, { paddingLeft: CIRCLE_SIZE / 2 }]}>
-                {/* Conditionally render the "slide to cancel" text */}
                 {!isSliding && !cancelled && (
                   <Text style={styles.text}>slide to cancel</Text>
                 )}

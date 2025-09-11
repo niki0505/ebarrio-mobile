@@ -126,7 +126,8 @@ export const SocketProvider = ({ children, navigationRef }) => {
           { text: "Cancel", style: "cancel" },
           {
             text: "View Now",
-            onPress: () => navigationRef.navigate("SOSRequests"),
+            onPress: () =>
+              navigationRef.navigate(s.redirectTo || "SOSRequests"),
           },
         ],
         { cancelable: true }
