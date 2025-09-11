@@ -900,7 +900,7 @@ export const MyStyles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     fontSize: RFPercentage(2),
-    height: RFPercentage(28),
+    height: RFPercentage(32),
   },
   leftCalendar: {
     width: "48%",
@@ -1108,8 +1108,8 @@ export const MyStyles = StyleSheet.create({
     alignSelf: "center",
   },
   loginLogo: {
-    width: RFPercentage(25),
-    height: RFPercentage(25),
+    width: 220,
+    height: 220,
   },
   loginBottomWrapper: {
     flexDirection: "column",

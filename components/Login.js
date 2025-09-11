@@ -14,7 +14,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OtpContext } from "../context/OtpContext";
 import api from "../api";
-import AppLogo from "../assets/applogo-darkbg.png";
+import AppLogo from "..//assets/applogo.png";
 import AlertModal from "./AlertModal";
 import { LinearGradient } from "expo-linear-gradient";
 
