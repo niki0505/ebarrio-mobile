@@ -5,12 +5,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import AppLogo from "../assets/applogo-darkbg.png";
 
 const TermsConditions = () => {
   const insets = useSafeAreaInsets();
@@ -36,25 +38,21 @@ const TermsConditions = () => {
           style={{ flex: 1 }}
         >
           <View style={MyStyles.loginWrapper}>
-            <View style={{ flex: 0.3, alignSelf: "start", padding: 20 }}>
-              <AntDesign
-                onPress={() => navigation.navigate("Signup")}
-                name="arrowleft"
-                style={[MyStyles.backArrow, { color: "#fff" }]}
-              />
+            <View style={MyStyles.loginTopWrapper}>
+              <Image source={AppLogo} style={MyStyles.loginLogo} />
             </View>
 
-            <View
-              style={[
-                MyStyles.loginBottomWrapper,
-                {
-                  flex: 3.8,
-                },
-              ]}
-            >
-              <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                Terms and Conditions
-              </Text>
+            <View style={MyStyles.loginBottomWrapper}>
+              <View style={{ flexDirection: "row", alignSelf: "flex-start" }}>
+                <AntDesign
+                  onPress={() => navigation.navigate("Signup")}
+                  name="arrowleft"
+                  style={[MyStyles.backArrow]}
+                />
+                <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
+                  Terms and Conditions
+                </Text>
+              </View>
 
               <ScrollView
                 style={{ width: "100%" }}
