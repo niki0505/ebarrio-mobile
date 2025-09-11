@@ -24,7 +24,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
-import AppLogo from "../assets/applogo-darkbg.png";
+import AppLogo from "..//assets/applogo.png";
 
 const EditMobileNumber = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
