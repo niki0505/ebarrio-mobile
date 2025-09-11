@@ -24,6 +24,7 @@ import api from "../api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Aniban2Logo from "../assets/aniban2logo.png";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -439,10 +440,7 @@ const Home = () => {
                     {/* Left panel */}
                     <View style={MyStyles.leftCalendar}>
                       <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
+                        style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Text style={MyStyles.bigDate}>
                           {currentDate.getDate()}
@@ -468,15 +466,6 @@ const Home = () => {
                             {todayEvents.slice(0, 2).map((event, index) => {
                               const startDate = new Date(event.start);
                               const endDate = new Date(event.end);
-
-                              const dateString = startDate.toLocaleDateString(
-                                "en-US",
-                                {
-                                  month: "long",
-                                  day: "numeric",
-                                  year: "numeric",
-                                }
-                              );
 
                               const timeString = `${startDate.toLocaleTimeString(
                                 "en-US",
@@ -538,46 +527,83 @@ const Home = () => {
                       </View>
                     </View>
 
-                    {/* Right panel */}
-                    <View style={MyStyles.rightCalendar}>
-                      <Text style={MyStyles.monthHeader}>
-                        {currentDate.toLocaleString("en-US", { month: "long" })}{" "}
-                        {year}
+                    {/* Right panel - Mini Calendar */}
+                    <View style={{ flex: 1, padding:15 }}>
+                      {/* Month title */}
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: RFPercentage(2),
+                          fontFamily: "QuicksandMedium",
+                          marginBottom: 5,
+                          color: "#04384E",
+                          fontFamily: "QuicksandSemiBold",
+                        }}
+                      >
+                        {new Date(year, month).toLocaleString("en-US", {
+                          month: "long",
+                          year: "numeric",
+                        })}
                       </Text>
 
-                      <View style={MyStyles.weekRow}>
-                        {weekDays.map((d, i) => (
-                          <Text key={i} style={MyStyles.weekDay}>
-                            {d}
+                      {/* Weekday labels (short form) */}
+                      <View style={{ flexDirection: "row", marginBottom: 8 }}>
+                        {["S", "M", "T", "W", "T", "F", "S"].map((day, idx) => (
+                          <Text
+                            key={idx}
+                            style={{
+                              width: `${100 / 7}%`,
+                              textAlign: "center",
+                              fontSize: RFPercentage(1.7),
+                              fontFamily: "QuicksandMedium",
+                              color: "#444",
+                            }}
+                          >
+                            {day}
                           </Text>
                         ))}
                       </View>
-
-                      <View style={MyStyles.calendarRightContainer}>
-                        {calendarDays.map((item, index) => (
-                          <View key={index} style={MyStyles.dayCell}>
-                            {item ? (
+                      {/* Calendar days */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          rowGap: 6,
+                        }}
+                      >
+                        {calendarDays.map((item, index) => {
+                          if (!item) {
+                            return (
                               <View
-                                style={[
-                                  item === currentDate.getDate() &&
-                                    MyStyles.currentDay,
-                                ]}
+                                key={index}
+                                style={{ width: `${100 / 7}%`, aspectRatio: 1 }}
+                              />
+                            );
+                          }
+
+                          return (
+                            <View
+                              key={index}
+                              style={{
+                                width: `${100 / 7}%`,
+                                aspectRatio: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginBottom: 6, 
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: RFPercentage(1.7),
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#000",
+                                }}
                               >
-                                <Text
-                                  style={[
-                                    MyStyles.dayText,
-                                    item === currentDate.getDate() &&
-                                      MyStyles.currentDayText,
-                                  ]}
-                                >
-                                  {item}
-                                </Text>
-                              </View>
-                            ) : (
-                              <Text style={MyStyles.emptyCell}></Text>
-                            )}
-                          </View>
-                        ))}
+                                {item}
+                              </Text>
+                            </View>
+                          );
+                        })}
                       </View>
                     </View>
                   </TouchableOpacity>

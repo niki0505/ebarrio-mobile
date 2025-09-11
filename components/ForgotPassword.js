@@ -16,7 +16,7 @@ import { OtpContext } from "../context/OtpContext";
 import { OtpInput } from "react-native-otp-entry";
 import { Dropdown } from "react-native-element-dropdown";
 import api from "../api";
-import AppLogo from "../assets/applogo-darkbg.png";
+import AppLogo from "..//assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import AlertModal from "./AlertModal";
 import { AntDesign } from "@expo/vector-icons";
@@ -792,9 +792,10 @@ const ForgotPassword = () => {
                               !user.securityquestions ||
                               user.securityquestions.length === 0
                             ) {
-                              alert(
+                              setAlertMessage(
                                 "No security questions found for this account."
                               );
+                              setIsAlertModalVisible(true);
                             } else {
                               setQuestionsClicked(true);
                             }
