@@ -92,7 +92,6 @@ const SOSStatusPage = () => {
       await api.put(`/cancelsos/${reportRef.current._id}`);
       setIsSuccess(true);
       setAlertMessage("Your report has been cancelled successfully.");
-      navigation.navigate("BottomTabs");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
@@ -352,7 +351,10 @@ const SOSStatusPage = () => {
         <AlertModal
           isVisible={isAlertModalVisible}
           message={alertMessage}
-          onClose={() => setIsAlertModalVisible(false)}
+          onConfirm={() => {
+            setIsAlertModalVisible(false);
+            navigation.navigate("BottomTabs");
+          }}
           isSuccess={isSuccess}
         />
       </KeyboardAvoidingView>

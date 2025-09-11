@@ -61,7 +61,6 @@ const UserProfile = () => {
   const [showLastMenstrualPicker, setShowLastMenstrualPicker] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [householdProfile, setHouseholdProfile] = useState({});
   const [residentProfile, setResidentProfile] = useState({
     picture: "",
     signature: "",
@@ -186,6 +185,21 @@ const UserProfile = () => {
     haveFPmethod: "",
     fpmethod: "",
     fpstatus: "",
+  });
+
+  const [householdProfile, setHouseholdProfile] = useState({
+    members: [],
+    vehicles: [],
+    ethnicity: "",
+    tribe: "",
+    sociostatus: "",
+    nhtsno: "",
+    watersource: "",
+    toiletfacility: "",
+    housenumber: "",
+    street: "",
+    HOAname: "",
+    address: "",
   });
 
   const [householdForm, setHouseholdForm] = useState({
@@ -332,6 +346,14 @@ const UserProfile = () => {
             );
 
             setHouseholdForm((prev) => ({
+              ...prev,
+              ...res.data,
+              members: otherMembers,
+              vehicles: res.data.vehicles,
+              housenumber: houseNumber,
+              street: streetName,
+            }));
+            setHouseholdProfile((prev) => ({
               ...prev,
               ...res.data,
               members: otherMembers,
@@ -762,19 +784,17 @@ const UserProfile = () => {
   const handleMemberChange = (index, field, value) => {
     const updatedMembers = [...householdForm.members];
 
-    if (field === "resident") {
-      updatedMembers[index] = {
-        ...updatedMembers[index],
-        resident: value,
-        resID: "",
-      };
+    updatedMembers[index] = {
+      ...updatedMembers[index],
+      [field]: value,
+      resID: field === "residentName" ? null : updatedMembers[index].resID,
+    };
 
-      setHouseholdForm((prev) => ({
-        ...prev,
-        members: updatedMembers,
-      }));
+    setHouseholdForm((prev) => ({ ...prev, members: updatedMembers }));
 
-      if (value.trim() === "") {
+    if (field === "residentName") {
+      if (!value.trim()) {
+        // Clear suggestions
         setMemberSuggestions((prev) => {
           const newSuggestions = [...prev];
           newSuggestions[index] = [];
@@ -783,12 +803,23 @@ const UserProfile = () => {
         return;
       }
 
+      // Filter residents for suggestions
       const matches = residents
-        .filter((r) => !r.householdno)
-        .filter((res) => {
-          const fullName = `${res.firstname} ${
-            res.middlename ? res.middlename + " " : ""
-          }${res.lastname}`.toLowerCase();
+        .filter(
+          (r) =>
+            r.householdno?._id.toString() !==
+            residentForm.householdno.toString()
+        )
+        .filter(
+          (r) =>
+            r.status !== "Pending" &&
+            r.status !== "Archived" &&
+            r.status !== "Rejected"
+        )
+        .filter((r) => {
+          const fullName = `${r.firstname} ${
+            r.middlename ? r.middlename + " " : ""
+          }${r.lastname}`.toLowerCase();
           return fullName.includes(value.toLowerCase());
         });
 
@@ -797,12 +828,6 @@ const UserProfile = () => {
         newSuggestions[index] = matches;
         return newSuggestions;
       });
-    } else {
-      updatedMembers[index][field] = value;
-      setHouseholdForm((prev) => ({
-        ...prev,
-        members: updatedMembers,
-      }));
     }
   };
 
@@ -814,15 +839,13 @@ const UserProfile = () => {
     const updatedMembers = [...householdForm.members];
     updatedMembers[index] = {
       ...updatedMembers[index],
-      resident: fullName,
+      residentName: fullName,
       resID: res._id,
     };
 
-    setHouseholdForm((prev) => ({
-      ...prev,
-      members: updatedMembers,
-    }));
+    setHouseholdForm((prev) => ({ ...prev, members: updatedMembers }));
 
+    // Clear suggestions
     setMemberSuggestions((prev) => {
       const newSuggestions = [...prev];
       newSuggestions[index] = [];
@@ -833,7 +856,10 @@ const UserProfile = () => {
   const addMember = () => {
     setHouseholdForm((prev) => ({
       ...prev,
-      members: [...prev.members, { resident: "", position: "", resID: "" }],
+      members: [
+        ...prev.members,
+        { residentName: "", position: "", resID: null },
+      ],
     }));
     setMemberSuggestions((prev) => [...prev, []]);
   };
@@ -959,11 +985,20 @@ const UserProfile = () => {
   };
 
   const handleConfirm = () => {
-    const hasChanges =
+    const hasResidentChanges =
       JSON.stringify(residentProfile) !== JSON.stringify(residentForm);
+    const hasChanges =
+      JSON.stringify(householdProfile) !== JSON.stringify(householdForm);
 
-    if (!hasChanges) {
+    if (!hasChanges && !hasResidentChanges) {
       alert("No changes detected.");
+      return;
+    }
+
+    if (residentInfo.changeID) {
+      alert(
+        "You already submitted a change request. Please wait for approval."
+      );
       return;
     }
     setIsConfirmModalVisible(true);
@@ -1042,6 +1077,7 @@ const UserProfile = () => {
       setLoading(false);
     }
   };
+
   return (
     <SafeAreaView
       style={{
@@ -2000,18 +2036,20 @@ const UserProfile = () => {
                       labelField="label"
                       valueField="value"
                       value={residentForm.householdno}
-                      data={households.map((h) => {
-                        const head = h.members.find(
-                          (m) => m.position === "Head"
-                        );
-                        const headName = head?.resID
-                          ? `${head.resID.lastname}'s Residence - ${head.resID.address}`
-                          : "Unnamed";
-                        return {
-                          label: headName,
-                          value: h._id,
-                        };
-                      })}
+                      data={households
+                        .filter((h) => h.status !== "Pending")
+                        .map((h) => {
+                          const head = h.members.find(
+                            (m) => m.position === "Head"
+                          );
+                          const headName = head?.resID
+                            ? `${head.resID.lastname}'s Residence - ${h.address}`
+                            : "Unnamed";
+                          return {
+                            label: headName,
+                            value: h._id,
+                          };
+                        })}
                       placeholder="Select"
                       placeholderStyle={MyStyles.placeholderText}
                       selectedTextStyle={MyStyles.selectedText}
@@ -2266,13 +2304,17 @@ const UserProfile = () => {
                         <View>
                           <Text style={MyStyles.inputLabel}>Resident Name</Text>
                           <TextInput
-                            value={`${member.resID.firstname} ${member.resID.lastname}`}
+                            value={
+                              member.resID?.firstname
+                                ? `${member.resID.firstname} ${member.resID.lastname}` // existing member
+                                : member.residentName || "" // new member being typed
+                            }
                             onChangeText={(text) =>
-                              handleMemberChange(index, "resident", text)
+                              handleMemberChange(index, "residentName", text)
                             }
                             placeholder="Enter Resident Name"
                             style={MyStyles.input}
-                            editable={false}
+                            editable={!member.resID} // cannot edit existing member
                           />
 
                           {memberSuggestions[index]?.length > 0 && (
@@ -2286,11 +2328,9 @@ const UserProfile = () => {
                               }}
                             >
                               {memberSuggestions[index].map((item) => {
-                                const fullName = `${item.resID.firstname} ${
-                                  item.resID.middlename
-                                    ? item.resID.middlename + " "
-                                    : ""
-                                }${item.resID.lastname}`;
+                                const fullName = `${item.firstname} ${
+                                  item.middlename ? item.middlename + " " : ""
+                                }${item.lastname}`;
 
                                 return (
                                   <TouchableOpacity

@@ -106,7 +106,7 @@ const SOS = () => {
   const handlePressIn = () => {
     Animated.timing(borderAnim, {
       toValue: 1,
-      duration: 5000, // 5 seconds
+      duration: 3000, // 5 seconds
       useNativeDriver: false,
     }).start(({ finished }) => {
       if (finished) {
@@ -122,8 +122,6 @@ const SOS = () => {
       useNativeDriver: false,
     }).start();
   };
-
-  console.log(reportdetails);
 
   return (
     <SafeAreaView
@@ -243,7 +241,7 @@ const SOS = () => {
                 },
               ]}
             >
-              Press on hold for 5 seconds to activate
+              Press on hold for 3 seconds to activate
             </Text>
 
             <Text

@@ -65,15 +65,15 @@ const Login = () => {
       });
       if (res.status === 200) {
         if (res.data.message === "Credentials verified") {
-          // await login({ username, password });
-          const response = await api.get(`/getmobilenumber/${username}`);
-          sendOTP(username, response.data.mobilenumber);
-          navigation.navigate("OTP", {
-            navigatelink: "BottomTabs",
-            username,
-            mobilenumber: response.data.mobilenumber,
-            password: password,
-          });
+          await login({ username, password });
+          // const response = await api.get(`/getmobilenumber/${username}`);
+          // sendOTP(username, response.data.mobilenumber);
+          // navigation.navigate("OTP", {
+          //   navigatelink: "BottomTabs",
+          //   username,
+          //   mobilenumber: response.data.mobilenumber,
+          //   password: password,
+          // });
         } else if (res.data.message === "Token verified successfully!") {
           navigation.navigate("SetPassword", {
             username,
