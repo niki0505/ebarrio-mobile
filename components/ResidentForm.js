@@ -1993,18 +1993,20 @@ const ResidentForm = () => {
                           labelField="label"
                           valueField="value"
                           value={residentForm.householdno}
-                          data={households.map((h) => {
-                            const head = h.members.find(
-                              (m) => m.position === "Head"
-                            );
-                            const headName = head?.resID
-                              ? `${head.resID.lastname}'s Residence - ${h.address}`
-                              : "Unnamed";
-                            return {
-                              label: headName,
-                              value: h._id,
-                            };
-                          })}
+                          data={households
+                            .filter((h) => h.status !== "Pending")
+                            .map((h) => {
+                              const head = h.members.find(
+                                (m) => m.position === "Head"
+                              );
+                              const headName = head?.resID
+                                ? `${head.resID.lastname}'s Residence - ${h.address}`
+                                : "Unnamed";
+                              return {
+                                label: headName,
+                                value: h._id,
+                              };
+                            })}
                           placeholder="Select"
                           placeholderStyle={MyStyles.placeholderText}
                           selectedTextStyle={MyStyles.selectedText}

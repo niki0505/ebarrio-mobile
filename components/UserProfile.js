@@ -1050,8 +1050,10 @@ const UserProfile = () => {
         ? formatToDateOnly(residentForm.lastmenstrual)
         : null;
 
+      const { id, signature, ...rest } = residentForm;
+
       const updatedResidentForm = {
-        ...residentForm,
+        ...rest,
         mobilenumber: formattedMobileNumber,
         emergencymobilenumber: formattedEmergencyMobileNumber,
         telephone: formattedTelephone,
