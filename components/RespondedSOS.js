@@ -14,7 +14,7 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -47,16 +47,18 @@ const RespondedSOS = () => {
     const enrichReports = async () => {
       if (respondedSOS && respondedSOS.length > 0) {
         const updatedReports = await Promise.all(
-          respondedSOS.map(async (report) => {
-            if (report.location?.lat && report.location?.lng) {
-              const address = await getReadableAddress(
-                report.location.lat,
-                report.location.lng
-              );
-              return { ...report, readableAddress: address || "Unknown" };
-            }
-            return { ...report, readableAddress: "No location available" };
-          })
+          respondedSOS
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map(async (report) => {
+              if (report.location?.lat && report.location?.lng) {
+                const address = await getReadableAddress(
+                  report.location.lat,
+                  report.location.lng
+                );
+                return { ...report, readableAddress: address || "Unknown" };
+              }
+              return { ...report, readableAddress: "No location available" };
+            })
         );
         setModifiedReports(updatedReports);
       } else {
@@ -107,7 +109,7 @@ const RespondedSOS = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#BC0F0F",
       }}
     >
       <KeyboardAvoidingView
@@ -118,44 +120,113 @@ const RespondedSOS = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
+              backgroundColor: "#BC0F0F",
               gap: 10,
             },
           ]}
         >
-          <MaterialIcons
+          <AntDesign
             onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            size={30}
-            color="#04384E"
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "white" }]}
           />
-          <Text style={MyStyles.header}>Responded SOS</Text>
+
+          <Text
+            style={[MyStyles.header, { fontFamily: "REMBold", color: "white" }]}
+          >
+            Responded SOS
+          </Text>
+
+          <Text
+            style={[MyStyles.formMessage, { color: "white", opacity: 0.7 }]}
+          >
+            Browse through the incidents you've responded to and updated.
+          </Text>
 
           {loading ? (
-            <ActivityIndicator size="large" color="#04384E" />
+            <ActivityIndicator size="large" color="white" />
           ) : respondedSOS.length === 0 ? (
-            <Text style={[MyStyles.noEvents, { color: "gray" }]}>
+            <Text style={[MyStyles.noEvents, { color: "#fff", opacity: 0.7 }]}>
               No responded SOS requests found.
             </Text>
           ) : (
-            modifiedReports.map((report) => (
-              <TouchableOpacity
-                key={report._id}
-                onPress={() =>
-                  navigation.navigate("SOSRespondedDetails", {
-                    selectedID: report._id,
-                  })
-                }
-              >
-                <Text>{report.status}</Text>
-                <Text>{dayjs(report.updatedAt).fromNow()}</Text>
-                <Image
-                  source={{ uri: report.resID.picture }}
-                  style={{ width: 80, height: 80, borderRadius: 40 }}
-                />
-                <Text>{report.reporttype || "SOS"}</Text>
-                <Text>{report.readableAddress}</Text>
-              </TouchableOpacity>
-            ))
+            modifiedReports.map((report) => {
+              let badgeColor = "gray";
+              let badgeIcon = "help-circle";
+
+              if (report.status === "False Alarm") {
+                badgeColor = "red";
+                badgeIcon = "alert-circle";
+              } else if (report.status === "Ongoing") {
+                badgeColor = "orange";
+                badgeIcon = "time";
+              } else if (report.status === "Resolved") {
+                badgeColor = "green";
+                badgeIcon = "checkmark-done-circle";
+              }
+
+              return (
+                <TouchableOpacity
+                  key={report._id}
+                  onPress={() =>
+                    navigation.navigate("SOSRespondedDetails", {
+                      selectedID: report._id,
+                    })
+                  }
+                  style={[MyStyles.sosCard, MyStyles.shadow]}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      alignContent: "center",
+                    }}
+                  >
+                    <View
+                      style={[
+                        MyStyles.statusWrapper,
+                        { backgroundColor: badgeColor },
+                      ]}
+                    >
+                      <Ionicons name={badgeIcon} style={MyStyles.statusIcon} />
+                      <Text style={MyStyles.statusTitle}>
+                        {report.status || "Pending"}
+                      </Text>
+                    </View>
+
+                    <Text
+                      style={[
+                        MyStyles.sosDetailsText,
+                        { textAlign: "right", flex: 1, color: "gray" },
+                      ]}
+                    >
+                      {dayjs(report.updatedAt).fromNow()}
+                    </Text>
+                  </View>
+                  {/* Card content */}
+                  <View style={MyStyles.rowAlignment}>
+                    <Image
+                      source={{ uri: report.resID.picture }}
+                      style={MyStyles.sosImg}
+                    />
+
+                    {/* Details */}
+                    <View style={{ flex: 1 }}>
+                      <Text style={MyStyles.sosReportType}>
+                        {report.reporttype || "SOS"}
+                      </Text>
+
+                      <View style={MyStyles.sosAddressTimeWrapper}>
+                        <Text style={MyStyles.sosDetailsText}>
+                          #{report.readableAddress}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            })
           )}
         </ScrollView>
       </KeyboardAvoidingView>

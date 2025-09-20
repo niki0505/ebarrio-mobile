@@ -136,7 +136,7 @@ const Announcement = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
-              paddingBottom: insets.bottom + 70,
+              paddingBottom: insets.bottom + 100,
               gap: 10,
             },
           ]}

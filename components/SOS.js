@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   TextInput,
+  Animated,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
@@ -22,10 +23,33 @@ import Typhoon from "../assets/SOS/typhoon.png";
 import Medical from "../assets/SOS/medical.png";
 import Suspicious from "../assets/SOS/suspicious.png";
 import api from "../api";
+import { useRef } from "react";
+import Svg, { Circle } from "react-native-svg";
+
+const CIRCLE_SIZE = 280; // match button size
+const STROKE_WIDTH = 6;
+const RADIUS = (CIRCLE_SIZE - STROKE_WIDTH) / 2;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const SOS = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const timerRef = useRef(null);
+  const borderAnim = useRef(new Animated.Value(0)).current;
+  const [reportdetails, setReportdetails] = useState("");
+  const [reporttype, setReporttype] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const emergencyTypes = [
+    { source: Fire, label: "Fire" },
+    { source: Flood, label: "Flood" },
+    { source: Earthquake, label: "Earthquake" },
+    { source: Typhoon, label: "Typhoon" },
+    { source: Medical, label: "Medical" },
+    { source: Suspicious, label: "Suspicious" },
+  ];
 
   const sendSOS = async () => {
     try {
@@ -48,6 +72,55 @@ const SOS = () => {
     } catch (e) {
       console.error("Error getting location:", error);
     }
+  };
+
+  const sendSOSWithDetails = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.warn("Location permission not granted");
+      }
+      let loc = await Location.getCurrentPositionAsync({});
+      try {
+        await api.post("/sendsoswithdetails", {
+          location: {
+            lat: loc.coords.latitude,
+            lng: loc.coords.longitude,
+          },
+          reporttype,
+          reportdetails,
+        });
+        navigation.navigate("SOSStatusPage");
+      } catch (error) {
+        console.error("Error sending SOS:", error);
+      }
+    } catch (e) {
+      console.error("Error getting location:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePressIn = () => {
+    Animated.timing(borderAnim, {
+      toValue: 1,
+      duration: 3000, // 5 seconds
+      useNativeDriver: false,
+    }).start(({ finished }) => {
+      if (finished) {
+        sendSOS();
+      }
+    });
+  };
+
+  const handlePressOut = () => {
+    Animated.timing(borderAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
   };
 
   return (
@@ -101,29 +174,60 @@ const SOS = () => {
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <TouchableOpacity
-              onPress={sendSOS}
+            <View
               style={{
-                width: 280,
-                height: 280,
-                borderRadius: 140,
-                backgroundColor: "#fff",
-                marginTop: 20,
                 justifyContent: "center",
                 alignItems: "center",
+                position: "relative",
+                width: CIRCLE_SIZE,
+                height: CIRCLE_SIZE,
               }}
             >
-              <Text
+              <Svg
+                width={CIRCLE_SIZE}
+                height={CIRCLE_SIZE}
+                style={{ position: "absolute", top: 0, left: 0 }}
+              >
+                <AnimatedCircle
+                  cx={CIRCLE_SIZE / 2}
+                  cy={CIRCLE_SIZE / 2}
+                  r={RADIUS}
+                  stroke="#0E94D3"
+                  strokeWidth={STROKE_WIDTH}
+                  strokeDasharray={CIRCUMFERENCE}
+                  strokeDashoffset={borderAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [CIRCUMFERENCE, 0],
+                  })}
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              </Svg>
+
+              <TouchableOpacity
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
                 style={{
-                  color: "#BC0F0F",
-                  fontFamily: "REMBold",
-                  fontSize: 70,
-                  textAlign: "center",
+                  width: 280,
+                  height: 280,
+                  borderRadius: 140,
+                  backgroundColor: "#fff",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                SOS
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#BC0F0F",
+                    fontFamily: "REMBold",
+                    fontSize: 70,
+                    textAlign: "center",
+                  }}
+                >
+                  SOS
+                </Text>
+              </TouchableOpacity>
+            </View>
             <Text
               style={[
                 MyStyles.header,
@@ -137,7 +241,7 @@ const SOS = () => {
                 },
               ]}
             >
-              Press on hold for 5 seconds to activate
+              Press on hold for 3 seconds to activate
             </Text>
 
             <Text
@@ -156,122 +260,49 @@ const SOS = () => {
 
             <View
               style={{
-                flexDirection: "column",
-                alignItems: "center",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "center",
                 gap: 30,
                 marginTop: 20,
               }}
             >
-              {/* Row 1: Fire and Flood */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "80%",
-                }}
-              >
-                {[
-                  { source: Fire, label: "FIRE" },
-                  { source: Flood, label: "FLOOD" },
-                ].map(({ source, label }, index) => (
-                  <View
+              {emergencyTypes.map(({ source, label }, index) => {
+                const isSelected = reporttype === label;
+                return (
+                  <TouchableOpacity
                     key={index}
+                    onPress={() => setReporttype(label)}
                     style={{
                       flexDirection: "column",
                       alignItems: "center",
-                      flex: 1,
+                      marginHorizontal: 20,
                     }}
                   >
                     <Image
                       source={source}
-                      style={{ width: 80, height: 80, borderRadius: 15 }}
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: 15,
+                        borderWidth: isSelected ? 4 : 0,
+                        borderColor: isSelected ? "#fff" : "transparent",
+                        opacity: isSelected ? 1 : 0.7,
+                      }}
                     />
                     <Text
                       style={{
-                        color: "#fff",
+                        color: isSelected ? "#FFD700" : "#fff", // highlight text if selected
                         fontSize: 18,
                         fontFamily: "REMBold",
+                        marginTop: 5,
                       }}
                     >
                       {label}
                     </Text>
-                  </View>
-                ))}
-              </View>
-
-              {/* Row 2: Earthquake and Typhoon */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "80%",
-                }}
-              >
-                {[
-                  { source: Earthquake, label: "EARTHQUAKE" },
-                  { source: Typhoon, label: "TYPHOON" },
-                ].map(({ source, label }, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "column",
-                      alignItems: "center",
-                      flex: 1,
-                    }}
-                  >
-                    <Image
-                      source={source}
-                      style={{ width: 80, height: 80, borderRadius: 15 }}
-                    />
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 18,
-                        fontFamily: "REMBold",
-                      }}
-                    >
-                      {label}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-
-              {/* Row 3: Medical and Suspicious */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "80%",
-                }}
-              >
-                {[
-                  { source: Medical, label: "MEDICAL" },
-                  { source: Suspicious, label: "SUSPICIOUS" },
-                ].map(({ source, label }, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "column",
-                      alignItems: "center",
-                      flex: 1,
-                    }}
-                  >
-                    <Image
-                      source={source}
-                      style={{ width: 80, height: 80, borderRadius: 15 }}
-                    />
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 18,
-                        fontFamily: "REMBold",
-                      }}
-                    >
-                      {label}
-                    </Text>
-                  </View>
-                ))}
-              </View>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
 
             {/* Details */}
@@ -286,6 +317,8 @@ const SOS = () => {
                 Details of the Emergency
               </Text>
               <TextInput
+                value={reportdetails}
+                onChangeText={setReportdetails}
                 placeholder="Enter details"
                 style={[
                   MyStyles.input,
@@ -314,65 +347,16 @@ const SOS = () => {
               </View>
             </View>
 
-            {/* Location */}
-
-            <View
-              style={{
-                width: "100%",
-                marginTop: 20,
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  backgroundColor: "#fff",
-                  padding: 5,
-                  borderTopLeftRadius: 15,
-                  borderTopRightRadius: 15,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#BC0F0F",
-                    fontSize: 18,
-                    fontFamily: "QuicksandBold",
-                  }}
-                >
-                  Where is the emergency?
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#BC0F0F",
-                    padding: 5,
-                    borderRadius: 8,
-                    alignItems: "center",
-                    width: "35%",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontFamily: "REMBold",
-                      fontSize: 16,
-                    }}
-                  >
-                    My Location
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
             <TouchableOpacity
+              onPress={sendSOSWithDetails}
+              disabled={loading}
               style={[
                 MyStyles.button,
                 { backgroundColor: "#fff", marginTop: 20 },
               ]}
             >
               <Text style={[MyStyles.buttonText, { color: "#BC0F0F" }]}>
-                ASK HELP
+                {loading ? "SUBMITTING..." : "ASK HELP"}
               </Text>
             </TouchableOpacity>
           </View>

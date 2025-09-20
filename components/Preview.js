@@ -61,9 +61,7 @@ const Preview = () => {
       ]}
     >
       <Image source={item.image} style={MyStyles.slideImg} />
-      <Text style={[MyStyles.header, { textAlign: "center", fontSize: 24 }]}>
-        {item.title}
-      </Text>
+      <Text style={[MyStyles.header, MyStyles.previewTitle]}>{item.title}</Text>
       <Text
         style={[MyStyles.textMedium, { marginTop: 10, textAlign: "center" }]}
       >
@@ -163,31 +161,14 @@ const Preview = () => {
                 justifyContent: "center",
               }}
             >
-              <Text
-                style={{
-                  color: "#808080",
-                  fontFamily: "REMSemiBold",
-                  fontSize: 20,
-                  marginTop: 15,
-                }}
-              >
-                Do you have an account?
+              <Text style={MyStyles.haveanaccounttext}>
+                Do you have an account? {""}
               </Text>
               <TouchableOpacity
                 onPress={handleLogin}
                 accessibilityLabel="Go to Login"
               >
-                <Text
-                  style={{
-                    color: "#0E94D3",
-                    fontFamily: "REMBold",
-                    fontSize: 20,
-                    marginTop: 15,
-                  }}
-                >
-                  {" "}
-                  Login
-                </Text>
+                <Text style={MyStyles.logintext}>Login</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -208,7 +189,7 @@ const Preview = () => {
               accessibilityLabel="Go to Next Slide"
               activeOpacity={0.8}
             >
-              <Text style={[MyStyles.buttonText]}>Continue</Text>
+              <Text style={MyStyles.buttonsText}>Continue</Text>
             </TouchableOpacity>
           </View>
         )}

@@ -20,6 +20,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const Blotter = () => {
   const insets = useSafeAreaInsets();
@@ -84,6 +85,7 @@ const Blotter = () => {
   };
 
   const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -107,7 +109,6 @@ const Blotter = () => {
     } finally {
       setLoading(false);
     }
-    setIsConfirmModalVisible(false);
   };
 
   const handleDropdownChange = ({ target }) => {
@@ -162,7 +163,7 @@ const Blotter = () => {
       ...prevForm,
       subjectID: res._id,
       subjectname: fullName,
-      subjectaddress: res.address,
+      subjectaddress: res.householdno ? res.householdno.address : "N/A",
     }));
     setSubjectError(null);
     setSubjectSuggestions([]);
@@ -189,24 +190,14 @@ const Blotter = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Report Blotter
-            </Text>
-          </View>
+          <Text style={MyStyles.servicesHeader}>Report Blotter</Text>
+
           <Text style={MyStyles.formMessage}>
             1. Please fill out the required information to file a blotter
             report.
@@ -272,12 +263,7 @@ const Blotter = () => {
                             onPress={() => handleSubjectSuggestionClick(res)}
                             style={MyStyles.suggestionItem}
                           >
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: 15,
-                              }}
-                            >
+                            <Text style={MyStyles.blotterFullName}>
                               {fullName}
                             </Text>
                           </TouchableOpacity>
@@ -314,7 +300,7 @@ const Blotter = () => {
                 placeholder="Details of the Incident"
                 style={[
                   MyStyles.input,
-                  { height: 150, textAlignVertical: "top" },
+                  { height: 200, textAlignVertical: "top" },
                 ]}
                 value={blotterForm.details}
                 type="text"

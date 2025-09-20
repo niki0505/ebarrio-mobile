@@ -23,6 +23,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const EditSecurityQuestions = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
@@ -119,12 +120,13 @@ const EditSecurityQuestions = () => {
   };
 
   const handleQuestionsChange = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
     setLoading(true);
 
     let sameAnswerFound = false;
 
-    modifiedQuestions = securityquestions.map((q, index) => {
+    modifiedQuestions = securityquestions?.map((q, index) => {
       const current = userDetails.securityquestions?.[index];
       const isSameQuestion = current?.question === q.question;
       const hasNewAnswer = q.answer?.trim() !== "";
@@ -145,19 +147,12 @@ const EditSecurityQuestions = () => {
       }
     });
 
-    // if (sameAnswerFound) {
-    //   setAlertMessage("Answers must be different from your old ones.");
-    //   setIsSuccess(false);
-    //   setIsAlertModalVisible(true);
-    //   setLoading(false);
-    //   setIsConfirmModalVisible(false);
-    //   return;
-    // }
-
     const hasChanges = modifiedQuestions.some((q) => q !== null);
 
     if (!hasChanges) {
-      setAlertMessage("No changes detected in your security questions.");
+      setAlertMessage(
+        "No changes have been made. Please input answer to change security questions"
+      );
       setIsSuccess(false);
       setIsAlertModalVisible(true);
       setLoading(false);
@@ -171,9 +166,7 @@ const EditSecurityQuestions = () => {
         password,
       });
       setIsSuccess(true);
-      setAlertMessage(
-        "Your security questions have been updated successfully!"
-      );
+      setAlertMessage("Your security question has been updated.");
       fetchUserDetails();
 
       setSecurityQuestions((prev) =>
@@ -195,7 +188,6 @@ const EditSecurityQuestions = () => {
       setIsSuccess(false);
     } finally {
       setLoading(false);
-      setIsConfirmModalVisible(false);
       setIsAlertModalVisible(true);
       setAlertMessage(message);
       setIsSuccess(false);
@@ -228,24 +220,15 @@ const EditSecurityQuestions = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("AccountSettings")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("AccountSettings")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Change Security Questions
-            </Text>
-          </View>
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Change Security Questions
+          </Text>
 
           <View style={MyStyles.servicesContentWrapper}>
             <View>
@@ -338,7 +321,7 @@ const EditSecurityQuestions = () => {
 
             <View>
               <Text style={MyStyles.inputLabel}>
-                Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+                Password<Text style={MyStyles.redAsterisk}>*</Text>
               </Text>
               <View style={MyStyles.eyeInputContainer}>
                 <TextInput
@@ -358,19 +341,19 @@ const EditSecurityQuestions = () => {
                     color="gray"
                   />
                 </TouchableOpacity>
+                {passError ? (
+                  <Text style={MyStyles.errorMsg}>{passError}</Text>
+                ) : null}
               </View>
-              {passError ? (
-                <Text style={MyStyles.errorMsg}>{passError}</Text>
-              ) : null}
             </View>
           </View>
           <TouchableOpacity
             onPress={handleConfirm}
-            style={MyStyles.button}
+            style={[MyStyles.button, { marginTop: 30 }]}
             disabled={loading}
           >
             <Text style={MyStyles.buttonText}>
-              {loading ? "Saving..." : "Save"}
+              {loading ? "Updating..." : "Update"}
             </Text>
           </TouchableOpacity>
 
@@ -379,6 +362,7 @@ const EditSecurityQuestions = () => {
             message={alertMessage}
             isSuccess={isSuccess}
             onClose={handleCloseAlertModal}
+            onConfirm={handleCloseAlertModal}
           />
 
           <AlertModal

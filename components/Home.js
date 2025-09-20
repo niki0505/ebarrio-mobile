@@ -24,6 +24,7 @@ import api from "../api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Aniban2Logo from "../assets/aniban2logo.png";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -275,50 +276,6 @@ const Home = () => {
     }
   };
 
-  const viewEmergencyHotlines = async () => {
-    const action = "Emergency Hotlines";
-    const description = "User viewed emergency hotlines.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("EmergencyHotlines");
-    } catch (error) {
-      console.log("Error in viewing emergency hotlines", error);
-    }
-  };
-
-  const viewReadiness = async () => {
-    const action = "Readiness";
-    const description = "User viewed readiness.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("Readiness");
-    } catch (error) {
-      console.log("Error in viewing readiness", error);
-    }
-  };
-
-  const viewWeather = async () => {
-    const action = "Weather";
-    const description = "User viewed weather.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("Weather");
-    } catch (error) {
-      console.log("Error in viewing weather", error);
-    }
-  };
-
-  const viewCalendar = async () => {
-    const action = "Barangay Calendar";
-    const description = "User viewed barangay calendar.";
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("BrgyCalendar");
-    } catch (error) {
-      console.log("Error in viewing barangay calendar", error);
-    }
-  };
-
   //Announcements Carousel
   const { width } = Dimensions.get("window");
   const flatListRef = useRef(null);
@@ -351,10 +308,12 @@ const Home = () => {
         )}
         <Text
           style={[MyStyles.eventText, contentStyle]}
-          numberOfLines={importantAnnouncements.picture ? 3 : 0}
+          numberOfLines={importantAnnouncements.picture ? 2 : 10}
+          ellipsizeMode="tail"
         >
           {displayText}
         </Text>
+
         {isLong && (
           <Text
             style={MyStyles.seeMoreText}
@@ -397,6 +356,15 @@ const Home = () => {
     .fill(null)
     .concat(Array.from({ length: daysInMonth }, (_, i) => i + 1));
 
+  const todayEvents = events.filter((event) => {
+    const eventDate = new Date(event.start);
+    return (
+      eventDate.getDate() === currentDate.getDate() &&
+      eventDate.getMonth() === currentDate.getMonth() &&
+      eventDate.getFullYear() === currentDate.getFullYear()
+    );
+  });
+
   return (
     // To allow detection of taps anywhere outside the dropdown
     <TouchableWithoutFeedback
@@ -419,8 +387,8 @@ const Home = () => {
           >
             <ActivityIndicator size="large" color="#04384E" />
             <Text style={MyStyles.loadingMessage}>
-              Hang in there! We're fetching the latest data for you.
-              {"\n"}This may take a few seconds...
+              Hang in there! We're fetching the latest data for you. This may
+              take a few seconds...
             </Text>
           </View>
         ) : (
@@ -444,16 +412,14 @@ const Home = () => {
                   </View>
                 </View>
 
-
                 {user.role === "Resident" && (
-<Ionicons
-                  name="chatbubble-ellipses"
-                  color="#04384E"
-                  style={MyStyles.burgerChatIcon}
-                  onPress={() => navigation.navigate("Chat")}
-                ></Ionicons>
+                  <Ionicons
+                    name="chatbubble-ellipses"
+                    color="#04384E"
+                    style={MyStyles.burgerChatIcon}
+                    onPress={() => navigation.navigate("Chat")}
+                  ></Ionicons>
                 )}
-
               </View>
 
               <ScrollView
@@ -461,7 +427,7 @@ const Home = () => {
                 contentContainerStyle={[
                   MyStyles.scrollContainer,
                   {
-                    paddingBottom: insets.bottom + 70,
+                    paddingBottom: insets.bottom + 100,
                     gap: 10,
                   },
                 ]}
@@ -469,21 +435,18 @@ const Home = () => {
                 <View style={{ width: width - 40, paddingHorizontal: 10 }}>
                   <TouchableOpacity
                     style={[MyStyles.calendarContainer, MyStyles.shadow]}
-                    onPress={viewCalendar}
+                    onPress={() => navigation.navigate("BrgyCalendar")}
                   >
                     {/* Left panel */}
                     <View style={MyStyles.leftCalendar}>
                       <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
+                        style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Text style={MyStyles.bigDate}>
                           {currentDate.getDate()}
                         </Text>
 
-                        <View style={{ marginLeft: 10 }}>
+                        <View style={{ marginLeft: 5 }}>
                           <Text style={MyStyles.monthText}>
                             {currentDate.toLocaleString("en-US", {
                               month: "long",
@@ -498,75 +461,59 @@ const Home = () => {
                       </View>
 
                       <View>
-                        {events.length > 0 ? (
+                        {todayEvents.length > 0 ? (
                           <>
-                            {events
-                              .filter(
-                                (event) => new Date(event.end) >= new Date()
-                              )
-                              .slice(0, 2)
-                              .map((event, index) => {
-                                const startDate = new Date(event.start);
-                                const endDate = new Date(event.end);
+                            {todayEvents.slice(0, 2).map((event, index) => {
+                              const startDate = new Date(event.start);
+                              const endDate = new Date(event.end);
 
-                                const dateString = startDate.toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                  }
-                                );
-
-                                const timeString = `${startDate.toLocaleTimeString(
-                                  "en-US",
-                                  {
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                    timeZone: "Asia/Manila",
-                                  }
-                                )} – ${endDate.toLocaleTimeString("en-US", {
+                              const timeString = `${startDate.toLocaleTimeString(
+                                "en-US",
+                                {
                                   hour: "numeric",
                                   minute: "2-digit",
                                   hour12: true,
                                   timeZone: "Asia/Manila",
-                                })}`;
+                                }
+                              )} – ${endDate.toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true,
+                                timeZone: "Asia/Manila",
+                              })}`;
 
-                                return (
-                                  <View key={index} style={{ marginBottom: 8 }}>
-                                    <View style={MyStyles.dotAndTitle}>
-                                      <View
-                                        style={[
-                                          MyStyles.blueDot,
-                                          {
-                                            backgroundColor:
-                                              event.backgroundColor ||
-                                              "#0E94D3",
-                                          },
-                                        ]}
-                                      />
-                                      <Text
-                                        style={MyStyles.eventTitle}
-                                        numberOfLines={1}
-                                        ellipsizeMode="tail"
-                                      >
-                                        {event.title}
-                                      </Text>
-                                    </View>
-                                    <Text style={MyStyles.eventDate}>
-                                      {dateString}
-                                    </Text>
-                                    <Text style={MyStyles.eventTime}>
-                                      {timeString}
+                              return (
+                                <View key={index} style={{ marginBottom: 8 }}>
+                                  <View style={MyStyles.dotAndTitle}>
+                                    <View
+                                      style={[
+                                        MyStyles.blueDot,
+                                        {
+                                          backgroundColor:
+                                            event.backgroundColor || "#0E94D3",
+                                        },
+                                      ]}
+                                    />
+                                    <Text
+                                      style={MyStyles.eventTitle}
+                                      numberOfLines={1}
+                                      ellipsizeMode="tail"
+                                    >
+                                      {event.title}
                                     </Text>
                                   </View>
-                                );
-                              })}
+                                  <Text
+                                    style={MyStyles.eventTime}
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                  >
+                                    {timeString}
+                                  </Text>
+                                </View>
+                              );
+                            })}
 
-                            {events.filter(
-                              (event) => new Date(event.end) >= new Date()
-                            ).length > 2 && (
+                            {todayEvents.length > 2 && (
                               <Text style={MyStyles.noEvents}>
                                 MORE EVENTS...
                               </Text>
@@ -574,52 +521,89 @@ const Home = () => {
                           </>
                         ) : (
                           <Text style={MyStyles.noEvents}>
-                            NO EVENTS AT THE MOMENT
+                            NO EVENTS FOR TODAY
                           </Text>
                         )}
                       </View>
                     </View>
 
-                    {/* Right panel */}
-                    <View style={MyStyles.rightCalendar}>
-                      <Text style={MyStyles.monthHeader}>
-                        {currentDate.toLocaleString("en-US", { month: "long" })}{" "}
-                        {year}
+                    {/* Right panel - Mini Calendar */}
+                    <View style={{ flex: 1, padding:15 }}>
+                      {/* Month title */}
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontSize: RFPercentage(2),
+                          fontFamily: "QuicksandMedium",
+                          marginBottom: 5,
+                          color: "#04384E",
+                          fontFamily: "QuicksandSemiBold",
+                        }}
+                      >
+                        {new Date(year, month).toLocaleString("en-US", {
+                          month: "long",
+                          year: "numeric",
+                        })}
                       </Text>
 
-                      <View style={MyStyles.weekRow}>
-                        {weekDays.map((d, i) => (
-                          <Text key={i} style={MyStyles.weekDay}>
-                            {d}
+                      {/* Weekday labels (short form) */}
+                      <View style={{ flexDirection: "row", marginBottom: 8 }}>
+                        {["S", "M", "T", "W", "T", "F", "S"].map((day, idx) => (
+                          <Text
+                            key={idx}
+                            style={{
+                              width: `${100 / 7}%`,
+                              textAlign: "center",
+                              fontSize: RFPercentage(1.7),
+                              fontFamily: "QuicksandMedium",
+                              color: "#444",
+                            }}
+                          >
+                            {day}
                           </Text>
                         ))}
                       </View>
-
-                      <View style={MyStyles.calendarRightContainer}>
-                        {calendarDays.map((item, index) => (
-                          <View key={index} style={MyStyles.dayCell}>
-                            {item ? (
+                      {/* Calendar days */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          rowGap: 6,
+                        }}
+                      >
+                        {calendarDays.map((item, index) => {
+                          if (!item) {
+                            return (
                               <View
-                                style={[
-                                  item === currentDate.getDate() &&
-                                    MyStyles.currentDay,
-                                ]}
+                                key={index}
+                                style={{ width: `${100 / 7}%`, aspectRatio: 1 }}
+                              />
+                            );
+                          }
+
+                          return (
+                            <View
+                              key={index}
+                              style={{
+                                width: `${100 / 7}%`,
+                                aspectRatio: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginBottom: 6, 
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: RFPercentage(1.7),
+                                  fontFamily: "QuicksandMedium",
+                                  color: "#000",
+                                }}
                               >
-                                <Text
-                                  style={[
-                                    MyStyles.dayText,
-                                    item === currentDate.getDate() &&
-                                      MyStyles.currentDayText,
-                                  ]}
-                                >
-                                  {item}
-                                </Text>
-                              </View>
-                            ) : (
-                              <Text style={MyStyles.emptyCell}></Text>
-                            )}
-                          </View>
-                        ))}
+                                {item}
+                              </Text>
+                            </View>
+                          );
+                        })}
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -644,7 +628,7 @@ const Home = () => {
                     }}
                   >
                     <TouchableOpacity
-                      onPress={viewWeather}
+                      onPress={() => navigation.navigate("Weather")}
                       style={[
                         {
                           height: "auto",
@@ -862,8 +846,6 @@ const Home = () => {
                             )}
 
                             {renderContent(item)}
-
-                            
                           </View>
                         </View>
                       </View>
@@ -883,7 +865,7 @@ const Home = () => {
                           alignItems: "center",
                         },
                       ]}
-                      onPress={viewReadiness}
+                      onPress={() => navigation.navigate("Readiness")}
                     >
                       <MaterialCommunityIcons
                         name="lightbulb-on"
@@ -897,7 +879,7 @@ const Home = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      onPress={viewEmergencyHotlines}
+                      onPress={() => navigation.navigate("EmergencyHotlines")}
                       style={[
                         MyStyles.sosContainer,
                         {

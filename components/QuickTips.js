@@ -13,7 +13,7 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const QuickTips = () => {
   const insets = useSafeAreaInsets();
@@ -169,24 +169,17 @@ const QuickTips = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("Readiness")}
-              name="arrow-back-ios"
-              style={[MyStyles.backArrow, { color: "#fff" }]}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("Readiness")}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
+          />
 
-            <Text
-              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
-            >
-              Quick Safety Tips
-            </Text>
-          </View>
+          <Text
+            style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+          >
+            Quick Safety Tips
+          </Text>
 
           <View style={MyStyles.quickImgWrapper}>
             {quickTipsData.map((item, index) => (

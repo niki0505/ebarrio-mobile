@@ -14,7 +14,8 @@ import { useContext, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { storage } from "../firebase";
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import * as FileSystem from "expo-file-system";
 import api from "../api";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,7 +23,7 @@ import AlertModal from "./AlertModal";
 import * as ImagePicker from "expo-image-picker";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const FalseAlarm = () => {
   const route = useRoute();
@@ -37,18 +38,16 @@ const FalseAlarm = () => {
   const [loading, setLoading] = useState(false);
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
   const [isEvidenceProcessing, setIsEvidenceProcessing] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (name, value) => {
-    setBlotterForm((prev) => ({
+    setFalseAlarmForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-    // if (name === "subjectname") {
-    //   setSubjectError(!value ? "This field is required!" : null);
-    // }
-    // if (name === "details") {
-    //   setDetailsError(!value ? "This field is required!" : null);
-    // }
   };
 
   const pickEvidenceImage = async () => {
@@ -92,7 +91,8 @@ const FalseAlarm = () => {
     if (!permissionResult.granted) {
       const askPermission = await ImagePicker.requestCameraPermissionsAsync();
       if (!askPermission.granted) {
-        Alert.alert("Permission Denied", "Camera permission is required.");
+        setAlertMessage("Camera permission is required.");
+        setIsAlertModalVisible(true);
         return;
       }
     }
@@ -115,20 +115,53 @@ const FalseAlarm = () => {
     }
   };
 
-  async function uploadToFirebase(url) {
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const fileName = `id_evidences/${Date.now()}_${randomString}.png`;
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const file = new File([blob], fileName, { type: blob.type });
-    const storageRef = ref(storage, fileName);
-    await uploadBytes(storageRef, file);
+  async function uploadToFirebase(fileUriOrBase64) {
+    try {
+      let fileUri = fileUriOrBase64;
 
-    const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL;
+      if (fileUri.startsWith("data:")) {
+        fileUri = await base64ToFile(fileUriOrBase64);
+      }
+
+      const randomString = Math.random().toString(36).substring(2, 15);
+      const fileName = `id_images/${Date.now()}_${randomString}.jpg`;
+      const storageRef = ref(storage, fileName);
+
+      // ✅ Convert local file:// URI → Blob
+      const response = await fetch(fileUri);
+      const blob = await response.blob();
+      console.log("📦 Blob created, size:", blob.size);
+
+      // ✅ Upload blob
+      const snapshot = await uploadBytesResumable(storageRef, blob, {
+        contentType: "image/jpeg",
+      });
+
+      console.log("✅ Upload complete!");
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log("🌐 Download URL:", downloadURL);
+
+      return downloadURL;
+    } catch (err) {
+      console.log("❌ Upload error:", err);
+      throw err;
+    }
   }
 
   const handleConfirm = () => {
+    if (!falseAlarmForm.postreportdetails.trim()) {
+      setAlertMessage("Please input details for the false-alarm report.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
+    if (falseAlarmForm.postreportdetails.trim().length < 10) {
+      setAlertMessage(
+        "False alarm report details must be at least 10 characters."
+      );
+      setIsAlertModalVisible(true);
+      return;
+    }
     setIsConfirmModalVisible(true);
   };
 
@@ -150,11 +183,18 @@ const FalseAlarm = () => {
       await api.put(`/falsealarm/${selectedID}`, {
         falseAlarmForm: updatedFalseAlarmForm,
       });
+      setIsSuccess(true);
+      setAlertMessage("You have marked the report as false alarm.");
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.log("Error in submitting a false alarm report", error);
     } finally {
       setLoading(false);
     }
+  };
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
+    navigation.navigate("SOSRespondedDetails", { selectedID });
   };
 
   return (
@@ -163,7 +203,7 @@ const FalseAlarm = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#BC0F0F",
       }}
     >
       <KeyboardAvoidingView
@@ -174,104 +214,139 @@ const FalseAlarm = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
+              backgroundColor: "#BC0F0F",
               gap: 10,
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
+          <AntDesign
+            onPress={() =>
+              navigation.navigate("SOSReportDetails", { selectedID })
+            }
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "white" }]}
+          />
+
+          <Text
+            style={[MyStyles.header, { fontFamily: "REMBold", color: "white" }]}
           >
-            <MaterialIcons
-              onPress={() =>
-                navigation.navigate("SOSReportDetails", { selectedID })
-              }
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
-
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              False Report
-            </Text>
-          </View>
-
-          <Text style={MyStyles.formMessage}>
-            Please select and fill out the required information to submit an
-            update.
+            False Report
           </Text>
-          <View>
-            <Text style={MyStyles.inputLabel}>
-              Reason for Marking as False Alarm
-              <Text style={{ color: "red" }}>*</Text>
-            </Text>
-            <TextInput
-              placeholder="Describe any actions you or your team took upon arrival."
-              style={[
-                MyStyles.input,
-                { height: 150, textAlignVertical: "top" },
-              ]}
-              value={postIncidentForm.postreportdetails}
-              type="text"
-              multiline={true}
-              numberOfLines={4}
-              maxLength={3000}
-              autoCapitalize="sentences"
-              onChangeText={(text) =>
-                handleInputChange("postreportdetails", text)
-              }
-            />
 
-            <View style={MyStyles.errorDetailsWrapper}>
-              <Text style={MyStyles.detailsLength}>
-                {postIncidentForm.postreportdetails.length}/1000
+          <Text
+            style={[MyStyles.formMessage, { color: "white", opacity: 0.7 }]}
+          >
+            Please fill out the required information to submit a false alarm
+            report.
+          </Text>
+
+          <View style={{ marginVertical: 30, gap: 10 }}>
+            <View>
+              <Text style={[MyStyles.inputLabel, { color: "white" }]}>
+                Reason for Marking as False Alarm
+                <Text style={{ color: "red" }}>*</Text>
               </Text>
-            </View>
-          </View>
+              <TextInput
+                placeholder="Describe any actions you or your team took upon arrival."
+                style={[
+                  MyStyles.input,
+                  { height: 200, textAlignVertical: "top" },
+                ]}
+                value={falseAlarmForm.postreportdetails}
+                type="text"
+                multiline={true}
+                numberOfLines={4}
+                maxLength={3000}
+                autoCapitalize="sentences"
+                onChangeText={(text) =>
+                  handleInputChange("postreportdetails", text)
+                }
+              />
 
-          {/* Evidence */}
-          <View>
-            <Text style={MyStyles.inputLabel}>
-              Evidence <Text style={{ color: "gray" }}>(if available)</Text>
-            </Text>
-            <View style={MyStyles.uploadBox}>
-              <View style={MyStyles.previewContainer}>
-                {isEvidenceProcessing ? (
-                  <ActivityIndicator size="small" color="#0000ff" />
-                ) : postIncidentForm.evidence ? (
-                  <Image
-                    source={{ uri: postIncidentForm.evidence }}
-                    style={MyStyles.image}
-                  />
-                ) : (
-                  <View style={MyStyles.placeholder}>
-                    <Text style={MyStyles.placeholderText}>Attach Picture</Text>
-                  </View>
-                )}
+              <View
+                style={[
+                  MyStyles.errorDetailsWrapper,
+                  { alignSelf: "flex-end" },
+                ]}
+              >
+                <Text
+                  style={[
+                    MyStyles.detailsLength,
+                    { color: "white", opacity: 0.7 },
+                  ]}
+                >
+                  {falseAlarmForm.postreportdetails.length}/1000
+                </Text>
               </View>
+            </View>
 
-              <View style={MyStyles.personalInfobuttons}>
-                <TouchableOpacity
-                  onPress={toggleEvidenceCamera}
-                  style={MyStyles.personalInfoButton}
-                >
-                  <Text>📷</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={pickEvidenceImage}
-                  style={MyStyles.personalInfoButton}
-                >
-                  <Text>📤</Text>
-                </TouchableOpacity>
+            {/* Evidence */}
+            <View>
+              <Text style={[MyStyles.inputLabel, { color: "white" }]}>
+                Evidence{" "}
+                <Text style={[MyStyles.inputLabel, { color: "white" }]}>
+                  (if available)
+                </Text>
+              </Text>
+              <View style={[MyStyles.uploadBox, { backgroundColor: "white" }]}>
+                <View style={MyStyles.previewContainer}>
+                  {isEvidenceProcessing ? (
+                    <ActivityIndicator size="small" color="#0000ff" />
+                  ) : falseAlarmForm.evidence ? (
+                    <Image
+                      source={{ uri: falseAlarmForm.evidence }}
+                      style={MyStyles.image}
+                    />
+                  ) : (
+                    <View style={MyStyles.placeholder}>
+                      <Text style={[MyStyles.placeholderText]}>
+                        Attach Picture
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                <View style={MyStyles.personalInfobuttons}>
+                  <TouchableOpacity
+                    onPress={toggleEvidenceCamera}
+                    style={[
+                      MyStyles.personalInfoButton,
+                      {
+                        borderWidth: 3,
+                        borderColor: "#BC0F0F",
+                        backgroundColor: "white",
+                      },
+                    ]}
+                  >
+                    <Text>📷</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={pickEvidenceImage}
+                    style={[
+                      MyStyles.personalInfoButton,
+                      {
+                        borderWidth: 3,
+                        borderColor: "#BC0F0F",
+                        backgroundColor: "white",
+                      },
+                    ]}
+                  >
+                    <Text>📤</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
 
           <TouchableOpacity
-            style={MyStyles.button}
+            style={[
+              MyStyles.button,
+              {
+                borderWidth: 5,
+                borderColor: "white",
+                backgroundColor: "#BC0F0F",
+              },
+            ]}
             onPress={handleConfirm}
             disabled={loading}
           >
@@ -283,12 +358,19 @@ const FalseAlarm = () => {
           <AlertModal
             isVisible={isConfirmModalVisible}
             isConfirmationModal={true}
-            title="False Alarm Report?"
+            title="Submit False Alarm Report?"
             message="Are you sure you want to submit a false alarm report?"
             onClose={() => setIsConfirmModalVisible(false)}
             onConfirm={handleSubmit}
           />
         </ScrollView>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={isSuccess}
+          onConfirm={handleCloseAlertModal}
+          onClose={() => setIsAlertModalVisible(false)}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

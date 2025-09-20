@@ -12,6 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import { useContext, useState } from "react";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { AntDesign } from "@expo/vector-icons";
 
 const BrgyCalendar = () => {
   const { events } = useContext(InfoContext);
@@ -60,7 +61,9 @@ const BrgyCalendar = () => {
   const CategoryItem = ({ color, label }) => (
     <View style={MyStyles.legendsRowWrapper}>
       <View style={[MyStyles.categoriesColors, { backgroundColor: color }]} />
-      <Text style={MyStyles.categoriesText}>{label}</Text>
+      <Text style={[MyStyles.categoriesText, { fontSize: RFPercentage(1.4) }]}>
+        {label}
+      </Text>
     </View>
   );
 
@@ -76,27 +79,18 @@ const BrgyCalendar = () => {
       <ScrollView
         contentContainerStyle={[
           MyStyles.scrollContainer,
-          { backgroundColor: "white" },
+          { backgroundColor: "white", gap: 10 },
         ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons
-            onPress={() => navigation.navigate("BottomTabs")}
-            name="arrow-back-ios"
-            color="#04384E"
-            size={35}
-            style={MyStyles.backArrow}
-          />
+        <AntDesign
+          onPress={() => navigation.navigate("BottomTabs")}
+          name="arrowleft"
+          style={MyStyles.backArrow}
+        />
 
-          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-            Calendar
-          </Text>
-        </View>
+        <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+          Calendar
+        </Text>
 
         {/* Month Header */}
         <View
@@ -137,99 +131,107 @@ const BrgyCalendar = () => {
             {weekDays.map((d, i) => (
               <Text
                 key={i}
-                style={[MyStyles.weekDay, { fontSize: RFPercentage(1.8) }]}
+                style={[MyStyles.weekDay, { fontSize: RFPercentage(2) }]}
               >
                 {d}
               </Text>
             ))}
           </View>
 
-          {/* Calendar Days */}
-          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {calendarDays.map((item, index) => {
-              const dateObj = item ? new Date(year, month, item) : null;
-              const dayEvents = dateObj ? getEventsForDate(dateObj) : [];
+            {/* Calendar Days */}
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              {calendarDays.map((item, index) => {
+                const dateObj = item ? new Date(year, month, item) : null;
 
-              if (!item) {
+                // Get events for the specific day
+                const dayEvents = dateObj ? getEventsForDate(dateObj) : [];
+
+                // Filter events to exclude those in the past
+                const currentDate = new Date();
+                const filteredEvents = dayEvents.filter((event) => {
+                  const eventStartDate = new Date(event.start);
+                  return eventStartDate >= currentDate; // Only show events from today onwards
+                });
+
+                if (!item) {
+                  return (
+                    <View
+                      key={index}
+                      style={{ width: `${100 / 7}%`, aspectRatio: 1 }}
+                    />
+                  );
+                }
+
                 return (
-                  <View
+                  <TouchableOpacity
                     key={index}
                     style={{
                       width: `${100 / 7}%`,
                       aspectRatio: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
-                  />
-                );
-              }
-
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={{
-                    width: `${100 / 7}%`,
-                    aspectRatio: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  onPress={() => setSelectedDate(dateObj)}
-                >
-                  <View
-                    style={{ alignItems: "center", justifyContent: "center" }}
+                    onPress={() => setSelectedDate(dateObj)}
                   >
                     <View
-                      style={[
-                        item === selectedDate.getDate() &&
-                        month === selectedDate.getMonth() &&
-                        year === selectedDate.getFullYear()
-                          ? {
-                              backgroundColor: "#0E94D3",
-                              width: 24,
-                              height: 24,
-                              borderRadius: 12,
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }
-                          : {},
-                      ]}
+                      style={{ alignItems: "center", justifyContent: "center" }}
                     >
-                      <Text
+                      <View
                         style={[
-                          {
-                            fontSize: RFPercentage(1.6),
-                            fontFamily: "QuicksandMedium",
-                            color: "#000",
-                          },
                           item === selectedDate.getDate() &&
                           month === selectedDate.getMonth() &&
                           year === selectedDate.getFullYear()
-                            ? { color: "#fff" }
+                            ? {
+                                backgroundColor: "#0E94D3",
+                                width: 24,
+                                height: 24,
+                                borderRadius: 12,
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }
                             : {},
                         ]}
                       >
-                        {item}
-                      </Text>
+                        <Text
+                          style={[
+                            {
+                              fontSize: RFPercentage(1.8),
+                              fontFamily: "QuicksandMedium",
+                              color: "#000",
+                            },
+                            item === selectedDate.getDate() &&
+                            month === selectedDate.getMonth() &&
+                            year === selectedDate.getFullYear()
+                              ? { color: "#fff" }
+                              : {},
+                          ]}
+                        >
+                          {item}
+                        </Text>
+                      </View>
+                      {/* Event dots */}
+                      {filteredEvents.length > 0 && (
+                        <View style={{ flexDirection: "row", marginTop: 2 }}>
+                          {filteredEvents.map((event, idx) => (
+                            <View
+                              key={idx}
+                              style={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: 3,
+                                backgroundColor:
+                                  event.backgroundColor || "#3174ad",
+                                marginHorizontal: 1,
+                              }}
+                            />
+                          ))}
+                        </View>
+                      )}
                     </View>
-
-                    {/* Event dots */}
-                    <View style={{ flexDirection: "row", marginTop: 2 }}>
-                      {dayEvents.map((event, idx) => (
-                        <View
-                          key={idx}
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: 3,
-                            backgroundColor: event.backgroundColor || "#3174ad",
-                            marginHorizontal: 1,
-                          }}
-                        />
-                      ))}
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
 
           {/* Important Events */}
           <View style={{ marginTop: -50 }}>
@@ -279,7 +281,7 @@ const BrgyCalendar = () => {
                     </Text>
                     <Text
                       style={{
-                        fontSize: 14,
+                        fontSize: RFPercentage(1.8),
                         color: "#888",
                         fontFamily: "QuicksandSemiBold",
                       }}
@@ -289,7 +291,7 @@ const BrgyCalendar = () => {
 
                     <Text
                       style={{
-                        fontSize: 14,
+                        fontSize: RFPercentage(1.8),
                         color: "white",
                         fontFamily: "QuicksandSemiBold",
                         backgroundColor: event.backgroundColor || "#808080",
@@ -297,6 +299,7 @@ const BrgyCalendar = () => {
                         paddingVertical: 4,
                         borderRadius: 10,
                         alignSelf: "flex-start",
+                        marginTop: 5,
                       }}
                     >
                       {timeString}

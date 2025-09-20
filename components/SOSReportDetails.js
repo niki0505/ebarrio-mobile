@@ -9,19 +9,22 @@ import {
   Platform,
   ScrollView,
   Image,
+  Dimensions,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { InfoContext } from "../context/InfoContext";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import MapView, { Marker } from "react-native-maps";
 import api from "../api";
 import AlertModal from "./AlertModal";
+import { AntDesign } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 const SOSReportDetails = () => {
   dayjs.extend(relativeTime);
@@ -35,6 +38,12 @@ const SOSReportDetails = () => {
   const [isConfirmArrivedVisible, setIsConfirmArrivedVisible] = useState(false);
   const [isConfirmDidNotArrivedVisible, setIsConfirmDidNotArrivedVisible] =
     useState(false);
+  const { width } = Dimensions.get("window");
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     fetchPendingReports();
@@ -50,29 +59,63 @@ const SOSReportDetails = () => {
 
   const headingSOS = async () => {
     setIsConfirmModalVisible(false);
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put(`/headingsos/${selectedID}`);
+      setIsSuccess(true);
+      setAlertMessage(
+        "You have marked yourself as heading at the report location."
+      );
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.error("❌ Failed to click heading:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const arrivedSOS = async () => {
     setIsConfirmArrivedVisible(false);
+    if (loading) return;
+
+    setLoading(true);
     try {
       await api.put(`/arrivedsos/${selectedID}`);
+      setIsSuccess(true);
+      setAlertMessage(
+        "You have marked yourself as arrived at the report location."
+      );
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.error("❌ Failed to click arrived:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const didntArriveSOS = async () => {
     setIsConfirmDidNotArrivedVisible(false);
+    if (loading2) return;
+
+    setLoading2(true);
     try {
       await api.put(`/didntarrivesos/${selectedID}`);
+      setIsSuccess(true);
+      setAlertMessage(
+        "You have marked yourself as did not arrive at the report location."
+      );
+      setIsAlertModalVisible(true);
     } catch (error) {
       console.error("❌ Failed to click arrived:", error);
+    } finally {
+      setLoading2(false);
     }
+  };
+
+  const handleCloseAlertModal = () => {
+    setIsAlertModalVisible(false);
   };
   return (
     <SafeAreaView
@@ -80,7 +123,7 @@ const SOSReportDetails = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#BC0F0F",
       }}
     >
       <KeyboardAvoidingView
@@ -91,112 +134,274 @@ const SOSReportDetails = () => {
           contentContainerStyle={[
             MyStyles.scrollContainer,
             {
+              backgroundColor: "#BC0F0F",
               gap: 10,
             },
           ]}
         >
-          <MaterialIcons
+          <AntDesign
             onPress={() => navigation.navigate("SOSRequests")}
-            name="arrow-back-ios"
-            size={30}
-            color="#04384E"
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "white" }]}
           />
-          <Text style={MyStyles.header}>Report Details</Text>
-          {selectedReport && (
-            <View key={selectedReport._id}>
-              <Text>{dayjs(selectedReport.createdAt).fromNow()}</Text>
-              <Image
-                source={{
-                  uri:
-                    selectedReport?.resID?.picture ||
-                    "https://via.placeholder.com/80",
-                }}
-                style={{ width: 80, height: 80, borderRadius: 40 }}
-              />
-              <Text>
-                {selectedReport.resID.firstname} {selectedReport.resID.lastname}
-              </Text>
-              <Text>{selectedReport.resID.age}</Text>
-              <Text>{selectedReport.resID.householdno.address}</Text>
-              <Text>{selectedReport.resID.mobilenumber}</Text>
-              <Text>
-                {selectedReport?.reporttype ? selectedReport.reporttype : "SOS"}
-              </Text>
-              <Text>
-                {selectedReport?.reportdetails
-                  ? selectedReport.reportdetails
-                  : "N/A"}
-              </Text>
 
-              <MapView
+          <Text style={[MyStyles.header, { color: "white" }]}>
+            Report Details
+          </Text>
+
+          <Text
+            style={[MyStyles.formMessage, { color: "white", opacity: 0.7 }]}
+          >
+            Please ensure the reported incident is legitimate before confirming
+            any response.
+          </Text>
+
+          {selectedReport && (
+            <View
+              key={selectedReport._id}
+              style={[MyStyles.sosCard, MyStyles.shadow]}
+            >
+              <View
                 style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                   width: "100%",
-                  height: 200,
-                  borderRadius: 10,
-                  marginTop: 10,
-                }}
-                initialRegion={{
-                  latitude: selectedReport.location.lat,
-                  longitude: selectedReport.location.lng,
-                  latitudeDelta: 0.002,
-                  longitudeDelta: 0.002,
+                  alignContent: "center",
                 }}
               >
-                <Marker
-                  coordinate={{
-                    latitude: selectedReport.location.lat,
-                    longitude: selectedReport.location.lng,
-                  }}
-                  title="Location"
-                  description={selectedReport.readableAddress}
-                />
-              </MapView>
+                <View
+                  style={[
+                    MyStyles.statusWrapper,
+                    {
+                      backgroundColor:
+                        selectedReport.status === "False Alarm"
+                          ? "red"
+                          : selectedReport.status === "Pending"
+                          ? "orange"
+                          : selectedReport.status === "Ongoing"
+                          ? "green"
+                          : "gray",
+                    },
+                  ]}
+                >
+                  <Ionicons
+                    name={
+                      selectedReport.status === "False Alarm"
+                        ? "alert-circle"
+                        : selectedReport.status === "Pending"
+                        ? "time"
+                        : selectedReport.status === "Ongoing"
+                        ? "checkmark-done-circle"
+                        : "help-circle"
+                    }
+                    style={MyStyles.statusIcon}
+                  />
+                  <Text style={MyStyles.statusTitle}>
+                    {selectedReport.status || "Pending"}
+                  </Text>
+                </View>
+
+                <Text
+                  style={[
+                    MyStyles.sosDetailsText,
+                    { textAlign: "right", flex: 1, color: "gray" },
+                  ]}
+                >
+                  {dayjs(selectedReport.createdAt).fromNow()}
+                </Text>
+              </View>
+
+              <View
+                style={[
+                  MyStyles.rowAlignment,
+                  { justifyContent: "flex-start" },
+                ]}
+              >
+                <View>
+                  <Image
+                    source={{
+                      uri:
+                        selectedReport?.resID?.picture ||
+                        "https://via.placeholder.com/80",
+                    }}
+                    style={MyStyles.sosImg}
+                  />
+                </View>
+                <View>
+                  <Text style={[MyStyles.sosReportType, { color: "black" }]}>
+                    {selectedReport.resID.firstname}{" "}
+                    {selectedReport.resID.lastname}
+                  </Text>
+                  <Text style={MyStyles.sosDetailsText}>
+                    {selectedReport.resID.age} years old
+                  </Text>
+                </View>
+              </View>
+
+              <View style={MyStyles.sosDetailsWrapper}>
+                <View
+                  style={[
+                    MyStyles.sosDetailsRowWrapper,
+                    { alignItems: "flex-start" },
+                  ]}
+                >
+                  {/* <Ionicons
+                    name="location"
+                    style={{
+                      color: "red",
+                      fontSize: 30,
+                    }}
+                  /> */}
+                  <Text style={MyStyles.sosDetailsTitle}>Address:</Text>
+                  <Text
+                    style={[
+                      MyStyles.sosDetailsAnswer,
+                      {
+                        flexShrink: 1,
+                        flexWrap: "wrap",
+                      },
+                    ]}
+                  >
+                    {selectedReport.resID.householdno
+                      ? selectedReport.resID.householdno?.address
+                      : "N/A"}
+                  </Text>
+                </View>
+
+                <View style={MyStyles.sosDetailsRowWrapper}>
+                  {/* <Ionicons
+                    name="call"
+                    style={{ color: "red", fontSize: 30 }}
+                  /> */}
+                  <Text style={MyStyles.sosDetailsTitle}>Mobile:</Text>
+                  <Text style={MyStyles.sosDetailsAnswer}>
+                    {selectedReport.resID.mobilenumber}
+                  </Text>
+                </View>
+
+                <View style={MyStyles.sosDetailsRowWrapper}>
+                  <Text style={MyStyles.sosDetailsTitle}>
+                    Type of Emergency:
+                  </Text>
+                  <Text style={MyStyles.sosDetailsAnswer}>
+                    {selectedReport?.reporttype
+                      ? selectedReport.reporttype
+                      : "SOS"}
+                  </Text>
+                </View>
+
+                <View style={MyStyles.sosDetailsColWrapper}>
+                  <Text style={MyStyles.sosDetailsTitle}>
+                    Additional Details:
+                  </Text>
+                  <Text style={MyStyles.sosDetailsAnswer}>
+                    {" "}
+                    {selectedReport?.reportdetails
+                      ? selectedReport.reportdetails
+                      : "N/A"}
+                  </Text>
+                </View>
+
+                <View style={MyStyles.sosMapWrapper}>
+                  <View style={MyStyles.sosMapHeader}>
+                    <Text style={MyStyles.sosMapHeaderText}>
+                      Incident Location
+                    </Text>
+                  </View>
+
+                  <MapView
+                    style={{ flex: 1 }}
+                    initialRegion={{
+                      latitude: selectedReport.location.lat,
+                      longitude: selectedReport.location.lng,
+                      latitudeDelta: 0.002,
+                      longitudeDelta: 0.002,
+                    }}
+                  >
+                    <Marker
+                      coordinate={{
+                        latitude: selectedReport.location.lat,
+                        longitude: selectedReport.location.lng,
+                      }}
+                      title="Location"
+                      description={selectedReport.readableAddress}
+                    />
+                  </MapView>
+                </View>
+              </View>
+
               {responder ? (
                 <>
                   {responder.status === "Heading" && (
-                    <>
+                    <View style={{ marginTop: 30, gap: 20 }}>
                       <TouchableOpacity
                         onPress={() => setIsConfirmArrivedVisible(true)}
-                        style={MyStyles.button}
+                        style={[
+                          MyStyles.button,
+                          { backgroundColor: "#BC0F0F" },
+                        ]}
+                        disabled={loading}
                       >
-                        <Text>Arrived</Text>
+                        <Text style={MyStyles.buttonText}>
+                          {loading ? "Loading..." : "Arrive"}
+                        </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        onPress={headingSOS}
-                        style={MyStyles.button}
+                        onPress={() => setIsConfirmDidNotArrivedVisible(true)}
+                        style={[MyStyles.button, MyStyles.sosWhiteBtn]}
+                        disabled={loading2}
                       >
-                        <Text>Did Not Arrive</Text>
+                        <Text
+                          style={[MyStyles.buttonText, { color: "#BC0F0F" }]}
+                        >
+                          {loading2 ? "Loading..." : "Did Not Arrive"}
+                        </Text>
                       </TouchableOpacity>
-                    </>
+                    </View>
                   )}
 
                   {responder.status === "Arrived" && responder.isHead && (
-                    <>
+                    <View style={{ marginTop: 30, gap: 20 }}>
                       <TouchableOpacity
                         onPress={() =>
                           navigation.navigate("PostIncident", { selectedID })
                         }
-                        style={MyStyles.button}
+                        style={[
+                          MyStyles.button,
+                          { backgroundColor: "#BC0F0F" },
+                        ]}
+                        disabled={loading}
                       >
-                        <Text>Verify</Text>
+                        <Text style={MyStyles.buttonText}>Verify</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() =>
                           navigation.navigate("FalseAlarm", { selectedID })
                         }
-                        style={MyStyles.button}
+                        style={[MyStyles.button, MyStyles.sosWhiteBtn]}
+                        disabled={loading}
                       >
-                        <Text>False Alarm</Text>
+                        <Text
+                          style={[MyStyles.buttonText, { color: "#BC0F0F" }]}
+                        >
+                          False Alarm
+                        </Text>
                       </TouchableOpacity>
-                    </>
+                    </View>
                   )}
                 </>
               ) : (
                 <TouchableOpacity
                   onPress={() => setIsConfirmModalVisible(true)}
-                  style={MyStyles.button}
+                  style={[
+                    MyStyles.button,
+                    { marginTop: 30, backgroundColor: "#BC0F0F" },
+                  ]}
+                  disabled={loading}
                 >
-                  <Text>Heading</Text>
+                  <Text style={MyStyles.buttonText}>
+                    {loading ? "Loading..." : "Heading"}
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -226,6 +431,13 @@ const SOSReportDetails = () => {
             onConfirm={didntArriveSOS}
           />
         </ScrollView>
+        <AlertModal
+          isVisible={isAlertModalVisible}
+          message={alertMessage}
+          isSuccess={isSuccess}
+          onClose={() => setIsAlertModalVisible(false)}
+          onConfirm={handleCloseAlertModal}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

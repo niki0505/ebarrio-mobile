@@ -14,6 +14,18 @@ export const AuthProvider = ({ children }) => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [userStatus, setUserStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [userPasswordChanged, setUserPasswordChanged] = useState(null);
+
+  useEffect(() => {
+    if (user && userPasswordChanged) {
+      const passwordchangedat = new Date(userPasswordChanged).getTime();
+      const tokenIssuedAt = user.iat * 1000;
+
+      if (passwordchangedat > tokenIssuedAt) {
+        autologout4();
+      }
+    }
+  }, [user, userPasswordChanged]);
 
   useEffect(() => {
     if (userStatus && userStatus === "Deactivated") {
@@ -23,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     } else if (userStatus && userStatus === "Password Not Set") {
       autologout3();
     }
-  }, [userStatus]);
+  }, [user, userStatus]);
 
   useEffect(() => {
     const checkRefreshToken = async () => {
@@ -49,6 +61,19 @@ export const AuthProvider = ({ children }) => {
     };
     checkRefreshToken();
   }, []);
+
+  const autologout4 = async () => {
+    try {
+      await api.post(`/changedpassword`);
+      await SecureStore.deleteItemAsync("refreshToken");
+      await SecureStore.deleteItemAsync("accessToken");
+      setIsAuthenticated(false);
+      setUser(null);
+      navigation.navigate("Login");
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
 
   const autologout3 = async () => {
     try {
@@ -153,6 +178,8 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         setUserStatus,
         isFirstLaunch,
+        userPasswordChanged,
+        setUserPasswordChanged,
         logout,
         loading,
         setIsAuthenticated,

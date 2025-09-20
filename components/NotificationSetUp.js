@@ -9,12 +9,10 @@ export default function NotificationSetup() {
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then(async (token) => {
-        console.log("Expo Push Token:", token);
         setExpoPushToken(token);
 
         try {
           await api.put("/setpushtoken", { token });
-          console.log("Push token created successfully!");
         } catch (error) {
           const response = error.response;
           if (response && response.data) {
@@ -45,8 +43,6 @@ export default function NotificationSetup() {
       Alert.alert("Permission not granted for notifications!");
       return;
     }
-
-    console.log("Permission granted!");
 
     const token = (await Notifications.getExpoPushTokenAsync()).data;
     return token;

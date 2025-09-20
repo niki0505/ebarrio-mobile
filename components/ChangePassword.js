@@ -16,6 +16,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const ChangePassword = () => {
   const { logout } = useContext(AuthContext);
@@ -50,6 +51,7 @@ const ChangePassword = () => {
 
   const passwordValidation = (val) => {
     let errors = [];
+    let errors2 = [];
     let formattedVal = val.replace(/\s+/g, "");
 
     setNewPassword(formattedVal);
@@ -67,7 +69,12 @@ const ChangePassword = () => {
         "Password can only contain letters, numbers, and !, @, $, %, ^, &, *, +, #"
       );
     }
+    if (renewpassword && formattedVal !== renewpassword) {
+      errors2.push("Passwords do not match!");
+    }
+
     setPasswordErrors(errors);
+    setRePasswordErrors(errors2);
   };
 
   const repasswordValidation = (val) => {
@@ -128,6 +135,7 @@ const ChangePassword = () => {
   };
 
   const handlePasswordChange = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -137,7 +145,7 @@ const ChangePassword = () => {
         password,
       });
       setIsSuccess(true);
-      setAlertMessage("Password updated successfully! Please log in again.");
+      setAlertMessage("Your password has been updated. Please log in again.");
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
@@ -149,7 +157,6 @@ const ChangePassword = () => {
       }
     } finally {
       setLoading(false);
-      setIsConfirmModalVisible(false);
       setIsAlertModalVisible(true);
       setAlertMessage(message);
       setIsSuccess(false);
@@ -184,30 +191,21 @@ const ChangePassword = () => {
           },
         ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons
-            onPress={() => navigation.navigate("AccountSettings")}
-            name="arrow-back-ios"
-            color="#04384E"
-            size={35}
-            style={MyStyles.backArrow}
-          />
+        <AntDesign
+          onPress={() => navigation.navigate("AccountSettings")}
+          name="arrowleft"
+          style={MyStyles.backArrow}
+        />
 
-          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-            Change Password
-          </Text>
-        </View>
+        <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+          Change Password
+        </Text>
 
         <View style={MyStyles.servicesContentWrapper}>
           <View>
             <Text style={MyStyles.inputLabel}>
               Current Password
-              <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              <Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <View style={MyStyles.eyeInputContainer}>
               <TextInput
@@ -235,7 +233,7 @@ const ChangePassword = () => {
 
           <View>
             <Text style={MyStyles.inputLabel}>
-              New Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              New Password<Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <View style={MyStyles.eyeInputContainer}>
               <TextInput
@@ -270,7 +268,7 @@ const ChangePassword = () => {
           <View>
             <Text style={MyStyles.inputLabel}>
               Confirm New Password
-              <Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              <Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <View style={MyStyles.eyeInputContainer}>
               <TextInput
@@ -290,21 +288,21 @@ const ChangePassword = () => {
                   color="gray"
                 />
               </TouchableOpacity>
+              {repasswordErrors.length > 0 && (
+                <View>
+                  {repasswordErrors.map((error, index) => (
+                    <Text key={index} style={MyStyles.errorMsg}>
+                      {error}
+                    </Text>
+                  ))}
+                </View>
+              )}
             </View>
-            {repasswordErrors.length > 0 && (
-              <View>
-                {repasswordErrors.map((error, index) => (
-                  <Text key={index} style={MyStyles.errorMsg}>
-                    {error}
-                  </Text>
-                ))}
-              </View>
-            )}
           </View>
         </View>
         <TouchableOpacity
           onPress={handleConfirm}
-          style={MyStyles.button}
+          style={[MyStyles.button, { marginTop: 30 }]}
           disabled={loading}
         >
           <Text style={MyStyles.buttonText}>
@@ -317,6 +315,7 @@ const ChangePassword = () => {
           message={alertMessage}
           isSuccess={isSuccess}
           onClose={handleCloseAlertModal}
+          onConfirm={handleCloseAlertModal}
         />
 
         <AlertModal

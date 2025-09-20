@@ -13,6 +13,7 @@ const AlertModal = ({
   onConfirm,
   isResidentConfirmationModal = false,
   isConfirmationModal = false,
+  isHaveAnAccountModal = false,
 }) => {
   if (!isVisible) return null;
 
@@ -49,12 +50,12 @@ const AlertModal = ({
                 loop
                 style={{
                   width: 100,
-                  height: 100,
+                  height: RFPercentage(10),
                 }}
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
@@ -64,7 +65,7 @@ const AlertModal = ({
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 30,
                   fontFamily: "QuicksandMedium",
@@ -73,6 +74,31 @@ const AlertModal = ({
               >
                 {message}
               </Text>
+              <TouchableOpacity
+                onPress={onConfirm}
+                style={{
+                  borderWidth: 3,
+                  borderColor: "#2cda94",
+                  backgroundColor: "#2cda94",
+                  padding: 10,
+                  borderRadius: 10,
+                  marginHorizontal: 10,
+                  width: RFPercentage(15),
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: RFPercentage(2),
+                    fontFamily: "QuicksandBold",
+                    textAlign: "center",
+                  }}
+                >
+                  OK
+                </Text>
+              </TouchableOpacity>
             </>
           ) : isResidentConfirmationModal ? (
             // Resident Confirmation Modal
@@ -83,22 +109,23 @@ const AlertModal = ({
                 loop
                 style={{
                   width: 100,
-                  height: 100,
+                  height: RFPercentage(10),
                 }}
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
+                  textAlign: "center",
                 }}
               >
                 {title}
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 20,
                   fontFamily: "QuicksandMedium",
@@ -131,7 +158,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#BC0F0F",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -149,7 +176,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: RFPercentage(1),
+                    width: RFPercentage(15),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -157,7 +184,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#fff",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -177,17 +204,18 @@ const AlertModal = ({
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 10,
                   color: "#808080",
+                  textAlign: "center",
                 }}
               >
                 {title}
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 20,
                   fontFamily: "QuicksandMedium",
@@ -220,7 +248,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#BC0F0F",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -246,7 +274,7 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "#fff",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}
@@ -256,8 +284,8 @@ const AlertModal = ({
                 </TouchableOpacity>
               </View>
             </>
-          ) : (
-            // Error Modal
+          ) : isHaveAnAccountModal ? (
+            // Already Have an Account Modal
             <>
               <LottieView
                 source={require("../assets/lottieanimation/X.json")}
@@ -265,22 +293,23 @@ const AlertModal = ({
                 loop
                 style={{
                   width: 100,
-                  height: 100,
+                  height: RFPercentage(10),
                 }}
               />
               <Text
                 style={{
-                  fontSize: RFPercentage(2),
+                  fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
                   color: "#808080",
+                  textAlign: "center",
                 }}
               >
                 {title}
               </Text>
               <Text
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   marginBottom: 30,
                   fontFamily: "QuicksandMedium",
@@ -312,7 +341,74 @@ const AlertModal = ({
                   <Text
                     style={{
                       color: "white",
-                      fontSize: RFPercentage(1.8),
+                      fontSize: RFPercentage(2),
+                      fontFamily: "QuicksandBold",
+                      textAlign: "center",
+                    }}
+                  >
+                    TRY AGAIN
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            // Error Modal
+            <>
+              <LottieView
+                source={require("../assets/lottieanimation/X.json")}
+                autoPlay
+                loop
+                style={{
+                  width: 100,
+                  height: RFPercentage(10),
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: RFPercentage(2.4),
+                  fontFamily: "REMBold",
+                  marginVertical: 20,
+                  color: "#808080",
+                  textAlign: "center",
+                }}
+              >
+                {title}
+              </Text>
+              <Text
+                style={{
+                  fontSize: RFPercentage(2),
+                  color: "#808080",
+                  marginBottom: 30,
+                  fontFamily: "QuicksandMedium",
+                  textAlign: "center",
+                }}
+              >
+                {message}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={onClose}
+                  style={{
+                    backgroundColor: "#FF0000",
+                    padding: 10,
+                    borderRadius: 10,
+                    marginHorizontal: 10,
+                    width: RFPercentage(15),
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: RFPercentage(2),
                       fontFamily: "QuicksandBold",
                       textAlign: "center",
                     }}

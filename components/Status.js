@@ -23,7 +23,7 @@ import Dialog from "react-native-dialog";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const Status = () => {
   const { fetchServices, services } = useContext(InfoContext);
@@ -55,7 +55,7 @@ const Status = () => {
   }, []);
   const filteredServices = services.filter((service) => {
     if (sortOption === "documents") {
-      return service.type === "Document";
+      return service.type === "Certificate";
     } else if (sortOption === "reservations") {
       return service.type === "Reservation";
     } else if (sortOption === "blotters") {
@@ -171,26 +171,15 @@ const Status = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            {/* Back Arrow */}
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            {/* First Calendar Text */}
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Status
-            </Text>
-          </View>
+          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+            Status
+          </Text>
 
           <Dropdown
             data={[
@@ -204,8 +193,8 @@ const Status = () => {
             value={sortOption}
             placeholder={sortOption}
             onChange={(item) => setSortOption(item.value)}
-            style={[MyStyles.dropdownWrapper, { width: RFPercentage(15) }]}
-            selectedTextStyle={MyStyles.selectedText}
+            style={[MyStyles.dropdownWrapper, { width: RFPercentage(20) }]}
+            selectedTextStyle={MyStyles.dropdownText}
           />
 
           <View style={{ marginVertical: 10 }}>
@@ -258,7 +247,7 @@ const Status = () => {
             contentStyle={MyStyles.statusDialogWrapper}
           >
             <Dialog.Title style={MyStyles.cancelCert}>
-              Cancel Certificate
+              Cancel Document
             </Dialog.Title>
 
             <Dialog.Input
@@ -266,7 +255,7 @@ const Status = () => {
               onChangeText={(text) => setCertReason(text)}
               style={{
                 fontFamily: "QuicksandMedium",
-                fontSize: 16,
+                fontSize: RFPercentage(2),
                 color: "#04384E",
               }}
               placeholderTextColor="#808080"
@@ -297,7 +286,7 @@ const Status = () => {
               onChangeText={(text) => setReservationReason(text)}
               style={{
                 fontFamily: "QuicksandMedium",
-                fontSize: 16,
+                fontSize: RFPercentage(2),
                 padding: 10,
                 color: "#04384E",
               }}
@@ -343,7 +332,12 @@ const Status = () => {
                     <View style={MyStyles.rowAlignment}>
                       <Text style={MyStyles.statusLabel}>{status.label}</Text>
 
-                      <Text style={{ fontSize: 15, color: "#808080" }}>
+                      <Text
+                        style={{
+                          fontSize: RFPercentage(1.8),
+                          color: "#808080",
+                        }}
+                      >
                         {dayjs(service.createdAt).fromNow()}
                       </Text>
                     </View>
@@ -357,7 +351,9 @@ const Status = () => {
                       activeOpacity={0.7}
                     >
                       <Text style={MyStyles.statusServiceType}>
-                        {service.type}
+                        {service.type === "Certificate"
+                          ? "Document"
+                          : service.type}
                       </Text>
                       <MaterialIcons
                         name={
@@ -411,9 +407,9 @@ const Status = () => {
                         <View style={MyStyles.statusBlotterWrapper}>
                           <Text
                             style={{
-                              fontSize: 15,
+                              fontSize: RFPercentage(1.8),
                               fontFamily: "QuicksandSemiBold",
-                              color: "#808080",
+                              color: "#04384E",
                             }}
                           >
                             Details:

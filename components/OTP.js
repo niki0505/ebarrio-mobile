@@ -6,11 +6,11 @@ import { OtpContext } from "../context/OtpContext";
 import { OtpInput } from "react-native-otp-entry";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
-import AppLogo from "../assets/applogo-darkbg.png";
+import AppLogo from "..//assets/applogo.png";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RFPercentage } from "react-native-responsive-fontsize";
-
 import AlertModal from "./AlertModal";
+import { LinearGradient } from "expo-linear-gradient";
 
 const OTP = ({}) => {
   const route = useRoute();
@@ -60,7 +60,6 @@ const OTP = ({}) => {
         setResendTimer(30);
         setIsResendDisabled(true);
         setResendCount((prevCount) => prevCount + 1);
-        console.log("New OTP is generated");
       } catch (error) {
         console.error("Error sending OTP:", error);
         setAlertMessage("Something went wrong while sending OTP");
@@ -75,35 +74,37 @@ const OTP = ({}) => {
   const handleVerify = async (OTP) => {
     try {
       const result = await verifyOTP(username, OTP);
-      setIsSuccess(true);
-      setAlertMessage(result.message);
       if (navigatelink === "Login") {
-        try {
-          await api.post("/register", {
-            username,
-            password,
-            resID,
-          });
-          navigation.navigate("Login");
-        } catch (error) {
-          console.log("Error logging in", error);
-        }
-      } else if (navigatelink === "BottomTabs") {
+        setIsSuccess(true);
+        setAlertMessage("New Resident Account Created.");
+        setIsAlertModalVisible(true);
+      } else {
         await login({ username, password });
       }
     } catch (error) {
       const response = error.response;
       if (response && response.data) {
-        console.log("❌ Error status:", response.status);
         setAlertMessage(response.data.message || "Something went wrong.");
-        setIsAlertModalVisible(true);
       } else {
-        console.log("❌ Network or unknown error:", error.message);
         setAlertMessage("An unexpected error occurred.");
-        setIsAlertModalVisible(true);
       }
+      setIsAlertModalVisible(true);
     }
-    setIsSuccess(false);
+  };
+
+  const handleSuccessModalClose = async () => {
+    setIsAlertModalVisible(false);
+
+    if (navigatelink === "Login") {
+      try {
+        await api.post("/register", { username, password, resID });
+        navigation.navigate("Login");
+      } catch (error) {
+        console.log("Error logging in", error);
+      }
+    } else if (navigatelink === "BottomTabs") {
+      await login({ username, password });
+    }
   };
 
   const handleOTPChange = (text) => {
@@ -121,104 +122,113 @@ const OTP = ({}) => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
-      }}
+    <LinearGradient
+      colors={["#0e94d3", "#0a70a0", "#095e86", "#074c6d"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={{ flex: 1 }}
     >
-      <View style={MyStyles.loginWrapper}>
-        <View style={MyStyles.loginTopWrapper}>
-          <Image source={AppLogo} style={MyStyles.loginLogo} />
-        </View>
-        <View
-          style={{
-            alignItems: "start",
-            backgroundColor: "#fff",
-            borderRadius: 15,
-            flex: 3,
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            gap: 20,
-          }}
-        >
-          <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-            Account Verification
-          </Text>
-          <Text
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: "transparent",
+        }}
+      >
+        <View style={MyStyles.loginWrapper}>
+          <View style={MyStyles.loginTopWrapper}>
+            <Image source={AppLogo} style={MyStyles.loginLogo} />
+          </View>
+          <View
             style={{
-              fontSize: RFPercentage(1.6),
-              color: "#808080",
-              fontFamily: "QuicksandSemiBold",
+              alignItems: "start",
+              backgroundColor: "#fff",
+              borderRadius: 15,
+              flex: 3,
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+              gap: 20,
             }}
           >
-            Enter the 6-digit code sent to
-          </Text>
-          <Text
-            style={{
-              fontSize: RFPercentage(1.6),
-              color: "#04384E",
-              fontFamily: "QuicksandSemiBold",
-              marginTop: "-20",
-            }}
-          >
-            {maskMobileNumber(mobilenumber)}
-          </Text>
-          <OtpInput
-            ref={otpRef}
-            type="numeric"
-            numberOfDigits={6}
-            onTextChange={handleOTPChange}
-          />
-
-          {isResendDisabled ? (
+            <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
+              Account Verification
+            </Text>
             <Text
               style={{
-                fontSize: RFPercentage(1.6),
+                fontSize: RFPercentage(2),
                 color: "#808080",
                 fontFamily: "QuicksandSemiBold",
               }}
             >
-              Resend OTP in <Text style={{ color: "red" }}>{resendTimer} </Text>{" "}
-              second{resendTimer !== 1 ? "s" : ""}
+              Enter the 6-digit code sent to
             </Text>
-          ) : (
-            <View style={{ flexDirection: "row", gap: 4 }}>
+            <Text
+              style={{
+                fontSize: RFPercentage(2),
+                color: "#04384E",
+                fontFamily: "QuicksandSemiBold",
+                marginTop: "-20",
+              }}
+            >
+              {maskMobileNumber(mobilenumber)}
+            </Text>
+            <OtpInput
+              ref={otpRef}
+              type="numeric"
+              numberOfDigits={6}
+              onTextChange={handleOTPChange}
+            />
+
+            {isResendDisabled ? (
               <Text
-                onPress={handleResend}
                 style={{
-                  fontSize: RFPercentage(1.6),
+                  fontSize: RFPercentage(2),
                   color: "#808080",
                   fontFamily: "QuicksandSemiBold",
                 }}
               >
-                Didn't get a code?
+                Resend OTP in{" "}
+                <Text style={{ color: "red" }}>{resendTimer} </Text> second
+                {resendTimer !== 1 ? "s" : ""}
               </Text>
-              <Text
-                onPress={handleResend}
-                style={{
-                  color: "#006EFF",
-                  fontSize: RFPercentage(1.6),
-                  fontFamily: "QuicksandBold",
-                }}
-              >
-                Resend OTP
-              </Text>
-            </View>
-          )}
-        </View>
+            ) : (
+              <View style={{ flexDirection: "row", gap: 4 }}>
+                <Text
+                  onPress={handleResend}
+                  style={{
+                    fontSize: RFPercentage(2),
+                    color: "#808080",
+                    fontFamily: "QuicksandSemiBold",
+                  }}
+                >
+                  Didn't get a code?
+                </Text>
+                <Text
+                  onPress={handleResend}
+                  style={{
+                    color: "red",
+                    fontSize: RFPercentage(2),
+                    fontFamily: "QuicksandBold",
+                  }}
+                >
+                  Resend OTP
+                </Text>
+              </View>
+            )}
+          </View>
 
-        <AlertModal
-          isVisible={isAlertModalVisible}
-          message={alertMessage}
-          title="Limit reached"
-          isSuccess={isSuccess}
-          onClose={() => setIsAlertModalVisible(false)}
-        />
-      </View>
-    </SafeAreaView>
+          <AlertModal
+            isVisible={isAlertModalVisible}
+            message={alertMessage}
+            title={isSuccess ? "Success" : "Error"}
+            isSuccess={isSuccess}
+            onConfirm={handleSuccessModalClose}
+            onClose={() => setIsAlertModalVisible(false)}
+          />
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 export default OTP;

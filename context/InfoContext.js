@@ -1,5 +1,11 @@
 import api from "../api";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import * as SecureStore from "expo-secure-store";
 import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
@@ -8,12 +14,9 @@ import axios from "axios";
 
 export const InfoContext = createContext(undefined);
 
-const socket = io("https://ebarrio-mobile-backend.onrender.com", {
-  withCredentials: true,
-});
-
 export const InfoProvider = ({ children }) => {
-  const { isAuthenticated, setUserStatus, user } = useContext(AuthContext);
+  const { isAuthenticated, setUserStatus, user, setUserPasswordChanged } =
+    useContext(AuthContext);
   const [emergencyhotlines, setEmergencyHotlines] = useState([]);
   const [weather, setWeather] = useState([]);
   const [residents, setResidents] = useState([]);
@@ -86,6 +89,7 @@ export const InfoProvider = ({ children }) => {
       users.map((usr) => {
         if (usr._id === user.userID) {
           setUserStatus(usr.status);
+          setUserPasswordChanged(usr.passwordchangedat);
         }
       });
     }
@@ -241,8 +245,45 @@ export const InfoProvider = ({ children }) => {
     }
   };
 
+  const socketRef = useRef(null); // ✅ Persistent ref
+
   useEffect(() => {
-    if (!socket) return;
+    if (!isAuthenticated || !user?.userID) return;
+
+    // Create socket when authenticated
+    const newSocket = io("https://ebarrio-mobile-backend.onrender.com", {
+      transports: ["polling", "websocket"],
+      withCredentials: true,
+      timeout: 60000,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 10000,
+    });
+
+    socketRef.current = newSocket;
+
+    newSocket.on("connect", () => {
+      console.log("✅ Socket connected:", newSocket.id);
+      newSocket.emit("register", user.userID, user.role);
+    });
+
+    newSocket.on("connect_error", (err) => {
+      console.log("❌ Socket connection failed:", err.message);
+    });
+
+    // Cleanup only when user logs out or component unmounts
+    return () => {
+      if (socketRef.current) {
+        newSocket.emit("unregister", user.userID);
+        newSocket.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, [isAuthenticated, user?.userID, user?.role]);
+
+  useEffect(() => {
+    const s = socketRef.current;
+    if (!s) return;
 
     const handler = (updatedData) => {
       if (updatedData.type === "announcements") {
@@ -257,15 +298,19 @@ export const InfoProvider = ({ children }) => {
         setNotifications(updatedData.data);
       } else if (updatedData.type === "unreadnotifications") {
         setUnreadNotifications(updatedData.data);
+      } else if (updatedData.type === "report") {
+        setReport(updatedData.data[0]);
+      } else if (updatedData.type === "pendingReports") {
+        setPendingReports(updatedData.data);
       }
     };
 
-    socket.on("mobile-dbChange", handler);
+    s.on("mobile-dbChange", handler);
 
     return () => {
-      socket.off("mobile-dbChange", handler);
+      s.off("mobile-dbChange", handler);
     };
-  }, [socket]);
+  }, []);
 
   return (
     <InfoContext.Provider

@@ -19,6 +19,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const Certificates = () => {
   const insets = useSafeAreaInsets();
@@ -135,6 +136,7 @@ const Certificates = () => {
   };
 
   const handleSubmit = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -184,7 +186,6 @@ const Certificates = () => {
     } finally {
       setLoading(false);
     }
-    setIsConfirmModalVisible(false);
   };
 
   const handleDropdownChange = ({ target }) => {
@@ -243,24 +244,13 @@ const Certificates = () => {
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={MyStyles.backArrow}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={MyStyles.backArrow}
+          />
 
-            <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-              Request Document
-            </Text>
-          </View>
+          <Text style={MyStyles.servicesHeader}>Request Document</Text>
 
           <Text style={MyStyles.formMessage}>
             1. Please fill out the required information to request a document.
@@ -421,7 +411,7 @@ const Certificates = () => {
               <TextInput
                 value={certificateForm.amount}
                 editable={false}
-                style={{ fontSize: 16, fontFamily: "QuicksandMedium" }}
+                style={MyStyles.blotterFullName}
               />
             </View>
           </View>

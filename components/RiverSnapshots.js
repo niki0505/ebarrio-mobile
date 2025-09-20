@@ -13,7 +13,7 @@ import {
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import api from "../api";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import Dialog from "react-native-dialog";
@@ -49,7 +49,7 @@ const RiverSnapshots = () => {
     };
 
     fetchLatest(); // Initial fetch
-    const interval = setInterval(fetchLatest, 60000);
+    const interval = setInterval(fetchLatest, 600000);
 
     return () => clearInterval(interval);
   }, []);
@@ -102,12 +102,12 @@ const RiverSnapshots = () => {
             MyStyles.scrollContainer,
             {
               backgroundColor: "#BC0F0F",
+              gap: 10,
             },
           ]}
         >
           <Dialog.Container
             visible={alertVisible}
-            // onDismiss={() => setIsConfirmModalVisible(true)}
             contentStyle={MyStyles.statusDialogWrapper}
           >
             <Dialog.Title style={MyStyles.cancelReserve}>
@@ -119,11 +119,18 @@ const RiverSnapshots = () => {
               onChangeText={(text) => setAlertResidentsMessage(text)}
               style={{
                 fontFamily: "QuicksandMedium",
-                fontSize: 16,
+                fontSize: RFPercentage(2),
                 padding: 10,
                 color: "#04384E",
+                minHeight: 100,
+                textAlignVertical: "top",
+                borderColor: "#ccc",
+                borderWidth: 1,
+                borderRadius: 8,
+                marginBottom: 40,
               }}
               placeholderTextColor="#808080"
+              multiline={true}
             />
 
             <Dialog.Button
@@ -137,24 +144,18 @@ const RiverSnapshots = () => {
               color="#BC0F0F"
             />
           </Dialog.Container>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.goBack()}
-              name="arrow-back-ios"
-              style={[MyStyles.backArrow, { color: "#fff" }]}
-            />
 
-            <Text
-              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
-            >
-              River Snapshots
-            </Text>
-          </View>
+          <AntDesign
+            onPress={() => navigation.goBack()}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
+          />
+
+          <Text
+            style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+          >
+            River Snapshots
+          </Text>
 
           <View
             style={{
@@ -168,7 +169,7 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
-                  height: RFPercentage(6),
+                  height: RFPercentage(7),
                   flex: 1,
                   backgroundColor: viewMode === "current" ? "#04384E" : "white",
                   marginHorizontal: 10,
@@ -180,7 +181,7 @@ const RiverSnapshots = () => {
                 style={[
                   MyStyles.buttonText,
                   {
-                    fontSize: RFPercentage(1.8),
+                    fontSize: RFPercentage(2.4),
                     color: viewMode === "current" ? "white" : "#04384E",
                     textAlign: "center",
                   },
@@ -194,7 +195,7 @@ const RiverSnapshots = () => {
               style={[
                 MyStyles.button,
                 {
-                  height: RFPercentage(6),
+                  height: RFPercentage(7),
                   flex: 1,
                   backgroundColor: viewMode === "history" ? "#04384E" : "white",
                   marginHorizontal: 10,
@@ -207,7 +208,7 @@ const RiverSnapshots = () => {
                 style={[
                   MyStyles.buttonText,
                   {
-                    fontSize: RFPercentage(1.8),
+                    fontSize: RFPercentage(2.4),
                     color: viewMode === "history" ? "white" : "#04384E",
                     textAlign: "center",
                   },
@@ -226,17 +227,49 @@ const RiverSnapshots = () => {
             <View style={{ alignItems: "center" }}>
               {latest.url && (
                 <>
+                  {user.role !== "Resident" && (
+                    <TouchableOpacity
+                      onPress={() => setAlertVisible(true)}
+                      style={{
+                        marginTop: 20,
+                        backgroundColor: "white",
+                        padding: 5,
+                        borderRadius: 10,
+                        width: "90%",
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "#BC0F0F",
+                          paddingHorizontal: 15,
+                          paddingVertical: 10,
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <MaterialIcons
+                          name="add-alert"
+                          size={40}
+                          color="white"
+                        />
+                        <Text style={MyStyles.buttonText}>Alert Residents</Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+
                   <Text
                     style={{
                       color: "white",
-                      fontSize: RFPercentage(2.5),
+                      fontSize: RFPercentage(3),
                       fontFamily: "REMBold",
                       textAlign: "center",
-                      marginTop: 50,
+                      marginTop: 40,
                     }}
                   >
                     Zapote River
                   </Text>
+
                   <Image
                     source={{ uri: latest.url }}
                     style={{
@@ -247,53 +280,32 @@ const RiverSnapshots = () => {
                       marginTop: 20,
                     }}
                   />
-                  <View
-                    style={{
-                      marginTop: 20,
-                      backgroundColor: "white",
-                      padding: 5,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#BC0F0F",
-                        paddingHorizontal: 15,
-                        paddingVertical: 10,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: RFPercentage(2),
-                          color: "white",
-                          fontFamily: "QuicksandBold",
-                          textAlign: "center",
-                        }}
-                      >
-                        CCTV Snapshot as of{" "}
-                        {latest.datetime?.split(" at ")[1] || "Unknown Time"}
-                      </Text>
-                    </View>
-                  </View>
+
                   <Text
                     style={{
-                      fontSize: RFPercentage(1.6),
+                      fontSize: RFPercentage(2),
+                      color: "white",
+                      fontFamily: "QuicksandBold",
+                      textAlign: "center",
+                      marginTop: 20,
+                    }}
+                  >
+                    CCTV Snapshot as of{" "}
+                    {latest.datetime?.split(" at ")[1] || "Unknown Time"}
+                  </Text>
+
+                  <Text
+                    style={{
+                      fontSize: RFPercentage(1.8),
                       color: "#D3D3D3",
                       textAlign: "center",
                       fontFamily: "QuicksandSemiBold",
                       marginTop: 10,
+                      fontStyle: "italic",
                     }}
                   >
-                    The next update will be in 10 minutes.
+                    The next update will be after 10 minutes.
                   </Text>
-                  {user.role !== "Resident" && (
-                    <TouchableOpacity
-                      onPress={() => setAlertVisible(true)}
-                      style={MyStyles.button}
-                    >
-                      <Text style={MyStyles.buttonText}>Alert Residents</Text>
-                    </TouchableOpacity>
-                  )}
                 </>
               )}
             </View>
@@ -316,7 +328,7 @@ const RiverSnapshots = () => {
 
                         <Text
                           style={{
-                            fontSize: RFPercentage(1.6),
+                            fontSize: RFPercentage(1.8),
                             color: "white",
                             fontFamily: "QuicksandBold",
                             textAlign: "right",

@@ -16,6 +16,7 @@ import AlertModal from "./AlertModal";
 
 //ICONS
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const ChangeUsername = () => {
   const { fetchUserDetails, userDetails } = useContext(InfoContext);
@@ -44,23 +45,27 @@ const ChangeUsername = () => {
   const usernameValidation = (val) => {
     let errors = [];
     let formattedVal = val.replace(/\s+/g, "");
-
     setUsername(formattedVal);
 
     if (!formattedVal) {
       errors.push("This field is required!");
-    } else if (formattedVal.length < 3 || formattedVal.length > 16) {
-      errors.push("Username must be between 3 and 16 characters only!");
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formattedVal)) {
+    }
+    if (
+      (formattedVal && formattedVal.length < 3) ||
+      (formattedVal && formattedVal.length > 16)
+    ) {
+      errors.push("Username must be between 3 and 16 characters only.");
+    }
+    if (formattedVal && !/^[a-zA-Z0-9_]+$/.test(formattedVal)) {
       errors.push(
-        "Username can only contain letters, numbers, and underscores!"
+        "Username can only contain letters, numbers, and underscores."
       );
-    } else if (formattedVal.startsWith("_") || formattedVal.endsWith("_")) {
-      errors.push("Username must not start or end with an underscore!");
-    } else if (formattedVal === userDetails.username) {
-      errors.push(
-        "The new username must be different from the current username."
-      );
+    }
+    if (
+      (formattedVal && formattedVal.startsWith("_")) ||
+      (formattedVal && formattedVal.endsWith("_"))
+    ) {
+      errors.push("Username must not start or end with an underscore.");
     }
 
     setUsernameErrors(errors);
@@ -88,6 +93,7 @@ const ChangeUsername = () => {
   };
 
   const handleUsernameChange = async () => {
+    setIsConfirmModalVisible(false);
     if (loading) return;
 
     setLoading(true);
@@ -96,7 +102,7 @@ const ChangeUsername = () => {
       try {
         await api.put("/changeusername", { username, password });
         setIsSuccess(true);
-        setAlertMessage("Username updated successfully!");
+        setAlertMessage("Your username has been updated");
         fetchUserDetails();
       } catch (error) {
         const response = error.response;
@@ -119,7 +125,6 @@ const ChangeUsername = () => {
       }
     } finally {
       setLoading(false);
-      setIsConfirmModalVisible(false);
       setIsAlertModalVisible(true);
       setAlertMessage(message);
       setIsSuccess(false);
@@ -169,24 +174,15 @@ const ChangeUsername = () => {
           },
         ]}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons
-            onPress={() => navigation.navigate("AccountSettings")}
-            name="arrow-back-ios"
-            color="#04384E"
-            size={35}
-            style={MyStyles.backArrow}
-          />
+        <AntDesign
+          onPress={() => navigation.navigate("AccountSettings")}
+          name="arrowleft"
+          style={MyStyles.backArrow}
+        />
 
-          <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
-            Change Username
-          </Text>
-        </View>
+        <Text style={[MyStyles.servicesHeader, { marginTop: 0 }]}>
+          Change Username
+        </Text>
 
         <View style={MyStyles.servicesContentWrapper}>
           <View>
@@ -197,7 +193,7 @@ const ChangeUsername = () => {
           </View>
           <View>
             <Text style={MyStyles.inputLabel}>
-              New Username<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              New Username<Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <TextInput
               onChangeText={usernameValidation}
@@ -218,7 +214,7 @@ const ChangeUsername = () => {
 
           <View>
             <Text style={MyStyles.inputLabel}>
-              Password<Text style={{ color: "red", fontSize: 16 }}>*</Text>
+              Password<Text style={MyStyles.redAsterisk}>*</Text>
             </Text>
             <View style={MyStyles.eyeInputContainer}>
               <TextInput
@@ -246,11 +242,11 @@ const ChangeUsername = () => {
         </View>
         <TouchableOpacity
           onPress={handleConfirm}
-          style={MyStyles.button}
+          style={[MyStyles.button, { marginTop: 30 }]}
           disabled={loading}
         >
           <Text style={MyStyles.buttonText}>
-            {loading ? "Upading..." : "Update"}
+            {loading ? "Updating..." : "Update"}
           </Text>
         </TouchableOpacity>
 
@@ -259,6 +255,7 @@ const ChangeUsername = () => {
           message={alertMessage}
           isSuccess={isSuccess}
           onClose={handleCloseAlertModal}
+          onConfirm={handleCloseAlertModal}
         />
 
         <AlertModal

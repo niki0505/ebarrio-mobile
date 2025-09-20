@@ -20,7 +20,7 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const EmergencyHotlines = () => {
   const insets = useSafeAreaInsets();
@@ -42,19 +42,11 @@ const EmergencyHotlines = () => {
     loadData();
   }, []);
 
-  const handleCall = async (contactName, contactNumber) => {
+  const handleCall = async (contactNumber) => {
     const phoneNumber = `tel:${contactNumber}`;
     Linking.openURL(phoneNumber).catch((err) =>
       console.error("Error opening dialer: ", err)
     );
-    const action = "Emergency Hotlines";
-    const description = `User tapped the contact number of ${contactName}, initiating a phone call.`;
-    try {
-      await api.post("/logactivity", { action, description });
-      navigation.navigate("EmergencyHotlines");
-    } catch (error) {
-      console.log("Error in viewing emergency hotlines", error);
-    }
   };
 
   const handleSearch = (text) => {
@@ -96,30 +88,21 @@ const EmergencyHotlines = () => {
             MyStyles.scrollContainer,
             {
               backgroundColor: "#BC0F0F",
+              gap: 10,
             },
           ]}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            {/* Back Arrow */}
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              color="#04384E"
-              size={35}
-              style={[MyStyles.backArrow, { color: "#fff" }]}
-            />
+          <AntDesign
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrowleft"
+            style={[MyStyles.backArrow, { color: "#fff" }]}
+          />
 
-            <Text
-              style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
-            >
-              Hotlines
-            </Text>
-          </View>
+          <Text
+            style={[MyStyles.servicesHeader, { marginTop: 0, color: "#fff" }]}
+          >
+            Hotlines
+          </Text>
 
           <View style={{ gap: 15 }}>
             <View style={{ position: "relative" }}>
@@ -158,9 +141,7 @@ const EmergencyHotlines = () => {
                 .map((element) => (
                   <TouchableOpacity
                     key={element._id}
-                    onPress={() =>
-                      handleCall(element.name, element.contactnumber)
-                    }
+                    onPress={() => handleCall(element.contactnumber)}
                     style={[
                       MyStyles.input,
                       {
@@ -192,7 +173,7 @@ const EmergencyHotlines = () => {
                         style={{
                           color: "#04384E",
                           fontFamily: "QuicksandSemiBold",
-                          fontSize: RFPercentage(1.8),
+                          fontSize: RFPercentage(2),
                         }}
                       >
                         {element.contactnumber}
