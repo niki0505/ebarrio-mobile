@@ -2684,6 +2684,37 @@ const ResidentForm = () => {
                   </TouchableOpacity>
                 </View>
 
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    gap: 4,
+                    marginTop: 10,
+                  }}
+                >
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    Login
+                  </Text>
+
+                  <Text
+                    onPress={() => navigation.navigate("Signup")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    {" "}
+                    Sign Up
+                  </Text>
+                </View>
+
                 <AlertModal
                   isVisible={isAlertModalVisible}
                   message={alertMessage}

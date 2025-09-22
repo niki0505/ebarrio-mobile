@@ -1137,14 +1137,14 @@ export const MyStyles = StyleSheet.create({
     width: "100%",
   },
   forgotPassText: {
-    color: "#006EFF",
+    color: "#0E94D3",
     alignSelf: "flex-end",
     fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
     marginTop: "-10",
   },
   signUpText: {
-    color: "#006EFF",
+    color: "#0E94D3",
     fontSize: RFPercentage(2),
     fontFamily: "QuicksandBold",
   },
