@@ -297,7 +297,7 @@ const Weather = () => {
               <Text
                 style={[
                   MyStyles.weatherHeaderText,
-                  { fontSize: 60, fontFamily: "QuicksandBold", marginTop: 0 },
+                  { fontSize: 60, fontFamily: "REMSemiBold", marginTop: 0 },
                 ]}
               >
                 {weather.currenttemp}°

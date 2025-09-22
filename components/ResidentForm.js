@@ -41,6 +41,10 @@ import axios from "axios";
 import api from "../api";
 import { MaterialIcons } from "@expo/vector-icons";
 import { DraftContext } from "../context/DraftContext";
+import sign from "../assets/resident-sign.png";
+import Entypo from "@expo/vector-icons/Entypo";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const ResidentForm = () => {
   const screenWidth = Dimensions.get("window").width;
@@ -998,10 +1002,12 @@ const ResidentForm = () => {
                         onPress={toggleIDCamera}
                         style={MyStyles.personalInfoButton}
                       >
+                        <Entypo name="camera" size={20} color="white" />
                         <Text
                           style={{
-                            fontFamily: "QuicksandBold",
+                            fontFamily: "REMSemiBold",
                             color: "white",
+                            fontSize: RFPercentage(1.8),
                           }}
                         >
                           Capture
@@ -1011,10 +1017,12 @@ const ResidentForm = () => {
                         onPress={pickIDImage}
                         style={MyStyles.personalInfoButton}
                       >
+                        <Feather name="upload" size={20} color="white" />
                         <Text
                           style={{
-                            fontFamily: "QuicksandBold",
+                            fontFamily: "REMSemiBold",
                             color: "white",
+                            fontSize: RFPercentage(1.8),
                           }}
                         >
                           Upload
@@ -1054,13 +1062,18 @@ const ResidentForm = () => {
                         onPress={handleOpenSignature}
                         style={MyStyles.personalInfoButton}
                       >
+                        <Image
+                          source={sign}
+                          style={{ width: 20, height: 20 }}
+                        />
                         <Text
                           style={{
-                            fontFamily: "QuicksandBold",
+                            fontFamily: "REMSemiBold",
                             color: "white",
+                            fontSize: RFPercentage(1.8),
                           }}
                         >
-                          Draw
+                          Sign
                         </Text>
                       </TouchableOpacity>
 
@@ -1068,10 +1081,12 @@ const ResidentForm = () => {
                         onPress={handleSignatureClear}
                         style={MyStyles.personalInfoButton}
                       >
+                        <FontAwesome5 name="trash" size={20} color="white" />
                         <Text
                           style={{
-                            fontFamily: "QuicksandBold",
+                            fontFamily: "REMSemiBold",
                             color: "white",
+                            fontSize: RFPercentage(1.8),
                           }}
                         >
                           Clear

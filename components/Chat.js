@@ -391,30 +391,28 @@ const Chat = () => {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginTop: 10,
-            marginLeft: 10,
-            backgroundColor: "white",
+            backgroundColor: "#0E94D3",
+            paddingHorizontal: 20,
+            paddingVertical: 10,
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginLeft: 10,
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              size={30}
-              style={[MyStyles.backArrow]}
-            />
+          <MaterialIcons
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrow-back-ios"
+            size={30}
+            style={{ color: "#fff" }}
+          />
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Image source={Aniban2Logo} style={MyStyles.announcementLogo} />
-            <View>
-              <Text style={[MyStyles.announcementUploader, { marginLeft: 5 }]}>
-                Barangay Aniban II
-              </Text>
-            </View>
+            <Text
+              style={[
+                MyStyles.announcementUploader,
+                { color: "#fff", fontFamily: "REMBold" },
+              ]}
+            >
+              Barangay Aniban II
+            </Text>
           </View>
         </View>
 
@@ -494,7 +492,7 @@ const Chat = () => {
                           ? "transparent"
                           : isUser
                           ? "#0E94D3"
-                          : "#C9CDCF",
+                          : "#D1D5DB",
                         borderRadius: isEndedMsg ? 0 : 12,
                         padding: isEndedMsg ? 4 : 10,
                         marginBottom: 8,

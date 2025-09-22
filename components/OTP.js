@@ -186,6 +186,7 @@ const OTP = ({}) => {
                   fontSize: RFPercentage(2),
                   color: "#808080",
                   fontFamily: "QuicksandSemiBold",
+                  alignSelf: "flex-end",
                 }}
               >
                 Resend OTP in{" "}
@@ -200,6 +201,7 @@ const OTP = ({}) => {
                     fontSize: RFPercentage(2),
                     color: "#808080",
                     fontFamily: "QuicksandSemiBold",
+                    alignSelf: "flex-end",
                   }}
                 >
                   Didn't get a code?

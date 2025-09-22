@@ -424,11 +424,11 @@ export const MyStyles = StyleSheet.create({
   fab: {
     position: "absolute",
     left: "50%",
-    transform: [{ translateX: -35 }],
-    width: 70,
-    height: 70,
+    transform: [{ translateX: -40 }],
+    width: 80,
+    height: 80,
     backgroundColor: "#BC0F0F",
-    borderRadius: 35,
+    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
     zIndex: 10,
@@ -441,7 +441,8 @@ export const MyStyles = StyleSheet.create({
   fabText: {
     color: "#fff",
     fontFamily: "REMBold",
-    fontSize: RFPercentage(2.5),
+    marginBottom: 5,
+    fontSize: RFPercentage(3.5),
   },
   bottomTabButtons: {
     flex: 1,
@@ -857,7 +858,7 @@ export const MyStyles = StyleSheet.create({
   },
 
   weatherCurrTemp: {
-    fontFamily: "QuicksandMedium",
+   fontFamily: "REMSemiBold",
     fontSize: RFPercentage(4),
     color: "#fff",
   },
@@ -911,7 +912,7 @@ export const MyStyles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     fontSize: RFPercentage(2),
-    height: RFPercentage(32),
+    height: RFPercentage(30),
   },
   leftCalendar: {
     width: "48%",
@@ -920,15 +921,16 @@ export const MyStyles = StyleSheet.create({
     borderRightColor: "#E0E0E0",
   },
   bigDate: {
-    fontSize: RFPercentage(4.5),
-    fontFamily: "QuicksandBold",
+    fontSize: RFPercentage(4),
+    fontFamily: "REMBold",
     color: "#04384E",
     lineHeight: 50,
     marginTop: 0,
+    
   },
   monthText: {
     fontSize: RFPercentage(1.8),
-    fontFamily: "QuicksandSemiBold",
+    fontFamily: "REMSemiBold",
     color: "#04384E",
     marginTop: 0,
     marginBottom: 0,
@@ -1037,7 +1039,7 @@ export const MyStyles = StyleSheet.create({
   locationText: {
     fontSize: RFPercentage(2),
     color: "white",
-    fontFamily: "QuicksandSemiBold",
+    fontFamily: "REMSemiBold",
   },
   weatherIcon: {
     width: RFPercentage(5),
@@ -1210,11 +1212,12 @@ export const MyStyles = StyleSheet.create({
 
   markAllText: {
     paddingHorizontal: 20,
-    color: "#0E94D3",
+    color: "gray",
     fontSize: RFPercentage(2),
     fontFamily: "REMSemiBold",
     textAlign: "right",
     textDecorationLine: "underline",
+    marginTop: 10,
   },
   notifLine: {
     flexDirection: "column",
@@ -1394,12 +1397,19 @@ export const MyStyles = StyleSheet.create({
   personalInfobuttons: {
     flexDirection: "row",
     justifyContent: "space-around",
+    marginBottom:10
   },
   personalInfoButton: {
     backgroundColor: "#0E94D3",
+    opacity:0.8,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 5,
+    width: 130,
   },
   radioGroup: {
     flexDirection: "row",
@@ -1637,7 +1647,7 @@ export const MyStyles = StyleSheet.create({
     fontSize: RFPercentage(2.4),
     borderRadius: 5,
     color: "#fff",
-    backgroundColor: "#04384E",
+    backgroundColor: "#0E94D3",
     width: "100%",
     fontFamily: "QuicksandBold",
     paddingVertical: 15,

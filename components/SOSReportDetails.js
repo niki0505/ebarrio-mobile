@@ -384,7 +384,7 @@ const SOSReportDetails = () => {
                         }
                         style={[
                           MyStyles.button,
-                          { backgroundColor: "#BC0F0F" },
+                          { backgroundColor: "#00BA00" },
                         ]}
                         disabled={loading}
                       >
@@ -394,12 +394,13 @@ const SOSReportDetails = () => {
                         onPress={() =>
                           navigation.navigate("FalseAlarm", { selectedID })
                         }
-                        style={[MyStyles.button, MyStyles.sosWhiteBtn]}
+                        style={[
+                          MyStyles.button,
+                          { backgroundColor: "#BC0F0F" },
+                        ]}
                         disabled={loading}
                       >
-                        <Text
-                          style={[MyStyles.buttonText, { color: "#BC0F0F" }]}
-                        >
+                        <Text style={[MyStyles.buttonText, { color: "white" }]}>
                           False Alarm
                         </Text>
                       </TouchableOpacity>

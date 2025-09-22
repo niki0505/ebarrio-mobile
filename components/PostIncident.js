@@ -239,7 +239,8 @@ const PostIncident = () => {
           <Text
             style={[MyStyles.formMessage, { color: "white", opacity: 0.7 }]}
           >
-            Please fill out the required information to submit a post incident report.
+            Please fill out the required information to submit a post incident
+            report.
           </Text>
 
           <View style={{ marginVertical: 30, gap: 10 }}>
@@ -343,10 +344,7 @@ const PostIncident = () => {
             style={[
               MyStyles.button,
               {
-                borderWidth: 5,
-                borderColor: "white",
-                backgroundColor: "#BC0F0F",
-
+                backgroundColor: "#00BA00",
               },
             ]}
             onPress={handleConfirm}

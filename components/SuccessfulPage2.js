@@ -58,7 +58,7 @@ const SuccessfulPage2 = () => {
           {service === "ResidentForm" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Resident Profile Request Submitted
+                Successful!
               </Text>
               <Text style={MyStyles.serviceDesc}>
                 Your resident profile request has been submitted to the

@@ -151,7 +151,8 @@ const Notification = () => {
               MyStyles.scrollContainer,
               {
                 paddingBottom: insets.bottom + 100,
-                padding: 30,
+                paddingHorizontal: 30,
+                marginTop: -10,
               },
             ]}
             showsVerticalScrollIndicator={false}
@@ -177,10 +178,20 @@ const Notification = () => {
                     >
                       <View style={MyStyles.notifRowSpacing}>
                         <View style={{ flexDirection: "column", flex: 1 }}>
-                          <Text style={MyStyles.notifTitleMessage}>
+                          <Text
+                            style={[
+                              MyStyles.notifTitleMessage,
+                              { fontFamily: "REMSemiBold" },
+                            ]}
+                          >
                             {notif.title}
                           </Text>
-                          <Text style={MyStyles.notifTitleMessage}>
+                          <Text
+                            style={[
+                              MyStyles.notifTitleMessage,
+                              { fontFamily: "QuicksandSemiBold" },
+                            ]}
+                          >
                             {truncateNotifMessage(notif.message)}
                           </Text>
                           <Text

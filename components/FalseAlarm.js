@@ -342,9 +342,7 @@ const FalseAlarm = () => {
             style={[
               MyStyles.button,
               {
-                borderWidth: 5,
-                borderColor: "white",
-                backgroundColor: "#BC0F0F",
+                backgroundColor: "#00BA00",
               },
             ]}
             onPress={handleConfirm}
