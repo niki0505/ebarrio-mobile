@@ -31,6 +31,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
 import api from "../api";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import sign from "../assets/resident-sign.png";
 
 //ICONSS
 import Entypo from "@expo/vector-icons/Entypo";
@@ -38,6 +39,8 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
+import Feather from "@expo/vector-icons/Feather"; 
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const UserProfile = () => {
   const screenWidth = Dimensions.get("window").width;
@@ -1121,7 +1124,7 @@ const UserProfile = () => {
               },
             ]}
           >
-            <View style={MyStyles.loginFormWrapper}>
+            <View style={[MyStyles.loginFormWrapper, { marginVertical: 0 }]}>
               {/* Personal Information */}
 
               {/* ID */}
@@ -1151,10 +1154,12 @@ const UserProfile = () => {
                     onPress={toggleIDCamera}
                     style={MyStyles.personalInfoButton}
                   >
+                    <Entypo name="camera" size={20} color="white" />
                     <Text
                       style={{
-                        fontFamily: "QuicksandBold",
+                        fontFamily: "REMSemiBold",
                         color: "white",
+                        fontSize: RFPercentage(1.8),
                       }}
                     >
                       Capture
@@ -1164,10 +1169,12 @@ const UserProfile = () => {
                     onPress={pickIDImage}
                     style={MyStyles.personalInfoButton}
                   >
+                    <Feather name="upload" size={20} color="white" />
                     <Text
                       style={{
-                        fontFamily: "QuicksandBold",
+                        fontFamily: "REMSemiBold",
                         color: "white",
+                        fontSize: RFPercentage(1.8),
                       }}
                     >
                       Upload
@@ -1200,13 +1207,15 @@ const UserProfile = () => {
                     onPress={handleOpenSignature}
                     style={MyStyles.personalInfoButton}
                   >
+                    <Image source={sign} style={{ width: 20, height: 20 }} />
                     <Text
                       style={{
-                        fontFamily: "QuicksandBold",
+                        fontFamily: "REMSemiBold",
                         color: "white",
+                        fontSize: RFPercentage(1.8),
                       }}
                     >
-                      Draw
+                      Sign
                     </Text>
                   </TouchableOpacity>
 
@@ -1214,10 +1223,12 @@ const UserProfile = () => {
                     onPress={handleSignatureClear}
                     style={MyStyles.personalInfoButton}
                   >
+                    <FontAwesome5 name="trash" size={20} color="white" />
                     <Text
                       style={{
-                        fontFamily: "QuicksandBold",
+                        fontFamily: "REMSemiBold",
                         color: "white",
+                        fontSize: RFPercentage(1.8),
                       }}
                     >
                       Clear

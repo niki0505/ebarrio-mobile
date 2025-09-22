@@ -443,13 +443,13 @@ const Home = () => {
                     {/* Left panel */}
                     <View style={MyStyles.leftCalendar}>
                       <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
+                        style={{ flexDirection: "row", alignItems: "center", marginLeft:5}}
                       >
                         <Text style={MyStyles.bigDate}>
                           {currentDate.getDate()}
                         </Text>
 
-                        <View style={{ marginLeft: 5 }}>
+                        <View style={{ marginLeft: 10 }}>
                           <Text style={MyStyles.monthText}>
                             {currentDate.toLocaleString("en-US", {
                               month: "long",
@@ -540,7 +540,7 @@ const Home = () => {
                           fontFamily: "QuicksandMedium",
                           marginBottom: 5,
                           color: "#04384E",
-                          fontFamily: "QuicksandSemiBold",
+                          fontFamily: "REMSemiBold",
                         }}
                       >
                         {new Date(year, month).toLocaleString("en-US", {
@@ -656,7 +656,7 @@ const Home = () => {
                             height: "100%",
                             justifyContent: "center",
                             alignItems: "flex-start",
-                            padding: 10,
+                            padding: 20,
                           },
                         ]}
                       >
@@ -669,7 +669,9 @@ const Home = () => {
                             marginBottom: -10,
                           }}
                         >
-                          <View style={{ flexDirection: "row" }}>
+                          <View
+                            style={{ flexDirection: "row", marginBottom: 20 }}
+                          >
                             <EvilIcons
                               name="location"
                               style={MyStyles.locationIcon}
@@ -692,6 +694,7 @@ const Home = () => {
                             justifyContent: "space-between",
                             alignItems: "center",
                             width: "100%",
+                            marginBottom: 10,
                           }}
                         >
                           <Text

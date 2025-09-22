@@ -537,7 +537,7 @@ const EditMobileNumber = () => {
                   style={{
                     fontSize: RFPercentage(2),
                     color: "#808080",
-                    alignSelf: "flex-start",
+                    alignSelf: "flex-end",
                     marginTop: 10,
                     fontFamily: "QuicksandSemiBold",
                   }}
@@ -561,6 +561,7 @@ const EditMobileNumber = () => {
                       fontSize: RFPercentage(2),
                       color: "#808080",
                       fontFamily: "QuicksandSemiBold",
+                      alignSelf: "flex-end",
                     }}
                   >
                     Didn't get a code?

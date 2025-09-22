@@ -346,12 +346,11 @@ const DrawerContent = ({ navigation }) => {
         >
           <Image
             source={{ uri: user?.picture || "" }}
-            style={MyStyles.drawerImg} // Make sure to define width, height, and borderRadius in your styles
+            style={MyStyles.drawerImg}
           />
         </View>
 
-        {/* Text remains unaffected */}
-        <View style={{ marginLeft: 10 }}>
+        <View style={{ marginLeft: 15 }}>
           <Text style={MyStyles.drawerUsername}>{user.name}</Text>
         </View>
       </View>
@@ -469,13 +468,6 @@ const DrawerContent = ({ navigation }) => {
         <Text style={MyStyles.drawerServicesText}>Account Settings</Text>
       </TouchableOpacity>
 
-      <View
-        style={{
-          borderBottomWidth: 0.2,
-          backgroundColor: "#04384E",
-          opacity: 0.5,
-        }}
-      ></View>
       <TouchableOpacity
         style={{
           flexDirection: "row",
