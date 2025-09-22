@@ -218,21 +218,36 @@ const SOSReportDetails = () => {
                 ]}
               >
                 <View>
-                  <Image
-                    source={{
-                      uri:
-                        selectedReport?.resID?.picture ||
-                        "https://via.placeholder.com/80",
-                    }}
-                    style={MyStyles.sosImg}
-                  />
+                  <View
+                    style={[
+                      MyStyles.shadow,
+                      {
+                        backgroundColor: "#fff",
+                        padding: 5,
+                        borderRadius: 50,
+                      },
+                    ]}
+                  >
+                    <Image
+                      source={{
+                        uri:
+                          selectedReport?.resID?.picture ||
+                          "https://via.placeholder.com/80",
+                      }}
+                      style={MyStyles.sosImg}
+                    />
+                  </View>
                 </View>
-                <View>
-                  <Text style={[MyStyles.sosReportType, { color: "black" }]}>
+                <View
+                  style={{
+                    marginLeft: 10,
+                  }}
+                >
+                  <Text style={[MyStyles.sosReportType, { color: "#04384E" }]}>
                     {selectedReport.resID.firstname}{" "}
                     {selectedReport.resID.lastname}
                   </Text>
-                  <Text style={MyStyles.sosDetailsText}>
+                  <Text style={[MyStyles.sosDetailsText, { color: "#04384E" }]}>
                     {selectedReport.resID.age} years old
                   </Text>
                 </View>
@@ -338,7 +353,7 @@ const SOSReportDetails = () => {
                         onPress={() => setIsConfirmArrivedVisible(true)}
                         style={[
                           MyStyles.button,
-                          { backgroundColor: "#BC0F0F" },
+                          { backgroundColor: "#00BA00" },
                         ]}
                         disabled={loading}
                       >
@@ -348,12 +363,13 @@ const SOSReportDetails = () => {
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => setIsConfirmDidNotArrivedVisible(true)}
-                        style={[MyStyles.button, MyStyles.sosWhiteBtn]}
+                        style={[
+                          MyStyles.button,
+                          { backgroundColor: "#BC0F0F" },
+                        ]}
                         disabled={loading2}
                       >
-                        <Text
-                          style={[MyStyles.buttonText, { color: "#BC0F0F" }]}
-                        >
+                        <Text style={[MyStyles.buttonText]}>
                           {loading2 ? "Loading..." : "Did Not Arrive"}
                         </Text>
                       </TouchableOpacity>
@@ -395,7 +411,7 @@ const SOSReportDetails = () => {
                   onPress={() => setIsConfirmModalVisible(true)}
                   style={[
                     MyStyles.button,
-                    { marginTop: 30, backgroundColor: "#BC0F0F" },
+                    { marginTop: 30, backgroundColor: "#00BA00" },
                   ]}
                   disabled={loading}
                 >

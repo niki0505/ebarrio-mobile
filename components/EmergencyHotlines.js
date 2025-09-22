@@ -147,7 +147,8 @@ const EmergencyHotlines = () => {
                       {
                         flexDirection: "row",
                         alignItems: "center",
-                        height: RFPercentage(6),
+                        height: RFPercentage(7),
+                        padding: 15,
                       },
                     ]}
                   >
@@ -156,7 +157,7 @@ const EmergencyHotlines = () => {
                       color="#BC0F0F"
                       style={{
                         marginRight: 10,
-                        fontSize: RFPercentage(2.5),
+                        fontSize: RFPercentage(3),
                       }}
                     />
                     <View style={{ marginLeft: 10 }}>

@@ -998,13 +998,27 @@ const ResidentForm = () => {
                         onPress={toggleIDCamera}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>📷</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandBold",
+                            color: "white",
+                          }}
+                        >
+                          Capture
+                        </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={pickIDImage}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>📤</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandBold",
+                            color: "white",
+                          }}
+                        >
+                          Upload
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -1040,14 +1054,28 @@ const ResidentForm = () => {
                         onPress={handleOpenSignature}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>✍️</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandBold",
+                            color: "white",
+                          }}
+                        >
+                          Draw
+                        </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         onPress={handleSignatureClear}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>🗑️</Text>
+                        <Text
+                          style={{
+                            fontFamily: "QuicksandBold",
+                            color: "white",
+                          }}
+                        >
+                          Clear
+                        </Text>
                       </TouchableOpacity>
                     </View>
 
@@ -2013,7 +2041,10 @@ const ResidentForm = () => {
                           onChange={(item) =>
                             handleDropdownChange("householdno", item.value)
                           }
-                          style={MyStyles.input}
+                          style={[
+                            MyStyles.input,
+                            { height: RFPercentage("auto") },
+                          ]}
                         />
                       </View>
 

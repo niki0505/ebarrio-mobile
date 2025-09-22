@@ -208,14 +208,25 @@ const SOSRequests = () => {
                   </View>
 
                   <View style={MyStyles.rowAlignment}>
-                    <Image
-                      source={{
-                        uri:
-                          report.resID?.picture ||
-                          "https://via.placeholder.com/150",
-                      }}
-                      style={MyStyles.sosImg}
-                    />
+                    <View
+                      style={[
+                        MyStyles.shadow,
+                        {
+                          backgroundColor: "#fff",
+                          padding: 5,
+                          borderRadius: 50,
+                        },
+                      ]}
+                    >
+                      <Image
+                        source={{
+                          uri:
+                            report.resID?.picture ||
+                            "https://via.placeholder.com/150",
+                        }}
+                        style={[MyStyles.sosImg]}
+                      />
+                    </View>
 
                     <View style={{ flex: 1 }}>
                       <Text style={MyStyles.sosReportType}>

@@ -110,7 +110,7 @@ const Announcement = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       <View style={MyStyles.notScrollWrapper}>
@@ -122,10 +122,9 @@ const Announcement = () => {
         >
           <Entypo
             name="menu"
-            size={35}
-            color="#04384E"
+            color="#0E94D3"
             onPress={() => navigation.openDrawer()}
-            style={MyStyles.burgerIcon}
+            style={MyStyles.burgerChatIcon}
           />
           <View>
             <Text style={MyStyles.header}>Announcements</Text>
@@ -138,6 +137,7 @@ const Announcement = () => {
             {
               paddingBottom: insets.bottom + 100,
               gap: 10,
+              padding: 30,
             },
           ]}
         >
@@ -151,7 +151,7 @@ const Announcement = () => {
             value={sortOption}
             placeholder={sortOption}
             onChange={(item) => setSortOption(item.value)}
-            style={MyStyles.dropdownWrapper}
+            style={[MyStyles.dropdownWrapper, { marginTop: 0 }]}
             selectedTextStyle={MyStyles.dropdownText}
           />
           {sortedAnnouncements.map((element, index) => (

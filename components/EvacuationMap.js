@@ -60,7 +60,7 @@ const EvacuationMap = () => {
 
           <View style={{ flexDirection: "column", gap: 20 }}>
             <Text style={MyStyles.evacuationSubHeader}>
-              Barangay Aniban 2 School
+              Barangay Emergency Route Map
             </Text>
 
             <TouchableOpacity onPress={() => setIsVisible(true)}>

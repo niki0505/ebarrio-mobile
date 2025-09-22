@@ -80,7 +80,7 @@ const Notification = () => {
           flex: 1,
           paddingTop: insets.top,
           paddingBottom: insets.bottom,
-          backgroundColor: "#DCE5EB",
+          backgroundColor: "#F0F4F7",
         }}
       >
         <View style={MyStyles.notScrollWrapper}>
@@ -93,10 +93,9 @@ const Notification = () => {
             <View style={MyStyles.rowAlignment}>
               <Entypo
                 name="menu"
-                size={35}
-                color="#04384E"
+                color="#0E94D3"
                 onPress={() => navigation.openDrawer()}
-                style={MyStyles.burgerIcon}
+                style={MyStyles.burgerChatIcon}
               />
               <View>
                 <Text style={MyStyles.header}>Notifications</Text>
@@ -108,7 +107,7 @@ const Notification = () => {
                 setIsFilterDropdownVisible(!isFilterDropdownVisible)
               }
             >
-              <Octicons name="filter" size={24} color="#04384E" />
+              <Octicons name="filter" size={24} color="#0E94D3" />
             </TouchableOpacity>
           </View>
           {/* Dropdown Modal */}
@@ -152,6 +151,7 @@ const Notification = () => {
               MyStyles.scrollContainer,
               {
                 paddingBottom: insets.bottom + 100,
+                padding: 30,
               },
             ]}
             showsVerticalScrollIndicator={false}

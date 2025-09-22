@@ -117,7 +117,7 @@ const Login = () => {
 
           <View style={MyStyles.loginBottomWrapper}>
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-              Login Account
+              Welcome!
             </Text>
             <View style={MyStyles.loginFormWrapper}>
               <View
@@ -129,7 +129,7 @@ const Login = () => {
                   style={[
                     MyStyles.input,
                     {
-                      paddingLeft: 40,
+                      paddingLeft: 50,
                       paddingRight: 40,
                     },
                   ]}
@@ -161,7 +161,7 @@ const Login = () => {
                   style={[
                     MyStyles.input,
                     {
-                      paddingLeft: 40,
+                      paddingLeft: 50,
                       paddingRight: 40,
                     },
                   ]}
