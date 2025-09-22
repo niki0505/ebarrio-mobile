@@ -1086,7 +1086,7 @@ const UserProfile = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       <View style={MyStyles.notScrollWrapper}>
@@ -1098,10 +1098,9 @@ const UserProfile = () => {
         >
           <Entypo
             name="menu"
-            size={35}
-            color="#04384E"
+            color="#0E94D3"
             onPress={() => navigation.openDrawer()}
-            style={MyStyles.burgerIcon}
+            style={MyStyles.burgerChatIcon}
           />
           <View>
             <Text style={MyStyles.header}>Profile</Text>
@@ -1118,6 +1117,7 @@ const UserProfile = () => {
               {
                 paddingBottom: insets.bottom + 100,
                 gap: 10,
+                padding: 30,
               },
             ]}
           >
@@ -1151,13 +1151,27 @@ const UserProfile = () => {
                     onPress={toggleIDCamera}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>📷</Text>
+                    <Text
+                      style={{
+                        fontFamily: "QuicksandBold",
+                        color: "white",
+                      }}
+                    >
+                      Capture
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={pickIDImage}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>📤</Text>
+                    <Text
+                      style={{
+                        fontFamily: "QuicksandBold",
+                        color: "white",
+                      }}
+                    >
+                      Upload
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1186,14 +1200,28 @@ const UserProfile = () => {
                     onPress={handleOpenSignature}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>✍️</Text>
+                    <Text
+                      style={{
+                        fontFamily: "QuicksandBold",
+                        color: "white",
+                      }}
+                    >
+                      Draw
+                    </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     onPress={handleSignatureClear}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>🗑️</Text>
+                    <Text
+                      style={{
+                        fontFamily: "QuicksandBold",
+                        color: "white",
+                      }}
+                    >
+                      Clear
+                    </Text>
                   </TouchableOpacity>
                 </View>
 
@@ -2058,7 +2086,7 @@ const UserProfile = () => {
                       onChange={(item) =>
                         handleDropdownChange("householdno", item.value)
                       }
-                      style={MyStyles.input}
+                      style={[MyStyles.input, { height: RFPercentage("auto") }]}
                     />
                   </View>
 

@@ -359,7 +359,7 @@ const EditMobileNumber = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       {!isVerified ? (
@@ -384,7 +384,12 @@ const EditMobileNumber = () => {
           <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>Current Mobile Number</Text>
-              <Text style={[MyStyles.inputLabel, { color: "#000" }]}>
+              <Text
+                style={[
+                  MyStyles.inputLabel,
+                  { color: "#04384E", fontFamily: "QuicksandMedium" },
+                ]}
+              >
                 {maskMobileNumber(mobnum)}
               </Text>
             </View>

@@ -12,7 +12,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useState } from "react";
 import api from "../api";
-import AppLogo from "..//assets/applogo.png";
+import AppLogo from "..//assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import AlertModal from "./AlertModal";
 import { LinearGradient } from "expo-linear-gradient";
