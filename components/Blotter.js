@@ -31,12 +31,14 @@ const Blotter = () => {
   const [typeErrors, setTypeErrors] = useState(null);
   const [subjectError, setSubjectError] = useState(null);
   const [detailsError, setDetailsError] = useState(null);
+  const [typeErrors2, setTypeErrors2] = useState(null);
   const initialForm = {
     complainantID: user.resID,
     subjectID: "",
     subjectname: "",
     subjectaddress: "",
     typeofthecomplaint: "",
+    typeofthecomplaint2: "",
     details: "",
   };
 
@@ -48,7 +50,15 @@ const Blotter = () => {
     fetchResidents();
   }, []);
 
-  const typeList = ["Theft", "Assault", "Physical Injury", "Missing Person"];
+  const typeList = [
+    "Theft",
+    "Assault",
+    "Physical Injury",
+    "Trespassing",
+    "Property Damage",
+    "Domestic Dispute",
+    "Others",
+  ];
 
   const handleConfirm = async () => {
     let hasError = false;
@@ -58,6 +68,16 @@ const Blotter = () => {
       hasError = true;
     } else {
       setTypeErrors(null);
+    }
+
+    if (
+      blotterForm.typeofthecomplaint === "Others" &&
+      !blotterForm.typeofthecomplaint2
+    ) {
+      setTypeErrors2("This field is required!");
+      hasError = true;
+    } else {
+      setTypeErrors2(null);
     }
 
     if (!blotterForm.subjectID) {
@@ -96,6 +116,13 @@ const Blotter = () => {
     } else {
       delete updatedForm.subjectID;
     }
+
+    if (updatedForm.typeofthecomplaint === "Others") {
+      updatedForm.typeofthecomplaint = updatedForm.typeofthecomplaint2;
+      delete updatedForm.typeofthecomplaint2;
+    } else {
+      delete updatedForm.typeofthecomplaint2;
+    }
     try {
       await api.post("/sendblotter", {
         updatedForm,
@@ -130,6 +157,13 @@ const Blotter = () => {
     }
     if (name === "details") {
       setDetailsError(!value ? "This field is required!" : null);
+    }
+
+    if (
+      name === "typeofthecomplaint2" &&
+      blotterForm.typeofthecomplaint === "Others"
+    ) {
+      setTypeErrors2(!value ? "This field is required!" : null);
     }
   };
 
@@ -235,6 +269,29 @@ const Blotter = () => {
                 <Text style={MyStyles.errorMsg}>{typeErrors}</Text>
               ) : null}
             </View>
+
+            {blotterForm.typeofthecomplaint === "Others" && (
+              <View>
+                <Text style={MyStyles.inputLabel}>
+                  Others (Please Specify)
+                  <Text style={{ color: "red" }}>*</Text>
+                </Text>
+                <TextInput
+                  placeholder="Type of the Incident"
+                  style={MyStyles.input}
+                  value={blotterForm.typeofthecomplaint2}
+                  type="text"
+                  onChangeText={(text) =>
+                    handleInputChange("typeofthecomplaint2", text)
+                  }
+                />
+                {typeErrors2 ? (
+                  <Text style={MyStyles.errorMsg}>{typeErrors2}</Text>
+                ) : (
+                  <View style={{ flex: 1 }} />
+                )}
+              </View>
+            )}
 
             <View>
               <Text style={MyStyles.inputLabel}>
