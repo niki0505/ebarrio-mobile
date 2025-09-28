@@ -119,6 +119,9 @@ const Login = () => {
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
               Welcome!
             </Text>
+            <Text style={MyStyles.forgotMsg}>
+              Please enter your credentials to log in.
+            </Text>
             <View style={MyStyles.loginFormWrapper}>
               <View
                 style={{

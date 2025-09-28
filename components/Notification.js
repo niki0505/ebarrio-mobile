@@ -151,7 +151,7 @@ const Notification = () => {
               MyStyles.scrollContainer,
               {
                 paddingBottom: insets.bottom + 100,
-                paddingHorizontal: 30,
+                paddingHorizontal: 25,
                 marginTop: -10,
               },
             ]}

@@ -297,7 +297,7 @@ const Signup = () => {
 
             <View style={MyStyles.loginBottomWrapper}>
               <ScrollView
-                style={{ width: "100%" }}
+                style={{ width: "100%", marginBottom: 40 }}
                 contentContainerStyle={{
                   alignItems: "center",
                 }}
@@ -306,6 +306,9 @@ const Signup = () => {
               >
                 <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
                   Create Account
+                </Text>
+                <Text style={MyStyles.forgotMsg}>
+                  Please enter your details to create an account.
                 </Text>
 
                 <View style={MyStyles.loginFormWrapper}>
@@ -505,16 +508,6 @@ const Signup = () => {
                   }}
                 >
                   <Text
-                    onPress={() => navigation.navigate("Login")}
-                    style={[
-                      MyStyles.signUpText,
-                      { textDecorationLine: "underline" },
-                    ]}
-                  >
-                    Login
-                  </Text>
-
-                  <Text
                     onPress={() => navigation.navigate("ResidentForm")}
                     style={[
                       MyStyles.signUpText,
@@ -523,6 +516,16 @@ const Signup = () => {
                   >
                     {" "}
                     No Resident Profile?
+                  </Text>
+
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    Login
                   </Text>
                 </View>
               </ScrollView>
