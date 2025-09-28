@@ -75,6 +75,7 @@ import TermsConditions from "./components/TermsConditions";
 import ResidentForm from "./components/ResidentForm";
 import UserProfile from "./components/UserProfile";
 import AlertModal from "./components/AlertModal";
+import DataPrivacy from "./components/DataPrivacy";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -106,8 +107,14 @@ const CustomTabBar = ({
   const { user } = useContext(AuthContext);
 
   return (
-    <View style={[MyStyles.bottomTabContainer, { bottom: insets.bottom }]}>
-      {/* SVG Background with Notch */}
+    <View
+      style={[
+        MyStyles.bottomTabContainer,
+        {
+          bottom: insets.bottom,
+        },
+      ]}
+    >
       <View
         style={[
           MyStyles.svgContainer,
@@ -126,26 +133,51 @@ const CustomTabBar = ({
             d={
               user.role === "Resident"
                 ? `
-          M0,0 
+       M0,0
           H38
           C42,4 38,20 47,36
           C49,40 51,40 53,36
           C62,20 58,4 62,0
           H100
-          V100 
+          V100
           H0
           Z
-        `
+      `
                 : `
-          M0,0 
-          H100 
-          V100 
-          H0 
+        M0,0
+          H100
+          V100
+          H0
           Z
-        `
+      `
             }
             fill="#fff"
           />
+
+          {user.role === "Resident" ? (
+            <>
+              <Path
+                d="M0,0 H38 M62,0 H100"
+                fill="none"
+                stroke="#aaa"
+                strokeWidth={1}
+              />
+
+              <Path
+                d={`
+          M38,0
+          C42,4 38,20 47,36
+          C49,40 51,40 53,36
+          C62,20 58,4 62,0
+        `}
+                fill="none"
+                stroke="#aaa"
+                strokeWidth={0.3}
+              />
+            </>
+          ) : (
+            <Path d="M0,0 H100" fill="none" stroke="#aaa" strokeWidth={1} />
+          )}
         </Svg>
       </View>
 
@@ -284,7 +316,7 @@ const DrawerContent = ({ navigation }) => {
     >
       <Entypo
         name="menu"
-        color="#04384E"
+        color="#0E94D3"
         onPress={() => navigation.closeDrawer()}
         style={[MyStyles.burgerChatIcon, { alignSelf: "flex-end" }]}
       />
@@ -298,11 +330,27 @@ const DrawerContent = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <Image
-          source={{ uri: user?.picture || "" }}
-          style={MyStyles.drawerImg}
-        />
-        <View style={{ marginLeft: 10 }}>
+        <View
+          style={[
+            {
+              backgroundColor: "#fff",
+              borderRadius: 50,
+              padding: 5,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: 0.5,
+              shadowRadius: 5,
+              elevation: 5,
+            },
+          ]}
+        >
+          <Image
+            source={{ uri: user?.picture || "" }}
+            style={MyStyles.drawerImg}
+          />
+        </View>
+
+        <View style={{ marginLeft: 15 }}>
           <Text style={MyStyles.drawerUsername}>{user.name}</Text>
         </View>
       </View>
@@ -420,13 +468,6 @@ const DrawerContent = ({ navigation }) => {
         <Text style={MyStyles.drawerServicesText}>Account Settings</Text>
       </TouchableOpacity>
 
-      <View
-        style={{
-          borderBottomWidth: 0.2,
-          backgroundColor: "#04384E",
-          opacity: 0.5,
-        }}
-      ></View>
       <TouchableOpacity
         style={{
           flexDirection: "row",
@@ -680,6 +721,10 @@ export default function App() {
                       children={() => (
                         <PublicRoute element={<TermsConditions />} />
                       )}
+                    />
+                    <Stack.Screen
+                      name="DataPrivacy"
+                      children={() => <PublicRoute element={<DataPrivacy />} />}
                     />
                     <Stack.Screen
                       name="Signup"

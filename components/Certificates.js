@@ -32,7 +32,7 @@ const Certificates = () => {
   const [lineBusError, setLineBusError] = useState(null);
   const initialForm = {
     typeofcertificate: "",
-    amount: "",
+    amount: "₱0.00",
     purpose: "",
     businessname: "",
     lineofbusiness: "",
@@ -197,7 +197,7 @@ const Certificates = () => {
       setCertificateForm((prev) => ({
         ...prev,
         [name]: value.value,
-        amount: selectedCert ? selectedCert.price : "",
+        amount: selectedCert ? selectedCert.price : "₱0.00",
       }));
       setTypeErrors(null);
     } else {
@@ -229,7 +229,7 @@ const Certificates = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       <KeyboardAvoidingView
@@ -241,6 +241,7 @@ const Certificates = () => {
             MyStyles.scrollContainer,
             {
               gap: 10,
+              padding: 30,
             },
           ]}
         >
@@ -410,7 +411,7 @@ const Certificates = () => {
               <Text style={MyStyles.inputLabel}>Amount</Text>
               <TextInput
                 value={certificateForm.amount}
-                editable={false}
+                editable={false} // Keeps the amount field non-editable
                 style={MyStyles.blotterFullName}
               />
             </View>

@@ -155,7 +155,7 @@ const Status = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       <KeyboardAvoidingView

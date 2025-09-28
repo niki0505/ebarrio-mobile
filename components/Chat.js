@@ -379,7 +379,7 @@ const Chat = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       <KeyboardAvoidingView
@@ -391,166 +391,175 @@ const Chat = () => {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginTop: 10,
-            marginLeft: 10,
+            backgroundColor: "#0E94D3",
+            paddingHorizontal: 20,
+            paddingVertical: 10,
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginLeft: 10,
-            }}
-          >
-            <MaterialIcons
-              onPress={() => navigation.navigate("BottomTabs")}
-              name="arrow-back-ios"
-              size={30}
-              style={[MyStyles.backArrow]}
-            />
+          <MaterialIcons
+            onPress={() => navigation.navigate("BottomTabs")}
+            name="arrow-back-ios"
+            size={30}
+            style={{ color: "#fff" }}
+          />
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Image source={Aniban2Logo} style={MyStyles.announcementLogo} />
-            <View>
-              <Text style={[MyStyles.announcementUploader, { marginLeft: 5 }]}>
-                Barangay Aniban II
-              </Text>
-            </View>
+            <Text
+              style={[
+                MyStyles.announcementUploader,
+                { color: "#fff", fontFamily: "REMBold" },
+              ]}
+            >
+              Barangay Aniban II
+            </Text>
           </View>
         </View>
 
         {/* Chat Messages ScrollView */}
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ flex: 1, marginHorizontal: 20, marginTop: 10 }}
+          style={{
+            flex: 1,
+            backgroundColor: "#F1FBFF",
+          }}
           contentContainerStyle={{ paddingBottom: 20 }}
           ref={scrollViewRef}
           onContentSizeChange={() =>
             scrollViewRef.current?.scrollToEnd({ animated: true })
           }
         >
-          {loading ? (
-            <View style={{ paddingVertical: 30, alignItems: "center" }}>
-              <ActivityIndicator size="large" color="#04384E" />
-            </View>
-          ) : (
-            allMessages.map((msg, i) => {
-              const senderID = msg.from?._id || msg.from;
-              const isEndedMsg = msg.message === "This chat has ended.";
-              const isUser = senderID === user.userID;
-              const isBot = senderID === "000000000000000000000000";
+          <View style={{ marginTop: 10, marginHorizontal: 20 }}>
+            {loading ? (
+              <View style={{ paddingVertical: 30, alignItems: "center" }}>
+                <ActivityIndicator size="large" color="#04384E" />
+              </View>
+            ) : (
+              allMessages.map((msg, i) => {
+                const senderID = msg.from?._id || msg.from;
+                const isEndedMsg = msg.message === "This chat has ended.";
+                const isUser = senderID === user.userID;
+                const isBot = senderID === "000000000000000000000000";
 
-              let parsedMessage = null;
-              try {
-                parsedMessage = JSON.parse(msg.message);
-              } catch (err) {}
+                let parsedMessage = null;
+                try {
+                  parsedMessage = JSON.parse(msg.message);
+                } catch (err) {}
 
-              const isButtonMessage = parsedMessage?.type === "button";
+                const isButtonMessage = parsedMessage?.type === "button";
 
-              const currentDate = new Date(msg.timestamp).toDateString();
-              const previousMsg = allMessages[i - 1];
-              const previousDate = previousMsg
-                ? new Date(previousMsg.timestamp).toDateString()
-                : null;
-              const showDateHeader = currentDate !== previousDate;
+                const currentDate = new Date(msg.timestamp).toDateString();
+                const previousMsg = allMessages[i - 1];
+                const previousDate = previousMsg
+                  ? new Date(previousMsg.timestamp).toDateString()
+                  : null;
+                const showDateHeader = currentDate !== previousDate;
 
-              return (
-                <View key={`${msg.timestamp}-${i}`}>
-                  {showDateHeader && (
-                    <View style={{ alignSelf: "center", marginBottom: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: RFPercentage(2),
-                          color: "#999",
-                          fontWeight: "600",
-                          paddingHorizontal: 12,
-                          paddingVertical: 4,
-                          borderRadius: 20,
-                        }}
-                      >
-                        {new Date(msg.timestamp).toLocaleDateString(undefined, {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </Text>
-                    </View>
-                  )}
-
-                  <View
-                    style={{
-                      alignSelf: isEndedMsg
-                        ? "center"
-                        : isUser
-                        ? "flex-end"
-                        : "flex-start",
-                      backgroundColor: isEndedMsg
-                        ? "transparent"
-                        : isUser
-                        ? "#0E94D3"
-                        : "#b3b3b3",
-                      borderRadius: isEndedMsg ? 0 : 12,
-                      padding: isEndedMsg ? 4 : 10,
-                      marginBottom: 8,
-                      maxWidth: "80%",
-                    }}
-                  >
-                    {isButtonMessage ? (
-                      <View style={{ gap: 10 }}>
-                        {parsedMessage.options.map((option) => (
-                          <TouchableOpacity
-                            key={option.id}
-                            onPress={() => handleOptionClick(option.id)}
-                            style={{
-                              backgroundColor: "#fff",
-                              paddingVertical: 10,
-                              paddingHorizontal: 15,
-                              borderRadius: 8,
-                              marginTop: 5,
-                            }}
-                            disabled={msg.status === "Ended"}
-                          >
-                            <Text style={{ color: "#333", fontWeight: "bold" }}>
-                              {option.label}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    ) : (
-                      <>
+                return (
+                  <View key={`${msg.timestamp}-${i}`}>
+                    {showDateHeader && (
+                      <View style={{ alignSelf: "center", marginBottom: 10 }}>
                         <Text
                           style={{
                             fontSize: RFPercentage(2),
-                            fontFamily: "QuicksandSemiBold",
-                            fontStyle: isEndedMsg ? "italic" : "normal",
-                            color: isEndedMsg ? "#666" : "#fff",
+                            color: "#999",
+                            fontWeight: "600",
+                            paddingHorizontal: 12,
+                            paddingVertical: 4,
+                            borderRadius: 20,
                           }}
                         >
-                          {msg.message}
+                          {new Date(msg.timestamp).toLocaleDateString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
                         </Text>
-                        {!isEndedMsg && (
+                      </View>
+                    )}
+
+                    <View
+                      style={{
+                        alignSelf: isEndedMsg
+                          ? "center"
+                          : isUser
+                          ? "flex-end"
+                          : "flex-start",
+                        backgroundColor: isEndedMsg
+                          ? "transparent"
+                          : isUser
+                          ? "#0E94D3"
+                          : "#D1D5DB",
+                        borderRadius: isEndedMsg ? 0 : 12,
+                        padding: isEndedMsg ? 4 : 10,
+                        marginBottom: 8,
+                        maxWidth: "80%",
+                      }}
+                    >
+                      {isButtonMessage ? (
+                        <View style={{ gap: 10 }}>
+                          {parsedMessage.options.map((option) => (
+                            <TouchableOpacity
+                              key={option.id}
+                              onPress={() => handleOptionClick(option.id)}
+                              style={{
+                                backgroundColor: "#fff",
+                                paddingVertical: 10,
+                                paddingHorizontal: 15,
+                                borderRadius: 8,
+                                marginTop: 5,
+                              }}
+                              disabled={msg.status === "Ended"}
+                            >
+                              <Text
+                                style={{ color: "#333", fontWeight: "bold" }}
+                              >
+                                {option.label}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      ) : (
+                        <>
                           <Text
                             style={{
-                              fontSize: RFPercentage(1.6),
-                              color: "#eee",
-                              marginTop: 5,
+                              fontSize: RFPercentage(2),
+                              fontFamily: "QuicksandSemiBold",
+                              fontStyle: isEndedMsg ? "italic" : "normal",
+                              color: isEndedMsg ? "#666" : "#fff",
                             }}
                           >
-                            {new Date(msg.timestamp).toLocaleTimeString(
-                              undefined,
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              }
-                            )}
+                            {msg.message}
                           </Text>
-                        )}
-                      </>
-                    )}
+                          {!isEndedMsg && (
+                            <Text
+                              style={{
+                                fontSize: RFPercentage(1.6),
+                                color: "#eee",
+                                marginTop: 5,
+                              }}
+                            >
+                              {new Date(msg.timestamp).toLocaleTimeString(
+                                undefined,
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </Text>
+                          )}
+                        </>
+                      )}
+                    </View>
                   </View>
-                </View>
-              );
-            })
-          )}
+                );
+              })
+            )}
+          </View>
         </ScrollView>
 
         {/* Bottom Chat Bar */}
@@ -568,7 +577,7 @@ const Chat = () => {
             <TextInput
               value={message}
               onChangeText={setMessage}
-              placeholder="Type your message..."
+              placeholder="Type a message..."
               style={{
                 flex: 1,
                 height: RFPercentage(7),
@@ -653,7 +662,7 @@ const Chat = () => {
         />
         <AlertModal
           isVisible={isConfirmModalVisible}
-          isConfirmationModal={true}
+          isChatConfirm={true}
           title="Chat with the Barangay?"
           message="Are you sure you want to connect with the barangay admins now?"
           onClose={() => setIsConfirmModalVisible(false)}

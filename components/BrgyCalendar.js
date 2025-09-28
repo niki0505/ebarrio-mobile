@@ -234,7 +234,7 @@ const BrgyCalendar = () => {
             </View>
 
           {/* Important Events */}
-          <View style={{ marginTop: -50 }}>
+          <View style={{ marginTop: -30 }}>
             <Text style={[MyStyles.subHeader, { marginTop: 0 }]}>
               Important Events (
               {selectedDate.toLocaleDateString("en-US", {

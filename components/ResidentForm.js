@@ -41,6 +41,10 @@ import axios from "axios";
 import api from "../api";
 import { MaterialIcons } from "@expo/vector-icons";
 import { DraftContext } from "../context/DraftContext";
+import sign from "../assets/resident-sign.png";
+import Entypo from "@expo/vector-icons/Entypo";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const ResidentForm = () => {
   const screenWidth = Dimensions.get("window").width;
@@ -998,13 +1002,31 @@ const ResidentForm = () => {
                         onPress={toggleIDCamera}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>📷</Text>
+                        <Entypo name="camera" size={20} color="white" />
+                        <Text
+                          style={{
+                            fontFamily: "REMSemiBold",
+                            color: "white",
+                            fontSize: RFPercentage(1.8),
+                          }}
+                        >
+                          Capture
+                        </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={pickIDImage}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>📤</Text>
+                        <Feather name="upload" size={20} color="white" />
+                        <Text
+                          style={{
+                            fontFamily: "REMSemiBold",
+                            color: "white",
+                            fontSize: RFPercentage(1.8),
+                          }}
+                        >
+                          Upload
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -1040,14 +1062,35 @@ const ResidentForm = () => {
                         onPress={handleOpenSignature}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>✍️</Text>
+                        <Image
+                          source={sign}
+                          style={{ width: 20, height: 20 }}
+                        />
+                        <Text
+                          style={{
+                            fontFamily: "REMSemiBold",
+                            color: "white",
+                            fontSize: RFPercentage(1.8),
+                          }}
+                        >
+                          Sign
+                        </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         onPress={handleSignatureClear}
                         style={MyStyles.personalInfoButton}
                       >
-                        <Text>🗑️</Text>
+                        <FontAwesome5 name="trash" size={20} color="white" />
+                        <Text
+                          style={{
+                            fontFamily: "REMSemiBold",
+                            color: "white",
+                            fontSize: RFPercentage(1.8),
+                          }}
+                        >
+                          Clear
+                        </Text>
                       </TouchableOpacity>
                     </View>
 
@@ -2013,7 +2056,10 @@ const ResidentForm = () => {
                           onChange={(item) =>
                             handleDropdownChange("householdno", item.value)
                           }
-                          style={MyStyles.input}
+                          style={[
+                            MyStyles.input,
+                            { height: RFPercentage("auto") },
+                          ]}
                         />
                       </View>
 
@@ -2651,6 +2697,37 @@ const ResidentForm = () => {
                       {loading ? "Submitting..." : "Submit"}
                     </Text>
                   </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    gap: 4,
+                    marginTop: 10,
+                  }}
+                >
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    Login
+                  </Text>
+
+                  <Text
+                    onPress={() => navigation.navigate("Signup")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    {" "}
+                    Sign Up
+                  </Text>
                 </View>
 
                 <AlertModal

@@ -6,7 +6,7 @@ import { OtpContext } from "../context/OtpContext";
 import { OtpInput } from "react-native-otp-entry";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
-import AppLogo from "..//assets/applogo.png";
+import AppLogo from "..//assets/applogo-darkbg.png";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import AlertModal from "./AlertModal";
@@ -186,6 +186,7 @@ const OTP = ({}) => {
                   fontSize: RFPercentage(2),
                   color: "#808080",
                   fontFamily: "QuicksandSemiBold",
+                  alignSelf: "flex-end",
                 }}
               >
                 Resend OTP in{" "}
@@ -200,6 +201,7 @@ const OTP = ({}) => {
                     fontSize: RFPercentage(2),
                     color: "#808080",
                     fontFamily: "QuicksandSemiBold",
+                    alignSelf: "flex-end",
                   }}
                 >
                   Didn't get a code?

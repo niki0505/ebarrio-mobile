@@ -31,6 +31,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
 import api from "../api";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import sign from "../assets/resident-sign.png";
 
 //ICONSS
 import Entypo from "@expo/vector-icons/Entypo";
@@ -38,6 +39,8 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
+import Feather from "@expo/vector-icons/Feather"; 
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const UserProfile = () => {
   const screenWidth = Dimensions.get("window").width;
@@ -1086,7 +1089,7 @@ const UserProfile = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       <View style={MyStyles.notScrollWrapper}>
@@ -1098,10 +1101,9 @@ const UserProfile = () => {
         >
           <Entypo
             name="menu"
-            size={35}
-            color="#04384E"
+            color="#0E94D3"
             onPress={() => navigation.openDrawer()}
-            style={MyStyles.burgerIcon}
+            style={MyStyles.burgerChatIcon}
           />
           <View>
             <Text style={MyStyles.header}>Profile</Text>
@@ -1118,10 +1120,11 @@ const UserProfile = () => {
               {
                 paddingBottom: insets.bottom + 100,
                 gap: 10,
+                padding: 30,
               },
             ]}
           >
-            <View style={MyStyles.loginFormWrapper}>
+            <View style={[MyStyles.loginFormWrapper, { marginVertical: 0 }]}>
               {/* Personal Information */}
 
               {/* ID */}
@@ -1151,13 +1154,31 @@ const UserProfile = () => {
                     onPress={toggleIDCamera}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>📷</Text>
+                    <Entypo name="camera" size={20} color="white" />
+                    <Text
+                      style={{
+                        fontFamily: "REMSemiBold",
+                        color: "white",
+                        fontSize: RFPercentage(1.8),
+                      }}
+                    >
+                      Capture
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={pickIDImage}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>📤</Text>
+                    <Feather name="upload" size={20} color="white" />
+                    <Text
+                      style={{
+                        fontFamily: "REMSemiBold",
+                        color: "white",
+                        fontSize: RFPercentage(1.8),
+                      }}
+                    >
+                      Upload
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1186,14 +1207,32 @@ const UserProfile = () => {
                     onPress={handleOpenSignature}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>✍️</Text>
+                    <Image source={sign} style={{ width: 20, height: 20 }} />
+                    <Text
+                      style={{
+                        fontFamily: "REMSemiBold",
+                        color: "white",
+                        fontSize: RFPercentage(1.8),
+                      }}
+                    >
+                      Sign
+                    </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     onPress={handleSignatureClear}
                     style={MyStyles.personalInfoButton}
                   >
-                    <Text>🗑️</Text>
+                    <FontAwesome5 name="trash" size={20} color="white" />
+                    <Text
+                      style={{
+                        fontFamily: "REMSemiBold",
+                        color: "white",
+                        fontSize: RFPercentage(1.8),
+                      }}
+                    >
+                      Clear
+                    </Text>
                   </TouchableOpacity>
                 </View>
 
@@ -2058,7 +2097,7 @@ const UserProfile = () => {
                       onChange={(item) =>
                         handleDropdownChange("householdno", item.value)
                       }
-                      style={MyStyles.input}
+                      style={[MyStyles.input, { height: RFPercentage("auto") }]}
                     />
                   </View>
 

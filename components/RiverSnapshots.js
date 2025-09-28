@@ -171,7 +171,7 @@ const RiverSnapshots = () => {
                 {
                   height: RFPercentage(7),
                   flex: 1,
-                  backgroundColor: viewMode === "current" ? "#04384E" : "white",
+                  backgroundColor: viewMode === "current" ? "white" : "white",
                   marginHorizontal: 10,
                 },
               ]}
@@ -182,7 +182,7 @@ const RiverSnapshots = () => {
                   MyStyles.buttonText,
                   {
                     fontSize: RFPercentage(2.4),
-                    color: viewMode === "current" ? "white" : "#04384E",
+                    color: viewMode === "current" ? "#BC0F0F" : "#BC0F0F",
                     textAlign: "center",
                   },
                 ]}
@@ -197,7 +197,7 @@ const RiverSnapshots = () => {
                 {
                   height: RFPercentage(7),
                   flex: 1,
-                  backgroundColor: viewMode === "history" ? "#04384E" : "white",
+                  backgroundColor: viewMode === "history" ? "white" : "white",
                   marginHorizontal: 10,
                   alignItems: "center",
                 },
@@ -209,7 +209,7 @@ const RiverSnapshots = () => {
                   MyStyles.buttonText,
                   {
                     fontSize: RFPercentage(2.4),
-                    color: viewMode === "history" ? "white" : "#04384E",
+                    color: viewMode === "history" ? "#BC0F0F" : "#BC0F0F",
                     textAlign: "center",
                   },
                 ]}
@@ -253,7 +253,9 @@ const RiverSnapshots = () => {
                           size={40}
                           color="white"
                         />
-                        <Text style={MyStyles.buttonText}>Alert Residents</Text>
+                        <Text style={[MyStyles.buttonText, { marginLeft: 5 }]}>
+                          Alert Residents
+                        </Text>
                       </View>
                     </TouchableOpacity>
                   )}

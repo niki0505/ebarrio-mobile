@@ -16,7 +16,7 @@ import { OtpContext } from "../context/OtpContext";
 import { OtpInput } from "react-native-otp-entry";
 import { Dropdown } from "react-native-element-dropdown";
 import api from "../api";
-import AppLogo from "..//assets/applogo.png";
+import AppLogo from "..//assets/applogo-darkbg.png";
 import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import AlertModal from "./AlertModal";
 import { AntDesign } from "@expo/vector-icons";
@@ -449,7 +449,7 @@ const ForgotPassword = () => {
 
               <Text
                 onPress={() => navigation.navigate("Login")}
-                style={[MyStyles.signUpText, { marginTop: 10 }]}
+                style={[MyStyles.forgotPassText, { marginTop: 5 }]}
               >
                 Remember your password?
               </Text>
@@ -491,7 +491,7 @@ const ForgotPassword = () => {
                         new password.
                       </Text>
 
-                      <View style={MyStyles.loginFormWrapper}>
+                      <View style={[MyStyles.loginFormWrapper, {gap:30}]}>
                         <View>
                           <Text style={MyStyles.inputLabel}>
                             New Password<Text style={{ color: "red" }}>*</Text>
@@ -596,7 +596,10 @@ const ForgotPassword = () => {
                 <BackgroundOverlay />
                 <View style={MyStyles.forgotCardWrapper}>
                   <View style={MyStyles.forgotCard}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <ScrollView
+                      showsVerticalScrollIndicator={false}
+                      style={{ marginBottom: 10 }}
+                    >
                       <AntDesign
                         onPress={() => setOTPClicked(false)}
                         name="arrowleft"
@@ -633,7 +636,12 @@ const ForgotPassword = () => {
                       </View>
 
                       {isResendDisabled ? (
-                        <Text style={MyStyles.forgotMsg}>
+                        <Text
+                          style={[
+                            MyStyles.forgotMsg,
+                            { alignSelf: "flex-end", marginTop: 20 },
+                          ]}
+                        >
                           Resend OTP in{" "}
                           <Text style={{ color: "red" }}>{resendTimer} </Text>
                           second
@@ -644,14 +652,11 @@ const ForgotPassword = () => {
                           style={{
                             flexDirection: "row",
                             gap: 4,
-                            alignSelf: "flex-start",
-                            marginTop: 10,
+                            alignSelf: "flex-end",
+                            marginTop: 20,
                           }}
                         >
-                          <Text
-                            onPress={handleResend}
-                            style={MyStyles.byClickingText}
-                          >
+                          <Text style={MyStyles.byClickingText}>
                             Didn't get a code?
                           </Text>
                           <Text

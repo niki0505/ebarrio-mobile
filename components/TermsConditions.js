@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import AppLogo from "..//assets/applogo.png";
+import AppLogo from "..//assets/applogo-darkbg.png";
 
 const TermsConditions = () => {
   const insets = useSafeAreaInsets();
@@ -119,46 +119,19 @@ const TermsConditions = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.termsTitle}>
-                    5. Privacy and Data Protection
-                  </Text>
-                  <Text style={MyStyles.termsDesc}>
-                    Your privacy is important to us. We collect and use your
-                    personal data in accordance with our Privacy Policy, which
-                    is available within the App and on the Barangay’s official
-                    website. By using the App, you consent to the collection and
-                    processing of your personal information as described in the
-                    Privacy Policy.
-                  </Text>
-                </View>
-
-                <View>
-                  <Text style={MyStyles.termsTitle}>6. Notifications</Text>
+                  <Text style={MyStyles.termsTitle}>5. Notifications</Text>
                   <Text style={MyStyles.termsDesc}>
                     By enabling notifications for this application, you consent
                     to receiving important updates, alerts, and
                     emergency-related communications. These notifications may
-                    include, but are not limited to: - Barangay announcements -
-                    Request Status Updates - Emergency alerts and SOS
-                    confirmations
-                  </Text>
-                </View>
-
-                <View>
-                  <Text style={MyStyles.termsTitle}>7. Location Access</Text>
-                  <Text style={MyStyles.termsDesc}>
-                    By using this application, you grant permission for the app
-                    to access the location of your device in the event of an SOS
-                    emergency. Your location is collected and used in accordance
-                    with our Privacy Policy. You can revoke location access at
-                    any time by changing the permissions in your device
-                    settings.
+                    include, but are not limited to: {"\n"} - Barangay
+                    announcements {"\n"} - Request Status Updates
                   </Text>
                 </View>
 
                 <View>
                   <Text style={MyStyles.termsTitle}>
-                    8. Disaster Response Features
+                    6. Disaster Response Features
                   </Text>
                   <Text style={MyStyles.termsDesc}>
                     The App allows residents to access emergency protocols,
@@ -173,7 +146,7 @@ const TermsConditions = () => {
 
                 <View>
                   <Text style={MyStyles.termsTitle}>
-                    9. Intellectual Property
+                    7. Intellectual Property
                   </Text>
                   <Text style={MyStyles.termsDesc}>
                     The App, including its design, visuals, logos, and
@@ -186,7 +159,7 @@ const TermsConditions = () => {
 
                 <View>
                   <Text style={MyStyles.termsTitle}>
-                    10. Third-Party Services
+                    8. Third-Party Services
                   </Text>
                   <Text style={MyStyles.termsDesc}>
                     The App may contain links to third-party websites or
@@ -199,7 +172,7 @@ const TermsConditions = () => {
 
                 <View>
                   <Text style={MyStyles.termsTitle}>
-                    11. Disclaimer of Liability
+                    9. Disclaimer of Liability
                   </Text>
                   <Text style={MyStyles.termsDesc}>
                     While the App aims to provide accurate and up-to-date
@@ -213,7 +186,7 @@ const TermsConditions = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.termsTitle}>12. App Availability</Text>
+                  <Text style={MyStyles.termsTitle}>10. App Availability</Text>
                   <Text style={MyStyles.termsDesc}>
                     The App may be offline temporarily due to maintenance or
                     technical issues. The Barangay is not responsible for
@@ -224,7 +197,7 @@ const TermsConditions = () => {
 
                 <View>
                   <Text style={MyStyles.termsTitle}>
-                    13. Updates and Modifications
+                    11. Updates and Modifications
                   </Text>
                   <Text style={MyStyles.termsDesc}>
                     The Barangay reserves the right to modify, update, or
@@ -236,7 +209,7 @@ const TermsConditions = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.termsTitle}>14. Governing Law</Text>
+                  <Text style={MyStyles.termsTitle}>12. Governing Law</Text>
                   <Text style={MyStyles.termsDesc}>
                     These terms and conditions will be regulated and enforced in
                     line with the laws of Barangay Aniban 2 and the Philippines.
@@ -246,7 +219,7 @@ const TermsConditions = () => {
                 </View>
 
                 <View>
-                  <Text style={MyStyles.termsTitle}>15. Termination</Text>
+                  <Text style={MyStyles.termsTitle}>13. Termination</Text>
                   <Text style={MyStyles.termsDesc}>
                     If you violate these Terms of Service or engage in
                     misconduct, we may suspend or terminate your access to the
@@ -257,7 +230,7 @@ const TermsConditions = () => {
 
                 <View>
                   <Text style={MyStyles.termsTitle}>
-                    16. Contact Information
+                    14. Contact Information
                   </Text>
                   <Text style={MyStyles.termsDesc}>
                     For questions or concerns regarding these terms and

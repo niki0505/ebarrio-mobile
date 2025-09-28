@@ -378,7 +378,7 @@ const Home = () => {
           flex: 1,
           paddingTop: insets.top,
           paddingBottom: insets.bottom,
-          backgroundColor: "#DCE5EB",
+          backgroundColor: "#F0F4F7",
         }}
       >
         {loading ? (
@@ -403,7 +403,7 @@ const Home = () => {
                 <View style={MyStyles.rowAlignment}>
                   <Entypo
                     name="menu"
-                    color="#04384E"
+                    color="#0E94D3"
                     onPress={() => navigation.openDrawer()}
                     style={MyStyles.burgerChatIcon}
                   />
@@ -415,8 +415,11 @@ const Home = () => {
                 {user.role === "Resident" && (
                   <Ionicons
                     name="chatbubble-ellipses"
-                    color="#04384E"
-                    style={MyStyles.burgerChatIcon}
+                    color="#0E94D3"
+                    style={[
+                      MyStyles.burgerChatIcon,
+                      { fontSize: RFPercentage(3) },
+                    ]}
                     onPress={() => navigation.navigate("Chat")}
                   ></Ionicons>
                 )}
@@ -440,13 +443,13 @@ const Home = () => {
                     {/* Left panel */}
                     <View style={MyStyles.leftCalendar}>
                       <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
+                        style={{ flexDirection: "row", alignItems: "center", marginLeft:5}}
                       >
                         <Text style={MyStyles.bigDate}>
                           {currentDate.getDate()}
                         </Text>
 
-                        <View style={{ marginLeft: 5 }}>
+                        <View style={{ marginLeft: 10 }}>
                           <Text style={MyStyles.monthText}>
                             {currentDate.toLocaleString("en-US", {
                               month: "long",
@@ -528,7 +531,7 @@ const Home = () => {
                     </View>
 
                     {/* Right panel - Mini Calendar */}
-                    <View style={{ flex: 1, padding:15 }}>
+                    <View style={{ flex: 1, padding: 15 }}>
                       {/* Month title */}
                       <Text
                         style={{
@@ -537,7 +540,7 @@ const Home = () => {
                           fontFamily: "QuicksandMedium",
                           marginBottom: 5,
                           color: "#04384E",
-                          fontFamily: "QuicksandSemiBold",
+                          fontFamily: "REMSemiBold",
                         }}
                       >
                         {new Date(year, month).toLocaleString("en-US", {
@@ -589,7 +592,7 @@ const Home = () => {
                                 aspectRatio: 1,
                                 justifyContent: "center",
                                 alignItems: "center",
-                                marginBottom: 6, 
+                                marginBottom: 6,
                               }}
                             >
                               <Text
@@ -625,6 +628,7 @@ const Home = () => {
                     style={{
                       width: width - 40,
                       paddingHorizontal: 10,
+                      marginTop: 10,
                     }}
                   >
                     <TouchableOpacity
@@ -652,7 +656,7 @@ const Home = () => {
                             height: "100%",
                             justifyContent: "center",
                             alignItems: "flex-start",
-                            padding: 10,
+                            padding: 20,
                           },
                         ]}
                       >
@@ -665,7 +669,9 @@ const Home = () => {
                             marginBottom: -10,
                           }}
                         >
-                          <View style={{ flexDirection: "row" }}>
+                          <View
+                            style={{ flexDirection: "row", marginBottom: 20 }}
+                          >
                             <EvilIcons
                               name="location"
                               style={MyStyles.locationIcon}
@@ -688,6 +694,7 @@ const Home = () => {
                             justifyContent: "space-between",
                             alignItems: "center",
                             width: "100%",
+                            marginBottom: 10,
                           }}
                         >
                           <Text
@@ -758,7 +765,11 @@ const Home = () => {
                     onPress={() => navigation.navigate("Announcements")}
                     style={[
                       MyStyles.subHeader,
-                      { textDecorationLine: "underline" },
+                      {
+                        textDecorationLine: "underline",
+                        fontSize: RFPercentage(2),
+                        color: "gray",
+                      },
                     ]}
                   >
                     View All
@@ -810,7 +821,7 @@ const Home = () => {
                                 source={Aniban2Logo}
                                 style={MyStyles.announcementLogo}
                               />
-                              <View style={{ marginLeft: 5 }}>
+                              <View style={MyStyles.announcementHeaderWrapper}>
                                 <Text style={MyStyles.announcementUploader}>
                                   Barangay Aniban 2
                                 </Text>

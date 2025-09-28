@@ -14,6 +14,7 @@ const AlertModal = ({
   isResidentConfirmationModal = false,
   isConfirmationModal = false,
   isHaveAnAccountModal = false,
+  isChatConfirm = false,
 }) => {
   if (!isVisible) return null;
 
@@ -35,7 +36,7 @@ const AlertModal = ({
         <View
           style={{
             backgroundColor: "white",
-            padding: 20,
+            padding: 30,
             borderRadius: 10,
             width: RFPercentage(35),
             alignItems: "center",
@@ -83,7 +84,7 @@ const AlertModal = ({
                   padding: 10,
                   borderRadius: 10,
                   marginHorizontal: 10,
-                  width: RFPercentage(15),
+                  width: RFPercentage(14),
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -117,7 +118,7 @@ const AlertModal = ({
                   fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
-                  color: "#808080",
+                  color: "#04384E",
                   textAlign: "center",
                 }}
               >
@@ -150,7 +151,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: RFPercentage(15),
+                    width: RFPercentage(14),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -176,7 +177,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: RFPercentage(15),
+                    width: RFPercentage(14),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -207,7 +208,7 @@ const AlertModal = ({
                   fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 10,
-                  color: "#808080",
+                  color: "#04384E",
                   textAlign: "center",
                 }}
               >
@@ -230,6 +231,7 @@ const AlertModal = ({
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
+                  gap: 10,
                 }}
               >
                 <TouchableOpacity
@@ -239,8 +241,7 @@ const AlertModal = ({
                     borderColor: "#BC0F0F",
                     padding: 10,
                     borderRadius: 10,
-                    marginHorizontal: 10,
-                    width: RFPercentage(15),
+                    width: RFPercentage(14),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -265,8 +266,96 @@ const AlertModal = ({
                     backgroundColor: "#BC0F0F",
                     padding: 10,
                     borderRadius: 10,
-                    marginHorizontal: 10,
-                    width: RFPercentage(15),
+                    width: RFPercentage(14),
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: RFPercentage(2),
+                      fontFamily: "QuicksandBold",
+                      textAlign: "center",
+                    }}
+                  >
+                    CONFIRM
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : isChatConfirm ? (
+            // Confirmation Modal (Help Icon)
+            <>
+              <Ionicons
+                name="help-circle-outline"
+                color="#0E94D3"
+                style={{ fontSize: RFPercentage(8) }}
+              />
+              <Text
+                style={{
+                  fontSize: RFPercentage(2.4),
+                  fontFamily: "REMBold",
+                  marginVertical: 10,
+                  color: "#04384E",
+                  textAlign: "center",
+                }}
+              >
+                {title}
+              </Text>
+              <Text
+                style={{
+                  fontSize: RFPercentage(2),
+                  color: "#808080",
+                  marginBottom: 20,
+                  fontFamily: "QuicksandMedium",
+                  textAlign: "center",
+                }}
+              >
+                {message}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  gap: 10,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={onClose}
+                  style={{
+                    borderWidth: 3,
+                    borderColor: "#0E94D3",
+                    padding: 10,
+                    borderRadius: 10,
+                    width: RFPercentage(14),
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#0E94D3",
+                      fontSize: RFPercentage(2),
+                      fontFamily: "QuicksandBold",
+                      textAlign: "center",
+                    }}
+                  >
+                    CANCEL
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={onConfirm}
+                  style={{
+                    borderWidth: 3,
+                    borderColor: "#0E94D3",
+                    backgroundColor: "#0E94D3",
+                    padding: 10,
+                    borderRadius: 10,
+                    width: RFPercentage(14),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -301,7 +390,7 @@ const AlertModal = ({
                   fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
-                  color: "#808080",
+                  color: "#04384E",
                   textAlign: "center",
                 }}
               >
@@ -333,7 +422,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: RFPercentage(15),
+                    width: RFPercentage(14),
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -368,7 +457,7 @@ const AlertModal = ({
                   fontSize: RFPercentage(2.4),
                   fontFamily: "REMBold",
                   marginVertical: 20,
-                  color: "#808080",
+                  color: "#04384E",
                   textAlign: "center",
                 }}
               >
@@ -400,7 +489,7 @@ const AlertModal = ({
                     padding: 10,
                     borderRadius: 10,
                     marginHorizontal: 10,
-                    width: RFPercentage(15),
+                    width: RFPercentage(14),
                     justifyContent: "center",
                     alignItems: "center",
                   }}

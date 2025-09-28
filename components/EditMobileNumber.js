@@ -359,7 +359,7 @@ const EditMobileNumber = () => {
         flex: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: "#DCE5EB",
+        backgroundColor: "#F0F4F7",
       }}
     >
       {!isVerified ? (
@@ -384,7 +384,12 @@ const EditMobileNumber = () => {
           <View style={MyStyles.servicesContentWrapper}>
             <View>
               <Text style={MyStyles.inputLabel}>Current Mobile Number</Text>
-              <Text style={[MyStyles.inputLabel, { color: "#000" }]}>
+              <Text
+                style={[
+                  MyStyles.inputLabel,
+                  { color: "#04384E", fontFamily: "QuicksandMedium" },
+                ]}
+              >
                 {maskMobileNumber(mobnum)}
               </Text>
             </View>
@@ -532,7 +537,7 @@ const EditMobileNumber = () => {
                   style={{
                     fontSize: RFPercentage(2),
                     color: "#808080",
-                    alignSelf: "flex-start",
+                    alignSelf: "flex-end",
                     marginTop: 10,
                     fontFamily: "QuicksandSemiBold",
                   }}
@@ -556,6 +561,7 @@ const EditMobileNumber = () => {
                       fontSize: RFPercentage(2),
                       color: "#808080",
                       fontFamily: "QuicksandSemiBold",
+                      alignSelf: "flex-end",
                     }}
                   >
                     Didn't get a code?

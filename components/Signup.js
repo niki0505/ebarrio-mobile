@@ -17,9 +17,10 @@ import { useContext } from "react";
 import { OtpContext } from "../context/OtpContext";
 import api from "../api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AppLogo from "..//assets/applogo.png";
+import AppLogo from "..//assets/applogo-darkbg.png";
 import AlertModal from "./AlertModal";
 import { LinearGradient } from "expo-linear-gradient";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -452,14 +453,36 @@ const Signup = () => {
                     )}
                   </View>
 
-                  <View style={{}}>
-                    <Text style={MyStyles.byClickingText}>
+                  <View>
+                    <Text
+                      style={[
+                        MyStyles.byClickingText,
+                        {
+                          textAlign: "justify",
+                          fontSize: RFPercentage(1.8),
+                          opacity: 0.8,
+                        },
+                      ]}
+                    >
                       By clicking Sign Up, you agree to eBarrio’s eBarrio’s{" "}
                       <Text
                         onPress={() => navigation.navigate("TermsConditions")}
-                        style={MyStyles.signUpText}
+                        style={[
+                          MyStyles.signUpText,
+                          { fontSize: RFPercentage(1.8) },
+                        ]}
                       >
                         Terms and Conditions
+                      </Text>
+                      <Text> & </Text>
+                      <Text
+                        onPress={() => navigation.navigate("DataPrivacy")}
+                        style={[
+                          MyStyles.signUpText,
+                          { fontSize: RFPercentage(1.8) },
+                        ]}
+                      >
+                        Data Privacy
                       </Text>
                     </Text>
                   </View>
@@ -472,35 +495,34 @@ const Signup = () => {
                   <Text style={MyStyles.buttonText}>Sign up</Text>
                 </TouchableOpacity>
 
-                <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
-                  <Text
-                    style={[MyStyles.byClickingText, { textAlign: "center" }]}
-                  >
-                    Already have an account?
-                  </Text>
-                  <Text
-                    onPress={() => navigation.navigate("Login")}
-                    style={MyStyles.signUpText}
-                  >
-                    Login
-                  </Text>
-                </View>
                 <View
                   style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    gap: 4,
                     marginTop: 10,
                   }}
                 >
                   <Text
-                    style={[MyStyles.byClickingText, { textAlign: "center" }]}
+                    onPress={() => navigation.navigate("Login")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
                   >
-                    Don’t have a resident profile?
-                    <Text
-                      onPress={() => navigation.navigate("ResidentForm")}
-                      style={MyStyles.signUpText}
-                    >
-                      {" "}
-                      Create one
-                    </Text>
+                    Login
+                  </Text>
+
+                  <Text
+                    onPress={() => navigation.navigate("ResidentForm")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    {" "}
+                    No Resident Profile?
                   </Text>
                 </View>
               </ScrollView>

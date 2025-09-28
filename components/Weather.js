@@ -13,9 +13,6 @@ import { InfoContext } from "../context/InfoContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
-//SCREENS
-import LoadingScreen from "./LoadingScreen";
-
 //ICONS
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import ClearDay from "../assets/weather-svg/clear-day";
@@ -300,7 +297,7 @@ const Weather = () => {
               <Text
                 style={[
                   MyStyles.weatherHeaderText,
-                  { fontSize: 60, fontFamily: "QuicksandBold", marginTop: 0 },
+                  { fontSize: 60, fontFamily: "REMSemiBold", marginTop: 0 },
                 ]}
               >
                 {weather.currenttemp}°
@@ -365,7 +362,7 @@ const Weather = () => {
             </View>
 
             {/* 2 Days Forecast */}
-            <View style={{ gap: 10 }}>
+            <View style={{ gap: 10, marginBottom: 40 }}>
               <Text style={[MyStyles.weatherSubheaderText]}>
                 2 Days Forecast
               </Text>

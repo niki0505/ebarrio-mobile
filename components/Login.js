@@ -14,7 +14,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OtpContext } from "../context/OtpContext";
 import api from "../api";
-import AppLogo from "..//assets/applogo.png";
+import AppLogo from "..//assets/applogo-darkbg.png";
 import AlertModal from "./AlertModal";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -117,7 +117,7 @@ const Login = () => {
 
           <View style={MyStyles.loginBottomWrapper}>
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-              Login Account
+              Welcome!
             </Text>
             <View style={MyStyles.loginFormWrapper}>
               <View
@@ -129,7 +129,7 @@ const Login = () => {
                   style={[
                     MyStyles.input,
                     {
-                      paddingLeft: 40,
+                      paddingLeft: 50,
                       paddingRight: 40,
                     },
                   ]}
@@ -161,7 +161,7 @@ const Login = () => {
                   style={[
                     MyStyles.input,
                     {
-                      paddingLeft: 40,
+                      paddingLeft: 50,
                       paddingRight: 40,
                     },
                   ]}

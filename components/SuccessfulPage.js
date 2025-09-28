@@ -49,7 +49,7 @@ const SuccessfulPage = () => {
           {service === "Document" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Document Request Submitted Successfully!
+                Successful!
               </Text>
               <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
                 Your document request has been received by the barangay. You
@@ -62,7 +62,7 @@ const SuccessfulPage = () => {
           {service === "Blotter" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Blotter Report Submitted Successfully!
+                Successful!
               </Text>
               <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
                 Your blotter report has been received by the barangay. You will
@@ -75,7 +75,7 @@ const SuccessfulPage = () => {
           {service === "Reservation" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Court Reservation Submitted Successfully!
+                Successful!
               </Text>
               <Text style={[MyStyles.serviceDesc, { paddingHorizontal: 25 }]}>
                 Your court reservation request has been received by the
@@ -89,7 +89,7 @@ const SuccessfulPage = () => {
           {service === "ResidentForm" && (
             <View style={{ alignItems: "center" }}>
               <Text style={[MyStyles.header, { textAlign: "center" }]}>
-                Resident Profile Submitted Successfully!
+                Successful!
               </Text>
               <Text style={MyStyles.serviceDesc}>
                 Your resident profile request has been submitted to the
