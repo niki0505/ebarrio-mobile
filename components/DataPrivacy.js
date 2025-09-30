@@ -55,7 +55,7 @@ const DataPrivacy = () => {
               </View>
 
               <ScrollView
-                style={{ width: "100%" }}
+                style={{ width: "100%", marginBottom: 40 }}
                 contentContainerStyle={{
                   alignItems: "center",
                   marginTop: 20,

@@ -161,14 +161,12 @@ const Preview = () => {
                 justifyContent: "center",
               }}
             >
-              <Text style={MyStyles.haveanaccounttext}>
-                Do you have an account? {""}
-              </Text>
+              <Text style={MyStyles.haveanaccounttext}>Have an account? </Text>
               <TouchableOpacity
                 onPress={handleLogin}
                 accessibilityLabel="Go to Login"
               >
-                <Text style={MyStyles.logintext}>Login</Text>
+                <Text style={MyStyles.logintext}> Login</Text>
               </TouchableOpacity>
             </View>
           </>

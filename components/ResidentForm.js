@@ -957,7 +957,7 @@ const ResidentForm = () => {
           <View style={MyStyles.loginWrapper}>
             <View style={MyStyles.loginBottomWrapper}>
               <ScrollView
-                style={{ width: "100%" }}
+                style={{ width: "100%", marginBottom: 40 }}
                 contentContainerStyle={{
                   alignItems: "center",
                 }}
@@ -965,7 +965,7 @@ const ResidentForm = () => {
                 keyboardShouldPersistTaps="handled"
               >
                 <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                  Register Resident Profile
+                  Residency Application
                 </Text>
 
                 <View style={MyStyles.loginFormWrapper}>
@@ -2194,6 +2194,36 @@ const ResidentForm = () => {
                               </Pressable>
                             )
                           )}
+
+                          {householdForm.ethnicity === "IP Household" && (
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
+                              }}
+                            >
+                              *An IP Household is a household that belongs to an
+                              Indigenous Peoples group (e.g., Aeta, Manobo,
+                              Igorot, Lumad, etc.).
+                            </Text>
+                          )}
+
+                          {householdForm.ethnicity === "Non-IP Household" && (
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
+                              }}
+                            >
+                              *Non-IP Household is a household that does not
+                              belong to an Indigenous People group (e.g., Aeta,
+                              Igorot, Manobo, Lumad, etc.).
+                            </Text>
+                          )}
                         </View>
                         {errors.ethnicity && (
                           <Text style={MyStyles.errorMsg}>
@@ -2251,6 +2281,49 @@ const ResidentForm = () => {
                                 </Text>
                               </Pressable>
                             )
+                          )}
+                          {householdForm.sociostatus === "NHTS 4Ps" && (
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
+                              }}
+                            >
+                              *NHTS (National Household Targeting System) 4Ps
+                              refers to households that are part of the NHTS
+                              system and the 4Ps program.
+                            </Text>
+                          )}
+
+                          {householdForm.sociostatus === "NHTS Non-4Ps" && (
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
+                              }}
+                            >
+                              *NHTS (National Household Targeting System)
+                              Non-4Ps are households that are part of the NHTS
+                              system but are not part of the 4Ps program.
+                            </Text>
+                          )}
+
+                          {householdForm.sociostatus === "Non-NHTS" && (
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
+                              }}
+                            >
+                              *Non-NHTS households are households that are not
+                              part of the NHTS system.
+                            </Text>
                           )}
                         </View>
 
@@ -2421,7 +2494,6 @@ const ResidentForm = () => {
                               <TouchableOpacity
                                 onPress={() => removeMember(index)}
                                 style={[
-                                  MyStyles.button,
                                   MyStyles.residentAddBtn,
                                   { borderColor: "red", marginTop: 10 },
                                 ]}
@@ -2442,7 +2514,7 @@ const ResidentForm = () => {
 
                         <TouchableOpacity
                           onPress={addMember}
-                          style={[MyStyles.button, MyStyles.residentAddBtn]}
+                          style={[MyStyles.residentAddBtn]}
                         >
                           <Text
                             style={[
@@ -2555,7 +2627,7 @@ const ResidentForm = () => {
 
                         <TouchableOpacity
                           onPress={addVehicle}
-                          style={[MyStyles.button, MyStyles.residentAddBtn]}
+                          style={[MyStyles.residentAddBtn]}
                         >
                           <Text
                             style={[
@@ -2709,16 +2781,6 @@ const ResidentForm = () => {
                   }}
                 >
                   <Text
-                    onPress={() => navigation.navigate("Login")}
-                    style={[
-                      MyStyles.signUpText,
-                      { textDecorationLine: "underline" },
-                    ]}
-                  >
-                    Login
-                  </Text>
-
-                  <Text
                     onPress={() => navigation.navigate("Signup")}
                     style={[
                       MyStyles.signUpText,
@@ -2727,6 +2789,16 @@ const ResidentForm = () => {
                   >
                     {" "}
                     Sign Up
+                  </Text>
+
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    Login
                   </Text>
                 </View>
 
