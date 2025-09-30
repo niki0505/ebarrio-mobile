@@ -39,7 +39,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather"; 
+import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const UserProfile = () => {
@@ -1120,7 +1120,7 @@ const UserProfile = () => {
               {
                 paddingBottom: insets.bottom + 100,
                 gap: 10,
-                padding: 30,
+                padding: 25,
               },
             ]}
           >
@@ -2413,7 +2413,6 @@ const UserProfile = () => {
                           <TouchableOpacity
                             onPress={() => removeMember(index)}
                             style={[
-                              MyStyles.button,
                               MyStyles.residentAddBtn,
                               { borderColor: "red", marginTop: 10 },
                             ]}
@@ -2434,7 +2433,7 @@ const UserProfile = () => {
 
                     <TouchableOpacity
                       onPress={addMember}
-                      style={[MyStyles.button, MyStyles.residentAddBtn]}
+                      style={[MyStyles.residentAddBtn]}
                     >
                       <Text
                         style={[MyStyles.buttonText, MyStyles.residentAddText]}
@@ -2533,7 +2532,7 @@ const UserProfile = () => {
 
                     <TouchableOpacity
                       onPress={addVehicle}
-                      style={[MyStyles.button, MyStyles.residentAddBtn]}
+                      style={[MyStyles.residentAddBtn]}
                     >
                       <Text
                         style={[MyStyles.buttonText, MyStyles.residentAddText]}
@@ -2639,12 +2638,12 @@ const UserProfile = () => {
             </View>
 
             <TouchableOpacity
-              style={MyStyles.button}
+              style={[MyStyles.button, { marginVertical: 40 }]}
               onPress={handleConfirm}
               disabled={loading}
             >
               <Text style={MyStyles.buttonText}>
-                {loading ? "Submitting..." : "Submit"}
+                {loading ? "Updating..." : "Update"}
               </Text>
             </TouchableOpacity>
 

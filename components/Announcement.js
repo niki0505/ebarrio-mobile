@@ -137,7 +137,7 @@ const Announcement = () => {
             {
               paddingBottom: insets.bottom + 100,
               gap: 10,
-              padding: 30,
+              padding: 25,
             },
           ]}
         >

@@ -435,7 +435,7 @@ const Home = () => {
                   },
                 ]}
               >
-                <View style={{ width: width - 40, paddingHorizontal: 10 }}>
+                <View style={{ width: width - 40, padding: 5 }}>
                   <TouchableOpacity
                     style={[MyStyles.calendarContainer, MyStyles.shadow]}
                     onPress={() => navigation.navigate("BrgyCalendar")}
@@ -443,7 +443,11 @@ const Home = () => {
                     {/* Left panel */}
                     <View style={MyStyles.leftCalendar}>
                       <View
-                        style={{ flexDirection: "row", alignItems: "center", marginLeft:5}}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 5,
+                        }}
                       >
                         <Text style={MyStyles.bigDate}>
                           {currentDate.getDate()}
@@ -497,11 +501,7 @@ const Home = () => {
                                         },
                                       ]}
                                     />
-                                    <Text
-                                      style={MyStyles.eventTitle}
-                                      numberOfLines={1}
-                                      ellipsizeMode="tail"
-                                    >
+                                    <Text style={MyStyles.eventTitle}>
                                       {event.title}
                                     </Text>
                                   </View>
@@ -616,7 +616,7 @@ const Home = () => {
                   <View
                     style={{
                       width: width - 40,
-                      paddingHorizontal: 10,
+                      padding: 5,
                     }}
                   >
                     <View style={[MyStyles.card]}>
@@ -627,7 +627,7 @@ const Home = () => {
                   <View
                     style={{
                       width: width - 40,
-                      paddingHorizontal: 10,
+                      padding: 5,
                       marginTop: 10,
                     }}
                   >
@@ -777,7 +777,7 @@ const Home = () => {
                 </View>
 
                 {loading ? (
-                  <View style={{ padding: 20, alignItems: "center" }}>
+                  <View style={{ alignItems: "center" }}>
                     <ActivityIndicator size="large" color="#04384E" />
                   </View>
                 ) : importantAnnouncements.length === 0 ? (
@@ -807,7 +807,7 @@ const Home = () => {
                         style={[
                           {
                             width: width - 40,
-                            padding: 10,
+                            padding: 5,
                           },
                         ]}
                       >

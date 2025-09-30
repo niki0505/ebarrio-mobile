@@ -423,6 +423,9 @@ const ForgotPassword = () => {
               <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
                 Forgot Password
               </Text>
+              <Text style={MyStyles.forgotMsg}>
+                Please enter your username to begin the password reset process.
+              </Text>
 
               <View style={MyStyles.loginFormWrapper}>
                 <View>
@@ -451,7 +454,7 @@ const ForgotPassword = () => {
                 onPress={() => navigation.navigate("Login")}
                 style={[MyStyles.forgotPassText, { marginTop: 5 }]}
               >
-                Remember your password?
+                Remember password?
               </Text>
             </View>
           </View>
@@ -491,7 +494,7 @@ const ForgotPassword = () => {
                         new password.
                       </Text>
 
-                      <View style={[MyStyles.loginFormWrapper, {gap:30}]}>
+                      <View style={[MyStyles.loginFormWrapper, { gap: 30 }]}>
                         <View>
                           <Text style={MyStyles.inputLabel}>
                             New Password<Text style={{ color: "red" }}>*</Text>

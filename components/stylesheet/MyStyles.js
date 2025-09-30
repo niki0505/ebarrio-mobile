@@ -21,6 +21,7 @@ export const MyStyles = StyleSheet.create({
     fontFamily: "REMMedium",
     color: "#04384E",
     marginTop: 20,
+    marginHorizontal: 5,
   },
   textMedium: {
     fontSize: RFPercentage(2),
@@ -795,10 +796,10 @@ export const MyStyles = StyleSheet.create({
   /*---------------------------------------HAZARD MAPS---------------------------------------*/
   hazardTitle: {
     marginTop: 20,
-    marginBottom: 0,
+    marginBottom: 10,
     textAlign: "left",
     color: "#fff",
-    fontSize: RFPercentage(2.5),
+    fontSize: RFPercentage(3),
     fontFamily: "QuicksandBold",
   },
 
@@ -858,7 +859,7 @@ export const MyStyles = StyleSheet.create({
   },
 
   weatherCurrTemp: {
-   fontFamily: "REMSemiBold",
+    fontFamily: "REMSemiBold",
     fontSize: RFPercentage(4),
     color: "#fff",
   },
@@ -893,7 +894,7 @@ export const MyStyles = StyleSheet.create({
   emergencyToolsCol: {
     flexDirection: "column",
     gap: 10,
-    padding: 10,
+    padding: 5,
   },
   profilePic: {
     width: 40,
@@ -926,7 +927,6 @@ export const MyStyles = StyleSheet.create({
     color: "#04384E",
     lineHeight: 50,
     marginTop: 0,
-    
   },
   monthText: {
     fontSize: RFPercentage(1.8),
@@ -1114,7 +1114,7 @@ export const MyStyles = StyleSheet.create({
 
   /*---------------------------------------LOGIN, SIGN UP, FORGOT PASS---------------------------------------*/
   loginWrapper: {
-    flex: 4,
+    flex: 5,
   },
   loginTopWrapper: {
     flex: 1,
@@ -1129,9 +1129,9 @@ export const MyStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F0F4F7",
     borderRadius: 30,
-    flex: 3,
+    flex: 4,
     padding: 30,
-    bottom: "-10",
+    bottom: "-50",
   },
   loginFormWrapper: {
     marginVertical: 45,
@@ -1378,6 +1378,7 @@ export const MyStyles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 10,
     padding: 10,
+    backgroundColor: "white",
   },
   previewContainer: {
     height: 200,
@@ -1397,11 +1398,11 @@ export const MyStyles = StyleSheet.create({
   personalInfobuttons: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom:10
+    marginBottom: 10,
   },
   personalInfoButton: {
     backgroundColor: "#0E94D3",
-    opacity:0.8,
+    opacity: 0.8,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -1476,13 +1477,15 @@ export const MyStyles = StyleSheet.create({
     backgroundColor: "transparent",
     borderWidth: 2,
     borderColor: "#0E94D3",
-    width: "50%",
-    padding: 8,
+    width: "60%",
     alignSelf: "flex-end",
+    padding: 12,
+    borderRadius: 8,
   },
   residentAddText: {
     fontSize: RFPercentage(2),
     color: "#0E94D3",
+    textAlign: "center",
   },
   membersWrapper: {
     marginBottom: 20,
@@ -1610,7 +1613,7 @@ export const MyStyles = StyleSheet.create({
   termsTitle: {
     color: "#04384E",
     fontSize: RFPercentage(2),
-    fontFamily: "QuicksandBold",
+    fontFamily: "REMSemiBold",
     textAlign: "left",
     alignSelf: "flex-start",
   },
@@ -1816,5 +1819,10 @@ export const MyStyles = StyleSheet.create({
     borderRadius: 10,
     resizeMode: "cover",
     marginTop: 5,
+  },
+  selectedText: {
+    fontFamily: "QuicksandMedium",
+    fontSize: RFPercentage(2),
+    color: "black",
   },
 });

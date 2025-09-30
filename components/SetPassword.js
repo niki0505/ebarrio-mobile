@@ -181,9 +181,9 @@ const SetPassword = () => {
             />
 
             <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-              {loading ? "Confirming..." : "Confirm"}
+              Set Password
             </Text>
-
+      
             {/* Form fields */}
             <View style={MyStyles.loginFormWrapper}>
               <View>

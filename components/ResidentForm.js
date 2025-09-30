@@ -787,6 +787,12 @@ const ResidentForm = () => {
   const handleConfirm = () => {
     let newErrors = {};
 
+    if (!residentForm.id) {
+      newErrors.id = "This field is required!";
+    }
+    if (!residentForm.signature) {
+      newErrors.signature = "This field is required!";
+    }
     if (!residentForm.firstname)
       newErrors.firstname = "This field is required!";
     if (!residentForm.lastname) newErrors.lastname = "This field is required!";
@@ -840,16 +846,8 @@ const ResidentForm = () => {
     setLoading(true);
     try {
       const fulladdress = `${householdForm.housenumber} ${householdForm.street} Aniban 2, Bacoor, Cavite`;
-
-      let idPicture;
-      let signaturePicture;
-      if (residentForm.id) {
-        idPicture = await uploadToFirebase(residentForm.id);
-      }
-
-      if (residentForm.signature) {
-        signaturePicture = await uploadToFirebase(residentForm.signature);
-      }
+      const idPicture = await uploadToFirebase(residentForm.id);
+      const signaturePicture = await uploadToFirebase(residentForm.signature);
 
       let formattedMobileNumber = residentForm.mobilenumber;
       formattedMobileNumber = "0" + residentForm.mobilenumber.slice(3);
@@ -889,7 +887,6 @@ const ResidentForm = () => {
       const updatedHouseholdForm = {
         ...householdForm,
         address: fulladdress,
-        members: householdForm.members.filter((member) => member.resID),
       };
 
       await api.post("/createresident", {
@@ -960,7 +957,7 @@ const ResidentForm = () => {
           <View style={MyStyles.loginWrapper}>
             <View style={MyStyles.loginBottomWrapper}>
               <ScrollView
-                style={{ width: "100%" }}
+                style={{ width: "100%", marginBottom: 40 }}
                 contentContainerStyle={{
                   alignItems: "center",
                 }}
@@ -968,7 +965,7 @@ const ResidentForm = () => {
                 keyboardShouldPersistTaps="handled"
               >
                 <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-                  Register Resident Profile
+                  Residency Application
                 </Text>
 
                 <View style={MyStyles.loginFormWrapper}>
@@ -979,7 +976,9 @@ const ResidentForm = () => {
                     Personal Information
                   </Text>
 
-                  <Text style={MyStyles.inputLabel}>2x2 Picture</Text>
+                  <Text style={MyStyles.inputLabel}>
+                    Picture<Text style={{ color: "red" }}>*</Text>
+                  </Text>
                   <View style={MyStyles.uploadBox}>
                     <View style={MyStyles.previewContainer}>
                       {isIDProcessing ? (
@@ -1037,7 +1036,9 @@ const ResidentForm = () => {
                   )}
 
                   {/* New Signature */}
-                  <Text style={MyStyles.inputLabel}>Signature</Text>
+                  <Text style={MyStyles.inputLabel}>
+                    Signature<Text style={{ color: "red" }}>*</Text>
+                  </Text>
                   <View style={MyStyles.uploadBox}>
                     <View style={MyStyles.previewContainer}>
                       {isSignProcessing ? (
@@ -2139,9 +2140,7 @@ const ResidentForm = () => {
                       </View>
 
                       <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Homeowners Association (HOA) Name
-                        </Text>
+                        <Text style={MyStyles.inputLabel}>HOA Name</Text>
                         <Dropdown
                           labelField="label"
                           valueField="value"
@@ -2166,56 +2165,65 @@ const ResidentForm = () => {
                           Ethnicity<Text style={{ color: "red" }}>*</Text>
                         </Text>
                         <View style={MyStyles.radioGroup}>
-                          <Pressable
-                            style={MyStyles.radioOption}
-                            onPress={() =>
-                              handleHouseholdRadioChange(
-                                "ethnicity",
-                                "IP Household"
-                              )
-                            }
-                          >
-                            <View style={MyStyles.radioCircle}>
-                              {householdForm.ethnicity === "IP Household" && (
-                                <View style={MyStyles.radioDot} />
-                              )}
-                            </View>
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(2),
-                                flexWrap: 1,
-                              }}
-                            >
-                              Indigenous Peoples (IP) Household
-                            </Text>
-                          </Pressable>
+                          {["IP Household", "Non-IP Household"].map(
+                            (option) => (
+                              <Pressable
+                                key={option}
+                                style={MyStyles.radioOption}
+                                onPress={() =>
+                                  handleHouseholdRadioChange(
+                                    "ethnicity",
+                                    option
+                                  )
+                                }
+                              >
+                                <View style={MyStyles.radioCircle}>
+                                  {householdForm.ethnicity === option && (
+                                    <View style={MyStyles.radioDot} />
+                                  )}
+                                </View>
+                                <Text
+                                  style={{
+                                    fontFamily: "QuicksandMedium",
+                                    fontSize: RFPercentage(2),
+                                    flexWrap: 1,
+                                  }}
+                                >
+                                  {option}
+                                </Text>
+                              </Pressable>
+                            )
+                          )}
 
-                          <Pressable
-                            style={MyStyles.radioOption}
-                            onPress={() =>
-                              handleHouseholdRadioChange(
-                                "ethnicity",
-                                "Non-IP Household"
-                              )
-                            }
-                          >
-                            <View style={MyStyles.radioCircle}>
-                              {householdForm.ethnicity ===
-                                "Non-IP Household" && (
-                                <View style={MyStyles.radioDot} />
-                              )}
-                            </View>
+                          {householdForm.ethnicity === "IP Household" && (
                             <Text
                               style={{
                                 fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(2),
-                                flexWrap: 1,
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
                               }}
                             >
-                              Non-Indigenous Peoples (Non-IP) Household
+                              *An IP Household is a household that belongs to an
+                              Indigenous Peoples group (e.g., Aeta, Manobo,
+                              Igorot, Lumad, etc.).
                             </Text>
-                          </Pressable>
+                          )}
+
+                          {householdForm.ethnicity === "Non-IP Household" && (
+                            <Text
+                              style={{
+                                fontFamily: "QuicksandMedium",
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
+                              }}
+                            >
+                              *Non-IP Household is a household that does not
+                              belong to an Indigenous People group (e.g., Aeta,
+                              Igorot, Manobo, Lumad, etc.).
+                            </Text>
+                          )}
                         </View>
                         {errors.ethnicity && (
                           <Text style={MyStyles.errorMsg}>
@@ -2246,77 +2254,77 @@ const ResidentForm = () => {
                           <Text style={{ color: "red" }}>*</Text>
                         </Text>
                         <View style={MyStyles.radioGroup}>
-                          <Pressable
-                            style={MyStyles.radioOption}
-                            onPress={() =>
-                              handleHouseholdRadioChange(
-                                "sociostatus",
-                                "NHTS 4Ps"
-                              )
-                            }
-                          >
-                            <View style={MyStyles.radioCircle}>
-                              {householdForm.sociostatus === "NHTS 4Ps" && (
-                                <View style={MyStyles.radioDot} />
-                              )}
-                            </View>
+                          {["NHTS 4Ps", "NHTS Non-4Ps", "Non-NHTS"].map(
+                            (option) => (
+                              <Pressable
+                                key={option}
+                                style={MyStyles.radioOption}
+                                onPress={() =>
+                                  handleHouseholdRadioChange(
+                                    "sociostatus",
+                                    option
+                                  )
+                                }
+                              >
+                                <View style={MyStyles.radioCircle}>
+                                  {householdForm.sociostatus === option && (
+                                    <View style={MyStyles.radioDot} />
+                                  )}
+                                </View>
+                                <Text
+                                  style={{
+                                    fontFamily: "QuicksandMedium",
+                                    fontSize: RFPercentage(2),
+                                  }}
+                                >
+                                  {option}
+                                </Text>
+                              </Pressable>
+                            )
+                          )}
+                          {householdForm.sociostatus === "NHTS 4Ps" && (
                             <Text
                               style={{
                                 fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(2),
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
                               }}
                             >
-                              National Household Targeting System (NHTS) 4Ps
+                              *NHTS (National Household Targeting System) 4Ps
+                              refers to households that are part of the NHTS
+                              system and the 4Ps program.
                             </Text>
-                          </Pressable>
+                          )}
 
-                          <Pressable
-                            style={MyStyles.radioOption}
-                            onPress={() =>
-                              handleHouseholdRadioChange(
-                                "sociostatus",
-                                "NHTS Non-4Ps"
-                              )
-                            }
-                          >
-                            <View style={MyStyles.radioCircle}>
-                              {householdForm.sociostatus === "NHTS Non-4Ps" && (
-                                <View style={MyStyles.radioDot} />
-                              )}
-                            </View>
+                          {householdForm.sociostatus === "NHTS Non-4Ps" && (
                             <Text
                               style={{
                                 fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(2),
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
                               }}
                             >
-                              National Household Targeting System (NHTS) Non-4Ps
+                              *NHTS (National Household Targeting System)
+                              Non-4Ps are households that are part of the NHTS
+                              system but are not part of the 4Ps program.
                             </Text>
-                          </Pressable>
+                          )}
 
-                          <Pressable
-                            style={MyStyles.radioOption}
-                            onPress={() =>
-                              handleHouseholdRadioChange(
-                                "sociostatus",
-                                "Non-NHTS"
-                              )
-                            }
-                          >
-                            <View style={MyStyles.radioCircle}>
-                              {householdForm.sociostatus === "Non-NHTS" && (
-                                <View style={MyStyles.radioDot} />
-                              )}
-                            </View>
+                          {householdForm.sociostatus === "Non-NHTS" && (
                             <Text
                               style={{
                                 fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(2),
+                                fontSize: RFPercentage(1.8),
+                                fontStyle: "italic",
+                                color: "#666",
                               }}
                             >
-                              Non-National Household Targeting System (Non-NHTS)
+                              *Non-NHTS households are households that are not
+                              part of the NHTS system.
                             </Text>
-                          </Pressable>
+                          )}
                         </View>
 
                         {errors.sociostatus && (
@@ -2330,9 +2338,7 @@ const ResidentForm = () => {
                         householdForm.sociostatus === "NHTS Non-4Ps") && (
                         <>
                           <View>
-                            <Text style={MyStyles.inputLabel}>
-                              National Household Targeting System (NHTS) No.
-                            </Text>
+                            <Text style={MyStyles.inputLabel}>NHTS No.</Text>
                             <TextInput
                               placeholder="NHTS No"
                               style={MyStyles.input}
@@ -2488,7 +2494,6 @@ const ResidentForm = () => {
                               <TouchableOpacity
                                 onPress={() => removeMember(index)}
                                 style={[
-                                  MyStyles.button,
                                   MyStyles.residentAddBtn,
                                   { borderColor: "red", marginTop: 10 },
                                 ]}
@@ -2509,7 +2514,7 @@ const ResidentForm = () => {
 
                         <TouchableOpacity
                           onPress={addMember}
-                          style={[MyStyles.button, MyStyles.residentAddBtn]}
+                          style={[MyStyles.residentAddBtn]}
                         >
                           <Text
                             style={[
@@ -2622,7 +2627,7 @@ const ResidentForm = () => {
 
                         <TouchableOpacity
                           onPress={addVehicle}
-                          style={[MyStyles.button, MyStyles.residentAddBtn]}
+                          style={[MyStyles.residentAddBtn]}
                         >
                           <Text
                             style={[
@@ -2776,16 +2781,6 @@ const ResidentForm = () => {
                   }}
                 >
                   <Text
-                    onPress={() => navigation.navigate("Login")}
-                    style={[
-                      MyStyles.signUpText,
-                      { textDecorationLine: "underline" },
-                    ]}
-                  >
-                    Login
-                  </Text>
-
-                  <Text
                     onPress={() => navigation.navigate("Signup")}
                     style={[
                       MyStyles.signUpText,
@@ -2794,6 +2789,16 @@ const ResidentForm = () => {
                   >
                     {" "}
                     Sign Up
+                  </Text>
+
+                  <Text
+                    onPress={() => navigation.navigate("Login")}
+                    style={[
+                      MyStyles.signUpText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    Login
                   </Text>
                 </View>
 

@@ -404,7 +404,7 @@ const Chat = () => {
           />
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <Image source={Aniban2Logo} style={MyStyles.announcementLogo} />
+            <Image source={Aniban2Logo} style={[MyStyles.announcementLogo]} />
             <Text
               style={[
                 MyStyles.announcementUploader,
@@ -492,7 +492,7 @@ const Chat = () => {
                           ? "transparent"
                           : isUser
                           ? "#0E94D3"
-                          : "#D1D5DB",
+                          : "#BFC4CC",
                         borderRadius: isEndedMsg ? 0 : 12,
                         padding: isEndedMsg ? 4 : 10,
                         marginBottom: 8,

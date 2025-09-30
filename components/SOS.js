@@ -25,6 +25,7 @@ import Suspicious from "../assets/SOS/suspicious.png";
 import api from "../api";
 import { useRef } from "react";
 import Svg, { Circle } from "react-native-svg";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const CIRCLE_SIZE = 280; // match button size
 const STROKE_WIDTH = 6;
@@ -148,7 +149,13 @@ const SOS = () => {
             size={30}
             color="#fff"
           />
-          <Text style={[MyStyles.header, MyStyles.readinessHeader]}>
+          <Text
+            style={[
+              MyStyles.header,
+              MyStyles.readinessHeader,
+              { fontSize: RFPercentage(3.5) },
+            ]}
+          >
             Emergency
           </Text>
           <Text
@@ -156,7 +163,7 @@ const SOS = () => {
               MyStyles.header,
               {
                 color: "#fff",
-                textAlign: "center",
+                textAlign: "justify",
                 fontFamily: "QuicksandSemiBold",
                 marginTop: 10,
                 fontSize: 16,
@@ -181,6 +188,7 @@ const SOS = () => {
                 position: "relative",
                 width: CIRCLE_SIZE,
                 height: CIRCLE_SIZE,
+                marginBottom: 30,
               }}
             >
               <Svg
@@ -214,6 +222,7 @@ const SOS = () => {
                   backgroundColor: "#fff",
                   justifyContent: "center",
                   alignItems: "center",
+                  marginTop: 50,
                 }}
               >
                 <Text
@@ -227,22 +236,23 @@ const SOS = () => {
                   SOS
                 </Text>
               </TouchableOpacity>
+
+              <Text
+                style={[
+                  MyStyles.header,
+                  {
+                    color: "#fff",
+                    textAlign: "center",
+                    fontFamily: "QuicksandSemiBold",
+                    fontSize: 14,
+                    opacity: 0.8,
+                    marginTop:10
+                  },
+                ]}
+              >
+                Press on hold for 3 seconds to activate
+              </Text>
             </View>
-            <Text
-              style={[
-                MyStyles.header,
-                {
-                  color: "#fff",
-                  textAlign: "center",
-                  fontFamily: "QuicksandSemiBold",
-                  marginTop: 10,
-                  fontSize: 14,
-                  opacity: 0.8,
-                },
-              ]}
-            >
-              Press on hold for 3 seconds to activate
-            </Text>
 
             <Text
               style={[

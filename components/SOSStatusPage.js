@@ -20,9 +20,9 @@ import LottieView from "lottie-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { InfoContext } from "../context/InfoContext";
 import { PanResponder } from "react-native";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import api from "../api";
 import AlertModal from "./AlertModal";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const SOSStatusPage = () => {
   const insets = useSafeAreaInsets();
@@ -288,6 +288,7 @@ const SOSStatusPage = () => {
                       marginTop: 20,
                       textAlign: "center",
                       color: "#fff",
+                      fontSize: RFPercentage(3.5),
                     },
                   ]}
                 >
