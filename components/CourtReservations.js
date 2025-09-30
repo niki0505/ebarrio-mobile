@@ -37,6 +37,7 @@ const CourtReservations = () => {
   const [reservationForm, setReservationForm] = useState({
     resID: user.resID || "",
     purpose: "",
+    purpose2: "",
     date: [],
     times: {},
     amount: "",
@@ -51,7 +52,7 @@ const CourtReservations = () => {
     fetchReservations();
   }, []);
 
-  const purpose = ["Basketball", "Birthday Party"];
+  const purpose = ["Basketball", "Birthday Party", "Zumba", "Others"];
   const hourlyRate = 100;
 
   const markedDates = reservationForm.date.reduce((acc, d) => {
@@ -204,6 +205,12 @@ const CourtReservations = () => {
       return;
     }
 
+    if (reservationForm.purpose === "Others" && !reservationForm.purpose2) {
+      setAlertMessage("Please specify the purpose.");
+      setIsAlertModalVisible(true);
+      return;
+    }
+
     if (errorMsg) {
       setAlertMessage(errorMsg);
       setIsAlertModalVisible(true);
@@ -334,10 +341,18 @@ const CourtReservations = () => {
         endtime: combineDateAndTime(date, times.endtime),
       };
     }
+    let updatedForm = { ...reservationForm };
+
+    if (updatedForm.purpose === "Others") {
+      updatedForm.purpose = updatedForm.purpose2;
+      delete updatedForm.purpose2;
+    } else {
+      delete updatedForm.purpose2;
+    }
     try {
       await api.post("/sendreservationrequest", {
         reservationForm: {
-          ...reservationForm,
+          ...updatedForm,
           times: preparedTimes,
         },
       });
@@ -436,6 +451,26 @@ const CourtReservations = () => {
                 style={MyStyles.input}
               />
             </View>
+            {reservationForm.purpose === "Others" && (
+              <View>
+                <Text style={MyStyles.inputLabel}>
+                  Others (Please Specify)
+                  <Text style={{ color: "red" }}>*</Text>
+                </Text>
+                <TextInput
+                  placeholder="Purpose"
+                  style={MyStyles.input}
+                  value={reservationForm.purpose2}
+                  type="text"
+                  onChangeText={(text) =>
+                    setReservationForm((prev) => ({
+                      ...prev,
+                      purpose2: text,
+                    }))
+                  }
+                />
+              </View>
+            )}
 
             <View>
               <Text style={MyStyles.inputLabel}>
