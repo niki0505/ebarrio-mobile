@@ -467,7 +467,7 @@ const Signup = () => {
                         },
                       ]}
                     >
-                      By clicking Sign Up, you agree to eBarrio’s eBarrio’s{" "}
+                      By clicking Sign Up, you agree to eBarrio’s{" "}
                       <Text
                         onPress={() => navigation.navigate("TermsConditions")}
                         style={[
