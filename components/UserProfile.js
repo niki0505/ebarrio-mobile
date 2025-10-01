@@ -24,14 +24,17 @@ import { Dropdown } from "react-native-element-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
-import { storage } from "../firebase";
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+// import { storage } from "../firebase";
+// import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import Signature from "react-native-signature-canvas";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
 import api from "../api";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import sign from "../assets/resident-sign.png";
+import { storage } from "../firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import * as FileSystem from "expo-file-system";
 
 //ICONSS
 import Entypo from "@expo/vector-icons/Entypo";
@@ -956,17 +959,59 @@ const UserProfile = () => {
     return `${year}-${month}-${day}`;
   }
 
-  async function uploadToFirebase(url) {
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const fileName = `id_images/${Date.now()}_${randomString}.png`;
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const file = new File([blob], fileName, { type: blob.type });
-    const storageRef = ref(storage, fileName);
-    await uploadBytes(storageRef, file);
+  async function base64ToFile(base64String, extension = "jpg") {
+    try {
+      // Strip "data:image/...;base64," if included
+      const cleanedBase64 = base64String.includes(",")
+        ? base64String.split(",")[1]
+        : base64String;
 
-    const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL;
+      // File path in cache
+      const fileUri = `${FileSystem.cacheDirectory}${Date.now()}.${extension}`;
+
+      // Write the base64 string as a binary file
+      await FileSystem.writeAsStringAsync(fileUri, cleanedBase64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      console.log("✅ File saved at:", fileUri);
+      return fileUri;
+    } catch (err) {
+      console.error("❌ Error writing file:", err);
+      throw err;
+    }
+  }
+  async function uploadToFirebase(fileUriOrBase64) {
+    try {
+      let fileUri = fileUriOrBase64;
+
+      if (fileUri.startsWith("data:")) {
+        fileUri = await base64ToFile(fileUriOrBase64);
+      }
+
+      const randomString = Math.random().toString(36).substring(2, 15);
+      const fileName = `id_images/${Date.now()}_${randomString}.jpg`;
+      const storageRef = ref(storage, fileName);
+
+      // ✅ Convert local file:// URI → Blob
+      const response = await fetch(fileUri);
+      const blob = await response.blob();
+      console.log("📦 Blob created, size:", blob.size);
+
+      // ✅ Upload blob
+      const snapshot = await uploadBytesResumable(storageRef, blob, {
+        contentType: "image/jpeg",
+      });
+
+      console.log("✅ Upload complete!");
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log("🌐 Download URL:", downloadURL);
+
+      return downloadURL;
+    } catch (err) {
+      console.log("❌ Upload error:", err);
+      throw err;
+    }
   }
 
   const [showSignModal, setShowSignModal] = useState(false);
@@ -988,10 +1033,15 @@ const UserProfile = () => {
   };
 
   const handleConfirm = () => {
+    const cleanHouseholdForm = {
+      ...householdForm,
+      members: householdForm.members.filter((m) => m.resID),
+    };
+
     const hasResidentChanges =
       JSON.stringify(residentProfile) !== JSON.stringify(residentForm);
     const hasChanges =
-      JSON.stringify(householdProfile) !== JSON.stringify(householdForm);
+      JSON.stringify(householdProfile) !== JSON.stringify(cleanHouseholdForm);
 
     if (!hasChanges && !hasResidentChanges) {
       alert("No changes detected.");
@@ -1069,6 +1119,7 @@ const UserProfile = () => {
       const updatedHouseholdForm = {
         ...householdForm,
         address: fulladdress,
+        members: householdForm.members.filter((member) => member.resID),
       };
 
       await api.put("/updateprofile", {

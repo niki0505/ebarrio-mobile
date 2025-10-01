@@ -53,6 +53,8 @@ const SOS = () => {
   ];
 
   const sendSOS = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -72,6 +74,8 @@ const SOS = () => {
       }
     } catch (e) {
       console.error("Error getting location:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -213,6 +217,7 @@ const SOS = () => {
               </Svg>
 
               <TouchableOpacity
+                disabled={loading}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
                 style={{
@@ -246,7 +251,7 @@ const SOS = () => {
                     fontFamily: "QuicksandSemiBold",
                     fontSize: 14,
                     opacity: 0.8,
-                    marginTop:10
+                    marginTop: 10,
                   },
                 ]}
               >

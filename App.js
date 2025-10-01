@@ -330,25 +330,24 @@ const DrawerContent = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <View
-          style={[
-            {
-              backgroundColor: "#fff",
-              borderRadius: 50,
-              padding: 5,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 3 },
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-              elevation: 5,
-            },
-          ]}
-        >
-          <Image
-            source={{ uri: user?.picture || "" }}
-            style={MyStyles.drawerImg}
-          />
-        </View>
+        {user.picture && (
+          <View
+            style={[
+              {
+                backgroundColor: "#fff",
+                borderRadius: 50,
+                padding: 5,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 3 },
+                shadowOpacity: 0.5,
+                shadowRadius: 5,
+                elevation: 5,
+              },
+            ]}
+          >
+            <Image source={{ uri: user.picture }} style={MyStyles.drawerImg} />
+          </View>
+        )}
 
         <View style={{ marginLeft: 15 }}>
           <Text style={MyStyles.drawerUsername}>{user.name}</Text>

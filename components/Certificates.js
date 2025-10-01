@@ -212,7 +212,6 @@ const Certificates = () => {
       setLoading(false);
     }
   };
-  console.log(certificateForm);
 
   const handleDropdownChange = ({ target }) => {
     const { name, value } = target;

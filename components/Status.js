@@ -541,22 +541,23 @@ const Status = () => {
 
                             {(service.status === "Issued" ||
                               service.status === "Collected" ||
-                              service.status === "Not Yet Collected") && (
-                              <TouchableOpacity
-                                onPress={() => Linking.openURL(service.pdf)}
-                                style={[
-                                  MyStyles.button,
-                                  {
-                                    marginTop: 15,
-                                    backgroundColor: "#0e94d3",
-                                  },
-                                ]}
-                              >
-                                <Text style={MyStyles.buttonText}>
-                                  View PDF
-                                </Text>
-                              </TouchableOpacity>
-                            )}
+                              service.status === "Not Yet Collected") &&
+                              service.pdf && (
+                                <TouchableOpacity
+                                  onPress={() => Linking.openURL(service.pdf)}
+                                  style={[
+                                    MyStyles.button,
+                                    {
+                                      marginTop: 15,
+                                      backgroundColor: "#0e94d3",
+                                    },
+                                  ]}
+                                >
+                                  <Text style={MyStyles.buttonText}>
+                                    View PDF
+                                  </Text>
+                                </TouchableOpacity>
+                              )}
 
                             {service.status === "Rejected" && (
                               <View style={MyStyles.statusBlotterWrapper}>

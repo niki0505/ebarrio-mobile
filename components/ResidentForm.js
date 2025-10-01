@@ -887,6 +887,7 @@ const ResidentForm = () => {
       const updatedHouseholdForm = {
         ...householdForm,
         address: fulladdress,
+        members: householdForm.members.filter((member) => member.resID),
       };
 
       await api.post("/createresident", {
