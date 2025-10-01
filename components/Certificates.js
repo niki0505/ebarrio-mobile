@@ -197,8 +197,6 @@ const Certificates = () => {
       delete filteredData.purpose2;
     }
 
-    console.log(filteredData);
-
     try {
       await api.post("/sendcertrequest", {
         filteredData,
