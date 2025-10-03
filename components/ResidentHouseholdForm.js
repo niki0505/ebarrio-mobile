@@ -3,7 +3,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Alert,
   SafeAreaView,
   Image,
   KeyboardAvoidingView,
@@ -18,14 +17,12 @@ import {
   Button,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
-// import { storage } from "../firebase";
-// import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import Signature from "react-native-signature-canvas";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
@@ -46,9 +43,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
-const ResidentForm = () => {
-  const route = useRoute();
-  const fetchAgain = route.params?.fetchAgain ?? null;
+const ResidentHouseholdForm = () => {
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   const landscapeWidth = Math.max(screenWidth, screenHeight);
@@ -67,9 +62,8 @@ const ResidentForm = () => {
   const [showLastMenstrualPicker, setShowLastMenstrualPicker] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { residentForm, setResidentForm, householdForm, setHouseholdForm } =
-    useContext(DraftContext);
-  const residentInitialForm = {
+  const { householdForm, setHouseholdForm } = useContext(DraftContext);
+  const [residentForm, setResidentForm] = useState({
     id: "",
     signature: "",
     firstname: "",
@@ -129,7 +123,7 @@ const ResidentForm = () => {
     haveFPmethod: "",
     fpmethod: "",
     fpstatus: "",
-  };
+  });
 
   const householdInitialForm = {
     members: [],
@@ -373,45 +367,19 @@ const ResidentForm = () => {
     { label: "Other", value: "Other" },
   ];
 
-  const fetchResidents = async () => {
-    try {
-      const response = await axios.get(
-        "https://ebarrio-mobile-backend.onrender.com/api/getresidents"
-      );
-      setResidents(response.data);
-    } catch (error) {
-      console.error("❌ Failed to fetch residents:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchResidents = async () => {
+      try {
+        const response = await axios.get(
+          "https://ebarrio-mobile-backend.onrender.com/api/getresidents"
+        );
+        setResidents(response.data);
+      } catch (error) {
+        console.error("❌ Failed to fetch residents:", error);
+      }
+    };
     fetchResidents();
   }, []);
-
-  useEffect(() => {
-    if (fetchAgain) {
-      fetchResidents();
-    }
-  }, [fetchAgain]);
-
-  useEffect(() => {
-    if (residents.length > 0 && householdForm.members.length > 0) {
-      const newSuggestions = householdForm.members.map((member) => {
-        if (!member.resident?.trim() || member.resID) return [];
-
-        return residents
-          .filter((r) => r.status !== "Archived" && r.status !== "Rejected")
-          .filter((res) => {
-            const fullName = `${res.firstname} ${
-              res.middlename ? res.middlename + " " : ""
-            }${res.lastname}`.toLowerCase();
-            return fullName.includes(member.resident.toLowerCase());
-          });
-      });
-
-      setMemberSuggestions(newSuggestions);
-    }
-  }, [residents, householdForm.members]);
 
   useEffect(() => {
     const fetchHouseholds = async () => {
@@ -848,15 +816,6 @@ const ResidentForm = () => {
       newErrors.toiletfacility = "This field is required!";
     }
 
-    householdForm.members.forEach((member, index) => {
-      if (!member.resID) {
-        newErrors[`member_${index}_resident`] = "This resident is not found!";
-      }
-      if (!member.position) {
-        newErrors[`member_${index}_position`] = "This field is required!";
-      }
-    });
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -872,7 +831,6 @@ const ResidentForm = () => {
 
     setLoading(true);
     try {
-      const fulladdress = `${householdForm.housenumber} ${householdForm.street} Aniban 2, Bacoor, Cavite`;
       let idPicture;
       let signaturePicture;
       if (residentForm.id) {
@@ -918,22 +876,13 @@ const ResidentForm = () => {
         lastmenstrual: formattedLastMenstrual,
       };
 
-      const updatedHouseholdForm = {
-        ...householdForm,
-        address: fulladdress,
-        members: householdForm.members.filter((member) => member.resID),
-      };
-
-      await api.post("/createresident", {
+      await api.post("/household/createresident", {
         picture: idPicture,
         signature: signaturePicture,
         ...updatedResidentForm,
-        householdForm: updatedHouseholdForm,
       });
-      setResidentForm(residentInitialForm);
-      setHouseholdForm(householdInitialForm);
-      navigation.navigate("SuccessfulPage2", {
-        service: "ResidentForm",
+      navigation.navigate("ResidentForm", {
+        fetchAgain: true,
       });
     } catch (error) {
       console.log("Error", error);
@@ -2026,689 +1975,6 @@ const ResidentForm = () => {
                     )}
                   </View>
 
-                  {/* Household Information */}
-                  <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
-                    Household Information
-                  </Text>
-                  <View>
-                    <Text style={MyStyles.inputLabel}>
-                      Head of the Household?
-                    </Text>
-                    <View style={MyStyles.radioGroup}>
-                      {["Yes", "No"].map((option) => (
-                        <Pressable
-                          key={option}
-                          style={MyStyles.radioOption}
-                          onPress={() => handleRadioChange("head", option)}
-                        >
-                          <View style={MyStyles.radioCircle}>
-                            {residentForm.head === option && (
-                              <View style={MyStyles.radioDot} />
-                            )}
-                          </View>
-                          <Text
-                            style={{
-                              fontFamily: "QuicksandMedium",
-                              fontSize: RFPercentage(2),
-                            }}
-                          >
-                            {option}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  </View>
-
-                  {residentForm.head === "No" && (
-                    <>
-                      <View>
-                        <Text style={MyStyles.inputLabel}>Household</Text>
-                        <Dropdown
-                          labelField="label"
-                          valueField="value"
-                          value={residentForm.householdno}
-                          data={households
-                            .filter((h) => h.status !== "Pending")
-                            .map((h) => {
-                              const head = h.members.find(
-                                (m) => m.position === "Head"
-                              );
-                              const headName = head?.resID
-                                ? `${head.resID.lastname}'s Residence - ${h.address}`
-                                : "Unnamed";
-                              return {
-                                label: headName,
-                                value: h._id,
-                              };
-                            })}
-                          placeholder="Select"
-                          placeholderStyle={MyStyles.placeholderText}
-                          selectedTextStyle={MyStyles.selectedText}
-                          onChange={(item) =>
-                            handleDropdownChange("householdno", item.value)
-                          }
-                          style={[
-                            MyStyles.input,
-                            { height: RFPercentage("auto") },
-                          ]}
-                        />
-                      </View>
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>Relationship</Text>
-                        <Dropdown
-                          labelField="label"
-                          valueField="value"
-                          value={residentForm.householdposition}
-                          data={[
-                            "Spouse",
-                            "Son",
-                            "Daughter",
-                            "Parent",
-                            "Sibling",
-                            "Grandparent",
-                            "Grandchild",
-                            "In-law",
-                            "Relative",
-                            "Housemate",
-                            "Househelp",
-                            "Other",
-                          ].map((item) => ({ label: item, value: item }))}
-                          placeholder="Select Relationship"
-                          placeholderStyle={MyStyles.placeholderText}
-                          selectedTextStyle={MyStyles.selectedText}
-                          onChange={(item) =>
-                            handleDropdownChange(
-                              "householdposition",
-                              item.value
-                            )
-                          }
-                          style={MyStyles.input}
-                        />
-                      </View>
-                    </>
-                  )}
-
-                  {residentForm.head === "Yes" && (
-                    <>
-                      <View>
-                        <Text style={MyStyles.inputLabel}>House Number</Text>
-                        <TextInput
-                          placeholder="House Number"
-                          style={MyStyles.input}
-                          keyboardType="numeric"
-                          value={householdForm.housenumber}
-                          onChangeText={(text) =>
-                            handleHouseholdDropdownChange("housenumber", text)
-                          }
-                        />
-                      </View>
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Street<Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <Dropdown
-                          labelField="label"
-                          valueField="value"
-                          value={householdForm.street}
-                          data={streetList.map((purp) => ({
-                            label: purp,
-                            value: purp,
-                          }))}
-                          placeholder="Select"
-                          placeholderStyle={MyStyles.placeholderText}
-                          selectedTextStyle={MyStyles.selectedText}
-                          onChange={(item) =>
-                            handleHouseholdDropdownChange("street", item.value)
-                          }
-                          style={MyStyles.input}
-                        ></Dropdown>
-
-                        {errors.street && (
-                          <Text style={MyStyles.errorMsg}>{errors.street}</Text>
-                        )}
-                      </View>
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>HOA Name</Text>
-                        <Dropdown
-                          labelField="label"
-                          valueField="value"
-                          value={householdForm.HOAname}
-                          data={[
-                            {
-                              label: "Bermuda Town Homes",
-                              value: "Bermuda Town Homes",
-                            },
-                          ]}
-                          placeholder="Select"
-                          placeholderStyle={MyStyles.placeholderText}
-                          selectedTextStyle={MyStyles.selectedText}
-                          onChange={(item) =>
-                            handleHouseholdDropdownChange("street", item.value)
-                          }
-                          style={MyStyles.input}
-                        ></Dropdown>
-                      </View>
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Ethnicity<Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <View style={MyStyles.radioGroup}>
-                          {["IP Household", "Non-IP Household"].map(
-                            (option) => (
-                              <Pressable
-                                key={option}
-                                style={MyStyles.radioOption}
-                                onPress={() =>
-                                  handleHouseholdRadioChange(
-                                    "ethnicity",
-                                    option
-                                  )
-                                }
-                              >
-                                <View style={MyStyles.radioCircle}>
-                                  {householdForm.ethnicity === option && (
-                                    <View style={MyStyles.radioDot} />
-                                  )}
-                                </View>
-                                <Text
-                                  style={{
-                                    fontFamily: "QuicksandMedium",
-                                    fontSize: RFPercentage(2),
-                                    flexWrap: 1,
-                                  }}
-                                >
-                                  {option}
-                                </Text>
-                              </Pressable>
-                            )
-                          )}
-
-                          {householdForm.ethnicity === "IP Household" && (
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(1.8),
-                                fontStyle: "italic",
-                                color: "#666",
-                              }}
-                            >
-                              *An IP Household is a household that belongs to an
-                              Indigenous Peoples group (e.g., Aeta, Manobo,
-                              Igorot, Lumad, etc.).
-                            </Text>
-                          )}
-
-                          {householdForm.ethnicity === "Non-IP Household" && (
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(1.8),
-                                fontStyle: "italic",
-                                color: "#666",
-                              }}
-                            >
-                              *Non-IP Household is a household that does not
-                              belong to an Indigenous People group (e.g., Aeta,
-                              Igorot, Manobo, Lumad, etc.).
-                            </Text>
-                          )}
-                        </View>
-                        {errors.ethnicity && (
-                          <Text style={MyStyles.errorMsg}>
-                            {errors.ethnicity}
-                          </Text>
-                        )}
-                      </View>
-
-                      {householdForm.ethnicity === "IP Household" && (
-                        <>
-                          <View>
-                            <Text style={MyStyles.inputLabel}>Tribe</Text>
-                            <TextInput
-                              placeholder="Tribe"
-                              style={MyStyles.input}
-                              value={householdForm.tribe}
-                              onChangeText={(text) =>
-                                handleHouseholdInputChange("tribe", text)
-                              }
-                            />
-                          </View>
-                        </>
-                      )}
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Socioeconomic Status
-                          <Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <View style={MyStyles.radioGroup}>
-                          {["NHTS 4Ps", "NHTS Non-4Ps", "Non-NHTS"].map(
-                            (option) => (
-                              <Pressable
-                                key={option}
-                                style={MyStyles.radioOption}
-                                onPress={() =>
-                                  handleHouseholdRadioChange(
-                                    "sociostatus",
-                                    option
-                                  )
-                                }
-                              >
-                                <View style={MyStyles.radioCircle}>
-                                  {householdForm.sociostatus === option && (
-                                    <View style={MyStyles.radioDot} />
-                                  )}
-                                </View>
-                                <Text
-                                  style={{
-                                    fontFamily: "QuicksandMedium",
-                                    fontSize: RFPercentage(2),
-                                  }}
-                                >
-                                  {option}
-                                </Text>
-                              </Pressable>
-                            )
-                          )}
-                          {householdForm.sociostatus === "NHTS 4Ps" && (
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(1.8),
-                                fontStyle: "italic",
-                                color: "#666",
-                              }}
-                            >
-                              *NHTS (National Household Targeting System) 4Ps
-                              refers to households that are part of the NHTS
-                              system and the 4Ps program.
-                            </Text>
-                          )}
-
-                          {householdForm.sociostatus === "NHTS Non-4Ps" && (
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(1.8),
-                                fontStyle: "italic",
-                                color: "#666",
-                              }}
-                            >
-                              *NHTS (National Household Targeting System)
-                              Non-4Ps are households that are part of the NHTS
-                              system but are not part of the 4Ps program.
-                            </Text>
-                          )}
-
-                          {householdForm.sociostatus === "Non-NHTS" && (
-                            <Text
-                              style={{
-                                fontFamily: "QuicksandMedium",
-                                fontSize: RFPercentage(1.8),
-                                fontStyle: "italic",
-                                color: "#666",
-                              }}
-                            >
-                              *Non-NHTS households are households that are not
-                              part of the NHTS system.
-                            </Text>
-                          )}
-                        </View>
-
-                        {errors.sociostatus && (
-                          <Text style={MyStyles.errorMsg}>
-                            {errors.sociostatus}
-                          </Text>
-                        )}
-                      </View>
-
-                      {(householdForm.sociostatus === "NHTS 4Ps" ||
-                        householdForm.sociostatus === "NHTS Non-4Ps") && (
-                        <>
-                          <View>
-                            <Text style={MyStyles.inputLabel}>NHTS No.</Text>
-                            <TextInput
-                              placeholder="NHTS No"
-                              style={MyStyles.input}
-                              value={householdForm.nhtsno}
-                              keyboardType="numeric"
-                              onChangeText={(text) =>
-                                handleHouseholdInputChange("nhtsno", text)
-                              }
-                            />
-                          </View>
-                        </>
-                      )}
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Type of Water Source
-                          <Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <Dropdown
-                          labelField="label"
-                          valueField="value"
-                          value={householdForm.watersource}
-                          data={watersourceList.map((purp) => ({
-                            label: purp,
-                            value: purp,
-                          }))}
-                          placeholder="Select"
-                          placeholderStyle={MyStyles.placeholderText}
-                          selectedTextStyle={MyStyles.selectedText}
-                          onChange={(item) =>
-                            handleHouseholdDropdownChange(
-                              "watersource",
-                              item.value
-                            )
-                          }
-                          style={MyStyles.input}
-                        ></Dropdown>
-                        {errors.watersource && (
-                          <Text style={MyStyles.errorMsg}>
-                            {errors.watersource}
-                          </Text>
-                        )}
-                      </View>
-
-                      <View>
-                        <Text style={MyStyles.inputLabel}>
-                          Type of Toilet Facility
-                          <Text style={{ color: "red" }}>*</Text>
-                        </Text>
-                        <Dropdown
-                          labelField="label"
-                          valueField="value"
-                          value={householdForm.toiletfacility}
-                          data={toiletfacilityList.map((purp) => ({
-                            label: purp,
-                            value: purp,
-                          }))}
-                          placeholder="Select"
-                          placeholderStyle={MyStyles.placeholderText}
-                          selectedTextStyle={MyStyles.selectedText}
-                          onChange={(item) =>
-                            handleHouseholdDropdownChange(
-                              "toiletfacility",
-                              item.value
-                            )
-                          }
-                          style={MyStyles.input}
-                        ></Dropdown>
-                        {errors.toiletfacility && (
-                          <Text style={MyStyles.errorMsg}>
-                            {errors.toiletfacility}
-                          </Text>
-                        )}
-                      </View>
-                      <Text style={MyStyles.inputLabel}>Members</Text>
-                      <View>
-                        {householdForm.members.map((member, index) => (
-                          <View key={index} style={MyStyles.membersWrapper}>
-                            <View>
-                              <Text style={MyStyles.inputLabel}>
-                                Resident Name
-                              </Text>
-                              <TextInput
-                                value={member.resident}
-                                onChangeText={(text) =>
-                                  handleMemberChange(index, "resident", text)
-                                }
-                                placeholder="Enter Resident Name"
-                                style={MyStyles.input}
-                              />
-
-                              {memberSuggestions[index]?.length > 0 && (
-                                <View
-                                  style={{
-                                    backgroundColor: "#fff",
-                                    borderWidth: 1,
-                                    borderColor: "#ccc",
-                                    borderRadius: 5,
-                                    marginBottom: 10,
-                                  }}
-                                >
-                                  {memberSuggestions[index].map((item) => {
-                                    const fullName = `${item.firstname} ${
-                                      item.middlename
-                                        ? item.middlename + " "
-                                        : ""
-                                    }${item.lastname}`;
-
-                                    return (
-                                      <TouchableOpacity
-                                        key={item._id}
-                                        onPress={() =>
-                                          handleMemberSuggestionClick(
-                                            index,
-                                            item
-                                          )
-                                        }
-                                        style={{
-                                          padding: 10,
-                                          borderBottomWidth: 1,
-                                          borderColor: "#eee",
-                                        }}
-                                      >
-                                        <Text>{fullName}</Text>
-                                      </TouchableOpacity>
-                                    );
-                                  })}
-                                </View>
-                              )}
-                            </View>
-
-                            {errors[`member_${index}_resident`] && (
-                              <Text style={MyStyles.errorMsg}>
-                                {errors[`member_${index}_resident`]}
-                              </Text>
-                            )}
-                            {/* {member.resident.trim() !== "" && !member.resID && (
-                              <Text style={{ color: "#6B7280", fontSize: 12 }}>
-                                ⚠️ No matching resident found.{" "}
-                                <Text
-                                  style={{
-                                    color: "#0E94D3",
-                                    textDecorationLine: "underline",
-                                  }}
-                                  onPress={() =>
-                                    navigation.navigate(
-                                      "ResidentHouseholdForm",
-                                      {
-                                        create: true,
-                                      }
-                                    )
-                                  }
-                                >
-                                  Click here
-                                </Text>{" "}
-                                if you want to create a resident profile.
-                              </Text>
-                            )} */}
-
-                            <View>
-                              <Text style={MyStyles.inputLabel}>
-                                Relationship
-                              </Text>
-                              <Dropdown
-                                data={positionList}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Select"
-                                placeholderStyle={MyStyles.placeholderText}
-                                selectedTextStyle={MyStyles.selectedText}
-                                value={member.position}
-                                onChange={(item) =>
-                                  handleMemberChange(
-                                    index,
-                                    "position",
-                                    item.value
-                                  )
-                                }
-                                style={MyStyles.input}
-                                containerStyle={MyStyles.dropdownContainer}
-                              />
-
-                              {errors[`member_${index}_position`] && (
-                                <Text style={MyStyles.errorMsg}>
-                                  {errors[`member_${index}_position`]}
-                                </Text>
-                              )}
-
-                              <TouchableOpacity
-                                onPress={() => removeMember(index)}
-                                style={[
-                                  MyStyles.residentAddBtn,
-                                  { borderColor: "red", marginTop: 10 },
-                                ]}
-                              >
-                                <Text
-                                  style={[
-                                    MyStyles.buttonText,
-                                    MyStyles.residentAddText,
-                                    { color: "red" },
-                                  ]}
-                                >
-                                  - Remove Member
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        ))}
-
-                        <TouchableOpacity
-                          onPress={addMember}
-                          style={[MyStyles.residentAddBtn]}
-                        >
-                          <Text
-                            style={[
-                              MyStyles.buttonText,
-                              MyStyles.residentAddText,
-                            ]}
-                          >
-                            + Add Member
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-
-                      <Text
-                        style={[
-                          MyStyles.inputLabel,
-                          { fontSize: RFPercentage(1.8) },
-                        ]}
-                      >
-                        Vehicles
-                      </Text>
-                      <View>
-                        {householdForm.vehicles.map((vehicle, index) => (
-                          <View key={index} style={MyStyles.membersWrapper}>
-                            <View>
-                              <Text style={MyStyles.inputLabel}>
-                                Vehicle {index + 1}
-                              </Text>
-                            </View>
-
-                            <View>
-                              <Text style={MyStyles.inputLabel}>Model</Text>
-                              <TextInput
-                                style={MyStyles.input}
-                                value={vehicle.model}
-                                placeholder="e.g. Toyota Vios"
-                                onChangeText={(text) =>
-                                  handleVehicleChange(index, "model", text)
-                                }
-                              />
-                            </View>
-
-                            <View>
-                              <Text style={MyStyles.inputLabel}>Color</Text>
-                              <TextInput
-                                style={MyStyles.input}
-                                value={vehicle.color}
-                                placeholder="e.g. Red"
-                                onChangeText={(text) =>
-                                  handleVehicleChange(index, "color", text)
-                                }
-                              />
-                            </View>
-
-                            <View>
-                              <Text style={MyStyles.inputLabel}>Kind</Text>
-                              <Dropdown
-                                data={kindOptions}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Select Kind"
-                                placeholderStyle={MyStyles.placeholderText}
-                                selectedTextStyle={MyStyles.selectedText}
-                                value={vehicle.kind}
-                                onChange={(item) =>
-                                  handleVehicleChange(index, "kind", item.value)
-                                }
-                                style={MyStyles.input}
-                                containerStyle={MyStyles.dropdownContainer}
-                              />
-                            </View>
-
-                            <View>
-                              <Text style={MyStyles.inputLabel}>
-                                Plate Number
-                              </Text>
-                              <TextInput
-                                style={MyStyles.input}
-                                value={vehicle.platenumber}
-                                placeholder="e.g. ABC1234"
-                                onChangeText={(text) =>
-                                  handleVehicleChange(
-                                    index,
-                                    "platenumber",
-                                    text
-                                  )
-                                }
-                              />
-
-                              <TouchableOpacity
-                                onPress={() => removeVehicle(index)}
-                                style={[
-                                  MyStyles.button,
-                                  MyStyles.residentAddBtn,
-                                  { borderColor: "red", marginTop: 10 },
-                                ]}
-                              >
-                                <Text
-                                  style={[
-                                    MyStyles.buttonText,
-                                    MyStyles.residentAddText,
-                                    { color: "red" },
-                                  ]}
-                                >
-                                  Remove Vehicle
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        ))}
-
-                        <TouchableOpacity
-                          onPress={addVehicle}
-                          style={[MyStyles.residentAddBtn]}
-                        >
-                          <Text
-                            style={[
-                              MyStyles.buttonText,
-                              MyStyles.residentAddText,
-                            ]}
-                          >
-                            + Add Vehicle
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </>
-                  )}
-
                   {/* Employment Information */}
                   <Text style={[MyStyles.FormSectionTitle, { marginTop: 30 }]}>
                     Employment Information
@@ -2836,37 +2102,6 @@ const ResidentForm = () => {
                   </TouchableOpacity>
                 </View>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    gap: 4,
-                    marginTop: 10,
-                  }}
-                >
-                  <Text
-                    onPress={() => navigation.navigate("Signup")}
-                    style={[
-                      MyStyles.signUpText,
-                      { textDecorationLine: "underline" },
-                    ]}
-                  >
-                    {" "}
-                    Sign Up
-                  </Text>
-
-                  <Text
-                    onPress={() => navigation.navigate("Login")}
-                    style={[
-                      MyStyles.signUpText,
-                      { textDecorationLine: "underline" },
-                    ]}
-                  >
-                    Login
-                  </Text>
-                </View>
-
                 <AlertModal
                   isVisible={isAlertModalVisible}
                   message={alertMessage}
@@ -2889,7 +2124,7 @@ const ResidentForm = () => {
     </LinearGradient>
   );
 };
-export default ResidentForm;
+export default ResidentHouseholdForm;
 
 const styles = StyleSheet.create({
   required: { color: "red" },

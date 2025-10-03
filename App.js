@@ -76,6 +76,7 @@ import ResidentForm from "./components/ResidentForm";
 import UserProfile from "./components/UserProfile";
 import AlertModal from "./components/AlertModal";
 import DataPrivacy from "./components/DataPrivacy";
+import ResidentHouseholdForm from "./components/ResidentHouseholdForm";
 
 //Routes
 import PrivateRoute from "./components/PrivateRoute";
@@ -737,6 +738,18 @@ export default function App() {
                           element={
                             <DraftProvider>
                               <ResidentForm />
+                            </DraftProvider>
+                          }
+                        />
+                      )}
+                    />
+                    <Stack.Screen
+                      name="ResidentHouseholdForm"
+                      children={() => (
+                        <PublicRoute
+                          element={
+                            <DraftProvider>
+                              <ResidentHouseholdForm />
                             </DraftProvider>
                           }
                         />

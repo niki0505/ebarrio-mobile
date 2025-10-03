@@ -24,8 +24,6 @@ import { Dropdown } from "react-native-element-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import CheckBox from "./CheckBox";
-// import { storage } from "../firebase";
-// import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import Signature from "react-native-signature-canvas";
 import * as ScreenOrientation from "expo-screen-orientation";
 import AlertModal from "./AlertModal";
@@ -2443,6 +2441,26 @@ const UserProfile = () => {
                             </View>
                           )}
                         </View>
+
+                        {member.resident?.trim() !== "" && !member.resID && (
+                          <Text style={{ color: "#6B7280", fontSize: 12 }}>
+                            ⚠️ No matching resident found.{" "}
+                            <Text
+                              style={{
+                                color: "#0E94D3",
+                                textDecorationLine: "underline",
+                              }}
+                              onPress={() =>
+                                navigation.navigate("ResidentHouseholdForm", {
+                                  create: true,
+                                })
+                              }
+                            >
+                              Click here
+                            </Text>{" "}
+                            if you want to create a resident profile.
+                          </Text>
+                        )}
 
                         <View>
                           <Text style={MyStyles.inputLabel}>Position</Text>
