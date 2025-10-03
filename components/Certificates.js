@@ -27,6 +27,7 @@ const Certificates = () => {
   const navigation = useNavigation();
   const [typeErrors, setTypeErrors] = useState(null);
   const [purposeError, setPurposeError] = useState(null);
+  const [purposeError2, setPurposeError2] = useState(null);
   const [streetError, setStreetError] = useState(null);
   const [busNameError, setBusNameError] = useState(null);
   const [lineBusError, setLineBusError] = useState(null);
@@ -34,6 +35,7 @@ const Certificates = () => {
     typeofcertificate: "",
     amount: "₱0.00",
     purpose: "",
+    purpose2: "",
     businessname: "",
     lineofbusiness: "",
     addressnumber: "",
@@ -70,11 +72,21 @@ const Certificates = () => {
     "My Address",
   ];
 
-  const purpose = ["ALS Requirement", "Financial Assistance"];
+  const purpose = ["ALS Requirement", "Financial Assistance", "Others"];
 
   const certificateFields = {
-    "Barangay Indigency": ["typeofcertificate", "purpose", "amount"],
-    "Barangay Clearance": ["typeofcertificate", "purpose", "amount"],
+    "Barangay Indigency": [
+      "typeofcertificate",
+      "purpose",
+      "purpose2",
+      "amount",
+    ],
+    "Barangay Clearance": [
+      "typeofcertificate",
+      "purpose",
+      "purpose2",
+      "amount",
+    ],
     "Barangay Business Clearance": [
       "typeofcertificate",
       "addressnumber",
@@ -101,6 +113,12 @@ const Certificates = () => {
           return;
         } else {
           setPurposeError(null);
+        }
+        if (certificateForm.purpose === "Others" && !certificateForm.purpose2) {
+          setPurposeError2("This field is required!");
+          return;
+        } else {
+          setPurposeError2(null);
         }
       } else if (
         certificateForm.typeofcertificate === "Barangay Business Clearance"
@@ -172,6 +190,13 @@ const Certificates = () => {
       delete filteredData.street;
     }
 
+    if (filteredData.purpose === "Others") {
+      filteredData.purpose = filteredData.purpose2;
+      delete filteredData.purpose2;
+    } else {
+      delete filteredData.purpose2;
+    }
+
     try {
       await api.post("/sendcertrequest", {
         filteredData,
@@ -220,6 +245,9 @@ const Certificates = () => {
     }
     if (name === "lineofbusiness") {
       setLineBusError(!value ? "This field is required!" : null);
+    }
+    if (certificateForm.purpose === "Others" && name === "purpose2") {
+      setPurposeError2(!value ? "This field is required!" : null);
     }
   };
 
@@ -318,6 +346,28 @@ const Certificates = () => {
                     <Text style={MyStyles.errorMsg}>{purposeError}</Text>
                   ) : null}
                 </View>
+                {certificateForm.purpose === "Others" && (
+                  <View>
+                    <Text style={MyStyles.inputLabel}>
+                      Others (Please Specify)
+                      <Text style={{ color: "red" }}>*</Text>
+                    </Text>
+                    <TextInput
+                      placeholder="Purpose"
+                      style={MyStyles.input}
+                      value={certificateForm.purpose2}
+                      type="text"
+                      onChangeText={(text) =>
+                        handleInputChange("purpose2", text)
+                      }
+                    />
+                    {purposeError2 ? (
+                      <Text style={MyStyles.errorMsg}>{purposeError2}</Text>
+                    ) : (
+                      <View style={{ flex: 1 }} />
+                    )}
+                  </View>
+                )}
               </>
             )}
 

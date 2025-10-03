@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
-  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState } from "react";
@@ -110,124 +111,132 @@ const Login = () => {
           backgroundColor: "transparent",
         }}
       >
-        <View style={MyStyles.loginWrapper}>
-          <View style={MyStyles.loginTopWrapper}>
-            <Image source={AppLogo} style={MyStyles.loginLogo} />
-          </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
+          <View style={MyStyles.loginWrapper}>
+            <View style={MyStyles.loginTopWrapper}>
+              <Image source={AppLogo} style={MyStyles.loginLogo} />
+            </View>
 
-          <View style={MyStyles.loginBottomWrapper}>
-            <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
-              Welcome!
-            </Text>
-            <View style={MyStyles.loginFormWrapper}>
-              <View
-                style={{
-                  position: "relative",
-                }}
-              >
-                <TextInput
-                  style={[
-                    MyStyles.input,
-                    {
-                      paddingLeft: 50,
-                      paddingRight: 40,
-                    },
-                  ]}
-                  placeholder="Username"
-                  value={username}
-                  onChangeText={setUsername}
-                />
-
-                <FontAwesome5
-                  name="user-alt"
-                  size={20}
-                  color="#04384E"
+            <View style={MyStyles.loginBottomWrapper}>
+              <Text style={[MyStyles.header, { alignSelf: "flex-start" }]}>
+                Welcome!
+              </Text>
+              <Text style={MyStyles.forgotMsg}>
+                Please enter your credentials to log in.
+              </Text>
+              <View style={MyStyles.loginFormWrapper}>
+                <View
                   style={{
-                    position: "absolute",
-                    left: 15,
-                    top: "50%",
-                    transform: [{ translateY: -10 }],
+                    position: "relative",
                   }}
-                />
-              </View>
-
-              <View
-                style={{
-                  position: "relative",
-                }}
-              >
-                <TextInput
-                  secureTextEntry={secureLoginPass}
-                  style={[
-                    MyStyles.input,
-                    {
-                      paddingLeft: 50,
-                      paddingRight: 40,
-                    },
-                  ]}
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                />
-
-                <Fontisto
-                  name="locked"
-                  size={20}
-                  color="#04384E"
-                  style={{
-                    position: "absolute",
-                    left: 15,
-                    top: "50%",
-                    transform: [{ translateY: -10 }],
-                  }}
-                />
-                <TouchableOpacity
-                  onPress={togglesecureLoginPass}
-                  style={MyStyles.eyeToggle}
                 >
-                  <Ionicons
-                    name={secureLoginPass ? "eye-off" : "eye"}
-                    style={MyStyles.eyeToggleSize}
+                  <TextInput
+                    style={[
+                      MyStyles.input,
+                      {
+                        paddingLeft: 50,
+                        paddingRight: 40,
+                      },
+                    ]}
+                    placeholder="Username"
+                    value={username}
+                    onChangeText={setUsername}
                   />
-                </TouchableOpacity>
+
+                  <FontAwesome5
+                    name="user-alt"
+                    size={20}
+                    color="#04384E"
+                    style={{
+                      position: "absolute",
+                      left: 15,
+                      top: "50%",
+                      transform: [{ translateY: -10 }],
+                    }}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    position: "relative",
+                  }}
+                >
+                  <TextInput
+                    secureTextEntry={secureLoginPass}
+                    style={[
+                      MyStyles.input,
+                      {
+                        paddingLeft: 50,
+                        paddingRight: 40,
+                      },
+                    ]}
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+
+                  <Fontisto
+                    name="locked"
+                    size={20}
+                    color="#04384E"
+                    style={{
+                      position: "absolute",
+                      left: 15,
+                      top: "50%",
+                      transform: [{ translateY: -10 }],
+                    }}
+                  />
+                  <TouchableOpacity
+                    onPress={togglesecureLoginPass}
+                    style={MyStyles.eyeToggle}
+                  >
+                    <Ionicons
+                      name={secureLoginPass ? "eye-off" : "eye"}
+                      style={MyStyles.eyeToggleSize}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <Text
+                  onPress={() => navigation.navigate("ForgotPassword")}
+                  style={MyStyles.forgotPassText}
+                >
+                  Forgot Password?
+                </Text>
               </View>
 
-              <Text
-                onPress={() => navigation.navigate("ForgotPassword")}
-                style={MyStyles.forgotPassText}
+              <TouchableOpacity
+                onPress={handleLogin}
+                style={MyStyles.button}
+                disabled={loading}
               >
-                Forgot Password?
-              </Text>
+                <Text style={MyStyles.buttonText}>
+                  {loading ? "Logging in..." : "Login"}
+                </Text>
+              </TouchableOpacity>
+              <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
+                <Text style={MyStyles.byClickingText}>
+                  Don't have an account?
+                </Text>
+                <Text
+                  onPress={() => navigation.navigate("Signup")}
+                  style={MyStyles.signUpText}
+                >
+                  Sign Up
+                </Text>
+              </View>
             </View>
 
-            <TouchableOpacity
-              onPress={handleLogin}
-              style={MyStyles.button}
-              disabled={loading}
-            >
-              <Text style={MyStyles.buttonText}>
-                {loading ? "Logging in..." : "Login"}
-              </Text>
-            </TouchableOpacity>
-            <View style={{ flexDirection: "row", gap: 4, marginTop: 10 }}>
-              <Text style={MyStyles.byClickingText}>
-                Don't have an account?
-              </Text>
-              <Text
-                onPress={() => navigation.navigate("Signup")}
-                style={MyStyles.signUpText}
-              >
-                Sign Up
-              </Text>
-            </View>
+            <AlertModal
+              isVisible={isAlertModalVisible}
+              message={alertMessage}
+              onClose={() => setIsAlertModalVisible(false)}
+            />
           </View>
-
-          <AlertModal
-            isVisible={isAlertModalVisible}
-            message={alertMessage}
-            onClose={() => setIsAlertModalVisible(false)}
-          />
-        </View>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </LinearGradient>
   );

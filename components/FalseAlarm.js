@@ -21,9 +21,12 @@ import { MyStyles } from "./stylesheet/MyStyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AlertModal from "./AlertModal";
 import * as ImagePicker from "expo-image-picker";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 //ICONS
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import Entypo from "@expo/vector-icons/Entypo";
+import Feather from "@expo/vector-icons/Feather";
 
 const FalseAlarm = () => {
   const route = useRoute();
@@ -244,7 +247,7 @@ const FalseAlarm = () => {
             <View>
               <Text style={[MyStyles.inputLabel, { color: "white" }]}>
                 Reason for Marking as False Alarm
-                <Text style={{ color: "red" }}>*</Text>
+                <Text style={{ color: "white" }}>*</Text>
               </Text>
               <TextInput
                 placeholder="Describe any actions you or your team took upon arrival."
@@ -318,7 +321,16 @@ const FalseAlarm = () => {
                       },
                     ]}
                   >
-                    <Text>📷</Text>
+                    <Entypo name="camera" size={20} color="#BC0F0F" />
+                    <Text
+                      style={{
+                        fontFamily: "REMSemiBold",
+                        color: "#BC0F0F",
+                        fontSize: RFPercentage(1.8),
+                      }}
+                    >
+                      Capture
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={pickEvidenceImage}
@@ -331,7 +343,16 @@ const FalseAlarm = () => {
                       },
                     ]}
                   >
-                    <Text>📤</Text>
+                    <Feather name="upload" size={20} color="#BC0F0F" />
+                    <Text
+                      style={{
+                        fontFamily: "REMSemiBold",
+                        color: "#BC0F0F",
+                        fontSize: RFPercentage(1.8),
+                      }}
+                    >
+                      Upload
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -342,13 +363,13 @@ const FalseAlarm = () => {
             style={[
               MyStyles.button,
               {
-                backgroundColor: "#00BA00",
+                backgroundColor: "white",
               },
             ]}
             onPress={handleConfirm}
             disabled={loading}
           >
-            <Text style={MyStyles.buttonText}>
+            <Text style={[MyStyles.buttonText, { color: "#BC0F0F" }]}>
               {loading ? "Submitting..." : "Submit"}
             </Text>
           </TouchableOpacity>

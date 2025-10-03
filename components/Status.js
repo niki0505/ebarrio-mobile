@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import { MyStyles } from "./stylesheet/MyStyles";
 import { useContext, useState, useEffect } from "react";
@@ -121,7 +122,6 @@ const Status = () => {
     switch (status) {
       case "Pending":
         return { color: "#E5DE48", label: "Pending" }; // Yellow
-      case "Issued":
       case "Resolved":
       case "Approved":
       case "Settled":
@@ -131,7 +131,7 @@ const Status = () => {
       case "Rejected":
       case "Cancelled":
         return { color: "#BC0F0F", label: status }; // Red
-      default:
+      case "Not Yet Collected":
         return { color: "#aaa", label: status }; // Gray
     }
   };
@@ -207,7 +207,7 @@ const Status = () => {
                 ]}
               />
               <Text style={MyStyles.legendLabel}>
-                Issued, Resolved, Approved, Settled, Scheduled, Collected
+                Resolved, Approved, Settled, Scheduled, Collected
               </Text>
             </View>
 
@@ -238,7 +238,7 @@ const Status = () => {
               <View
                 style={[MyStyles.statusColorBox, { backgroundColor: "#aaa" }]}
               />
-              <Text style={MyStyles.legendLabel}>Others</Text>
+              <Text style={MyStyles.legendLabel}>Not Yet Collected</Text>
             </View>
           </View>
 
@@ -535,6 +535,26 @@ const Status = () => {
                                 >
                                   <Text style={MyStyles.buttonText}>
                                     Cancel
+                                  </Text>
+                                </TouchableOpacity>
+                              )}
+
+                            {(service.status === "Issued" ||
+                              service.status === "Collected" ||
+                              service.status === "Not Yet Collected") &&
+                              service.pdf && (
+                                <TouchableOpacity
+                                  onPress={() => Linking.openURL(service.pdf)}
+                                  style={[
+                                    MyStyles.button,
+                                    {
+                                      marginTop: 15,
+                                      backgroundColor: "#0e94d3",
+                                    },
+                                  ]}
+                                >
+                                  <Text style={MyStyles.buttonText}>
+                                    View PDF
                                   </Text>
                                 </TouchableOpacity>
                               )}
